@@ -1,0 +1,58 @@
+\chapter{Problem analysis}
+
+\section{Physics of rotating machines}
+
+	\subsection{Vibration fault types}
+	There are a few methods of machinery fault identification in vibrational signals based on domain expertise. Data points can be viewed in the time domain and frequency domain. Either as individual stationary profiles obtained during the short duration in the time of measurement, or multiple spaced-out observations with the intent to highlight the long-term trend, e.g. shown in a waterfall plot \cite{ziaran_technicka_2013}. The descriptor variable can be any meaningful statistical quantity, e.g. peak-to-peak, RMS, crest factor, kurtosis, which can be applied to recorded samples or frequency bands.  
+
+Mechanical faults manifest themselves in the vibration signal at various frequencies. In the low-frequency range (up to 1 kHz) shaft's unbalance, misalignment, bend, crack, and mechanical looseness is present. High frequencies (up to 16 kHz or more) contain bearings faults and gear faults. 
+
+Under fault-free circumstances, shaft speed appears as the strongest frequency component. In case of shaft and gear imbalance or damage, synchronous multiples of shaft frequency (harmonics) are amplified. When rub, bad drive belts and chains, or looseness is occurring in the machine then sub-synchronous harmonics or even non-synchronous frequencies appear \cite{mohanty_machinery_2015}.  Therefore it is useful to rescale the horizontal axis to RPM or orders of rotational speed. Complementary methods of fault symptom identification are phase and orbital analysis \cite{scheffer_practical_2004}.
+
+	\subsection{Band saw anatomy}
+
+\section{Condition monitoring}
+
+	\subsection{Maintenance strategies}
+	% Reactive, Proactive, Predictive
+
+	\subsection{Technical standards}
+	The maintenance procedure usually involves data acquisition cards inside handheld devices with accelerometer sensor probes then mounted firmly to the machine frame by either screwing in, magnets or wax \cite{ziaran_technicka_2013}. The probe placement in axial and perpendicular radial directions is standardized in ISO 20816. The severity of vibrations is mostly assessed in units of velocity ($mm/s$), but acceleration ($m/s^2$) and displacement ($\mu m$) are also used. Based on the observed vibration intensity and one of the four classes of machines (I, II, III, IV) by output power and size, zones (A, B, C, D) for accepted levels are proposed. It is customary to establish operational limits in the form of alarms and trips \cite{iso_20816}. 
+
+Standard ISO 13373 categorizes three types of vibration monitoring systems: permanent, semi-permanent, and mobile. More importantly, a structured diagnostic approach is developed here complete with recommendations for formalizing diagnostic techniques \cite{iso_13373}. The next step is the signal analysis with the use of proper units and transformations is the subject of the ISO 18431 \cite{iso_18431}. 
+	
+	\subsection{Sensor placement}
+
+\section{Feature engineering}
+	Feature selection vs. extraction
+	
+	\subsection{Signal denoising and filtering}
+	Blind source separation, PCA, ICA
+	
+	\subsection{Time-frequency features}
+	Time Synchronous Averaging of Real FFT
+	vs. FastCWT - Synchrosqueezing
+	
+	\subsection{Harmonics identification}
+	Cepstrum + Harmonic Product Spectrum + Peak identification
+	
+	\subsection{Feature importance ranking}
+	
+\section{Semi-supervised learning in diagnostics}
+	Label propagation	
+	
+	\subsection{Clustering techniques}
+	BIRCH, DBSCAN, SVM
+	
+	\subsection{Sketch streaming algorithms}
+	
+\section{IoT in Industry 4.0}
+
+	\subsection{Microcontrollers}
+	% ARM Cortex
+
+	\subsection{Wireless protocols}
+	% IEEE 802.11, IEEE 802.15.4e - IoT Mesh protocols: WirelessHART, ISA100.11a, OpenThread
+	% Formats: CoAP + CBOR
+
+Cite \cite{sample}.

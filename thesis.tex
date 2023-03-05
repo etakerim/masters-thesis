@@ -1,0 +1,219 @@
+\documentclass[12pt, a4paper, twoside, openright, english]{book}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[top=2.5cm,
+	bottom=3cm,
+	right=3.2cm,
+	left=3.2cm
+]{geometry}
+
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{afterpage}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{fancyvrb}
+\usepackage[fleqn]{amsmath}
+\usepackage{pdfpages}
+\usepackage{nccmath}
+\usepackage{tocloft}
+\usepackage{csquotes}
+\usepackage{diagbox}
+\usepackage{ifthen}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[super]{nth}
+
+
+\usepackage{nomencl}
+\usepackage{makeidx}
+\usepackage{expl3}
+\usepackage{etoolbox}
+%\preto\tabular{\shorthandoff{-}}
+
+\usepackage[style=iso-numeric, backend=biber]{biblatex}
+\addbibresource{literature.bib}
+
+% Zoznam skratiek
+\makenomenclature
+%\renewcommand{\nomname}{Zoznam skratiek a pojmov}
+
+% Algoritmy
+\makeatletter
+\renewcommand*{\ALG@name}{Algorithms}
+%\renewcommand{\listalgorithmname}{Zoznam algoritmov}
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\textbf{Output:}}
+\makeatother
+
+% Empty even pages at the end of chapter
+\makeatletter
+\renewcommand*{\cleardoublepage}{\clearpage\if@twoside \ifodd\c@page\else
+\hbox{}%
+\thispagestyle{empty}%
+\newpage%
+\if@twocolumn\hbox{}\newpage\fi\fi\fi}
+\makeatother
+
+
+% Číslo kapitoly na rovnakom riadku ako názov
+\titleformat{\chapter}{\normalfont\huge\bf}{\thechapter}{1em}{}
+
+\raggedbottom
+\newcommand{\emptypage}{\newpage\thispagestyle{empty}\mbox{}\newpage}
+\newcommand{\signaturespace}[2]{
+  \begingroup
+  \renewcommand{\arraystretch}{0}
+  \begin{tabular}[t]{cc}
+  \hspace*{0pt}
+  \cleaders\hbox{\kern.6pt.\kern.6pt}\hskip#1\relax
+  \hspace*{0pt}
+  \\[0.5cm]
+  #2
+  \end{tabular}
+  \endgroup
+}
+
+\pagestyle{fancy}
+\fancyhf{}  % clear all header and footers
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\rightmark}
+\fancyfoot[LE, RO]{\thepage}
+
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \renewcommand{\headrulewidth}{0pt}
+  \fancyhf[lef,rof]{\thepage}
+}
+
+\setlength{\headheight}{16pt}
+
+\renewcommand{\ttdefault}{pcr}
+\lstdefinestyle{cstyle}{
+    language=C,
+	basicstyle=\linespread{1.1}\ttfamily\footnotesize,
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single,
+    tabsize=4,
+    captionpos=b,
+    breaklines=true,
+    texcl=true,
+	numbersep=8pt,
+	framexleftmargin=15pt,
+	xleftmargin=5ex,
+    xrightmargin=3.4pt,
+	morekeywords = {uint8_t,uint16_t,int16_t,uint32_t,int32_t,bool}
+}
+\lstdefinestyle{docs}{
+    language=C,
+	basicstyle=\linespread{1.1}\ttfamily\small\bfseries,
+    tabsize=4,
+    breaklines=true,
+    belowskip=0pt
+}
+\renewcommand{\lstlistingname}{Source code}
+
+\setstretch{1.5}
+\newcommand{\University}[0] {Slovenská technická univerzita v Bratislave}
+\newcommand{\UniversityEN}[0] {Slovak University of Technology in Bratislava}
+\newcommand{\Faculty}[0] {Fakulta informatiky a informačných technológií}
+\newcommand{\FacultyEN}[0] {Faculty of Informatics and Information Technologies}
+\newcommand{\Thesis}[0] {Diplomová práca}
+\newcommand{\ThesisEN}[0] {Master's Thesis}
+\newcommand{\Title}[0] {Vibrodiagnostika strojov s~priemyselným internetom vecí}
+\newcommand{\TitleEN}[0] {Machinery vibrodiagnostics with the~industrial internet of things}
+\newcommand{\Author}[0] {Bc. Miroslav Hájek}
+\newcommand{\Supervisor}[0] {Ing. Marcel Baláž, PhD.}
+\newcommand{\DepartmentalAdvisor}[0] {Ing. Jakub Findura}
+\newcommand{\Consultant}[0] {Ing. Lukáš Doubravský}
+\newcommand{\SupervisorEN}[0] {Dr. Marcel Baláž}
+\newcommand{\RegNo}[0] {FIIT-xxxx-xxxxxx}
+\newcommand{\Date}[0] {Máj 2022}
+\newcommand{\DateEN}[0] {May 2023}
+\newcommand{\StudyProgramme}[0] {Inteligentné softvérové systémy}
+\newcommand{\StudyProgrammeEN}[0] {Intelligent Software Systems}
+\newcommand{\StudyField}[0] {Informatika}
+\newcommand{\StudyFieldEN}[0] {Informatics}
+\newcommand{\Institute}[0] {Institute of Computer Engineering and Applied Informatics}
+\newcommand{\SignPlace}[0] {Bratislava, }
+\newcommand{\SignDateEN}[0] {May 2023}
+
+
+\begin{document}
+\nomenclature{\textbf{Pojem}}{Vysvetlenie}
+% Obal -----------------------------------------------------------------------
+\input{chapters/preliminaries/cover}
+\emptypage
+
+%  Hlavná časť -----------------------------------------------------------------------
+\newgeometry{top=2.5cm, bottom=2.5cm, right=2.5cm, left=3.5cm}
+
+% Titulný list
+\pagenumbering{roman}
+\input{chapters/preliminaries/titlepage}
+\emptypage
+
+% Zadanie
+\thispagestyle{empty}
+\includepdf[pages=-, scale=1]{chapters/assignment}
+\emptypage
+
+\input{chapters/preliminaries/declaration}
+\emptypage
+\input{chapters/preliminaries/acknowledgments}
+\emptypage
+\input{chapters/preliminaries/annotation}
+
+% Obsah
+\pagestyle{empty}
+\tableofcontents{}
+\listoffigures
+{\let\clearpage\relax \printnomenclature}
+\emptypage
+
+\pagestyle{fancy}
+% Kapitoly
+\pagenumbering{arabic}
+
+\input{chapters/01-introduction}
+
+% Ďaľšie kapitoly v zvlášť súboroch
+\input{chapters/02-analysis}
+
+\nocite{*}
+\printbibliography[heading=bibintoc, title={Literature}]
+
+%  Prílohy -----------------------------------------------------------------------
+\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+\addtocontents{toc}{\cftpagenumbersoff{chapter}}
+\let\svaddcontentsline\addcontentsline
+\renewcommand\addcontentsline[3]{%
+  \ifthenelse{\equal{#1}{lof}}{}%
+  {\ifthenelse{\equal{#1}{lot}}{}{\svaddcontentsline{#1}{#2}{#3}}}}
+
+\appendix
+\titleformat{\chapter}{\normalfont\huge\bf}{Appendix \thechapter:}{1em}{}
+\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{Appendix \thechapter.\ #1}}{}}
+
+\input{chapters/appendix/A-resume}
+
+\input{chapters/appendix/B-plan-of-work}
+
+% Ďalšie prílohy
+% \input{chapters/appendix/B-technical-docs}
+% Ak nechce vypísať čísla strán na konci prílohy: \cleardoublepage
+
+\input{chapters/appendix/C-digital-medium}
+
+\end{document}

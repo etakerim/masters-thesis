@@ -1,0 +1,25 @@
+\chapter{Design}
+
+\section{Research questions}
+\begin{enumerate}
+\item \emph{Which time-frequency features can be extracted from vibrational signals to provide an accurate record of machinery faults?}
+\item \emph{What are the savings in transmission bandwidth when chosen signal features are used in comparison to raw sampled measurement or lossless compression techniques?}
+\item \emph{How can the machinery faults be continuously identified based on collected events?}
+\end{enumerate}
+
+\section{Infrastructure}
+ \begin{itemize}
+\item \textbf{Input:} Samples from acceleration in 3-axis, RPM, Noise background
+\item \textbf{Output is either:} machine overall status, type of fault, remaining useful life
+\item \textbf{Output for domain expert}: Annotation interface, Control chart of trend features, Power frequency spectrum, Waterfall plot
+ \end{itemize}
+
+\begin{enumerate}
+\item MEMS accelerometers are placed on at least two distinict measurement points in two perpendicular axis and one sensor in base for denoising. Rotational speed is captured at the same time too. 
+\item Sensors are triggered in regular intervals (every 15 minutes) to collect sample recording from the band saw. Configurable parameters set based on experiments: sampling frequency, dynamic range, window type (Hamming) and size (based on resolution), PSD estimation method (Welch)
+\item \textbf{Features} are computed and compared to recent measurements. If there is an statistically significant change the whole summary is send, otherwise keepalive notification is send.
+\item Possible local communication between sensors to pre-compute clustering information
+\item Database stores history of measurements
+\item \textbf{Diagnosis panel runs clustering} with introduction of annotations to notify the operator about observed fault and imminent failure of the machine.
+\end{enumerate}
+

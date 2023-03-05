@@ -1,0 +1,195 @@
+\documentclass[11pt, a4paper, english]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage[fleqn]{amsmath}
+\usepackage{pdfpages}
+\usepackage{csquotes}
+\usepackage{longtable}
+
+\usepackage{nomencl}
+\usepackage{makeidx}
+\usepackage{expl3}
+\usepackage{etoolbox}
+%\preto\tabular{\shorthandoff{-}}
+
+\usepackage[style=iso-numeric, backend=biber]{biblatex}
+\renewcommand*{\bibfont}{\small}
+\addbibresource{literature.bib}
+
+\newcommand{\University}[0] {Slovenská technická univerzita v Bratislave}
+\newcommand{\UniversityEN}[0] {Slovak University of Technology in Bratislava}
+\newcommand{\Faculty}[0] {Fakulta informatiky a informačných technológií}
+\newcommand{\FacultyEN}[0] {Faculty of Informatics and Information Technologies}
+\newcommand{\Thesis}[0] {Diplomová práca}
+\newcommand{\ThesisEN}[0] {Research objective for Master’s thesis}
+\newcommand{\Title}[0] {Vibrodiagnostika strojov s priemyselným internetom vecí}
+\newcommand{\TitleEN}[0] {Machinery vibrodiagnostics \\ with the industrial internet of things}
+\newcommand{\Author}[0] {Bc. Miroslav Hájek}
+\newcommand{\Supervisor}[0] {Ing. Marcel Baláž, PhD.}
+\newcommand{\DepartmentalAdvisor}[0] {Ing. Jakub Findura}
+\newcommand{\Consultant}[0] {Ing. Lukáš Doubravský}
+\newcommand{\Date}[0] {December 2022}
+\newcommand{\StudyProgramme}[0] {Informatika}
+\newcommand{\StudyProgrammeEN}[0] {Informatics}
+\newcommand{\StudyField}[0] {Informatika}
+\newcommand{\StudyFieldEN}[0] {Computer Science}
+\newcommand{\Institute}[0] {Institute of Computer Engineering and Applied Informatics}
+
+\defbibenvironment{bibassignment}
+  {\list
+     {}
+     {\setlength{\leftmargin}{\bibhang}%
+      \setlength{\itemindent}{-\leftmargin}%
+      \setlength{\itemsep}{\bibitemsep}%
+      \setlength{\parsep}{\bibparsep}}}
+  {\endlist}
+  {\item}
+
+
+\title{
+	\textbf{\TitleEN} \\ \vspace{0.2em} 
+	\large \emph{\Title\;(SK)} \\ 
+	\vspace{0.7em} \large Master's thesis research objective
+}
+\author{Bc. Miroslav Hájek \\ \small{Masters student} \and Ing. Marcel Baláž, PhD. \\ \small{Thesis supervisor}}
+\date{}
+
+\pagenumbering{gobble}
+\begin{document}
+\newgeometry{top=2.5cm, bottom=3cm, right=3.5cm, left=3.5cm}
+
+\begin{refsection}
+\maketitle
+\setstretch{1.25}
+
+\pagenumbering{arabic}
+\section{Motivation} 
+The industry strives to keep manufacturing processes as smooth and efficient as possible. Achieving optimal operation is dependent on maintaining various-sized equipment with moving parts always in satisfactory condition. Regular monitoring is imperative in ensuring the deteriorated parts are not significantly impacting the performance of the machine.
+
+The scope of usage for rotating machines in particular is considerable with potentially high economic or environmental impact in case of unexpected failure. The scheduled downtime is less costly than unplanned. This applies everywhere from electricity production in turbines, as well as pumps in the oil and gas pipelines to motors in vehicles just to illustrate. The prevalent source of machinery breakage according to many surveys are bearings \cite{goel_methodology_2022}.  The standard mode of operation is that a motor of some kind has to exert force via the shaft, belt, or gearbox onto the appliance be it a compressor, pump, fan, or conveyor.
+ 
+Mechanical faults can be proactively revealed by measuring vibrations because different deteriorations are signified by their characteristic pattern in the signal. This allows us to examine the inner parts of the machine without physically opening it. Ideally to have a holistic overview of the running assets very many reliable self-sufficient sensors would need to be deployed. It entails additional difficulties with managing the informational infrastructure which is a separate research area in its own right \cite{wang_toward_2019}. However, our focus leans towards retrieving relevant diagnostics from the volume of continuously collected data for personnel to act on the acquired knowledge.
+
+\section{Methods in machinery diagnostics}
+The long-term effect of condition-based maintenance (CBM) as a form of predictive maintenance is not immediately apparent to the business at the onset. Corrective maintenance can be afforded in less critical operations, which means replacing the defect after the failure. In other cases, at least scheduled maintenance is employed monthly, quarterly, or biannually which is performed by a skilled technician. 
+
+\subsection{Technical standards}
+The maintenance procedure usually involves data acquisition cards inside handheld devices with accelerometer sensor probes then mounted firmly to the machine frame by either screwing in, magnets or wax \cite{ziaran_technicka_2013}. The probe placement in axial and perpendicular radial directions is standardized in ISO 20816. The severity of vibrations is mostly assessed in units of velocity ($mm/s$), but acceleration ($m/s^2$) and displacement ($\mu m$) are also used. Based on the observed vibration intensity and one of the four classes of machines (I, II, III, IV) by output power and size, zones (A, B, C, D) for accepted levels are proposed. It is customary to establish operational limits in the form of alarms and trips \cite{iso_20816}. 
+
+Standard ISO 13373 categorizes three types of vibration monitoring systems: permanent, semi-permanent, and mobile. More importantly, a structured diagnostic approach is developed here complete with recommendations for formalizing diagnostic techniques \cite{iso_13373}. The next step is the signal analysis with the use of proper units and transformations is the subject of the ISO 18431 \cite{iso_18431}. 
+
+\subsection{Fault identification}
+There are a few methods of machinery fault identification in vibrational signals based on domain expertise. Data points can be viewed in the time domain and frequency domain. Either as individual stationary profiles obtained during the short duration in the time of measurement, or multiple spaced-out observations with the intent to highlight the long-term trend, e.g. shown in a waterfall plot \cite{ziaran_technicka_2013}. The descriptor variable can be any meaningful statistical quantity, e.g. peak-to-peak, RMS, crest factor, kurtosis, which can be applied to recorded samples or frequency bands.  
+
+Mechanical faults manifest themselves in the vibration signal at various frequencies. In the low-frequency range (up to 1 kHz) shaft's unbalance, misalignment, bend, crack, and mechanical looseness is present. High frequencies (up to 16 kHz or more) contain bearings faults and gear faults. 
+
+Under fault-free circumstances, shaft speed appears as the strongest frequency component. In case of shaft and gear imbalance or damage, synchronous multiples of shaft frequency (harmonics) are amplified. When rub, bad drive belts and chains, or looseness is occurring in the machine then sub-synchronous harmonics or even non-synchronous frequencies appear \cite{mohanty_machinery_2015}.  Therefore it is useful to rescale the horizontal axis to RPM or orders of rotational speed. Complementary methods of fault symptom identification are phase and orbital analysis \cite{scheffer_practical_2004}.
+
+Nowadays the software suites in use to analyze acquired measurements depend on the tool vendors because of established ecosystems. Notable solutions include Brüel \& Kjaer Data Acquisition (DAQ) Software, DDS Software by Adash, Emerson CSI with Machinery Health Manager, SKF @ptitude Analyst, or National Instruments LabView.
+
+\section{Data processing strategies}
+The machine vibrations are measured at the sampling frequency adhering to the Nyquist theorem predominantly using MEMS or piezoelectric accelerometer with its dynamic range, sensitivity, axial and frequency responses  \cite{ziaran_technicka_2013}. Simultaneously, the shaft revolutions are recorded to distinguish balancing issues from the effect of other machinery parts. 
+
+Proper analysis of the underlying cause of frequency excitations demands knowledge of machine construction and its kinematic model. Unfortunately, the internals are not generally extensively described by the manufacturers so the exact gear ratios or number of bearing balls have to be examined by taking the equipment apart.
+
+The large-scale factory monitoring brings the issue of the sheer volume of excess raw data being captured. Feature selection and extraction techniques can help to determine a subset of instances sufficiently representing the original features in the case of selection, or the dimensionality reduction projection in the case of extraction \cite{kreidl_technicka_2006}. The desired result is lossy compression because some elements are found to have a negligible contribution to the overall diagnosis. The example from speech processing where reduction of the transmission bandwidth is founded in feature extraction are Mel-frequency cepstral coefficients \cite{rabiner_introduction_2007}.
+
+\subsection{Vibration signal processing}
+When RPM stays constant, the signal is mostly stationary with exception of background wideband noise from the environment and narrowband interference from machine frame shake or alternating current frequency in electric motors. More close-by sensors can eliminate the noise with a correlation of their spectra. Wear and tear causes the stationary signal to gradually change its content and increase its amplitude. New machines of a similar model to one probed by the sensor should be deemed as a reference for statistically setting alert levels divided into frequency bands.
+
+The important features to be kept can be learned out of raw sampled data \cite{luo_early_2019}. Another approach is to preprocess the frequency spectrum based on domain knowledge to speed up the decisions and retain only the important bits. The vibration signal can be manipulated with in spectral domain in several steps:
+
+\begin{enumerate}
+	\item \textbf{Frequency-domain transformations}: The fast Fourier transform algorithm computes Discrete Fourier Transform (DFT) and Discrete Cosine Transform (DCT). The signal has to undergo windowing to maintain the condition of stationarity and to increase the signal-to-noise ratio. The computation is sped up with real FFT which reorders the vector of real numbers to enable the transformation to be half in length. The continuous wavelet transform (CWT) is a time-frequency representation encoding the lower frequencies with less time resolution as compared to higher frequencies. Recently, a fast real-time algorithm for CWT has been invented \cite{arts_fast_2022}.
+	
+	\item \textbf{Synchrosqueezing transform}: Enhancement of peaks in the time-frequency spectrum is achieved by decomposing natural oscillating modes into amplitude and frequency-modulated components \cite{meignen_synchrosqueezing_2019}. Synchrosqueezing creates sharper contours over regions where the phase is constant. The instantaneous frequency value is reassigned to the centroid of the CWT time-frequency region. The method was originally associated with wavelets, but can also be applied to a Fourier basis \cite{yu_concentrated_2020}.
+	
+	\item \textbf{Denoising}: The accelerometer signal is traditionally noisy. The factors include the indirect transfer of mechanical energy from moving parts to the frame and interference from other equipment mounted nearby onto the same base. Additive white noise can be suppressed based on its recorded fingerprints or with an adaptive filter \cite{nandi_condition_2019}. The thresholds of attenuation are set for each frequency band based on the mean power of noise spectral components. The content of vibration signals is often a mixture of several sources and the signal-to-noise ratio is therefore very poor. Blind source separation (BSS) aids in the recovery of statistically independent signals from external influences \cite{nandi_condition_2019}. 
+	
+	The narrowband noise can be dealt with using band-notch filters. The peaks in the spectrum can be cleared of wobbles by convolving a low pass filter with appropriate cut-off frequency which in effect creates a low-resolution envelope around the spectral waveform. The selected machinery part's manifestation from the rest is separated by time synchronous averaging. The segments are averaged after the alignment with the pulse generated on each revolution \cite{bechhoefer_review_2009}.
+	
+	\item \textbf{Harmonics identification}: The peaks in the frequency spectrum signify the periodic movement of various machinery parts. These local maxima can be marked using peak-finding algorithms. The most simple and effective strategy is spotting the point with the highest value in their neighborhood \cite{adikaram_non-parametric_2016}. Supplementary constraints filter out sudden level jumps in between discrete frequency bins with parameters such as prominence and isolation. In the radar field, the noise is suppressed by Constant False Alarm Rate (CFAR) algorithms with adaptive threshold related to background variance around the cell under the test (CUT) \cite{hatem_comparative_2018}.
+	
+	 The increased magnitude of harmonics or sidebands appearing also as peaks can suggest component degradation. It provides a succinct means to describe peaks in relation to their fundamental frequency. Harmonic series and modulation sideband detection is an exhaustive search process when estimation error is considered \cite{gerber_identification_2013}. The pitch detection methods namely autocorrelation, cepstral analysis \cite{rabiner_introduction_2007}, and harmonic product spectrum are basic methods to obtain fundamentals in the signal time slice. The caution must be taken to segment the spectrum reasonably in order to keep as much of the fault characteristic information as is necessary \cite{yonggang_time_2020}.
+\end{enumerate}
+
+\subsection{Machine learning fault diagnosis}
+The methodology to choose time-frequency features is valid only when meaningful conclusions can be drawn about the rotational machinery's health status. The distinction between the good and in need of repair is not clear cut in practice, but significant empirical expert domain knowledge is developed \cite{ziaran_technicka_2013} \cite{kreidl_technicka_2006} \cite{scheffer_practical_2004} and underlying mathematical models of spring-damper mechanical systems are described.
+
+In its essence, fault diagnostics is a supervised learning problem of multiclass classification because the vibration signals are a combination of any number of rotating elements evaluated as a specific machine condition. Each machine is unique to some degree because of natural imprecisions in its construction. 
+
+The machine learning model would have to be trained to each kind of machine from the beginning or poses the means to adapt to considerably different conditions, covering cases from single-phase electric motors, and air compressors to the steam turbine. It is not feasible here to label datasets beforehand to then be fed into the supervised learning algorithm. The other perspective in diagnosis is to observe the dynamic behavior of the mechanical system over time. The notable changes are differentiated with clustering as anomalous or novel  \cite{hu_intelligent_2012} \cite{caldero_multi-channel_2019}. This strategy allows operators to annotate the fault during the operations to be recognizable faster another time.
+
+The portability of the diagnostics model among the machines and the explainability of output decisions to a trained technician and vibration analyst are the key attributes of the intelligent system to be a benefit across the manufacturing plant. The following methods are prospective in working with a little amount of initial data and can utilize the domain expertise to some extent:
+
+\begin{itemize}
+\item \textbf{Clustering}: It is an unsupervised learning method subject to distance or density metrics to assign group membership.  The most known clustering algorithms are K-Means, Local Outlier Factor (LOF), Local Correlation Integral  (LOCI), and Density-based spatial clustering of applications with noise (DBSCAN) \cite{aggarwal_outlier_2016}. These algorithms are not particularly effective when data is coming incrementally and its amount is growing unboundedly. 
+
+Although the online or single pass variants exist. BIRCH algorithm (Balanced iterative reducing and clustering using hierarchies) can dynamically cluster large datasets by design. In fuzzy clustering, the region boundaries are not sharp. The association with the category is then percentage wise which is tremendous utilized in image segmentation. 
+
+\item \textbf{Fuzzy logic expert system}: The rule base to guide experts in fault identification can be reused with some modifications in a computer-assisted setting, too. The imprecise expressions written in terms of linguistic variables (e.g. frequency, severity, sideband)  and predicates (e.g. little, medium, high) have to be fuzzified to quantify the membership of each statement inside fuzzy sets. Out of the variables' truthness in each category and set of rules, the resulting similarity with the underlying condition is inferred with logical operators within the Mamdani system. Then the quantities are defuzzified to deliver the human-readable outcome \cite{chen_introduction_2001}. 
+
+Fuzzy logic has been applied to machinery fault diagnostics with considerable potential \cite{mechefske_objective_1998}. However, in recent years there has been a shift away from fuzzy logic \cite{hullermeier_does_2015} to approaches based on probability theory such as Bayesian learning and Bayesian networks. The membership function construction in fuzzy logic is hard to pinpoint and statistics are used anyway.
+
+\item \textbf{Deep neural networks}: The recurrent (RNN) based autoencoders with various hidden unit architectures (GRU, LSTM, PLSTM) trained in an unsupervised manner are currently achieving accuracies up to 70\% on publically available datasets \cite{yu_analysis_2021}. The comprehensibility of classification is being investigated with explainable AI (XAI) algorithms on convolutional neural networks (CNN). The XAI techniques compared involve GradCAM, LRP, and LIME. A large number of features is marked relevant to classification which is not desired \cite{mey_explainable_2022}. Inconsistency in machine running conditions causing the data recollection for neural network training is addressed with transfer learning and knowledge transfer \cite{maurya_condition-based_2021}.
+\end{itemize}
+
+\section{Research questions}
+Instead of recording complete signals as is, a process should be devised that records only key descriptions based on vibrational signal specifics, namely different machine parts. This event based view can notify operators about fault symptoms based on general rules as well as machine specific behavior over time. To that end we come up with objectives for our research from the overview in the area: 
+
+\begin{enumerate}
+\item \emph{Which time-frequency features can be extracted from vibrational signals to provide an accurate record of machinery faults?}
+\item \emph{What are the savings in transmission bandwidth when chosen signal features are used in comparison to raw sampled measurement or lossless compression techniques?}
+\item \emph{How can the machinery faults be continuously identified based on collected events?}
+\end{enumerate}
+
+Similar ideas of fault feature extraction focus mainly on empirical wavelet transform modifications \cite{li_fault_2019} and spectral negentropy \cite{xu_adaptive_2019}.
+
+
+\section{Evaluation on available datasets}
+Evaluation of research questions demands that some datasets of machinery normal and faulty states be analyzed and computational complexity and accuracy be evaluated based on them. The following list provides freely available options to address this issue: 
+\begin{itemize}
+	\item \textbf{NASA Bearing Dataset}\footnote{https://www.kaggle.com/datasets/vinayak123tyagi/bearing-dataset}:  Each data set describes a test-to-failure experiment and consists of files that are 1-second snapshots recorded at specific intervals with the sampling rate set at 20 kHz. Four bearings were installed on a shaft. The rotation speed was kept constant at 2000 RPM by an AC motor coupled to the shaft via rub belts. A radial load of 6000 lbs is applied onto the shaft and bearing by a spring mechanism. 	\item \textbf{CWRU Bearing Dataset}\footnote{https://www.kaggle.com/datasets/brjapon/cwru-bearing-datasets}: There were 3 accelerometers installed on 3 positions. The test ran under the following conditions: 1 HP load applied to the motor, Shaft rotating speed of 1772 RPM, and 48 kHz sampling frequency of the accelerometers.
+	\item \textbf{Vibration Analysis on Rotating Shaft}\footnote{https://www.kaggle.com/datasets/jishnukoliyadan/vibration-analysis-on-rotating-shaft}: Datasets for 4 different unbalance strengths and one without unbalance were recorded at 4 kHz. The rotation speed was varied between approx. 630 and 2330 RPM in the training datasets and between approx. 1060 and 1900 RPM in the testing datasets.
+\end{itemize}
+
+Additionally, custom datasets for chosen machines could be eventually created in collaborations based on precise experiment specifications. We reached out to colleagues at the Faculty of Mechanical Engineering (SjF STU) specifically to prof.~Ing. Stanislav Žiaran,~CSc. and Ing.~Ondrej Chlebo,~PhD. who could provide domain expertise consultation if such need arises. There is also a chance of being able to obtain vibration data from wood processing factory or dormitory washing machines via business partnerships.
+
+\newpage
+\printbibliography[title={Literature}, keyword=important]
+\end{refsection}
+
+\newpage
+\setstretch{1.5}
+\section*{Návrh zadania diplomovej práce}
+\begin{longtable}{l l}
+\textbf{Názov práce:} & \Title \\
+\textbf{Študent:}     & \Author \\
+\textbf{Študijný program:} &  Inteligentné softvérové systémy \\
+\textbf{Oblasti problematiky:} &  Internet vecí, Spracovanie signálov, Feature engineering \\
+\end{longtable}
+
+\small{
+Monitorovanie prevádzkového stavu rotačných strojov za účelom včasného odhalenia poškodení je dôležité pre plynulý priebeh priemyselných procesov bez náhleho zlyhania kľúčového technického vybavenia. Nadmerné vibrácie alebo graduálna či náhla zmena ich charakteru sú spoľahlivými indikátormi opotrebenia dielcov. V mnohých prípadoch bývajú zavedené iba pravidelné pôchodzkové merania s následným vyhodnotením časových a frekvenčných priebehov kvalifikovaným personálom. Kontinuálna diagnostika a prediktívna údržba rozširujúca sa so zariadeniami IIoT spôsobuje enormný nárast objemu zaznamenaných dát. Sledovanie výchyliek operátorom a manuálna identifikácia súčiastok vyžadujúcich údržbu v celom závode sa tak stáva prakticky nerealizovateľná.
+
+Preskúmajte spôsoby zisťovania bežných poškodení strojov z vibračných signálov a analyzujte algoritmy na redukciu množstva posielaných dát zo senzorov vzhľadom na osobitosti aplikačnej domény. Navrhnite reprezentáciu údajov na základe typických čŕt signálu, ktorá zníži výpočtové nároky na zvyšok komunikačného reťazca. Zvolený spôsob predspracovania má zároveň umožniť diagnostiku poškodení zvoleného stroja. Implementuje vaše riešenie s ohľadom na možné nasadenie na prostriedkami limitovanú senzorovú jednotku. Následne posúďte efektívnosť, porovnajte dosiahnuté presnosti diagnostiky a verifikujte voči zaužívaným postupom.
+}
+
+\printbibliography[
+	heading=subbibliography, 
+	env=bibassignment,
+	title={Literatúra}, 
+	keyword=assignment
+]
+\nocite{*}
+
+\end{document}
