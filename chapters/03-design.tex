@@ -15,11 +15,13 @@
  \end{itemize}
 
 \begin{enumerate}
-\item MEMS accelerometers are placed on at least two distinict measurement points in two perpendicular axis and one sensor in base for denoising. Rotational speed is captured at the same time too. 
+\item MEMS accelerometers are placed on at least two distinict measurement points in two perpendicular axis and one sensor in base for denoising. Rotational speed is captured at the same time too.
 \item Sensors are triggered in regular intervals (every 15 minutes) to collect sample recording from the band saw. Configurable parameters set based on experiments: sampling frequency, dynamic range, window type (Hamming) and size (based on resolution), PSD estimation method (Welch)
 \item \textbf{Features} are computed and compared to recent measurements. If there is an statistically significant change the whole summary is send, otherwise keepalive notification is send.
 \item Possible local communication between sensors to pre-compute clustering information
 \item Database stores history of measurements
 \item \textbf{Diagnosis panel runs clustering} with introduction of annotations to notify the operator about observed fault and imminent failure of the machine.
 \end{enumerate}
+
+Nároky na hardvér ako výstup analýzy - koprocesor (výpočet) - inštruckčná sada, real time odozva, ramka pri oknách
 

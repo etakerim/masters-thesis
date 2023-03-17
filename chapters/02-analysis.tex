@@ -1,58 +1,240 @@
 \chapter{Problem analysis}
 
-\section{Physics of rotating machines}
-
-	\subsection{Vibration fault types}
-	There are a few methods of machinery fault identification in vibrational signals based on domain expertise. Data points can be viewed in the time domain and frequency domain. Either as individual stationary profiles obtained during the short duration in the time of measurement, or multiple spaced-out observations with the intent to highlight the long-term trend, e.g. shown in a waterfall plot \cite{ziaran_technicka_2013}. The descriptor variable can be any meaningful statistical quantity, e.g. peak-to-peak, RMS, crest factor, kurtosis, which can be applied to recorded samples or frequency bands.  
-
-Mechanical faults manifest themselves in the vibration signal at various frequencies. In the low-frequency range (up to 1 kHz) shaft's unbalance, misalignment, bend, crack, and mechanical looseness is present. High frequencies (up to 16 kHz or more) contain bearings faults and gear faults. 
-
-Under fault-free circumstances, shaft speed appears as the strongest frequency component. In case of shaft and gear imbalance or damage, synchronous multiples of shaft frequency (harmonics) are amplified. When rub, bad drive belts and chains, or looseness is occurring in the machine then sub-synchronous harmonics or even non-synchronous frequencies appear \cite{mohanty_machinery_2015}.  Therefore it is useful to rescale the horizontal axis to RPM or orders of rotational speed. Complementary methods of fault symptom identification are phase and orbital analysis \cite{scheffer_practical_2004}.
-
-	\subsection{Band saw anatomy}
 
 \section{Condition monitoring}
 
-	\subsection{Maintenance strategies}
-	% Reactive, Proactive, Predictive
+What are predicted variables - result of diagnoses
+\begin{itemize}
+\item - Presence of the Fault
+\item Type of fault present (different characteristics - e.g. frequency content)
+\item Remaining Useful Life (time until failure) - machines of the same type and different degradation curves
+\end{itemize}
 
-	\subsection{Technical standards}
-	The maintenance procedure usually involves data acquisition cards inside handheld devices with accelerometer sensor probes then mounted firmly to the machine frame by either screwing in, magnets or wax \cite{ziaran_technicka_2013}. The probe placement in axial and perpendicular radial directions is standardized in ISO 20816. The severity of vibrations is mostly assessed in units of velocity ($mm/s$), but acceleration ($m/s^2$) and displacement ($\mu m$) are also used. Based on the observed vibration intensity and one of the four classes of machines (I, II, III, IV) by output power and size, zones (A, B, C, D) for accepted levels are proposed. It is customary to establish operational limits in the form of alarms and trips \cite{iso_20816}. 
+\textbf{Remainig useful life models} (RUL) - is the expected life or usage time remaining before the machine requires repair or replacement.
+\url{https://www.mathworks.com/help/predmaint/ug/rul-estimation-using-rul-estimator-models.html}
+\begin{itemize}
+\item Similarity - run to failure history of similiar machines in database
+\item Degradation - known failure threshold (warning, alert threshold)
+\item Survival  - life-span of components and correlated variables
+\end{itemize}
 
-Standard ISO 13373 categorizes three types of vibration monitoring systems: permanent, semi-permanent, and mobile. More importantly, a structured diagnostic approach is developed here complete with recommendations for formalizing diagnostic techniques \cite{iso_13373}. The next step is the signal analysis with the use of proper units and transformations is the subject of the ISO 18431 \cite{iso_18431}. 
-	
-	\subsection{Sensor placement}
+
+\cite{jung_vibration_2017}
+\begin{itemize}
+\item Indirect Measurement: indirect and approximate measurement over the vibration phenomenon of the target equipment.
+\item Noisy and Unaligned Observations: well aligned / may contain huge amount of noise.
+\item Variance on Initial Status: initial status of the target equipment different from each other.
+\item Diversity on Lifetime model: the usage and lifetime model -  number of unknown and external factors.
+\end{itemize}
+
+\subsection{Maintenance strategies}
+Difference between fault (degrating performace of the machine - higher friction and power consumption) and failure (machine is unusable). \cite{mohanty_machinery_2015} (picture)
+\begin{itemize}
+\item Reactive - run equipment until failure occurs - low stakes operation. Failure can have negative economic impact or can damage adjacent parts
+\item Preventive - predetermined schedule when assets are diagnosed and repairs are made. Crutial to set appropiate maintanance interval. Good parts are replaced before they are completely worn out, preventing critical failure, but creating unneccesary waste. Sometimes faults are not detected soon enough.
+\item Predictive - model of expected lifetime, warns about unexpected faults before they become too serious and before affecting the machine.
+\end{itemize}
+
+Wear process curve \cite{mohanty_machinery_2015} Bath tub curve (page 10)
+\begin{itemize}
+	\item Initial - large roughness
+	\item Normal - contact area fomred
+	\item Severe - high friction
+\end{itemize}
+
+Rotordynamics (chapter 4) (p. 29)  - p.97 - Fault types, p.127 - faults in electric motors
+
+In order to understand, and correctly diagnose the vibratory characteristics of rotating machinery, it is essential for the machinery diagnostician to understand the physics of dynamic motion. This includes the influence of stiffness and damping on the frequency of an oscillating mass — as well as the interrelationship between frequency, displacement, velocity, and acceleration of a body in motion. \cite{eisenmann_machinery_1997}
+\begin{itemize}
+\item Forced Vibration Mechanism
+	\begin{itemize}
+	\item Mass Unbalance
+	\item Misalignment
+	\item 	Shaft Bow
+	\item Gyroscopic
+	\item Gear Contact
+	\item Rotor Rubs
+	\item Electrical Excitations
+	\item External Excitations
+	\end{itemize}
+\item Free Vibration Mechanism
+	\begin{itemize}
+	\item Oil Whirl
+	\item Oil or Steam Whip
+	\item  Internal Friction
+	\item Rotor Resonance
+	\item Structural Resonances
+	\item Acoustic Resonances
+	\item Aerodynamic Excitations
+	\item Hydrodynamic Excitations
+	\end{itemize}
+\end{itemize}
+
+\subsection{Vibration fault types}
+There are a few methods of machinery fault identification in vibrational signals based on domain expertise. Data points can be viewed in the time domain and frequency domain. Either as individual stationary profiles obtained during the short duration in the time of measurement, or multiple spaced-out observations with the intent to highlight the long-term trend, e.g. shown in a waterfall plot \cite{ziaran_technicka_2013}. The descriptor variable can be any meaningful statistical quantity, e.g. peak-to-peak, RMS, crest factor, kurtosis, which can be applied to recorded samples or frequency bands.
+
+Mechanical faults manifest themselves in the vibration signal at various frequencies. In the low-frequency range (up to 1 kHz) shaft's unbalance, misalignment, bend, crack, and mechanical looseness is present. High frequencies (up to 16 kHz or more) contain bearings faults and gear faults.
+
+Under fault-free circumstances, shaft speed appears as the strongest frequency component. In case of shaft and gear imbalance or damage, synchronous multiples of shaft frequency (harmonics) are amplified. When rub, bad drive belts and chains, or looseness is occurring in the machine then sub-synchronous harmonics or even non-synchronous frequencies appear \cite{mohanty_machinery_2015}.  Therefore it is useful to rescale the horizontal axis to RPM or orders of rotational speed. Complementary methods of fault symptom identification are phase and orbital analysis \cite{scheffer_practical_2004}.
+
+\begin{itemize}
+\item Bearing faults - vibration on each rotation of rolling elements, CFC (characteric fault frequencies with impulse
+\item Rotor bar faults - current will not flow - forces diffrent on both sides of rotor
+\item Eccentricity Faults - uneven air gap between stator rotor
+\item Misalignment - parralel / angular
+\item Cavitation - pumps
+\item Gearbox fault -broken teeth
+\end{itemize}
+measuring vibration with current, thermal, flux is improvement, +acoustic elminited (detect similiar faults)
+vibration is better alone, then other methods alone (80 vs. <60%)
+ \cite{goel_methodology_2022}
+
+\subsection{Technical standards}
+The maintenance procedure usually involves data acquisition cards inside handheld devices with accelerometer sensor probes then mounted firmly to the machine frame by either screwing in, magnets or wax \cite{ziaran_technicka_2013}. The probe placement in axial and perpendicular radial directions is standardized in ISO 20816. The severity of vibrations is mostly assessed in units of velocity ($mm/s$), but acceleration ($m/s^2$) and displacement ($\mu m$) are also used. Based on the observed vibration intensity and one of the four classes of machines (I, II, III, IV) by output power and size, zones (A, B, C, D) for accepted levels are proposed. It is customary to establish operational limits in the form of alarms and trips \cite{iso_20816}.
+
+Standard ISO 13373 categorizes three types of vibration monitoring systems: permanent, semi-permanent, and mobile. More importantly, a structured diagnostic approach is developed here complete with recommendations for formalizing diagnostic techniques \cite{iso_13373}. The next step is the signal analysis with the use of proper units and transformations is the subject of the ISO 18431 \cite{iso_18431}.
+
+ISO-10816 Vibration Severity Chart
+Typical faults produce unusual low-frequency vibrations (10 to 1000 Hz).
+Imbalances, misalignments and looseness are recorded at frequencies up to 300 Hz.
+
+\paragraph{Sensor placement}
 
 \section{Feature engineering}
-	Feature selection vs. extraction
-	
-	\subsection{Signal denoising and filtering}
-	Blind source separation, PCA, ICA
-	
-	\subsection{Time-frequency features}
-	Time Synchronous Averaging of Real FFT
-	vs. FastCWT - Synchrosqueezing
-	
-	\subsection{Harmonics identification}
-	Cepstrum + Harmonic Product Spectrum + Peak identification
-	
-	\subsection{Feature importance ranking}
-	
-\section{Semi-supervised learning in diagnostics}
-	Label propagation	
-	
-	\subsection{Clustering techniques}
-	BIRCH, DBSCAN, SVM
-	
-	\subsection{Sketch streaming algorithms}
-	
+\subsection{Feature extraction}
+Statistical features in Time-domain (and correlation to blade wear) \cite{zhuo_research_2022} \cite{zheng_feature_2018}
+\begin{itemize}
+	\item 	Root mean square (0.98)
+	\item Mean (0.17)
+	\item Amplitude (0.81)
+	\item Kurtosis (0.042)
+	\item Peak to peak (0.463)
+	\item Signal strength (0.119)
+	\item Standard deviation (0.908)
+	\item Peak value (0.488)
+	\item Shape factor (0.007)
+	\item Skewness (0.118)
+	\item Avearge signal level (0.46)
+	\item Crest factor (0.056, spikeness of the signal - rms/amplitude)
+\end{itemize}
+Selection according to high correlation (graph: sawn-trough section vs feature)
+Features in time domain with high correlaction: RMS, Standard deviation, Amplitude
+
+Statistical features in Frequency domain (PSD analysis) r >= 0.8 db3 analysis
+\begin{itemize}
+	\item 	Root mean square (0.402)
+	\item Mean (0.497)
+	\item Peak frequency (0.670)
+	\item Kurtosis (0.852)
+	\item Peak to peak (0.076)
+	\item Standard deviation (0.799)
+	\item Peak value (0.787)
+	\item Shape factor (0.851)
+	\item Skewness (0.819)
+	\item Frequency centroid (0.775)
+\end{itemize}
+skewness (PSD\_S), kurtosis (PSD\_k), and shape factor (PSD\_Sf),
+centroid frequency (FFT\_fc), wavelet packet energy entropy (WPD\_EP) = 0.85
+- The WPD energy E8, E10, and E12
+- Energy ratios P8 and P13 of frequency bands 8 and 13
+
+Spectral features \cite{peeters_large_2004} - 1. Spectral shape description
+\begin{itemize}
+\item Coherence function - correlation between two signals PSD
+\item  Spectral centroid - barycenter of the spectrum (weighted mean of the frequencies present in the signal, with their magnitudes as the weights)
+\item Spectral spread
+\item Spectral skewness
+\item Spectral kurtosis
+\item Spectral slope - comupted with linear regression - amount of decresing of the spectral amplitude
+\item Spectral roll-off - 95\% of the signal energy is contained below this frequency
+\item 2. Temporal variation of spectrum - spectral flux - correlation of normalized cross-correlation between two succesive amplitude spectra
+\end{itemize}
+
+Harmonic features
+\begin{itemize}
+\item Fundamental frequency  - Maximu likelihood algorithm
+\item Noisiness - ratio - energy of noise to the total energy
+\item Inharmonicity - energy weighted difference of the spectral components from the multiple of fundamental frequency
+\item Harmonic Spectral Deviation - deviation of amplite harmonics peaks from global spectral envelope
+\end{itemize}
+
+\textbf{Harmonic peak feature} - \cite{jung_vibration_2017}- group of pairs of significant peaks’ value and frequency in PSD. Harmonic peak distance Dij
+
+\begin{itemize}
+\item Standardization - Min-max scaler, Standard scaler (clustering - feature have different scales)
+\item Transformation - Log transformation, Box-Cox
+\end{itemize}
+
+major drawbacks of PSD
+\begin{itemize}
+	\item PSD is a highdimensional feature (i.e., 1024 dimensions in our case) that often generates singular matrix = regression algorithms.
+	\item PSD feature is unreliable due to a large random fluctuation in their amplitudes over frequency due to measurement noise inherent in MEMS sensor.
+\end{itemize}
+
+
+\subsubsection{Signal denoising and filtering}
+Blind source separation, PCA, ICA
+vibration analysis tools:
+\begin{itemize}
+\item ICA (independent component analysis),
+\item TFA (time-frequency analysis),
+\item ED (energy distribution) and
+\item CD (change detection)
+\end{itemize}
+
+\subsubsection{Time-frequency features}
+The PSD is the overall expectation of the AE signal. It needs to be calculated by estimation methods. The estimation of the power spectrum is realized by Welch method (cite)
+
+Time Synchronous Averaging of Real FFT
+vs. FastCWT - Synchrosqueezing
+
+\subsubsection{Harmonics identification}
+Cepstrum + Harmonic Product Spectrum + Peak identification
+
+
+\subsection{Feature selection}
+Feature importance ranking of Numeric features - Filtering
+\begin{itemize}
+\item High correlation with predictor - band saw blade width of flank face --- to signal statistics
+\item Low correlation (Decorrelation) among predictors themselves - if they are correlated they produce same response
+\item ANOVA with F-Test - Variance of the feature - high variance - is high response
+\item Linearly dependent features are a waste of space and computation power because the information could have been encoded in much fewer features. \cite{zheng_feature_2018} - solve by PCA
+\end{itemize}
+
+Vibration levels are dependent on the type of work (load) of the machine (cite)
+\begin{itemize}
+\item \textbf{Sawing process database}: it contains basic information such as sawing machine tools model, band saw blade model, sawing parameters, and the material and size of the workpiece to match the relevant online monitoring model.
+\item \textbf{Online monitoring model database}: it stores online monitoring models of band saw blade wear based on different sawing processes.
+\end{itemize}
+
+\section{Diagnostics techniques}
+\url{https://scikit-learn.org/stable/modules/outlier_detection.html#outlier-detection}
+\subsection{Novelty detection}
+\textbf{Fault or no fault} - anomaly detection solutions - unsupervised \cite{torres_automatic_2022}. mean shift clustering algorithm
+\begin{itemize}
+\item Robust Covariance  (Mahalanobis distance)
+\item One-class SVM with non-linear kernel (RBF) - classifying new data as similar or different to the training set
+\item Local outlier factor - local density deviation of a given data point with respect to its neighbours
+\item Isolation forest
+\end{itemize}
+
+\textbf{Types of faults - clustering}
+\begin{itemize}
+\item BIRCH
+\item DBSCAN - density based params:
+	minPts (the minimum number of data points that need to be clustered together for an area to be considered high-density)
+	eps (the distance used to determine if a data point is in the same area as other data points).
+\item OPTICS - better DBSCAN -  clusters in data of varying density
+\end{itemize}
+
+\subsection{Label propagation in semi-supervised learning}
+
+Transductive Support vector machine(TSVM),
+Label Propagation Algorithm(LPA)
+
 \section{IoT in Industry 4.0}
+	Wireless protocols limitation: IEEE 802.11, IEEE 802.15.4e, OpenThread
+	Power consumption
+	Devices and sensors
 
-	\subsection{Microcontrollers}
-	% ARM Cortex
-
-	\subsection{Wireless protocols}
-	% IEEE 802.11, IEEE 802.15.4e - IoT Mesh protocols: WirelessHART, ISA100.11a, OpenThread
-	% Formats: CoAP + CBOR
-
-Cite \cite{sample}.
+	The Fig. 1 shows a generalist architecture supported in the context of Industry 4.0, fault detection systems in electrical machines based on vibration analysis  The Operational Technology (OT) and Information Technology (IT) parts were aligned to design an Industrial Control System (ICS) in the laboratory, for acquiring, controlling and monitoring the operating status of rotating machines, producing reports, automatic alerts and recommending actions to take as a prescriptive maintenance system. \cite{torres_automatic_2022}
