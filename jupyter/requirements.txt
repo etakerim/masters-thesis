@@ -1,9 +1,11 @@
 # workon DP
 numpy==1.23.1
+seaborn
+ipywidgets
+statsmodels==0.13.5
 tqdm
 scipy==1.10.0
 scikit-learn==1.2.1
-scikit-fuzzy==0.4.2
 pandas==1.5.3
 PyWavelets==1.4.1
 matplotlib==3.6.3
