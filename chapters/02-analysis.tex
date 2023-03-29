@@ -83,12 +83,25 @@ reaction-based, time-based, or condition-based maintenance
 - During operation, machines give out information or signals in the form of noise, vibration, temperature, lubricating oil condition, quality and quantity of the motor current drawn, and the like
 - Once the faults have been detected and diagnosed, the next question is how long the machine will last in the present condition or what is the remaining useful life (RUL) of the machine under observation.
 
-Wear process curve \cite{mohanty_machinery_2015} Bath tub curve (page 10)
+Wear process curve Bath tub curve (page 10)
 \begin{itemize}
 	\item Initial - large roughness
 	\item Normal - contact area fomred
 	\item Severe - high friction
 \end{itemize}
+
+p.11 - Failure Modes Effects and Criticality Analysis (FMECA) FMECA is a methodology widely used in the industry to identify and analyze all potential failure modes of the various parts of a system
+p.30 - Simple Rigid Rotor-Disc System (Jeffcott rotor) - shaft that rotates and is supported at two ends by bearings with disc
+p.26 - machines are designed so that the system’s natural or resonance frequencies are not close to the machine’s operating speed.
+p.93 - In a majority of the rotating machinery, vibration monitoring is preferred. This is due to the fact that every dynamic machine component will manifest itself in the measured vibration response of the machine at its characteristic frequencies. Bearing Coupling, Motor, Mechanical drive
+p.93 - vibrations at any location should be measured in three mutually perpendicular directions. Simultaneous measurement of the vibration in three directions can be done using a triaxial accelerometer. It  is always desirable to record the rotating speed of the  shafts at the instant that vibration measurements are  done, because all the predominant frequencies in the vibration spectra are related to the rotating speeds of the shaft
+p.97 - Eccentric rotors occur when the geometric center of the rotor does not coincide with the center line through the support bearings. crack growth rate is determined by the famous Paris equation, which depends on the material type and type of loading
+Unbalance is due to a net uneven distribution of the mass of a rotating component about its axi
+p. 101 - looseness manifests as high levels of impulsive vibrations in the time domain. The typical frequency domain characteristics of looseness in rotating machines is the presence of vibration peaks at fractional harmonics of the rotational speed and their harmonics.
+
+p. 216 Appendix A1: Vibration-Based Machinery Fault Identification
+Shaft/Rotor Unbalance , Misalignment, Looseness, Rub, Crack, Bearings Journal, Rolling Element, Fan/Blowers, Pulley/Belt, Electrical Motor
+Appendix A2: Vibration Severity Levels
 
 Rotordynamics (chapter 4) (p. 29)  - p.97 - Fault types, p.127 - faults in electric motors
 
@@ -183,11 +196,18 @@ The maintenance procedure usually involves data acquisition cards inside handhel
 
 Standard ISO 13373 categorizes three types of vibration monitoring systems: permanent, semi-permanent, and mobile. More importantly, a structured diagnostic approach is developed here complete with recommendations for formalizing diagnostic techniques \cite{iso_13373}. The next step is the signal analysis with the use of proper units and transformations is the subject of the ISO 18431 \cite{iso_18431}.
 
-ISO-10816 Vibration Severity Chart
+ISO-10816 Vibration Severity Chart (include table)
+
+
 Typical faults produce unusual low-frequency vibrations (10 to 1000 Hz).
 Imbalances, misalignments and looseness are recorded at frequencies up to 300 Hz.
 
-\paragraph{Sensor placement}
+\subsection{Sensor placement}  
+- Frequency Limitations Resulting from Mounted Resonance of an Accelerometer, Jack D. Peters
+- Axial, Radial (Standard)
+- Mounting resonance is a direct result of lowering the accelerometers natural frequency and occurs as the result of reduced stiffness or increased mass. $f_n = \frac{1}{2\pi}\sqrt{\frac{k}{m}}$
+- Under ideal circumstances, the accelerometer mounting should provide total use of the transmission region
+p.4 - Probe tip (500 Hz), Curved surface magnet (2 kHz), Quick disconnect (6.5 kHz), Flat magnet (10 kHz), Adhesive mount (10 - 15 kHz), Stud mount (15 kHz)
 
 
 
@@ -200,8 +220,41 @@ Imbalances, misalignments and looseness are recorded at frequencies up to 300 Hz
 
 % -----------------------------------------------------------------------------------------------------------------------
 \section{Feature engineering}
+
+
 \subsection{Feature extraction}
+\cite{goumas_classification_2002}
+	- Mapping measurement sapce into feature space
+	- Pattern classification - partitioning feature space into decision subspaces
+	- Feature vector - point in N-dimensional feature space - assign to pattern class
+	- Classification of N-dimensional feature space with M classes may be viewed as a problem of defining hyperplanes to divide N-dimensional Euclidian space into M regions.
+	- Pattern recognition stages: measurements, feature extraction, classification
+	- Washing machines 500 Hz, 20 signals
+	- 8 measurement poinst - Vibrartion on lower part of machine is atenuated because of contant effect with ground - p.7
+	Types of machines in population:		
+		- z machines - no fault, 
+		- b machines - electric motor clamping screws problems
+		- p machines - counter weight distorted (loose, broken)
+	- Daubechies Wavelet function 4 (D4) with fifth-level decomposition FWT  - Detail coeficient (abrupt changes as local variations in coef.) and last-level approx. coef.
+	- Autocorrelation function from coeficients - p.8 -> Moving average filter
+	- S1, S2 result of moving average filtering on cD1, cD2 (DWT detail coeficients) 
+	- Karhunen–Loève transform - PCA transformsoriginal variables into new set of uncorrelated variables called Principal components (PCs) - p.9
+	- Bayesian classification, 87\% - Naive Bayes
+
+Aggarwal - Data clustering
+In feature selection, original subsets of the features are selected. In dimensionality reduction, linear combinations of features may be used in techniques such as principal component analysis in order to further enhance the feature selection effect. The advantage of the former is greater interpretability, whereas the advantage of the latter is that a lesser number of transformed directions is required for the representation process.
+
+Feature extraction - PCA on features to find most separation 
+	- Reduce dimensionality 
+	- Singular Value Decomposition (QR algorithm) - eigenvalue algorithm , 
+
+
+p.232 - Streams typically have massive volume, and it is often not possible to store the data explicitly on disk. Therefore, the data needs to be processed in a single pass, in which all the summary information required for the clustering process needs to be stored and maintained.
+
 Statistical features in Time-domain (and correlation to blade wear) \cite{zhuo_research_2022} \cite{zheng_feature_2018}
+
+p. 254 furthest point algorithm - local clustering at each node and merges these different clusters into a single global clustering at low communication cost.
+
 \begin{itemize}
 	\item 	Root mean square (0.98)
 	\item Mean (0.17)
@@ -219,8 +272,6 @@ Statistical features in Time-domain (and correlation to blade wear) \cite{zhuo_r
 Selection according to high correlation (graph: sawn-trough section vs feature)
 Features in time domain with high correlaction: RMS, Standard deviation, Amplitude
 
-
-Transform -> SVD vs. FFT vs. EMD
 Statistical features in Frequency domain (PSD analysis) r >= 0.8 db3 analysis
 \begin{itemize}
 	\item 	Root mean square (0.402)
@@ -259,12 +310,87 @@ Harmonic features
 \item Harmonic Spectral Deviation - deviation of amplite harmonics peaks from global spectral envelope
 \end{itemize}
 
-\textbf{Harmonic peak feature} - \cite{jung_vibration_2017}- group of pairs of significant peaks’ value and frequency in PSD. Harmonic peak distance Dij
+
+\cite{lagrange_robust_2010}
+measure the \textbf{spectral flatness} of the ratio between the observations (the peaks) with respect to the model (the spectral envelope)
+
+
+\cite{jung_vibration_2017}
+\textbf{Harmonic peak feature} - 
+- RUL estimation - Harmonic peak distance is score from baseline - create probability density functions (with Recursive RANSAC regression algorithm - because of noisy distribution) of zones A,  BC, D
+and cut on transition to zone D (around >0.21 Peak distance)
+- group of pairs of significant peaks’ value and frequency in PSD (p, f)
+- Distance is euclidian based - closest peak frequency and value
+- Harmonic peak distance - compare baseline harmonic peak feature (20 peaks - points where its first order differential changes from positive to negative-  from smooth spectrum by 16 point Hann window) 
+
+
+\cite{li_fault_2019}
+p.8 - rolling element bearing equation mechanics
+Detect bearing faults - impulses (transients)
+Maximum Correlated Kurtosis Deconvolution (MCKD)
+	- FIR filter maximizing the CK (Kurtosis) of the impulses - Result coeficients of the filter
+Empirical Wavelet Transform 
+	- address the mode mixing or over-estimation phenomenon of the EMD
+	- EWT divides the spectrum into several portions, and each portion corresponds to a mode centered at the specific frequency and compact support, such as AM-FM signal
+Algorithm MKCD-EWT
+	- De-noise the signal by MCKD.
+	- Spectrum segmentation. Calculate the envelope curve of the amplitude spectrum of the de-noising signal.
+	- Signal decomposition. Design the wavelet filter banks
+	- IMF (Intrinsic Mode Function) selection. Calculate the kurtosis of each sub-signal
+	- Feature extraction. Calculate the squared envelope spectrum and \textbf{teager energy operator} spectrum of the chosen mode
+- Highest kurtosis values of these modes IMF1 - 4 in the largest IMF
+
+Teager-Kaiser operator (TKEO)
+Teager Energy Operator (TEO)
+$x(t)  = (dx/dt)^2+ x(t)(d^2x/dt^2) $
+$[x[n]] = x^2[n] + x[n - 1]x[n + 1]$
+
+
+\cite{yu_concentrated_2020}
+- spectral kurtosis (SK) method, synchrosqueezing transform (SST)
+- Transient-extracting operator (TEO) - from Dirac delta
+- transient-extracting transform (TET)
+$ TEO(t, \omega) = \delta(t − t_0(t, \omega))$
+$ Te(t, \omega) = G(t, \omega) \cdot TEO(t, \omega) $ 
+
+\subsection{Power spectral density segmentation}
+
+Denoising
+SNR - The traditional approach to calculating SNR is to measure the average Active level, subtract the average Inactive
+level, and divide that result by the peak level of noise witnessed on the Inactive level. 
 
 \begin{itemize}
+\item Shift mean - remove by averaging filter
 \item Standardization - Min-max scaler, Standard scaler (clustering - feature have different scales)
 \item Transformation - Log transformation, Box-Cox
+\item Adaptive Noise Canceling -  least mean squares (LMS) filter - stocahstic signals
+\item ICA (independent component analysis) - FastICA, JADE - denoising from enviroment - Same as Adaptive Noise Cancelation, 		- exploitation of the spatial diversity provided by many sensors and is the fundamental basis of BSS. finding an estimate S (n) of the sources X (n) by adapting an unknown separating function which leads to independence of S (n). 
+	- instantaneous model can hold when the structure under investigation has a high rigidity and a small size. aim of the problem; i.e., to "nd a linear transformation, which relies on independent components (sources) contributing to the observations of a mixture of them
+	- In short, the BSS problem cannot be solved by using only second order statistics because independence is a stronger condition than uncorrelation.
+	- real recordings, it is very diffcult to measure the separation quality. Here, prior knowledge about the sources was used; that is, harmonic frequencies in relation to the mechanical components as well as the signals recorded on each source separately in the real environment (the reference).
+	- 20000 samples were considered for each frequency channel to perform separation (fs = 500 Hz) -> 40 s
+\item TSA - 
+	- TSA and show that noise reduction is 1/sqrt(number of revolutions). 
+	- The third topic examines TSA techniques when no tachometer signal is available. 
+	- it allows the vibration signature of the gear under analysis to be separated from other gears and noise sources in the gearbox
+	- phase information can be provided through a n per revolution tachometer signal (such as a Hall sensor or optical encoder) or though demodulation of gear mesh signatures	
+	
+	\cite{bechhoefer_review_2009}
 \end{itemize}
+
+\begin{itemize}
+\item Averaging - Time Synchronous Averaging, Welch method
+\item TFA (time-frequency analysis) - Real FFT
+\item, Empirical Mode Decomposition na Intrinsic Modes - EMD/EEMD - Each IMF represents a narrow band frequency - amplitude modulation that is often related to a specific physical process (mode mixing phenomenon),\cite{wang_computational_2014}
+
+\item SST - originally introduced in the context of audio signal analysis and is shown to be an alternative to EMD -  \cite{herrera_applications_2014}
+
+\item Fast CWT
+\item Synchrosqueezing - SST - extension of the wavelet transform incorporating elements of empirical mode decomposition and frequency reassignment techniques
+\item EWT 
+\item Peak identification, Spectral Envelope
+\end{itemize}
+
 
 major drawbacks of PSD
 \begin{itemize}
@@ -272,27 +398,13 @@ major drawbacks of PSD
 	\item PSD feature is unreliable due to a large random fluctuation in their amplitudes over frequency due to measurement noise inherent in MEMS sensor.
 \end{itemize}
 
-\cite{lagrange_robust_2010}
-measure the \textbf{spectral flatness} of the ratio between the observations (the peaks) with respect to the model (the spectral envelope):
 
 
-\subsubsection{Signal denoising and filtering}
-PCA on features to find most separation - Singular Value Decomposition (QR algorithm) - eigenvalue algorithm , 
-ICA - FastICA to separate sources
-vibration analysis tools:
-\begin{itemize}
-\item ICA (independent component analysis),
-\item TFA (time-frequency analysis),
-\item ED (energy distribution) and
-\end{itemize}
 
-\subsubsection{Time-frequency features}
-The PSD is the overall expectation of the AE signal. It needs to be calculated by estimation methods. The estimation of the power spectrum is realized by Welch method (cite)
-Time Synchronous Averaging of Real FFT vs. FastCWT - Synchrosqueezing
 
-\subsubsection{Harmonics identification}
-Cepstrum (for  gearboxes)
-Peak identification
+
+
+
 
 
 \subsection{Feature selection}
@@ -303,6 +415,28 @@ Feature importance ranking of Numeric features - Filtering
 \item ANOVA with F-Test - Variance of the feature - high variance - is high response
 \item Linearly dependent features are a waste of space and computation power because the information could have been encoded in much fewer features. \cite{zheng_feature_2018} - solve by PCA
 \end{itemize}
+
+Feature selection (for classification) - SelectKBest
+\begin{itemize}
+	\item Variance threshold
+	\item Pearson correlation coeficient
+	(Filter methods:)
+	\item ANOVA F-value
+	\item Mutual information (MI) - Information Gain
+	\item Fisher's score
+	\item Spectral Feature Selection (SPEC) algorithm
+\end{itemize}
+		-  selects subset of highly discriminant features. In other words, it selects features that are capable of discriminating samples that belong to different classes.
+		- Unlabeled data poses yet another challenge in feature selection. In such cases, defining relevancy becomes unclear. However, we still believe that selecting subset(s) of features may help improve unsupervised learning, 
+		- With the existence of a large number of features, learning models tend to overfit and their learning performance degenerates
+p.30 - However, feature selection is superior in terms of better readability and interpretability since it maintains the original feature values in the reduced space, 
+while feature extraction transforms the data from the original space into a new space with lower dimension, which cannot be linked to the features in the original space.
+Feature selection is: filter model, wrapper model, embedded model, hybrid model
+
+Feature selection algorithms fall into one of the three categories: 
+- subset selection -  returns a subset of selected features identified by the index of the feature 
+- feature weighting- returns weight corresponding to each feature (generalization of subset selection  0 - 1) ;
+- hybrid of subset selection and feature weighting - returns a ranked subset of features.
 
 Vibration levels are dependent on the type of work (load) of the machine (cite)
 \begin{itemize}
@@ -328,7 +462,7 @@ multi class classification - dynamic
 
 \subsection{Novelty detection}
 \textbf{Fault or no fault} - anomaly detection solutions - unsupervised \cite{torres_automatic_2022}. mean shift clustering algorithm
-\textbf{Types of faults - clustering} - Multimodal non-Gaussian multivariate probability distribution
+\textbf{Types of faults - clustering, classification} - Multimodal non-Gaussian multivariate probability distribution
 
 \begin{itemize}
 \item \textbf{DenStream} - (based on DBSCAN)  density based params: - continous regions of high density
@@ -356,8 +490,6 @@ Classification can be treated as a special case of estimating the joint density 
 The semi-supervised learning problem belongs to the supervised category, since the goal is to minimize the classification error, and an estimate of P(x) is not sought after
 
 \section{IoT in Industry 4.0}
-	Devices and sensors + Wireless protocols limitation: IEEE 802.15.4e, OpenThread
-	RAMI 4.0 \cite{torres_automatic_2022}
+	Devices and sensors + Wireless protocols limitation: IEEE 802.15.4e, OpenThread \cite{torres_automatic_2022}
 	
-
 \url{https://riverml.xyz/0.15.0/}
