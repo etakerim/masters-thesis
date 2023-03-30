@@ -1,0 +1,483 @@
+## Condition monitoring
+
+### thomson_theory_1993
+
+- All bodies possessing mass and elasticity are capable of vibration. Thus, most engineering machines and structures experience vibration to some degree, and their design generally requires consideration of their oscillatory behavior. 
+- s.58 - rotor unbalance 
+- Chapter 12 (Classical methods) - The exact analysis for the vibration of systems of many degrees of freedom is generally difficult and its associated calculations are laborious. Many DOF - the results beyond the first few normal modes are often unreliable and meaningless.
+- For this purpose, Rayleigh's method (fundamental frequency of multi-DOF systems) and Dunkerley's equation are of great value and importance. In many vibrational systems, we can consider the mass to be lumped. A shaft transmitting torque with several pulleys along its length is an example. 
+- Holzer devised a simple procedure for the calculation of the natural frequencies of such a system. Holzer's method was extended to beam vibration by Myklestad and both methods have been matricized into a transfer matrix procedure by Pestel.
+
+### ziaran_technicka_2013
+- p.36 - Regular measurement of mechanical oscilatory motion we can find out beginning of the fault (or future failure) and monitor its progress. Method of trend tracking - extrapolation.
+- p.40 - normal level, level indicating significant change, level coresponding to fix
+- p.50 - the total magnitude of the oscillation can be compared with reference values set by norms or defined for each type of the machine.
+- p.54 - oscillation measurement allows us to quantify dynamic load capacity of mechanical systems a its analysis.
+- p.100 - principles of oscillation measurement - choice of sensor type, exclusion of errors caused by resonance, placement and direction of the sensor, mounting of acceleration sensor, the influence of the environment
+- p.110 - types of signals - periodic, quasiperiodic, nonstationary
+- p.114 - transmission of the oscillation signal through the environment - through discontinuity and construction
+- p.139 - signal averaging - linear, exponencial, peak based
+- p.148 - kurtosis - high kurtosis means more extreme values - peaks 
+- p. 153 - Vibroacustic diagnosis is one of the most important methods of early identification of component faults
+- p.165 - severity levels for vibrartion amplitudes (same as in ISO standard). 
+- p.178 - reference mask
+- p.185 - overview of root causes of machine faults - imbalance, misalignment,  resonance, excentricity, loosnessnes, 
+- p.243 - displacement, speed, acceleration
+- p.253 - Quanitative evaluation criteria - band A, B, C, D
+- p.256 - warning, alarm
+- p.261 - characteristics of typical faults
+- The descriptor variable can be any meaningful statistical quantity, e.g. peak-to-peak, RMS, crest factor, kurtosis, which can be applied to recorded samples or frequency bands.
+
+
+### davies_techniques_2012
+- p.36 - Condition monitoring is much more than a maintenance scheduling tool. Condition monitoring is thus a management technique that uses the regular evaluation of the actual operating condition of plant equipment, production systems and plant management functions, to optimize total plant operation. The output of a condition monitoring programme is data. Until action is taken to resolve the deviations or problems revealed by the programme, plant performance cannot be improved
+- p.40 - This data is compared to either a baseline reading taken from a new machine or to vibration severity charts to determine the relative condition of the machine. Normally an unfiltered broadband measurement that provides the total vibration energy between 10 and 10000 Hertz (Hz) is used
+- p.38 - Condition monitoring utilizing vibration signature analysis for example is predicated on two basic facts: 
+- 'All common failure modes have distinct vibration frequency components that can be isolated and identified.'
+-  'The amplitude of each distinct vibration component will remain constant unless there is a change in the operating dynamics of the machine train.'
+- p. 269 - Whenever vibration occurs, there are actually four forces involved that determine the characteristics of the vibration. These forces are: 1. the exciting force, such as unbalance or misalignment; 2. the mass of the vibrating system; 3. the stiffness of the vibrating system; 4. the damping characteristics of the vibrating system.
+- p. 294 - Even machines in the best of condition will have some vibration and noise associated with their operation due to minor defects. It is therefore important to remember that:
+	 1. every machine will have a level of vibration and noise which is regarded as inherent normal; 
+	 2. when machinery noise and vibration increase or become excessive, some mechanical defect or operating problem is usually the reason; 
+	 3. each mechanical defect generates vibration and noise in its own unique way.
+- p. 300 -machinery vibration signatures taken in the horizontal, vertical and axial directions at each bearing point on the machine; imbalance will show up predominantly in the horizontal or vertical directions, whereas misalignment will reveal relatively high amplitudes in the axial direction.
+- p. 301 
+- When selecting the measurement parameter for analysis, there are two factors to consider. First, why is the reading being taken? Secondly, what is the frequency of the vibration?
+- For general machinery analysis, use velocity whenever possible. Amplitude readings in velocity are directly comparable to severity without the need to cross refer amplitude with frequency. Where vibration frequencies are very low (approximately below 600 CPM
+- p. 308 - The crest factor, defined as the ratio of the peak to RMS levels, has been proposed as a trending parameter as it includes both parameters (Braun, 1980). However, investigations by the author have shown that this parameter usually increases marginally with incipient failure, and subsequently decreases due to the gradually increasing RMS value typical of progressive failure. Quite often, the trend recorded by this parameter has been found to be similar to another time domain parameter, the Kurtosis factor
+- p.312 Kurtosis - sensitive to failure in rolling element bearings (Dyer and Stewart, 1978). However, an independent evaluation of this technique (Mathew and Alfredson, 1984) has shown that high Kurtosis values would only be obtained if the original time waveform was of an impulsive nature
+- p.326 - evaluate changes occurring in the signature spectrum is to form a spectral mask. This is derived from the baseline signature, plus an allowable tolerance limit (Randall, 1981a)
+
+### What are predicted variables - result of diagnoses
+- Presence of the Fault
+- Type of fault present (different characteristics - e.g. frequency content)
+- Remaining Useful Life (time until failure) - machines of the same type and different degradation curves
+
+### Remainig useful life models} (RUL) 
+- is the expected life or usage time remaining before the machine requires repair or replacement.
+- https://www.mathworks.com/help/predmaint/ug/rul-estimation-using-rul-estimator-models.html
+
+- Similarity - run to failure history of similiar machines in database
+- Degradation - known failure threshold (warning, alert threshold)
+- Survival  - life-span of components and correlated variables
+
+
+### jung_vibration_2017
+- Indirect Measurement: indirect and approximate measurement over the vibration phenomenon of the target equipment.
+- Noisy and Unaligned Observations: well aligned / may contain huge amount of noise.
+- Variance on Initial Status: initial status of the target equipment different from each other.
+- Diversity on Lifetime model: the usage and lifetime model -  number of unknown and external factors.
+
+
+### mohanty_machinery_2015
+- Difference between fault (degrating performace of the machine - higher friction and power consumption) and failure (machine is unusable). (picture)
+reaction-based, time-based, or condition-based maintenance
+
+- **Reactive** - run equipment until failure occurs - low stakes operation. Failure can have negative economic impact or can damage adjacent parts
+- **Preventive** - predetermined schedule when assets are diagnosed and repairs are made. Crutial to set appropiate maintanance interval. Good parts are replaced before they are completely worn out, preventing critical failure, but creating unneccesary waste. Sometimes faults are not detected soon enough. industrial average life statistics, such as Mean Time To Failure (MTTF),
+- **Predictive** - model of expected lifetime, warns about unexpected faults before they become too serious and before affecting the machine.
+
+
+- During operation, machines give out information or signals in the form of noise, vibration, temperature, lubricating oil condition, quality and quantity of the motor current drawn, and the like
+- Once the faults have been detected and diagnosed, the next question is how long the machine will last in the present condition or what is the remaining useful life (RUL) of the machine under observation.
+
+Wear process curve Bath tub curve (page 10)
+- **Initial** - large roughness
+- **Normal** - contact area fomred
+- **Severe** - high friction
+
+
+- p.11 - Failure Modes Effects and Criticality Analysis (FMECA) FMECA is a methodology widely used in the industry to identify and analyze all potential failure modes of the various parts of a system
+- p.30 - Simple Rigid Rotor-Disc System (Jeffcott rotor) - shaft that rotates and is supported at two ends by bearings with disc
+- p.26 - machines are designed so that the system’s natural or resonance frequencies are not close to the machine’s operating speed.
+- p.93 - In a majority of the rotating machinery, vibration monitoring is preferred. This is due to the fact that every dynamic machine component will manifest itself in the measured vibration response of the machine at its characteristic frequencies. Bearing Coupling, Motor, Mechanical drive
+- p.93 - vibrations at any location should be measured in three mutually perpendicular directions. Simultaneous measurement of the vibration in three directions can be done using a triaxial accelerometer. It  is always desirable to record the rotating speed of the  shafts at the instant that vibration measurements are  done, because all the predominant frequencies in the vibration spectra are related to the rotating speeds of the shaft
+- p.97 - Eccentric rotors occur when the geometric center of the rotor does not coincide with the center line through the support bearings. crack growth rate is determined by the famous Paris equation, which depends on the material type and type of loading
+Unbalance is due to a net uneven distribution of the mass of a rotating component about its axi
+- p. 101 - looseness manifests as high levels of impulsive vibrations in the time domain. The typical frequency domain characteristics of looseness in rotating machines is the presence of vibration peaks at fractional harmonics of the rotational speed and their harmonics.
+
+- p. 216 Appendix A1: Vibration-Based Machinery Fault Identification
+Shaft/Rotor Unbalance , Misalignment, Looseness, Rub, Crack, Bearings Journal, Rolling Element, Fan/Blowers, Pulley/Belt, Electrical Motor
+Appendix A2: Vibration Severity Levels
+
+- Rotordynamics (chapter 4) (p. 29)  - p.97 - Fault types, p.127 - faults in electric motors
+
+- Campbell diagram, Bode plot, forced spring-mass-damper system
+
+- In order to understand, and correctly diagnose the vibratory characteristics of rotating machinery, it is essential for the machinery diagnostician to understand the physics of dynamic motion. This includes the influence of stiffness and damping on the frequency of an oscillating mass — as well as the interrelationship between frequency, displacement, velocity, and acceleration of a body in motion.
+- p.395 - Common malfunction   F = ma, torque, $$F_centrifugal = m * r(deviation) * RPM^2$$, $$v = v_0 + \int a$$
+- The synchronous, or running speed, or fundamental, or 1X motion of a rotating element is an inherent characteristic of every machine. It should be recognized that all machines function with some level of residual unbalance. The radial forces from an eccentric element will vary with the speed squared as described by expression
+
+- **SYNCHRONOUS RESPONSE (p.395)** - physically impossible to produce a perfectly straight and concentric rotor.vibration response is inversely proportional to the restraint or stiffness when the applied force is held constant
+- **MASS UNBALANCE (p.398)** - Mass unbalance represents the most common type of synchronous excitation on rotating machinery. Every rotor consists of a shaft plus a series of integral disks. high dimensional tolerances, a residual unbalance is present in each element. Centrifugal force
+- **BENT OR BOWED SHAFT (p.400)** - Bent rotors and shaft bows represent another major class of synchronous 1X motion. It was previously mentioned that all machine parts contain some finite amount of residual unbalance. In a similar manner, all assembled horizontal rotors (and some vertical rotors), will exhibit varying degrees of rotor bows.
+- **ECCENTRICITY  (p.406)** - Large machine elements or high rotational speeds are the most susceptible to high forces due to an eccentric element. many motor problems only appear under load.
+- **SHAFT PRELOADS (p.410)** - The presence of various types of unidirectional forces acting upon the rotating mechanical system is a normal and expected characteristic of machinery. Just as residual unbalance, rotor bows, and component eccentricity are inherent with the assembly of rotating elements, the presence of shaft preloads are an unavoidable part of assembled mechanical equipment. Gravitational preloads
+- **RESONANT RESPONSE (p.416)** - Machines and structures all contain natural frequencies that are essentially a function of stiffness and mass. f = sqrt(k/m) lowest order resonant frequency. For more complex mechanical systems an entire family of resonant responses must be addressed. 
+
+The range of natural frequencies may vary from 60 CPM (1 Hz) for the foundation and support systems, to 1,800,000 CPM (30,000 Hz) for turbine blade The actual number of system natural frequencies may vary from 20 to 50 or more. Campbell diagram  -  natural frequencies (or eigenfrequencies)
+
+#### Rotodynamics
+$$ \mathbf{M} \frac{\partial^2 \mathbf{q}(t)}{\partial t^2} + (\mathbf{C} + \mathbf{G})\frac{\partial\mathbf{q}(t)}{\partial t} + (\mathbf{K} + \mathbf{N})\mathbf{q}(t) = \mathbf{f}(t) $$
+
+ - M is the symmetric Mass matrix
+ - C is the symmetric damping matrix
+ - G is the skew-symmetric gyroscopic matrix
+ - K is the symmetric bearing or seal stiffness matrix
+ - N is the gyroscopic matrix of deflection for inclusion of e.g., centrifugal elements.
+- in which q is the generalized coordinates of the rotor in inertial coordinates and f is a forcing function, usually including the unbalance. axially symmetric rotor rotating at a constant spin speed $\Omega$. The gyroscopic matrix G is proportional to spin speed $\Omega$. The general solution to the above equation involves complex eigenvectors which are spin speed dependent.
+- **ROTOR RUBS (p.440)**- The physical contact between rotating elements and stationary machine parts can generate a variety of rub conditions In the frequency domain, the intermittent rub looks like a loose bearing housing with integer fractions of rotative speed (e.g., X/2, X/3, or X/ 4) plus a string of fractional frequencies (e.g. 3X/2, 5X/2, 7X/2, etc.)
+- **CRACKED SHAFT** -Machines that are subjected to frequent startups and shutdowns appear to be more susceptible to shaft cracks due to the increased number of cycles through the rotor resonance(s), plus the process heating and cooling. Cracks may originate at high stress points such as the square corners
+- p.704 - maintenance activities may be categorized as either reaction-based, time-based, or condition-based maintenance
+
+Machinery Diagnostic Methodology (s.747)
+	- Diagnostic objectives - solving the problem
+	- Mechanical inspection - hands on examination of the machinery
+	- DATA ACQUISITION AND PROCESSING - requires the assembly of the proper transducers and test instrumentation. ata acquired is really a function of the specific machine, the associated problem, and the individual test plan
+	- Data interpretation - summary and correlation of all pertinent data acquired during the project. This includes the mechanical configuration, process and maintenance history, field testing data, plus any supportive calculations or analytical models
+	
+The 30,000 horsepower gas turbine behaves quite differently from a similarly rated steam turbine. Hence, the data must be interpreted in accordance with the physical characteristics of the particular machine type and the operating environment. One approach is to view the data in terms of normal behavior for a particular machine type, and then look for the abnormalities in response characteristics.
+
+
+
+### eisenmann_machinery_1997
+- Forced Vibration Mechanism
+	- Mass Unbalance
+	- Misalignment
+	- Shaft Bow
+	- Gyroscopic
+	- Gear Contact
+	- Rotor Rubs
+	- Electrical Excitations
+	- External Excitations
+- Free Vibration Mechanism
+	- Oil Whirl
+	- Oil or Steam Whip
+	- Internal Friction
+	- Rotor Resonance
+	- Structural Resonances
+	- Acoustic Resonances
+	- Aerodynamic Excitations
+	- Hydrodynamic Excitations
+
+
+### popescu_blind_2010
+- The analysis of the behavior of such signals reveals that the most of the changes that occur are either changes in the mean level, or changes in spectral characteristics. In this framework, the problem of segmentation between ‘‘homogenous” part of the signals (or detection of changes in signals) arises more or less explicitly
+- the key for their common success resides in the proper design of the statistical criteria according to which separation is forced
+- It can be noted a moving of the spectra to the low frequency area, with increased values of the PSD, after the fault produced
+
+
+- Vibration fault types
+There are a few methods of machinery fault identification in vibrational signals based on domain expertise. Data points can be viewed in the time domain and frequency domain. Either as individual stationary profiles obtained during the short duration in the time of measurement, or multiple spaced-out observations with the intent to highlight the long-term trend, e.g. shown in a waterfall plot 
+
+Mechanical faults manifest themselves in the vibration signal at various frequencies. In the low-frequency range (up to 1 kHz) shaft's unbalance, misalignment, bend, crack, and mechanical looseness is present. High frequencies (up to 16 kHz or more) contain bearings faults and gear faults.
+
+Under fault-free circumstances, shaft speed appears as the strongest frequency component. In case of shaft and gear imbalance or damage, synchronous multiples of shaft frequency (harmonics) are amplified. When rub, bad drive belts and chains, or looseness is occurring in the machine then sub-synchronous harmonics or even non-synchronous frequencies appear \cite{mohanty_machinery_2015}.  Therefore it is useful to rescale the horizontal axis to RPM or orders of rotational speed. Complementary methods of fault symptom identification are phase and orbital analysis \cite{scheffer_practical_2004}.
+
+
+- Bearing faults - vibration on each rotation of rolling elements, CFC (characteric fault frequencies with impulse
+\item Rotor bar faults - current will not flow - forces diffrent on both sides of rotor
+- Eccentricity Faults - uneven air gap between stator rotor
+- Misalignment - parralel / angular
+- Cavitation - pumps
+- Gearbox fault -broken teeth
+
+measuring vibration with current, thermal, flux is improvement, +acoustic elminited (detect similiar faults)
+vibration is better alone, then other methods alone (80 vs. <60%)
+ 
+### goel_methodology_2022
+
+\subsection{Technical standards}
+The maintenance procedure usually involves data acquisition cards inside handheld devices with accelerometer sensor probes then mounted firmly to the machine frame by either screwing in, magnets or wax \cite{ziaran_technicka_2013}. The probe placement in axial and perpendicular radial directions is standardized in ISO 20816. The severity of vibrations is mostly assessed in units of velocity ($mm/s$), but acceleration ($m/s^2$) and displacement ($\mu m$) are also used. Based on the observed vibration intensity and one of the four classes of machines (I, II, III, IV) by output power and size, zones (A, B, C, D) for accepted levels are proposed. It is customary to establish operational limits in the form of alarms and trips \cite{iso_20816}.
+
+Standard ISO 13373 categorizes three types of vibration monitoring systems: permanent, semi-permanent, and mobile. More importantly, a structured diagnostic approach is developed here complete with recommendations for formalizing diagnostic techniques \cite{iso_13373}. The next step is the signal analysis with the use of proper units and transformations is the subject of the ISO 18431 \cite{iso_18431}.
+
+ISO-10816 Vibration Severity Chart (include table)
+
+
+Typical faults produce unusual low-frequency vibrations (10 to 1000 Hz).
+Imbalances, misalignments and looseness are recorded at frequencies up to 300 Hz.
+
+### Sensor placement  
+- Frequency Limitations Resulting from Mounted Resonance of an Accelerometer, Jack D. Peters
+- Axial, Radial (Standard)
+- Mounting resonance is a direct result of lowering the accelerometers natural frequency and occurs as the result of reduced stiffness or increased mass. $f_n = \frac{1}{2\pi}\sqrt{\frac{k}{m}}$
+- Under ideal circumstances, the accelerometer mounting should provide total use of the transmission region
+- p.4 
+	- Probe tip (500 Hz)
+	- Curved surface magnet (2 kHz)
+	- Quick disconnect (6.5 kHz)
+	- Flat magnet (10 kHz)
+	- Adhesive mount (10 - 15 kHz)
+	- Stud mount (15 kHz)
+
+
+
+
+
+
+
+
+
+### goumas_classification_2002
+
+- Mapping measurement sapce into feature space
+- Pattern classification - partitioning feature space into decision subspaces
+- Feature vector - point in N-dimensional feature space - assign to pattern class
+- Classification of N-dimensional feature space with M classes may be viewed as a problem of defining hyperplanes to divide N-dimensional Euclidian space into M regions.
+- Pattern recognition stages: measurements, feature extraction, classification
+- Washing machines 500 Hz, 20 signals
+- 8 measurement poinst - Vibrartion on lower part of machine is atenuated because of contant effect with ground - p.7
+	Types of machines in population:		
+	- z machines - no fault, 
+	- b machines - electric motor clamping screws problems
+	- p machines - counter weight distorted (loose, broken)
+
+- Daubechies Wavelet function 4 (D4) with fifth-level decomposition FWT  - Detail coeficient (abrupt changes as local variations in coef.) and last-level approx. coef.
+	- Autocorrelation function from coeficients - p.8 -> Moving average filter
+	- S1, S2 result of moving average filtering on cD1, cD2 (DWT detail coeficients) 
+	- Karhunen–Loève transform - PCA transformsoriginal variables into new set of uncorrelated variables called Principal components (PCs) - p.9
+	- Bayesian classification, 87\% - Naive Bayes
+
+
+Aggarwal - Data clustering
+In feature selection, original subsets of the features are selected. In dimensionality reduction, linear combinations of features may be used in techniques such as principal component analysis in order to further enhance the feature selection effect. The advantage of the former is greater interpretability, whereas the advantage of the latter is that a lesser number of transformed directions is required for the representation process.
+
+Feature extraction - PCA on features to find most separation 
+	- Reduce dimensionality 
+	- Singular Value Decomposition (QR algorithm) - eigenvalue algorithm , 
+
+
+p.232 - Streams typically have massive volume, and it is often not possible to store the data explicitly on disk. Therefore, the data needs to be processed in a single pass, in which all the summary information required for the clustering process needs to be stored and maintained.
+
+### zhuo_research_2022 
+### zheng_feature_2018
+Statistical features in Time-domain (and correlation to blade wear) 
+
+p. 254 furthest point algorithm - local clustering at each node and merges these different clusters into a single global clustering at low communication cost.
+
+- Root mean square (0.98)
+- Mean (0.17)
+- Amplitude (0.81)
+- Kurtosis (0.042)
+- Peak to peak (0.463)
+- Signal strength (0.119)
+- Standard deviation (0.908)
+- Peak value (0.488)
+- Shape factor (0.007)
+- Skewness (0.118)
+- Avearge signal level (0.46)
+- Crest factor (0.056, spikeness of the signal - rms/amplitude)
+
+Selection according to high correlation (graph: sawn-trough section vs feature)
+Features in time domain with high correlaction: RMS, Standard deviation, Amplitude
+
+Statistical features in Frequency domain (PSD analysis) r >= 0.8 db3 analysis
+- Root mean square (0.402)
+- Mean (0.497)
+- Peak frequency (0.670)
+- Kurtosis (0.852)
+- Peak to peak (0.076)
+- Standard deviation (0.799)
+- Peak value (0.787)
+- Shape factor (0.851)
+- Skewness (0.819)
+- Frequency centroid (0.775)
+
+skewness (PSD_S), kurtosis (PSD_k), shape factor (PSD_Sf),
+centroid frequency (FFT_fc), wavelet packet energy entropy (WPD_EP) = 0.85
+- The WPD energy E8, E10, and E12
+- Energy ratios P8 and P13 of frequency bands 8 and 13
+
+
+### peeters_large_2004
+Spectral features  1. Spectral shape description
+
+- Coherence function - correlation between two signals PSD
+- Spectral centroid - barycenter of the spectrum (weighted mean of the frequencies present in the signal, with their magnitudes as the weights)
+- Spectral spread
+- Spectral skewness
+- Spectral kurtosis
+- Spectral slope - comupted with linear regression - amount of decresing of the spectral amplitude
+- Spectral roll-off - 95\% of the signal energy is contained below this frequency
+- 2. Temporal variation of spectrum - spectral flux - correlation of normalized cross-correlation between two succesive amplitude spectra
+
+
+**Harmonic features**
+- Fundamental frequency  - Maximu likelihood algorithm
+- Noisiness - ratio - energy of noise to the total energy
+- Inharmonicity - energy weighted difference of the spectral components from the multiple of fundamental frequency
+- Harmonic Spectral Deviation - deviation of amplite harmonics peaks from global spectral envelope
+
+
+
+### lagrange_robust_2010
+measure the \textbf{spectral flatness} of the ratio between the observations (the peaks) with respect to the model (the spectral envelope)
+
+
+### jung_vibration_2017
+\textbf{Harmonic peak feature} - 
+- RUL estimation - Harmonic peak distance is score from baseline - create probability density functions (with Recursive RANSAC regression algorithm - because of noisy distribution) of zones A,  BC, D
+and cut on transition to zone D (around >0.21 Peak distance)
+- group of pairs of significant peaks’ value and frequency in PSD (p, f)
+- Distance is euclidian based - closest peak frequency and value
+- Harmonic peak distance - compare baseline harmonic peak feature (20 peaks - points where its first order differential changes from positive to negative-  from smooth spectrum by 16 point Hann window) 
+
+
+### li_fault_2019
+p.8 - rolling element bearing equation mechanics
+Detect bearing faults - impulses (transients)
+Maximum Correlated Kurtosis Deconvolution (MCKD)
+
+- FIR filter maximizing the CK (Kurtosis) of the impulses - Result coeficients of the filter
+- Empirical Wavelet Transform 
+	- address the mode mixing or over-estimation phenomenon of the EMD
+	- EWT divides the spectrum into several portions, and each portion corresponds to a mode centered at the specific frequency and compact support, such as AM-FM signal
+- Algorithm MKCD-EWT
+- De-noise the signal by MCKD.
+- Spectrum segmentation. Calculate the envelope curve of the amplitude spectrum of the de-noising signal.
+- Signal decomposition. Design the wavelet filter banks
+- IMF (Intrinsic Mode Function) selection. Calculate the kurtosis of each sub-signal
+- Feature extraction. Calculate the squared envelope spectrum and teager energy operator spectrum of the chosen mode
+- Highest kurtosis values of these modes IMF1 - 4 in the largest IMF
+
+- Teager-Kaiser operator (TKEO)
+- Teager Energy Operator (TEO)
+- $x(t)  = (dx/dt)^2+ x(t)(d^2x/dt^2) $
+- $[x[n]] = x^2[n] + x[n - 1]x[n + 1]$
+
+
+### yu_concentrated_2020
+- spectral kurtosis (SK) method, synchrosqueezing transform (SST)
+- Transient-extracting operator (TEO) - from Dirac delta
+- transient-extracting transform (TET)
+- $ TEO(t, \omega) = \delta(t − t_0(t, \omega))$
+- $ Te(t, \omega) = G(t, \omega) \cdot TEO(t, \omega) $ 
+
+\subsection{Power spectral density segmentation}
+
+#### Denoising
+- SNR - The traditional approach to calculating SNR is to measure the average Active level, subtract the average Inactive
+level, and divide that result by the peak level of noise witnessed on the Inactive level. 
+
+### bechhoefer_review_2009
+- Shift mean - remove by averaging filter
+- Standardization - Min-max scaler, Standard scaler (clustering - feature have different scales)
+- Transformation - Log transformation, Box-Cox
+- Adaptive Noise Canceling -  least mean squares (LMS) filter - stocahstic signals
+- ICA (independent component analysis) - FastICA, JADE - denoising from enviroment - Same as Adaptive Noise Cancelation, 		- exploitation of the spatial diversity provided by many sensors and is the fundamental basis of BSS. finding an estimate S (n) of the sources X (n) by adapting an unknown separating function which leads to independence of S (n). 
+	- instantaneous model can hold when the structure under investigation has a high rigidity and a small size. aim of the problem; i.e., to "nd a linear transformation, which relies on independent components (sources) contributing to the observations of a mixture of them
+	- In short, the BSS problem cannot be solved by using only second order statistics because independence is a stronger condition than uncorrelation.
+	- real recordings, it is very diffcult to measure the separation quality. Here, prior knowledge about the sources was used; that is, harmonic frequencies in relation to the mechanical components as well as the signals recorded on each source separately in the real environment (the reference).
+	- 20000 samples were considered for each frequency channel to perform separation (fs = 500 Hz) -> 40 s
+\item TSA - 
+	- TSA and show that noise reduction is 1/sqrt(number of revolutions). 
+	- The third topic examines TSA techniques when no tachometer signal is available. 
+	- it allows the vibration signature of the gear under analysis to be separated from other gears and noise sources in the gearbox
+	- phase information can be provided through a n per revolution tachometer signal (such as a Hall sensor or optical encoder) or though demodulation of gear mesh signatures	
+
+
+
+- Averaging - Time Synchronous Averaging, Welch method
+- TFA (time-frequency analysis) - Real FFT
+- Empirical Mode Decomposition na Intrinsic Modes - EMD/EEMD - Each IMF represents a narrow band frequency - amplitude modulation that is often related to a specific physical process (mode mixing phenomenon),\cite{wang_computational_2014}
+
+- SST - originally introduced in the context of audio signal analysis and is shown to be an alternative to EMD -  \cite{herrera_applications_2014}
+
+- Fast CWT
+- Synchrosqueezing - SST - extension of the wavelet transform incorporating elements of empirical mode decomposition and frequency reassignment techniques
+- EWT 
+- Peak identification, Spectral Envelope
+
+
+major drawbacks of PSD
+- PSD is a highdimensional feature (i.e., 1024 dimensions in our case) that often generates singular matrix = regression algorithms.
+- PSD feature is unreliable due to a large random fluctuation in their amplitudes over frequency due to measurement noise inherent in MEMS sensor.
+
+
+
+
+
+
+
+
+### zheng_feature_2018 - solve by PCA
+Feature importance ranking of Numeric features - Filtering
+- High correlation with predictor - band saw blade width of flank face --- to signal statistics
+- Low correlation (Decorrelation) among predictors themselves - if they are correlated they produce same response
+- ANOVA with F-Test - Variance of the feature - high variance - is high response
+- Linearly dependent features are a waste of space and computation power because the information could have been encoded in much fewer features. 
+
+
+##### Feature selection (for classification) - SelectKBest
+- Variance threshold
+- Pearson correlation coeficient (Filter methods:)
+- ANOVA F-value
+- Mutual information (MI) - Information Gain
+- Fisher's score
+- Spectral Feature Selection (SPEC) algorithm
+
+-  selects subset of highly discriminant features. In other words, it selects features that are capable of discriminating samples that belong to different classes.
+- Unlabeled data poses yet another challenge in feature selection. In such cases, defining relevancy becomes unclear. However, we still believe that selecting subset(s) of features may help improve unsupervised learning, 
+- With the existence of a large number of features, learning models tend to overfit and their learning performance degenerates
+p.30 - However, feature selection is superior in terms of better readability and interpretability since it maintains the original feature values in the reduced space, 
+while feature extraction transforms the data from the original space into a new space with lower dimension, which cannot be linked to the features in the original space.
+Feature selection is: filter model, wrapper model, embedded model, hybrid model
+
+Feature selection algorithms fall into one of the three categories: 
+- subset selection -  returns a subset of selected features identified by the index of the feature 
+- feature weighting- returns weight corresponding to each feature (generalization of subset selection  0 - 1) ;
+- hybrid of subset selection and feature weighting - returns a ranked subset of features.
+
+Vibration levels are dependent on the type of work (load) of the machine (cite)
+- **Sawing process database:** it contains basic information such as sawing machine tools model, band saw blade model, sawing parameters, and the material and size of the workpiece to match the relevant online monitoring model.
+- **Online monitoring model database**: it stores online monitoring models of band saw blade wear based on different sawing processes.
+
+
+
+
+
+
+
+
+
+
+
+% -------------------------------------------------------------------------------
+- Inbalanced data, Feature space
+- Scale  -  Normalize and log transform
+- multi class classification - dynamic 
+
+
+- Fault or no fault - anomaly detection solutions - unsupervised \cite{torres_automatic_2022}. mean shift clustering algorithm
+- Types of faults - clustering, classification} - Multimodal non-Gaussian multivariate probability distribution
+
+
+- **DenStream** - (based on DBSCAN)  density based params: - continous regions of high density
+	- minPts (the minimum number of data points that need to be clustered together for an area to be considered high-density)
+	- eps (the distance used to determine if a data point is in the same area as other data points). - compare to MAD. OPTICS for not same density.
+- **IForestASD - Isolation Forest Algorithm for Stream Data method** - isolation teqnique (map feature space to anomaly score) - how many uniform splits does it take before point is isolated (alone in group)
+- **Label propagation algorithm** - Temporal Label Propagation - Graph-Based Methods in semi-supervised learning (p.9)
+\end{itemize}
+
+
+
+
+### chapelle_semi-supervised_2006
+p.5
+- Semi-supervised smoothness assumption: If two points x1,x2 in a high-density region are close, then so should be the corresponding outputs y1,y2. 
+- Cluster assumption: If points are in the same cluster, they are likely to be of the same class.
+- The cluster assumption can be formulated in an equivalent way: Low density separation: The decision boundary should lie in a low-density region.
+- Manifold assumption: The (high-dimensional) data lie (roughly) on a low-dimensional manifold.
+- Consider as an example supervised learning, where predictions of labels y corresponding to some objects x are desired. Generative models estimate the density of x as an intermediate step, while discriminative methods directly estimate the labels.
+
+- Classification can be treated as a special case of estimating the joint density P (x,y), but this is wasteful since x will always be given at prediction time, so there is no need to estimate the input distribution. The terminology “unsupervised learning” is a bit unfortunate: the term density 1. 
+- We restrict ourselves to classification scenarios in this chapter estimation should probably be preferred. Traditionally, many techniques for density estimation propose a latent (unobserved) class variable y and estimate P (x) as mixture distribution
+
+- The semi-supervised learning problem belongs to the supervised category, since the goal is to minimize the classification error, and an estimate of P(x) is not sought after
+
+
+### torres_automatic_2022
+Devices and sensors + Wireless protocols limitation: IEEE 802.15.4e, OpenThread
+	
+\url{https://riverml.xyz/0.15.0/} 

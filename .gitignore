@@ -1,1 +1,4 @@
 build
+**/.ipynb_checkpoints
+*.backup
+*.bak
