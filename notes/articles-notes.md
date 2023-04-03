@@ -1,5 +1,8 @@
 ## Condition monitoring
 
+https://scikit-multiflow.github.io/
+https://riverml.xyz/
+
 ### thomson_theory_1993
 
 - All bodies possessing mass and elasticity are capable of vibration. Thus, most engineering machines and structures experience vibration to some degree, and their design generally requires consideration of their oscillatory behavior. 
@@ -344,8 +347,46 @@ Maximum Correlated Kurtosis Deconvolution (MCKD)
 - Teager-Kaiser operator (TKEO)
 - Teager Energy Operator (TEO)
 - $x(t)  = (dx/dt)^2+ x(t)(d^2x/dt^2) $
-- $[x[n]] = x^2[n] + x[n - 1]x[n + 1]$
+- $[x[n]] = x^2[n] + x[n - 1]x[n + 1]$ TKEO
+- When Ψc is applied to signals produced by a simple harmonic oscillator, e.g. a mass spring oscillator who’s equation of motion can be derived from the Newton’s Law - It can track the oscillator’s energy
 
+### A Novel Online Machine Learning Approach for Real-Time Condition Monitoring of Rotating Machines
+- These algorithms call **novelty detectors**: When we want to identify a machine's abnormal behavior in the real world, we do not have access to all its possible faults characteristics. So we need an algorithm that can**learn a machine's healthy behavior and discriminate any faults.**
+- Each machine has unique characteristics, and so this process should be done repeatedly for each machine which requires monitoring
+- These models can be trained exclusively by normal data of machines and identify any abnormalities in working conditions.
+- an autoencoder combined with a Long short-term memory (LSTM) neural network was used to extract features from raw vibration signals and detect anomalies in rotating machines
+- the network is first trained on highperformance and powerful computers and then flashed to MCUs as just matrices of numbers, which means that these libraries do not support on-device training
+- layer called TinyOL attached to the final layer of the autoencoder.
+- The MCU runs at 480 MHz and has 1 MB RAM and 2 MB Flash memory used to store the code.
+- (STM32H743ZI2) with ARM Cortex-M7 core, a digital 3axis accelerometer (LIS3DSH)
+- 1600-Hz sampling frequency and 16-bit resolution, and it has an onboard anti-aliasing filter with 800 Hz cut-off frequency. The Xbee module can send and receive data at 250,000 bps rate
+- Feature engineering is extracting useful information from raw data, and it is considered the cornerstone of successful anomaly detection. It is used to reduce data dimensionality and remove nullities in a data set.
+- The most prominent features are designed to reduce the dimension of the sample data and extract the most effective information from the raw vibration data of rotating machines - manual selection of features
+- time-frequency domain features are considered the best features when it comes to non-stationary signals 
+	- Short-Time Fourier Transform (STFT)
+	- Continuous Wavelet Transform (CWT)
+	- Discrete Wavelet Transform (DWC)
+	- **Wavelet Packet Decomposition (WPD)**
+- **Processing:** 
+	1. from each axis has 2048 sample points. 
+	2. the DC gain of each axes has removed by subtracting the mean of the array from each sample point. 
+	3. Subsequently, the total 29 features are extracted from each axis and stored in an array with a length of 87
+- **Time domain features**: (p.3)
+	+ Root Mean squared of signal (RMS)
+	+ Square root of the amplitude
+	+ Kurtosis value
+	+ Skewness Value
+	+ Peak-peak value
+	+ Crest factor
+	+ Impulse Factor
+	+ Margin Factor
+	+ Shape Factor
+	+ Kurtosis Factor
+- **Frequency domain features**:
+	+ Frequency center
+	+ RMS frequency
+	+ Root variance frequency
+- Common classification methods can not be used because their training requires labeled data from both faulty and healthy states of the machine, which is not available in most cases. In this situation, novelty detection algorithms are the best choice
 
 ### yu_concentrated_2020
 - spectral kurtosis (SK) method, synchrosqueezing transform (SST)
@@ -395,10 +436,227 @@ major drawbacks of PSD
 - PSD feature is unreliable due to a large random fluctuation in their amplitudes over frequency due to measurement noise inherent in MEMS sensor.
 
 
+### wang_computational_2014
+On the computational complexity of the empirical mode decomposition algorithm
+
+- EMD is a nonlinear and nonstationary time domain decomposition method.  adaptive, data-driven algorithm that decomposes a time series into multiple empirical modes - intrinsic mode functions (IMFs). 
+- EMD behaves as a dyadic filter bank
+- Each IMF represents a narrow band frequency–amplitude modulation
+- During the last decade, the EMD/EEMD was shown to be more effective than the traditional Fourier method in many problems
+- Intrinsic mode functions (IMFs) which are extracted via an iterative sifting process.
+	1. **local maxima and minima** of the signal  - extrema identification procedure The definition of a local maximum in the strict sense (highest between two points - brute force)
+	2. **extremes connected by cubic splines** to form the upper/lower envelopes. - for each point between two consecutive maxima upper envelope is constructed using a third order polynomial. - piecewise curve of third degree
+$$\tau_j = t_j - t_i$$
+$$x(t) = A_i \tau_j^3 + B_i \tau_j^2 + C_i \tau_j + D_i$$
+Find coeficients by system of equations - tridiagonal matrix solver
+	3. **average of the two envelopes** is then subtracted from the original signal.
+	4. This sifting process is then repeated several time
+
+- The result of the EMD is a decomposition of the signal y0(t) into the sum of the IMFs and a residue r(t).
+	$$ y_0(t) = \sum_{m=1}^{n_m}{c_m(t) + r(t)}$$
+- **EEMD***
+	1. generates an ensemble of data sets by adding different realizations of a white noise with finite amplitude ε to the original data.
+	2. EMD analysis is then applied to each data series of the ensemble. 
+	3. Finally, the IMFs are obtained by averaging the respective components in each realization over the ensemble.
+	
+
+### adikaram_non-parametric_2016
+
+- Non-parametric methods, also known as distribution-free methods, depend on fewer number of underlying assumptions - more robust methods
+- proposed technique determines **maxima and minima based on the relation of sum of terms in an arithmetic series**. 
+- The same relation was used as a non-parametric method (MMS: a method based on maximum, minimum, and sum) for finding outliers in linear relation and non-parametric linear fit identification method
+- This work focuses on modifying the methods of MMS for locating extrema in non-linear data series.
 
 
+### altaf_new_2022
+
+- The features obtained are later integrated with the different machine learning techniques to classify the faults into different categories.
+- healthy, outer race fault, inner race fault, and ball fault classes
+- **Features**: skewness, kurtosis, average, root mean square
+- The same features were then extracted from the second derivative of the time domain vibration signals
+- These feature vectors are finally fed into the **K- nearest neighbour**, **support vector machine** and **kernel linear discriminant analysis** for the detection and classification of bearing faults.
+- **reduction percentage** of more than **95% percent**
+- **average accuracy** of 99.13% using KLDA and 96.64% using KNN classifiers
+- Both the AE and vibration signals can effectively be used for the detection and localization of defects in rotating machinery. However, the A**E signal outperforms the vibration signal** in case early and preemptive detection is required and also in fault detection in low speed rotating machines due to the limited efficiency of vibration signals as compared to AE signals.
+- signals non-stationary in nature and are complicated to analyse due to the heavy background noise of industrial set up
+- **Kurtosis and its different variations**, such as kurtogram, spectral kurtosis, adaptive spectral kurtosis, and Short Term Fourier Transform (STFT) based kurtosis, have been used extensively by the research community for the analysis of vibration signals from rotating machinery;
+- **Convolutional Neural Networks (CNN)** with time domain vibration signals for fault diagnosis, with 96% accuracy on Case Western Reserve University (CWRU)
+- accuracy of 92% if the model trained on one machine is used for testing another machine
+- **Features:**
+	- statistical features of time domain signal, 
+	- statistical features of signal in Fourier domain 
+	- statistical features of signal’s Power Spectral Density
+	- statistical features:
+		- maximum value
+		- minimum value
+		- standard deviation
+		- mean
+		- median
+		- variance
+		- skewness
+		- kurtosis
+		- range
+		- Fisher Information Ratio
+		- Petrosian Fractal Dimension
+		- entropy.
++ The Average, Kurtosis, Skewness and Standard Deviation vectors of each domain were concatenated before giving to SVM, KNN and KLDA
+- Concealed component decomposition (CCD)
+
+- In oscillation detection methods with a supervised moving window, e.g., EMD, EEMD, and LMD, the longer window is mandatory to determine the reasonable vacillating component
+
+### Time and frequency domain scanning fault diagnosis method based on spectral negentropy and its application
+- https://www.mathworks.com/help/signal/ref/pkurtosis.html#mw_95d59e55-8d7b-4145-9009-6f9384f3fd9e
+- https://www.mathworks.com/help/signal/ref/kurtogram.html
+- Time-frequency domain scanning empirical spectral negentropy method (T-FSESNE)
+	+ The signal is filtered twice by EWT filter: 
+		1. the central frequencies of all resonance side bands are determined by using frequency-domain spectral negentropy
+		2. optimal bandwidth of the resonance side bands is determined by using time-domain spectral negentropy
+- Dyer and Stewart introduced **kurtosis** = sensitivity to instantaneous pulse
+- Spectral kurtosis (SK)
+- Fast kurtogram (FK) - extract the transient characteristics of vibration signals with STFT.
+- Because of sensitivity to instantaneous pulse:
+	- kurtosis is vulnerable to interference from single impulse signal 
+	- and irrelevant signal in low signal-to-noise ratio (SNR) background.
+- The accurate determination of the central frequency and bandwidth of the resonance frequency band is very important for a further envelope analysis.
+- Spectral kurtosis shortcomings:
+	- The decomposition results are influenced by monopulse signals. 
+	- Due to the unreasonable division of frequency band, the extracted sideband contains insufficient fault information.
+- New method:
+	+ the signal is filtered by the EWT scan filter to obtain all components 
+	- the average of their spectral negentropy is calculated, retaining components with negative entropy values greater than the mean, 
+	- taking the center frequency of these components as the center frequency of the resonant band
+	- The envelope spectrum of each component is calculated by Hilbert transform
+	- fault diagnosis is carried out according to the envelope spectrum of each component.
+- p.4 - kurtosis used in FK is susceptible to accidental shocks, which are very common in engineering signals
+- frequency-domain spectrum negentropy (FSNE)
+- time-domain spectrum negentropy (TSNE)
+- **The center frequency is f_ci with the bandwidth B_w.**
+
+- Empirical Wavelet Decomposition EWT is a new signal-processing algorithm to detect the different vibration modes based on the EMD method and wavelet analysis theory. 
+-It can effectively extract the different modes from a mixed vibration signal, by adaptively establishing an appropriate filter bank based on the Fourier spectrum.
 
 
+### Nearest Neighbor Classification for High-Speed Big Data Streams Using Spark
+- There are several possible approaches to learning from data streams.
+	1. Rebuilding the classifier whenever new data becomes available. 
+	2. Using a sliding window approach. 
+	3. Using an incremental or online learner.
+- Data streams are often characterized by a phenomenon called concept drift
+- Sliding window-based classifiers were designed primarily for drifting data streams, as they incorporate the forgetting mechanism in order to discard irrelevant samples and adapt to appearing changes 
+- Recent works in this area incorporate dynamic window size adjustment or usage of multiple windows.
+- It is worth noticing that some of popular classifiers can work in incremental or online modes, e.g., Naïve Bayes, neural networks, or nearest neighbor methods.
+- alleviate the k-NN search complexity. They range from metric trees (M-trees), which index data through a metric-space ordering; to locally sensitive hashing
+- M-tree [41] can be considered as one of the most important and simplest data structure in the spaceindexing domain.
+- http://mlwiki.org/index.php/Metric_Trees
+
+
+### Semi-supervised Learning of Naive Bayes Classifier with feature constraints
+- Semi-supervised learning methods (O. Chapelle and Zien, 2006) address the difficulties of integration of information contained in labeled data and unlabeled data. Though labeled data is scarce, unlabeled data is abundantly available
+- Kullback–Leibler divergence: https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence
+
+
+Wavelet decompostion (half tree - High pass (Detail coef), Low pass (Approx coef.)
+Wavelet packet transform (all subbands recursively) -> Calcultate Wavelet Energy / Entropy
+- Wavelets-based Feature Extraction: https://www.youtube.com/watch?v=fxfS0vSAsTA
+- https://en.wikipedia.org/wiki/Energy_(signal_processing)
+- https://math.stackexchange.com/questions/1086522/how-to-calculate-wavelet-energy
+- Entropy - every "suprise" we can expect
+
+### An Improved Empirical Wavelet Transform for Noisy and Non-Stationary Signal Processing
+- The EWT method includes three important steps: 
+	- getting the local maximum of the spectrum; 
+	- segmenting the spectrum by classifying boundaries; 
+	- establishing a wavelet filter group. Gilles utilizes the Littlewood-Paley and Meyer wavelets to construct the filter group
+- **PCHIP-EWT**
+	1. Obtain the noisy and non-stationary signal y(t), and acquire Fourier spectrum Y (f ) by the fast Fourier transform (FFT) algorithm.
+	2. Calculate the spectrum envelope of the K (f ) from the spectrum Y (f ) based on the PCHIP. In this method, the PCHIP =PIECEWISE CUBIC HERMITE INTERPOLATING POLYNOMIAL is able to make the Fourier spectrum Y (f ) more smooth
+	3. calculate spectrum envelope K (f )based on the PCHIP. Process the signal through the EWT.select the helpful sub-bands based on the LP and threshold λ.
+	4. Process the signal through the EWT.
+- https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.PchipInterpolator.html
+
+### Fault Detection of Bearing: An Unsupervised Machine Learning Approach Exploiting Feature Extraction
+
+- allowing to work with a reduced number of features, which results in: 
+	1. possibility of follow-up of features by specialists—assists in data visualization (given that some assets can present more than 100 features acquired in real time, which makes detailed monitoring of all impracticable); 
+	2. avoid introducing irrelevant or correlated features in machine learning models, which would result in a loss of learning quality and, consequently, a reduction in the success rate; 
+	3. reduced data storage space; and 
+	4. less computational time for training the models.
+- **Monitoring rotating machines has a great advantage over other research fields, which is prior knowledge of the behavior** and characteristics of the vast majority of machine failures.
+- Monitoring through the vibration signal is one of the non-invasive techniques that provide the greatest amount of information about the dynamic behavior of the asset
+- Stands out:
+	- it does not need to stop the asset to perform the measurement
+	- easy placement of the sensor for data acquisition (in the most common case of accelerometers);
+	- widespread knowledge about the characteristics of faults; 
+	- fast acquisition time (in most cases), enabling the monitoring of a greater amount of assets; and 
+	- it provides information about mechanical, electrical, and even structural conditions.
+- Features to detect faults in rotating machinery using vibration signals are commonly extracted from: 
+	- **Time domain:** mean, standard deviation, rms (root mean square), peak value, peak-topeak value, shape indicator, skewness, kurtosis, crest factor, clearance indicator, etc. 
+	- **Frequency domain:** mean frequency, central frequency, energy in frequency bands, etc. 
+	- **Time-frequency domain**: entropy are usually extracted by Wavelet Transform, Wavelet Packet Transform, and empirical model decomposition.
+	- https://www.mathworks.com/help/wavelet/ref/wentropy.html
+- The higher the number of features, the harder it gets to visualize the training set and then work on it. Sometimes, many of these features are correlated or redundant.
+- Techniques to **reduce the dimensionality of the data**: 
+	- Principal Component Analysis (PCA)
+	- t-distributed Stochastic Neighbor Embedding (t-SNE)
+	- Isometric Feature Mapping (ISOMAP)
+	- Independent Component Analysis (ICA)
+	- Neural Network Autoencoder (AE)
+- objective is to reduce the number of features by creating new representative ones and thus discarding the originals. The new set, therefore, should be able to summarize most of the information contained in the original set of features. 
+- The advantages are: 
+	- reduced data storage space; 
+	- less computational time for training the models; 
+	- better performance in some algorithms that do not work well in high dimensions; 
+	- reduction of correlated variables; 
+	- assistance with data visualization. 
+- Disadvantages: 
+	- loss of explainability of the features (when space transformation occurs)
+	- lack of representativeness of the problem under analysis.
+- An important parameter of anomaly detection approaches is the ability to summarize a multivariate system in just one indicator, called Anomaly Score (AS)
+- Isolation Forest (iForest or IF) is probably the most popular AD approach. It works well in high-dimensional problems that have a large number of irrelevant attributes, and in situations where a training set does not contain any anomalies.
+-**Methodology:**
+	1. Data Acquisition; 
+	2. Feature Extraction; 
+	3. Dimensionality Reduction; 
+	4. Fault detection: Anomaly Detection; 
+	5. Feature Trend Analysis
+- In case of bearing analysis, specific features are those that indicate the type of fault (BPFI, BPFO, and BSF) and the remaining features are those that indicate the presence of a defect.
+- evolution of the fault, new frequencies tend to appear in other bands, which can be noticed in the energy per sub band and in the wavelet frequency sub bands.
+
+
+### wagner_semi-supervised_2018
+Semi-Supervised Learning on Data Streams via Temporal Label Propagation
+- The labels are spread in the graph by a random walk process that moves through the unlabeled nodes until reaching a labeled node. 
+- The labeling computed by this process is known as the harmonic solution
+- Temporal Label Propagation (TLP), a streaming SSL algorithm
+- The short-circuit operator is a way to compress a large graph G into a much smaller graph H
+- nodes of interest called terminals, while preserving some global properties of G.
+- terminals as the most recent points on the stream,
+- Online SSL is a relatively new field that has generated considerable interest
+- **transduction vs. induction**
+	+ Most graphbased SSL algorithms are **transductive**, which means the unlabeled data is fully given to them in advance
+	+ Inductive algorithms can also label new test points. do not use the new points to learn how to label future points (goal of online SSL)
+- Graphs - weighted undirected
+- https://en.wikipedia.org/wiki/Laplacian_matrix
+- Offline - The input to the label propagation algorithm is a weighted undirected graph G = (V, E, w), in which a small subset of nodes Vl ⊂ V are labeled and the rest Vu ⊂ V are unlabeled
+- The weight of an edge (x, y) represents some measure of similarity between its endpoints.
+- The algorithm computes f_u (unlabeled fractional lables) by **minimizing the energy function of the graph** - is called the harmonic solution
+- Electrical network solution:
+	- View the similarity graph G as an electric network where every edge (x, y) is a resistor with conductance wx,y.
+	- Connect a +1V voltage source to all nodes in Vl labeled with 1
+	- a ground source (0V) to all nodes in Vl labeled with 0. 
+	- The potentials induced at the unlabeled nodes are equal to the harmonic solution.
+	- The short-circuit operator allows us to encode G into a smaller network G〈Vt〉 whose only nodes are the terminals.
+	- However, G〈Vt〉 can also be computed by a sequence of local operations, known as **star-mesh transforms**. This will be useful for the streaming setting. (offline: inverting a large Laplacian submatrix with Shur complement)
+		1. **Star**: Remove xo from G with its incident edges. 
+		2. **Mesh**: Every pair of points where x_o has junction replace with direct edges between neighbours - weight (w_(x-x0) w_(x′_x0)) / deg(xo). If (x, x′) is already in E then add the new weight to its current weight
+- The essence of a streaming algorithm is in maintaining a compressed representation of the stream, from which the desired output can still be computed
+- The challenge here is two-fold since the algorithm needs to not only compress the data, but also update the compressed representation as new points arrive.
+- https://en.wikipedia.org/wiki/Similarity_measure (Cosine similarity)
+- we should favor smoothness across temporally adjacent points.
+- Experimental Setting. **We use the standard RBF similarity, Sim(x, y) = exp(−‖x − y‖2/σ2).** We set σ = 0.1 for Incart-ECG, Daphnet-Gait, and CamVid and σ = 10 for Caltech10-101.
+- However, when there is no natural temporal ordering (such as with Caltech10-101 data), we did not observe an advantage over the other methods.
+- For example, on the Incart-ECG dataset, TLP can get to a 95% classification accuracy given only two labeled examples
+- **Shingling**. A useful technique when dealing with timeseries data is to group consecutive sequences (N -grams) of points into shingles. This lifts the data into a higher dimension N and allows for a richer representation of inputs.
 
 
 ### zheng_feature_2018 - solve by PCA
@@ -456,9 +714,28 @@ Vibration levels are dependent on the type of work (load) of the machine (cite)
 - **DenStream** - (based on DBSCAN)  density based params: - continous regions of high density
 	- minPts (the minimum number of data points that need to be clustered together for an area to be considered high-density)
 	- eps (the distance used to determine if a data point is in the same area as other data points). - compare to MAD. OPTICS for not same density.
-- **IForestASD - Isolation Forest Algorithm for Stream Data method** - isolation teqnique (map feature space to anomaly score) - how many uniform splits does it take before point is isolated (alone in group)
+- **Half-space Tree (IForestASD)** - isolation teqnique (map feature space to anomaly score) - how many uniform splits does it take before point is isolated (alone in group)
 - **Label propagation algorithm** - Temporal Label Propagation - Graph-Based Methods in semi-supervised learning (p.9)
 \end{itemize}
+- **k-NN** with Mahalanobis distance to class label with M tree (guity by association)
+- **Naive Bayes** (low-variance, high-bias) - classifiy based on probabilities (Multinomial Naive Bayes) - Features have to be indepent (they are not) - normal distribution
+- https://www.mathworks.com/campaigns/offers/next/choosing-the-best-machine-learning-classification-model-and-avoiding-overfitting.html
+- https://www.analyticsvidhya.com/blog/2017/09/naive-bayes-explained/
+- https://stats.stackexchange.com/questions/21822/understanding-naive-bayes?noredirect=1&lq=1
+
+Multi-class classification in semi-supervised manner (machinery faults in real-time)
+**Algorithm have to adapt to machine** - Transfer learning or learn on the way - may underfit
+Types of classification algorithms:     
+- Logistic Regression - needs training to fit S-curve
+- Naive Bayes
+- K-Nearest Neighbors
+- Decision Tree - needs training
+- Support Vector Machines - needs training
+- https://en.wikipedia.org/wiki/Bias%E2%80%93variance_tradeoff
+**The streaming setting in machine learning is called "online learning".**
+
+https://www.cms.waikato.ac.nz/~abifet/book/chapter_6.html
+Naive Bayes is a classification algorithm known for its low computational cost and simplicity. As an incremental algorithm, it is well suited for the data stream setting. However, it assumes independence of the attributes, and that might not be the case in many real data streams.
 
 
 
@@ -480,4 +757,12 @@ p.5
 ### torres_automatic_2022
 Devices and sensors + Wireless protocols limitation: IEEE 802.15.4e, OpenThread
 	
-\url{https://riverml.xyz/0.15.0/} 
+https://riverml.xyz/0.15.0/
+https://scikit-multiflow.github.io/
+
+
+
+#### Kernel Discriminant Analysis
+https://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/LI1/kda/index.html
+- pattern recognition problems, selecting an appropriate representation to extract the most significant features is crucially important. Principal Component Analysis (PCA) has been widely adopted to extract abstract features and to reduce dimensionality in many pattern recognition problems.
+- But the features extracted by PCA are actually "global" features for all pattern classes, thus they are not necessarily much representative for discriminating one class from others. Linear Discriminant Analysis (LDA) [2,3,9], which seeks to find a linear transformation by maximising the between-class variance and minimising the within-class variance

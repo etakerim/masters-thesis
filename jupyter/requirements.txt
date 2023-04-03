@@ -2,6 +2,7 @@
 numpy==1.23.1
 seaborn
 ipywidgets
+scikit-multiflow
 EMD-signal==1.4.0
 statsmodels==0.13.5
 tqdm
