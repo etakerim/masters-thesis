@@ -11,7 +11,7 @@ Instead of recording complete signals as is, a process should be devised that re
 only key descriptions based on vibrational signal specifics, namely different machine
 parts:
 
-1. Which time-frequency features can be extracted from vibrational signals to pro vide an accurate record of machinery faults?
+1. Which time-frequency features can be extracted from vibrational signals to provide an accurate record of machinery faults?
 2. What are the savings in transmission bandwidth when chosen signal features
 are used in comparison to raw sampled measurement or lossless compression
 techniques?

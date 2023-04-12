@@ -53,21 +53,12 @@ Part 1
 \item Potencial causes for faults (p. 45) - use in vibration fault types
 \end{itemize}
 
-
-
-
 \section{Feature engineering}
 Large domain knowledge with compared to other areas of machine learning (mechanics - physics)
 \subsection{Preprocessing}
 \begin{itemize}
 \item Detrending - DC removal filter
-\item Denoising 
-	\begin{itemize}
-	\item Gaussian smoothing filter 
-	\item Adaptive FIR filter with LMS algorithm
-	\item Wavelet thresholding with coif2 or db2
-	\end{itemize}
-\item Time synchronous averagings
+\item Time synchronous averaging
 \end{itemize}
 
 \subsection{Feature extraction}
@@ -84,6 +75,8 @@ Large domain knowledge with compared to other areas of machine learning (mechani
 \item RMS frequency
 \item Root variance frequency
 \item Spectral kurtosis / Fast kurtogram
+\item Harmonics (peaks)
+\item Spectral Envelope
 \item Harmonic spectral deviation \\
 ---
 \item Energy
@@ -94,9 +87,8 @@ Large domain knowledge with compared to other areas of machine learning (mechani
 \paragraph{Signal decompositions - sparse approximations}
 Matching pursuit algorithm optimalization problem
 \begin{itemize}
-\item FFT - Short Time Fourier Transform with Hamming window and Welch averaging
+\item FFT - Short Time Fourier Transform with Hamming window and Welch averaging (cite BP)
 \item CWT-SST - Synchrosqueezing Wavelet Transform (vs. Transient-extracting transform)
-\item EEMD - Ensemble Empirical Mode Decomposition - to IMF - mode mixing problem
 \item WPD - Wavelet Packet Decomposition  - to approximation and detail coef. (Fejer-Korovkin wavelet)
 \item EWT - Empirical Wavelet Transform - (Meyer wavelet) 
 \end{itemize}
@@ -124,21 +116,34 @@ Filter method - SelectKBest  in evaluation phase
 Idenification of faulty states in data streams in semi-supervised learning
 \subsection{Novelty detection}
 \begin{itemize}
+\item Local Outlier Factor, Local Correlation Integral (Anomaly score)
 \item DenStream (Density based clustering - DBSCAN)
 \item Half-space Trees (Isolation forest)
 \end{itemize}
 
 \subsection{Classification}
 \begin{itemize}
-\item kNN + Metric Tree (M-Tree for neighbourhood queries) + Mahalanobis distance / Cosine similarity
-\item Naive Bayes + Count-min sketch
-\item Label propagation (Temporal label propagation, LabelRankT) - RBF similarity
+\item kNN + Metric Tree (M-Tree for neighbourhood queries) + Mahalanobis distance / Cosine similarity /  RBF similarity
 \end{itemize}
 
 
 \section{Evaluation Datasets}
-\paragraph{MAFAULDA}
+(Pictures of machines)
+
+\paragraph{MAFAULDA}\\
+SpectraQuest's Machinery Fault Simulator (MFS) Alignment-Balance-Vibration (ABVT)
+50 kHz, 5 sec. recordings, Imbalance, Horizontal/Vertical misalignment, Bearings (Overhang / Underhang) - Inner, Outer, Cage
 
 \paragraph{CWRU}
+2 HP (1.492 kW) Reliance Electric motor
+Bearings - Inner, Outer
+12 kHz, 48 kHz
+fan and drive end bearings
+Fault diameters of 7 mils, 14 mils, 21 mils, 28 mils, and 40 mils (1 mil=0.001 inches) in diameter were introduced separately at the inner raceway, rolling element (i.e. ball) and outer raceway. 
+Faulted bearings were reinstalled into the test motor and vibration data was recorded for motor loads of 0 to 3 horsepower (motor speeds of 1797 to 1720 RPM).
+
+\paragraph{Rotating Shaft}
+Shaft -  unbalances of different sizes
+4 kHz
 
 \section{Sensor and microcontroller}
