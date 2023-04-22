@@ -157,7 +157,7 @@
 \emptypage
 
 %  Hlavná časť -----------------------------------------------------------------------
-\newgeometry{top=2.5cm, bottom=2.5cm, right=2.5cm, left=3.5cm}
+\newgeometry{top=2.5cm, bottom=3cm, right=2.5cm, left=3.5cm}
 
 % Titulný list
 \pagenumbering{roman}
@@ -188,11 +188,17 @@
 
 \input{chapters/01-introduction}
 
-% Ďaľšie kapitoly v zvlášť súboroch
-\input{chapters/02-analysis}
+\chapter{Problem analysis}
+In the problem analysis chapter we expore the feature extraction methods and machine learning algorithms for the fault diagnostics.
+The basis we build upon is the domain knowledge of the mechnical engineers about vibration signal measurement and their evaluation.
 
-\nocite{*}
-\printbibliography[heading=bibintoc, title={Literature}]
+\input{chapters/analysis/A-CdM}
+\input{chapters/analysis/B-Features}
+\input{chapters/analysis/C-Diagnostics}
+\input{chapters/analysis/D-Datasets}
+
+%\nocite{*}
+{\small \printbibliography[heading=bibintoc, title={Literature}]}
 
 %  Prílohy -----------------------------------------------------------------------
 \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}

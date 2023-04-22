@@ -1,0 +1,126 @@
+\section{Feature engineering}
+Large domain knowledge with compared to other areas of machine learning (mechanics - physics)
+\subsection{Preprocessing}
+\begin{itemize}
+\item Detrending - DC removal filter
+\item Time synchronous averaging
+\end{itemize}
+
+\subsection{Feature extraction}
+% Feature Engineering for Machine Learning
+\cite{zheng_feature_2018}
+% Feature Engineering and Selection: A Practical Approach for Predictive Models
+\cite{johnson_feature_2019}
+% A New Statistical Features Based Approach for Bearing Fault Diagnosis Using Vibration Signals
+\cite{altaf_new_2022}
+% A Novel Online Machine Learning Approach for Real-Time Condition Monitoring of Rotating Machines
+\cite{mostafavi_novel_2021}
+% Fault Detection of Bearing: An Unsupervised Machine Learning Approach Exploiting Feature Extraction and Dimensionality Reduction
+\cite{brito_fault_2021}
+% A large set of audio features for sound description
+\cite{peeters_large_2004}
+% Research on online intelligent monitoring system of band saw blade wear status based on multi‑feature fusion of acoustic emission signals
+\cite{zhuo_research_2022}  
+% Early Detection of Imbalance in Load and Machine In Front Load Washing Machines by Monitoring Drum Movement
+\cite{mohammadi_early_2020}
+% A Data Mining based Approach for Electric Motor Anomaly Detection Applied on Vibration Data
+\cite{egaji_data_2020}
+% Condition Monitoring with Vibration Signals
+\cite{nandi_condition_2019}
+
+% Vibration Analysis for IoT Enabled Predictive Maintenance
+\cite{jung_vibration_2017}
+
+\paragraph{Statistical measures}
+\begin{itemize}
+\item Standard Deviation
+\item Max. amplitude
+\item RMS amplitude
+\item Skewness
+\item Kurtosis \\
+---
+\item Spectral centroid
+\item RMS frequency
+\item Root variance frequency
+\item Spectral kurtosis / Fast kurtogram
+\item Harmonics (peaks) 
+	% Comparative Study of Various CFAR Algorithms for Non-Homogenous Environments
+	\cite{hatem_comparative_2018}
+	% Multi-Scale Peak and Trough Detection Optimised for Periodic and Quasi-Periodic Neuroscience Data
+	\cite{bishop_multi-scale_2018}
+	% Non-Parametric Local Maxima and Minima Finder with Filtering Techniques for Bioprocess
+	\cite{adikaram_non-parametric_2016}
+	% Identification of harmonics and sidebands in a finite set of spectral components
+	\cite{gerber_identification_2013}
+	% Evaluation of Threshold-Based Algorithms for Detection of Spectral Peaks in Audio
+	\cite{nunes_evaluation_2007}
+	% Statistical techniques to select detection thresholds for peak signals in ice-core data
+	\cite{karlof_statistical_2005}
+\item Spectral Envelope
+\item Harmonic spectral deviation \\
+---
+\item Energy
+\item Spectral negentropy
+	% Spectral negentropy and kurtogram performance comparison for bearing fault diagnosis
+	\cite{avoci_spectral_2020}
+\item TKEO - Teager-Kaiser energy operator
+	%Application of Teager–Kaiser Energy Operator in the Early Fault Diagnosis of Rolling Bearings
+	\cite{shi_application_2022}
+\end{itemize}
+
+\paragraph{Signal decompositions - sparse approximations}
+Matching pursuit algorithm optimalization problem
+\cite{song_mfbd_2021}
+\begin{itemize}
+\item FFT - Short Time Fourier Transform with Hamming window and Welch averaging
+	\cite{oulmane_automatic_2015}
+
+\item CWT-SST - Synchrosqueezing Wavelet Transform (vs. Transient-extracting transform) 
+	% The fast continuous wavelet transformation (fCWT) for real-time, high-quality, noise-resistant time–frequency analysis
+	\cite{arts_fast_2022}
+	% A Concentrated Time–Frequency Analysis Tool for Bearing Fault Diagnosis
+	\cite{yu_concentrated_2020}
+	% Applications of the synchrosqueezing transform in seismic time-frequency analysis
+	\cite{herrera_applications_2014}
+	
+\item WPD - Wavelet Packet Decomposition  - to approximation and detail coef. (Fejer-Korovkin wavelet)  	
+	% Wavelet Packet Feature Extraction for Vibration Monitoring		
+	\cite{yen_wavelet_2000}
+	% A wavelet approach to dimension reduction and classiﬁcation of hyperspectral data
+	\cite{wickmann_wavelet_2007}
+
+\item EWT - Empirical Wavelet Transform - (Meyer wavelet)
+	% On the computational complexity of the empirical mode decomposition algorithm
+	\cite{wang_computational_2014}
+	% Novel self-adaptive vibration signal analysis: Concealed component decomposition and its application in bearing fault diagnosis
+	\cite{tiwari_novel_2021}
+	% The MFBD: a novel weak features extraction method for rotating machinery
+	\cite{song_mfbd_2021}
+	% Fault Feature Extraction and Enhancement of Rolling Element Bearings Based on Maximum Correlated Kurtosis Deconvolution and Improved Empirical Wavelet Transform
+	\cite{li_fault_2019}
+	% An Improved Empirical Wavelet Transform for Noisy and Non-Stationary Signal Processing
+	\cite{zhuang_improved_2020}
+	% Time and frequency domain scanning fault diagnosis method based on spectral negentropy and its application
+	\cite{yonggang_time_2020}
+	% An Adaptive Spectrum Segmentation Method to Optimize Empirical Wavelet Transform for Rolling Bearings Fault Diagnosis
+	\cite{xu_adaptive_2019}
+\end{itemize}
+
+
+\subsection{Feature transformation}
+\begin{itemize}
+\item Principal Component Analysis (PCA)
+\item Log transformation (Box-Cox Transform) to normal distribution
+\item Normalization (min-max, standardize) 
+\end{itemize}
+
+\subsection{Feature selection}
+Filter method - SelectKBest  in evaluation phase
+\begin{itemize}
+\item Variance Threshold
+\item Pearson correlation
+\item ANOVA F-value
+\item Mutal information
+\item Fisher score
+\item Spectral feature selection algorithm (SPEC)
+\end{itemize} 

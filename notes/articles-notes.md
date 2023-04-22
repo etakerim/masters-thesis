@@ -766,3 +766,135 @@ https://scikit-multiflow.github.io/
 https://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/LI1/kda/index.html
 - pattern recognition problems, selecting an appropriate representation to extract the most significant features is crucially important. Principal Component Analysis (PCA) has been widely adopted to extract abstract features and to reduce dimensionality in many pattern recognition problems.
 - But the features extracted by PCA are actually "global" features for all pattern classes, thus they are not necessarily much representative for discriminating one class from others. Linear Discriminant Analysis (LDA) [2,3,9], which seeks to find a linear transformation by maximising the between-class variance and minimising the within-class variance
+
+
+
+## Common bandsaw problems
+
+### Guides and guide arms 
+You have to check and adjust the saw guides regularly. Check if they are worn out, and replace if necessary. Position guide arms as close to the work piece as possible.
+
+**Problems:**
+- **Band breakage** – guides are worn out or guide settings are too wide.
+- **Crooked sawing/cutting out of line/square** – guides are too far apart, worn out or poorly adjusted, guide arm loose.
+- **Vibration** – guides need adjusting.
+
+
+### Bandwheels 
+The band wheels have to be kept in good condition and properly aligned.
+
+**Problems:**
+- **Band breakage** – Band wheels worn or too small – try thinner bands
+- **Band slips on wheel** – Driving wheel is worn out
+
+
+### Chip Brush
+Check that the swarf brush is properly adjusted and change it regularly.
+
+**Problems:**
+- **Tooth breakage** – Swarf brush does not work; gullets filled 
+- **Rapid tooth wear** – Swarf brush does not work 
+
+
+### Band Tension
+The correct band tension is needed to get a straight cut. Measure with tensionmeter.
+
+**Problems:**
+- **Band breakage** – Band tension too high
+- **Crooked Sawing** – Band tension too low
+- **Vibration** – Band tension too low
+- **Band slips on wheel** – Band tension too low
+
+
+### Coolant / Cutting Fluid. Needed to lubricate and to cool.
+
+Check concentration with a Bahco refractometer. Use good coolant. It should reach the cut with low pressure and with generous flow
+
+**Problems:**
+- **Rapid tooth wear** – Too little coolant or incorrect concentration
+
+
+### Band Speed
+The band speed has to be chosen correctly. Check the band speed with a tachometer.
+
+**Problems:**
+- **Crooked sawing/cutting out of line/square** – Band speed too low 
+- **Rough surface finish** – Band speed too low 
+- **Rapid tooth wear** – Band speed too high
+- **Vibration** – Natural vibration, band speed is slightly high or low
+
+
+### Feed Rate
+The feed rate has to be chosen so that the teeth of the bandsaw blade can work properly
+
+**Problems:**
+- **Band breakage** – Feed rate too high
+- **Crooked sawing** – Feed rate too high
+- **Tooth breakage** – Feed rate too high
+- **Rough surface** – Feed rate too high
+- **Rapid tooth wear** – Feed rate too high
+- **Vibration** – Feed rate too high
+- **Band slips on wheel** – Feed rate too high
+
+
+### Tooth Pitch
+The selection of the right tooth pitch is just as important as choosing the right feed and speed
+
+**Problems:**
+- **Crooked sawing** – Tooth pitch too fine
+- **Tooth breakage** – Tooth pitch too fine Gullets filled 
+- **Rough surface** – Tooth pitch too coarse
+- **Rapid tooth wear** –  Tooth pitch too fine
+
+
+### Tooth Shape
+Every tooth shape has its ideal application
+
+**Problems:**
+- **Tooth breakage** – Tooth shape too weak
+- **Rapid tooth wear** – Wrong tooth shape selection
+- **Vibration** – Use combo
+
+ 
+### Running In
+A new bandsaw blade should be run in to obtain maximum bandsaw lifetime. Never saw in old kerf.
+
+**Problems:**
+- **Rough surface** – Band not properly run in
+- **Rapid tooth wear** – Band not properly run in
+- **Vibration** – Band not properly run in
+
+ 
+
+### Blade Life
+All blades wear out eventually. Look for signs of wear.
+
+**Problems:**
+- **Crooked sawing** – Blade worn out
+- **Rough surface** – Blade worn out
+- **Band slips on wheel** – Blade worn out
+
+
+### Surface
+A bad surface (scale) of the work piece will shorten the life of the blade. Lower the band speed.
+
+**Problems:**
+- **Rapid tooth wear** – Surface defects, i.e. scale, rust, sand
+
+
+### Clamping
+Securely clamp work pieces, especially when bundle cutting. Do not use bent or damaged work pieces.
+
+**Problems:**
+- **Tooth breakage** – Work piece moves
+- **Vibration** – Work piece not properly clamped
+
+
+
+
+
+
+
+
+
+
