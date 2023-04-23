@@ -890,6 +890,19 @@ Securely clamp work pieces, especially when bundle cutting. Do not use bent or d
 - **Vibration** – Work piece not properly clamped
 
 
+Davies
+As almost 80% of common rotating equipment problems are related to misalignment and unbalance, vibration analysis is an important tool that can be used to reduce or eliminate recurring machine problems.
+
+p.78 - Synchronous time averaging is an analysis technique used in locating sources that may be responsible for exciting vibration. This technique collects time waveforms synchronized to a 1× ‘marker’ pulse. These synchronous time waveforms are then averaged in the time domain, and the resultant frequency spectrum of this averaged waveform is displayed. Synchronous time averaging is used to measure vibrations directly and harmonically related to the turning speed of a specific component or shaft. Synchro
+
+The shaft on which the tachometer is located is the reference shaft.
+
+At times, 100–1000 averages are needed to identify vibration components related to the reference shaft.
+p.82 - Envelope
+
+p.100 - Faults
+
+
 
 
 
