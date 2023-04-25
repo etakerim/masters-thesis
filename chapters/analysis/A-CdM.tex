@@ -131,23 +131,28 @@ Criteria introduced to judge vibration severity are its absolute vibration magni
 
 The operational limits in the form of \emph{alarms} and \emph{trips} are usually established on the zone boundaries or close to them. Alarms are placed between zones B and C and provide a warning about reaching the threshold significant for noticeable change. Trips in between zones C and D urge immediate action or machine shut down.
 
+\textbf{ISO 13373-1:2002} delves into further nuances of vibration monitoring and expands on procedures outlined in the vocabulary of ISO 20186. According to the standard, the data collection operates in continuous or periodic observation modes which follow an event or intervals. Both designs can be permanently mounted, but in continuous, collection `multiplexing rate is sufficiently rapid so there is no significant data or trends lost'~\cite{noauthor_iso_2002}.  When channels are scanned successively with gaps between data points the system is known as `scanning'. 
 
-%TODO
-\paragraph{ISO 13373}
-% ISO 13373-1:2002 - Condition monitoring and diagnostics of machines - Vibration condition monitoring - Part 1: General procedures
-\cite{noauthor_iso_2002}
+Measurement of vibrations should be accompanied by a description of the machine and its operating conditions. The machine description includes the machine identifier and its type, power source, rated rotation speed and power, configuration (shaft or belt driven), and machine support. Measurement parameters such as timestamp, transducer type, sensor location and orientation in MIMOSA code, measurement units and units qualifier (p-p, RMS), and other processing options (filters, number of averages, etc.) are to be recorded alongside the measurement value itself~\cite{noauthor_iso_2002}.
+  
+The transducer of choice for condition monitoring is the accelerometer which can provide the acceleration value of the body and velocity after signal integration. However, standard cautions against double integrating for displacement. The recommended frequency range for an accelerometer is 0.1 Hz to 30 kHz. The choice of transducer mount significantly lowers its resonance frequency which is least influenced by stud mount and stiff cement mount. The resonance is reduced to around 8 kHz with the use of soft epoxy or permanent magnet.
 
-\begin{itemize}
-\itemsep0pt
-\item Data collection - Continuos, Periodic (scanning) p.9 
-\item Monitoring programme p.12 (vibrations differ under load)
-\item Frequency range and measurement accuracy - p.20 -0.2 times of lowest rotational frequency to 3.5 highest excitation frequency (below 10 kHz) and resonance
-\item Acceleration transducer - integrate once to get velocity p.24 (0.1 - 30 kHz)
-\item Sensor mount type in relation to sensor resonance p.26 
-\item Potencial causes for faults (p. 45) - use in vibration fault types
-\item What to record about machines p.43
-\item MIMOSA code convention - location, transducer type, orientation p.49
-\end{itemize}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{assets/transducer-response.png}
+	\caption{The transducer linear response and resonance in tolerance intervals~\cite{noauthor_iso_2002}}
+	\label{fig:tranducer-response}
+\end{figure}
+
+Broadband measurement requires `frequency ranges of 0.2 times the lowest rotational frequency to the highest frequency of interest' \cite{noauthor_iso_2002}, not exceeding 10 kHz, with RMS velocity 0.1 - 100 mm/s. Bearings and gears diagnosis may push the upper-frequency limit even higher. The tolerances of amplitude and frequency calibrations fall into two types with allowable tolerances of $\pm 5 \%$ or $\pm 10 \%$ (Fig.~\ref{fig:tranducer-response}). 
+
+
+
+ 
+% Different under load 
+% Baseline measurement - what are those p.28
+% Monitoring programme p.12 (vibrations differ under load)
+% Later: Potencial causes for faults (p. 45) - use in vibration fault types
 
 \begin{enumerate}
 \itemsep0pt
