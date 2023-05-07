@@ -62,12 +62,30 @@ preprocessing that continues to feature extraction, then feature selection and t
 \cite{zheng_feature_2018}
 % Feature Engineering and Selection: A Practical Approach for Predictive Models
 \cite{johnson_feature_2019}
-% A New Statistical Features Based Approach for Bearing Fault Diagnosis Using Vibration Signals
-\cite{altaf_new_2022}
+
 % A Novel Online Machine Learning Approach for Real-Time Condition Monitoring of Rotating Machines
+% - list of features
 \cite{mostafavi_novel_2021}
+
+% A New Statistical Features Based Approach for Bearing Fault Diagnosis Using Vibration Signals
+% - knn with manhalobis distance
+% - select features manually as oposed to CNN and RNN
+\cite{altaf_new_2022}
+$$X_{rms} = \sqrt{\frac{1}{N} \sum_{i=1}^{N}{x_i^2}}$$  % rms
+$$X_{cf} = \frac{\max(|x_i|)}{X_{rms}}$$  % crest factor
+
+$$ $$% standard deviation
+$$X_{kv} = \frac{1}{N}  \sum_{i=1}^{N}{\frac{x_i - \bar{x}}{\sigma}} $$ % kurtosis
+
+
 % Fault Detection of Bearing: An Unsupervised Machine Learning Approach Exploiting Feature Extraction and Dimensionality Reduction
+% - Time domain: mean, standard deviation, rms (root mean square), peak value, peak-topeak value, shape indicator, skewness, kurtosis, crest factor, clearance indicator, etc. (ii) Frequency domain: mean frequency, central frequency, energy in frequency bands, etc. (iii) Time-frequency domain: entropy are usually extracted by Wavelet Transform, Wavelet Packet Transform, and empirical model decomposition.
 \cite{brito_fault_2021}
+
+FFT - Short Time Fourier Transform with Hamming window and Welch averaging
+	% \cite{oulmane_automatic_2015}
+
+
 % A large setof audio features for sound description
 \cite{peeters_large_2004}
 % Research on online intelligent monitoring system of band saw blade wear status based on multi‑feature fusion of acoustic emission signals
@@ -95,8 +113,6 @@ preprocessing that continues to feature extraction, then feature selection and t
 \item Root variance frequency
 \item Spectral kurtosis / Fast kurtogram
 \item Harmonics (peaks)
-	% Comparative Study of Various CFAR Algorithms for Non-Homogenous Environments
-	\cite{hatem_comparative_2018}
 	% Multi-Scale Peak and Trough Detection Optimised for Periodic and Quasi-Periodic Neuroscience Data
 	\cite{bishop_multi-scale_2018}
 	% Non-Parametric Local Maxima and Minima Finder with Filtering Techniques for Bioprocess
@@ -105,8 +121,6 @@ preprocessing that continues to feature extraction, then feature selection and t
 	\cite{gerber_identification_2013}
 	% Evaluation of Threshold-Based Algorithms for Detection of Spectral Peaks in Audio
 	\cite{nunes_evaluation_2007}
-	% Statistical techniques to select detection thresholds for peak signals in ice-core data
-	\cite{karlof_statistical_2005}
 \item Spectral Envelope
 \item Harmonic spectral deviation \\
 ---
@@ -119,13 +133,9 @@ preprocessing that continues to feature extraction, then feature selection and t
 	\cite{shi_application_2022}
 \end{itemize}
 
-\paragraph{Wavelet signal decomposition}
-%Matching pursuit algorithm optimalization problem
-\cite{song_mfbd_2021}
-\begin{itemize}
-\item FFT - Short Time Fourier Transform with Hamming window and Welch averaging
-	% \cite{oulmane_automatic_2015}
+\paragraph{Wavelet signal decompositions}
 
+\begin{itemize}
 \item CWT-SST - Synchrosqueezing Wavelet Transform
 	% The fast continuous wavelet transformation (fCWT) for real-time, high-quality, noise-resistant time–frequency analysis
 	\cite{arts_fast_2022}
@@ -139,6 +149,8 @@ preprocessing that continues to feature extraction, then feature selection and t
 	\cite{yen_wavelet_2000}
 	% A wavelet approach to dimension reduction and classiﬁcation of hyperspectral data
 	\cite{wickmann_wavelet_2007}
+	% The MFBD: a novel weak features extraction method for rotating machinery
+	\cite{song_mfbd_2021}
 
 \item EWT - Empirical Wavelet Transform - (Meyer wavelet)
 	% Empirical Wavelet Transform - Gilles
@@ -166,16 +178,16 @@ preprocessing that continues to feature extraction, then feature selection and t
 \begin{itemize}
 \item Normalization (min-max, standardize)
 \item Log transformation (Box-Cox Transform) to normal distribution
-\item Principal Component Analysis (PCA)
+\item Principal Component Analysis (PCA)  % \cite{brito_fault_2021}
 \end{itemize}
 
 \subsection{Feature selection}
-Subset generation p.193
+Subset generation % p.193
 Subset evaluation
 Stopping criteria
 Validation
 
-\cite{nandi_condition_2019} p.192
+\cite{nandi_condition_2019} % p.192
 Filter method - SelectKBest  in evaluation phase
 \begin{itemize}
 \item Variance Threshold

@@ -45,8 +45,10 @@
 \usepackage{etoolbox}
 %\preto\tabular{\shorthandoff{-}}
 
-\usepackage[style=iso-numeric, backend=biber]{biblatex}
+\usepackage[style=iso-numeric, backend=biber, url=false]{biblatex}
+\renewcommand*{\bibfont}{\normalfont\small}
 \addbibresource{literature.bib}
+
 
 % Zoznam skratiek
 \makenomenclature
@@ -218,7 +220,7 @@ The basis we build upon is the domain knowledge of the mechanical engineers in v
 %\cite{hu_intelligent_2012} 
 
 %\nocite{*}
-{\small \printbibliography[heading=bibintoc, title={Literature}]}
+\printbibliography[heading=bibintoc, title={Literature}]
 
 %  Prílohy -----------------------------------------------------------------------
 \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
