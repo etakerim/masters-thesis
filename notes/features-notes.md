@@ -1182,8 +1182,9 @@ p.4 - **LOF and LOCI classify an object xi by**:
     - the result of applying their incremental LOF algorithm is the same as the result of applying 
     - the static version of LOF algorithm after receiving N data points, and it is also independent of the order of the inse
 
+
 ## Density-Based Clustering over an Evolving Data Stream with Noise
-\cite{cao_density-based_2006}
+\cite{cao_density-based_2006} **DenStream**
 - we present **DenStream**, a new approach for discovering clusters in an evolving data stream. 
 The “dense” micro-cluster (named core-micro-cluster) is introduced to summarize the clusters with arbitrary shape
     - potential **core-micro-cluster and outlier micro-cluster** structures are proposed
@@ -1221,7 +1222,7 @@ DenStream adopt the following setting:
     - stream speed v = 1000, 
     - decay factor λ = 0.25, 
     - \epsilon = 16, μ = 10, outlier threshold β = 0.2.
-- DenStream outperforms CluStream for all parameter settings
+- **DenStream outperforms CluStream for all parameter settings**
 
 
 ## Review of Artificial Intelligence-based Bearing Vibration Monitoring
@@ -1287,23 +1288,128 @@ Semi-Supervised Learning on Data Streams via Temporal Label Propagation
 - For example, on the Incart-ECG dataset, TLP can get to a 95% classification accuracy given only two labeled examples
 - **Shingling**. A useful technique when dealing with timeseries data is to group consecutive sequences (N -grams) of points into shingles. This lifts the data into a higher dimension N and allows for a richer representation of inputs.
 
+
 ## State-of-the-art on clustering data streams
 \cite{ghesmoune_state---art_2016}
+- **Clustering** 
+    - partitioning a set of observations into clusters such that the intra-cluster observations are similar 
+    - and the inter-cluster observations are dissimilar.
+- **Real-time processing** means that the ongoing data processing requires a very low response delay. The velocity, which refers to that Big Data
+
+- Most of the existing algorithms (e.g. **CluStream [1], DenStream [2], StreamKM++ [3], or ClusTree [16]**) 
+divide the clustering process in two phases: 
+    - (a) Online, the data will be summarized; 
+    - (b) Offline, the final clusters will be generated.
+- Hierarchical clustering can be achieved in two different ways, namely, **bottomup and top-down clustering.**
+    - once a step (merge or split) is done, it can never be undone
+
+- **Balanced Iterative Reducing and Clustering using Hierarchies (BIRCH)**  (p.8)
+    - only circle clusters
+    - incrementally and dynamically clusters multi-dimensional data points 
+    - to try to produce the best quality clustering with the available resources
+    - BIRCH requires two user defined parameters: 
+       - B the branch factor or the maximum number of entries in each non-leaf node; 
+       - T the maximum diameter (or radius) of any CF in a leaf node
+    - CF-tree can be performed in a similar way as the insertion in the classic B-tree. 
+    - If the closest-CF in the leaf cannot absorb the data point, a new CF entry is created. If there is no room for new leaf, the parent node is split.
+
+- **ClusTree** is a parameter-free stream clustering algorithm 
+    - that is capable of processing the stream in a single pass, with limited memory usage
+
+- **Anytime algorithms** denote approaches that are capable of delivering a result at any given point in time,
+    and of using more time if it is available to refine the result.
+
+**Density-based algorithms**
+    - based on the connection between regions and density functions. 
+    - dense areas of objects in the data space are considered as clusters, 
+    - which are segregated by low density area (noise).
+    - find clusters of arbitrary shapes and generally they **require two parameters**: 
+       - the radius and 
+       - the minimum number of data points within a cluster.
+    **DenStream**
+        - By creating two kinds of micro-clusters (potential and outlier micro-clusters), in its online phase, 
+        - DenStream overcomes one of the drawbacks of CluStream, its sensitivity to noise
+        - DenStream has a pruning method in which it frequently checks the weights of the 
+        - outlier-micro-clusters in the outlier buffer to guarantee the recognition of the real outliers
+
+**p. 20 - Table 1 Comparison between algorithms (WL: weighted links, 2 phases : online+offline)**
+
+- **Apache Spark** project by adding the ability to perform online processing through a similar functional interface to Spark
+- Multiple open-source software libraries use MOA to perform data stream analytics in their systems 
+    - including **ADAMS, MEKA, and OpenML**. 
+    - others big data streams frameworks are **SAMOA and StreamDM**
+
+- Samples, Histograms, Wavelets, Sketches describe basic principles and recent developments 
+- in building **approximate synopses (that is, lossy, compressed representations)** of massive data
+
 
 ## Cluster-Reduce: Compressing Sketches for Distributed Data Streams
 \cite{zhao_cluster-reduce_2021}
+- With the increasing volume and velocity of data streams, 
+- **sketches, a type of probabilistic algorithms**, have been widely used in estimating item statistics
+
+- Compressing the CM sketch, which is widely used in frequency estimation. 
+    - A **CM sketch** contains a counter array and 𝑑 hash functions. 
+    - **For each incoming item**, the CM first **locates 𝑑 counters** by calculating 𝑑 hash functions on the item ID, which are abbreviated as 𝑑-hash-counters. 
+    - **Then the CM sketch increases these counters by 1**. To estimate the frequency of a given item, the **CM reports the minimum value** of the 𝑑-hash-counters
+
+- **Cluster-Reduce** is divided into two steps: **nearness clustering and unique reducing**
+
+- **CM sketch** is used to estimate item frequency, and can guarantee the one-side error. 
+- **CU sketch** improves CM, uses conservative update strategy to achieve higher accuracy, and also guarantees the one-side error. 
+- **Count sketch** achieves the unbiased estimation of item frequency, and can be combined with a heap to find top-K frequent items
+
+- Given a compression ratio 𝜆, we divide the original sketch into 𝑤𝑐 = 𝑤𝑜 /𝜆 equal-sized groups, each containing 𝜆 continuous counters
+- propose a dynamic programming (DP) method to classify counters for minimizing the compression error
+
 
 ## Fast Anomaly Detection for Streaming Data
 \cite{tan_fast_2011}
+**Streaming Half-Space-Trees (HS-Trees)**
 
-## Minimum covariance determinant and extensions
-\cite{hubert_minimum_2018}
+- a fast **one-class anomaly detector** for evolving data streams. 
+- It **requires only normal data for training** and works well when anomalous data are rare
 
-## A Novel Online Machine Learning Approach for Real-Time Condition Monitoring of Rotating Machines
-\cite{maurya_condition-based_2021}
+- it processes data in one pass and only requires constant amount of memory to process potentially endless streaming data
+- is useful when a stream contains a **significant amount of normal data**.
+- **ensemble of Streaming HS-Trees** leads to a robust and accurate anomaly detector that is not too sensitive to different parameter settings.
 
-## Feature-based performance of SVM and KNN classifiers for diagnosis of rolling element bearing faults
-\cite{jamil_feature-based_2021}
+- Each HSTree consists of a set of nodes, where each node captures the number of data items (a.k.a. **mass**) within a particular subspace of the data stream. - **Mass** is used to profile the **degree of anomaly** because it is simple
+    - fast to compute in comparison to distance-based or density-based methods.
+
+- two consecutive windows, **the reference window, followed by the latest window**. 
+    - During the initial stage of the anomaly detection process, the algorithm **learns the mass profile of data in the reference window**. 
+    - the learned profile is used to **infer the anomaly scores of new data** subsequently arriving **in the latest window**
+    - When the latest window is full, the newly recorded profile is used to override the old profile in the reference window;
+
+- **HS-Tree of depth h is a full binary tree** consisting of 2h+1 − 1 nodes, in which all leaves are at the same depth, h.
+    - constructing a tree, the algorithm expands each node by **picking a randomly selected dimension**, (space)
+    - Each node records the mass profile of data in a work space that it represents:
+       - arrays min and max, which respectively store the minimum and maximum values of each dimension of the work space represented by the node
+       - variables r and l, which record the mass profiles of data stream captured in the reference window and latest window, respectively;
+       - variable k,which records the depth of the current node
+       - two nodes representing the left child and right child of the current node, each associated with a half-space after the split
+
+- **Constructing:** (p.3)
+    - **Each internal node is formed** by randomly selecting a dimension q (Line 4) to form two half-spaces; 
+    - the split point is the mid-point of the current range of q
+- **Recording mass profile**
+    - mass profile of normal data must be recorded in the trees before they can be employed for anomaly detection
+    - These two collections of mass values at each node, r and l,represent the data profiles in the two different windows
+
+- Streaming HSTrees is able to learn data stream profile using small samples; 
+    - a **small window size of ψ = 250 is sufficient** for our experiments. 
+    - The ensemble uses **25 trees as this is a moderate ensemble size**
+
+- Hence the (average-case) amortised **time complexity for n streaming points is O(t(h+1))**; the worst-case is O(t(h+ψ)),
+- **space complexity for HSTrees is O(t2h)** which is also a constant with fixed t and h.
+- satisfies the key requirements for mining evolving data streams: 
+    (i) it is a one-pass algorithm with O(1) amortised time complexity and O(1) space complexity
+
+- Algorithm 1 : BuildSingleHS-Tree(min, max, k)
+- Algorithm 2 : UpdateMass(x, N ode, referenceWindow)
+- Algorithm 3 : Streaming HS-Trees(ψ, t)
+
 
 ## Classification of washing machines vibration signals using discrete wavelet analysis for feature extraction
 \cite{goumas_classification_2002}
@@ -1330,9 +1436,49 @@ Semi-Supervised Learning on Data Streams via Temporal Label Propagation
 
 ## Data Clustering - Algorithms and Applications
 \cite{aggarwal_data_2014}
+p.113 - **DBSCAN**
+- Let C1,...,Ck be the clusters of the database D with respect to **Eps and MinPts**.
 
+- DBSCAN [11] estimates the density by counting the number of points in a fixed-radius neighborhood
+- considers two points as connected if they lie within each other’s neighborhood. 
+- A point is called **core point if the neighborhood of radius Eps contains at least MinPts points**, 
+- i.e., the density in the neighborhood has to exceed some threshold.
+
+
+
+## Feature-based performance of SVM and KNN classifiers for diagnosis of rolling element bearing faults
+\cite{jamil_feature-based_2021}
+- ML models, namely, Support Vector Machine (SVM) and K-Nearest Neighbor (KNN), are used to classify the faults associated with different ball bearing.
+- Case Western Reserve University (CWRU) bearing data,
+- ML classifiers are trained with extracted **time-domain and frequency-domain features**
+
+- The results show that **frequency-domain features are more convincing for the training of ML models**, 
+- and the **KNN classifier has a high level of accuracy** compared to SVM.
+
+- The **K-Nearest Neighbor (KNN)** algorithm is one of the most basic machine-learning algorithms.
+- It is a method of calculating the distance between two points.
+- Due to its simplicity and ease of implementation, this is a widely used classifier
+- It is a non-parametric classification
+- KNN determines the **distance between two points using multiple techniques**, such as Euclidian and Manhattan [15], based on the idea of similarity based on proximity or distance
+- **value of 𝐾 should be selected to decrease the number of errors** when making predictions from each run (multiple runs)
+
+- **Fault features**
+    - A total of 18 time-domain and frequency-domain fault features extracted are used in different combinations to assess the accuracy of SVM and KNN models in classifying the bearing fault categories. 
+
+- **The time-domain features**:
+    - clearance factor, crest factor, impulse factor, kurtosis, mean, peak value, RMS, SINAD, SNR, shape factor, skewness, standard deviation, approximate entropy, correlation dimension, and Lyapunov exponent. 
+**The features of the frequency-domain** 
+    - peak amplitude, peak frequency, and band power.
  
-
+**Set 1**: Combination of time and frequency-domain features
+    - Crest factor, impulse factor, kurtosis, RMS, SNR, skewness, peak amplitude, peak frequency, Lyapunov exponent 
+    - SVM 95.0 % KNN 96.2 %
+**Set 2**: Non-linear time-domain features 
+    - Approximate entropy, correlation dimension, Lyapunov exponent 
+    - SVM 88.8 % KNN 91.2 % 
+**Set 3:** Frequency-domain features 
+    - Peak amplitude, peak frequency, band power 
+    - SVM 96.2 % KNN 98.8 %
 
 
 
