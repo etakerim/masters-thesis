@@ -503,35 +503,203 @@ p. 175 - typical feature-selection procedure:
     - compare the fundamental frequencies from the MkCj+ series to the fundamental frequencies from MkCj-.
     - **If two series have the same fundamental frequency** (with a possible error of maximum ∆νi), both series are merged and are now considered as a modulation series.
 
-#TODO --------------------------------------------------------------------
 
 ## Spectral negentropy and kurtogram performance comparison for bearing fault diagnosis
 \cite{avoci_spectral_2020}
 - paper is motivated by ideas borrowed from thermodynamics, where transients are seen as departures from a state of equilibrium; 
 - it is proposed to measure the negentropy of the **squared envelope (SE)** and the **squared envelope spectrum (SES)** of the signal
+- most mechanical degradation presents a series of repetitive transients, the **Kurtogram or SK** often hardly or almost cannot recognize them;
+- **spectral negentropy** was demonstrated to be one of the alternatives to overcome this.
+- spectral negentropy, a contraction for "negative entropy"
+- entropy evaluates the level of the disorder in a system from the state of equilibrium; 
+- negentropy measures the inclination of a system to **increase its level of organization**. 
+- In the science of information, entropy describes how much information contains a signal
+- **complex envelope:** y(k, f, \Delta f)
+- **squared envelope (SE)**: e(k, f, \Delta f) = |y(k, f, \Delta f)|^2
+- In Fourier domain, the squared envelope spectrum (SES).
+- The more impulses the fault induces, the larger is the spectral negentropy.
+- \Delta I_E(f, \Delta f) = \sum_{k = 0}^{N - 1}{\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}} \cdot \ln\left(\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}\right)
+- SK for transients detection in a signal, focuses on measurement of distance between random and Gaussian process.
+- All those bands reveal the signature of an inner race fault. The SES infograms on Fig. 7 (c) show that cyclostationary events are below 4 kHz, which do not necessarily point out the equivalence in the kurtogram and SES infogram. they are complementary
 
 ## Application of Teager–Kaiser Energy Operator in the Early Fault Diagnosis of Rolling Bearings
 \cite{shi_application_2022}
+Gaussian white noise in bearing vibration signals seriously masks the weak fault characteristics in the diagnosis based on the **Teager–Kaiser energy operator envelope**,
+- Improved TKEO can attenuate noise in consideration of computational efficiency while preserving information about the possible fault.
+- weak impact caused by the defect is hardly reflected on time-domain statistical parameters
+- for AM signals, including bearing vibration signals, the TKEO energy is approximate to the squared envelope.
+- statistical parameters to select the optimal frequency band for wavelet packet transform and use TKEO to detect the hidden impact
+- TKEO energy only requires three adjacent samples, which is simple and computationally efficient; TKEO has high time resolution
+- assumption that the bearing vibration signal is an AM signal
+- modulated fault features or information can be extracted from bearing vibration signals by **amplitude envelope analysis**.
+    - Discrete verison of TKEO: \psi[x(n)] = [x(n)]^2 - x(n - 1)x(n + 1)
+- **Gaussian white noise** easily interferes with the bearing fault detection by TKEO energy
+- Removal of white noise before TKEO can greatly improve the accuracy and sensitivity of early fault diagnosis.
+- **Improved TKEO** is the method combining TKEO analysis with this denoising method (p.9)
 
 
 
 ## The fast continuous wavelet transformation (fCWT) for real-time, high-quality, noise-resistant time–frequency analysis
 \cite{arts_fast_2022}
+- The drawback of the **STFT is its use of a fixed-width window function**, as a result of which frequency analysis is restricted to frequencies with a wavelength close to the window width
+- hopping up the signal in short, **fixed-width windows scrambles the signal’s properties**
+- reduce the computational burden of the WT, the discrete wavelet transform (DWT) has been proposed, which applies a coarse, logarithmic discretization
+- benchmark the performance of fCWT we **compared fCWT to the six widely used CWT** implementations shown in Fig. 3.
+- complex Morlet wavelet (σ = 6) was used to calculate the CWT of three signals, all containing N = 100,000 samples.
+- The Morlet wavelet is defined as a plane wave modulated by a Gaussian envelope
+- the signal content and wavelet choice are irrelevant to the performance of fCWT
+
+- fCWT being, respectively, **122 times and 34 times faster than the reference Wavelib** and the fastest available algorithm, PyWavelet
+- fCWT was also compared to two other fast time–frequency estimation algorithms: the STFT and DWT. 
+    - STFT uses a Blackman window of 500 ms with 400-ms overlap, 
+    - DWT uses 20 dyadic (that is, aj = 2j) scales of Debauchie decomposition
+- real-time analysis ratio (RAR) Δtcomputation / Δtsignal
+- even the fastest CWT implementation available tends to be extremely slow compared to STFT and DWT
+- DWT is powerful in denoising, but not suitable for time–frequency analysis.
+
+- fCWT’s scale-dependent part by exploiting its repeated nature and high parallelizability. 
+The scale-independent operations are performed first as their result forms the input for the scale-dependent steps. We pre-calculate two functions: 
+    - the input signal’s FFT and 
+    - FFT of the mother wavelet function at scale a0 = 2. 
+- Both functions are independent of the scale factor a, so they can be pre-calculated and used as look-up tables in the processing pipeline.
+
+- Fourier-based wavelet transform. Applying **Parseval’s theorem to equation**, a **reduction in CWT’s complexity** can be achieved:
+- W_{\psi}f(a,b) = \frac{1}{2 \pi} \int \hat{f}(\xi)\bar{\psi_{a,b}(\xi)} \;d\xi
+- W_{\psi}f[a,b] = \frac{1}{N} \sum_{k = 0}^{K - 1} \hat{f}[k]\bar{\hat{\psi}[a,k]} e^{i2\pi bk /K}
+
 
 ## A Concentrated Time–Frequency Analysis Tool for Bearing Fault Diagnosis
 \cite{yu_concentrated_2020}
+ novel time–frequency analysis method termed the transient-extracting transform
+- based on the short-time Fourier transform and does not require extended parameters or a priori information.
+- different fault signals occupy distinct frequency bands, 
+    - the joined time–frequency (TF) analysis (TFA) is an effective tool for characterizing transient faults that have nonstationary TF features
+- no TF basis functions that can be compactly supported in the TF domain simultaneously, the linear TFA methods show a poor ability to characterize the precise TF features.
+- Methods in realted work:
+    - empirical mode decomposition (EMD) 
+    - the spectral kurtosis (SK) method 
+    - synchrosqueezing transform (SST) 
+        - SST is intended to obtain a sharper TF representation, which can characterize the faults in high TF resolution
+        - challenging to estimate the IF of the transient component precisely, because the fault signals usually do not meet the weakly time-varying requirement of the SST
+        - background noises will introduce serious interference into the SST result
+- TFA(t,ω) = 〈s(u), ψt,ω(u)〉,where〈, 〉 denotes the inner product operator.
+- STFT, we select the **Gaussian function** as the moved window and the window length is 100 samples. 
+- For the WT, we employ the **Morlet function** to address this transient signal.
+
+- Ideal TF representation of the signal (2), the energy should only appear at the time t0 instead of being spread over a large region
+- postprocessing procedure called the **transient-extracting operator (TEO)** is proposed:
+    - \mathrm{TEO}(t,\omega) = \delta(t − t_0(t, \omega))
+- the new TFA method employing the TEO is termed the **transient-extracting transform (TET)** and formulated as 
+    - \mathrm{Te}(t,\omega) = G(t,\omega) \cdot TEO(t,\omega)
+
+- First, the TET algorithm needs to calculate two STFTs (G[n, k] and Gtg[n, k]) with respect to the windows g[n] and n · g[n]. 
+- Equations on p.4
+- Uses CWRU
+- he MATLAB code of the TET can be found on: https://www.mathworks.com/matlabcentral/fileexchange/70319-transient-extracting-transform
+- TET provides a significantly concentrated result than the STFT.
+- uniform discretization of s(t) taken at the time tn = t0 + nT,where T is the sampling interval. The Fourier transform of data s[n]
+    - \mathrm{Te}[n, k]= 
+\begin{cases}
+G[n, k],\quad ∣Re \left[ \frac{G^{tg}[n,k]}{G[n , k]} \right]∣ < \frac{T}{2} \\
+0, \quad \mathrm{otherwise}
+\end{cases} 
+- It can be seen that the proposed TET method provides a **decomposed result with a significantly larger kurtosis than the other methods**. It can be concluded that our proposed method is more suitable for extracting the transient components **(p.7) Table III - V** 38.85 for TET vs. around 4 for SK and EEMD IMF1-4
 
 ## Applications of the synchrosqueezing transform in seismic time-frequency analysis
 \cite{herrera_applications_2014}
+- SST aims to decompose a signal sðtÞ into constituent components with time-varying harmonic behavior. 
+- These signals are assumed to be the addition of individual time-varying harmonic components yielding **(Equation)**
+- where AkðtÞ is the instantaneous amplitude, ηðtÞ represents additive noise, K stands for the maximum number of components in one signal, and θkðtÞ is the instantaneous phase of the kth component
+- The **CWT is the crosscorrelation of the signal sðtÞ with several wavelets** that are scaled and translated versions of the original mother wavelet.
+- The **SST reallocates the coefficients of the CWT** to get a concentrated image over the time-frequency plane, from which the instantaneous frequencies are then extracted
+- **Conditions:**
+- the wavelet choice is a key issue in synchrosqueezing-based methods (Meignen et al., 2012). 
+- we need a mother wavelet that satisfies the admissibility condition (i.e., finite energy, zero mean, and bandlimited). 
+- At the same time, the wavelet must be a good match for the target signal
 
 ## Wavelet Packet Feature Extraction for Vibration Monitoring
 \cite{yen_wavelet_2000}
+- **faults develop, some of the system dynamics vary**, resulting in significant deviations in the vibration patterns. 
+- By employing appropriate data analysis algorithms, it is feasible to detect changes in vibration signatures caused by faulty component
+- With the aid of statistical-based feature selection criteria, many of the **feature components containing little discriminant information** could be discarded, - resulting in a feature subset having a reduced number of parameters without compromising the classification performance.
+- simple condition monitoring system is approached from a pattern classification perspective. 
+- It can be decomposed into **three general tasks**: 
+    - data acquisition
+    - feature extraction
+    - condition classification
+
+- if a multilayer neural network is used to classify unprocessed data, the input layer, 
+- which learns from examples, will essentially serve as a **feature extractor**.
+
+- **Short Time Fourier Transform (STFT)** can be employed to detect the localized transient. Unfortunately, the fixed windowing used in the STFT implies fixed time-frequency resolution in the time-frequency plane
+- The collection of all wavelet packet coefficients contains far too many elements to efficiently represent a signal.
+- Care must be taken in **choosing a subset**of this collection in order to manage the computational complexity in practical situations
+- we formulate a systematic method of determining **wavelet-packet-based features** that exploit class-specific differences among interesting signals
+
+- if we are analyzing the **low-frequency** content of a signal, we might desire a wide window function in time. On the contrary, 
+- if we were interested in **high-frequency** phenomena, a short-duration window function would be preferred.
+
+- Specifically, the STFT of x(t) and g(t) is a window function
+- G(f, \tau) = \int x(t) \cdot g^*(t - \tau) \cdot e^{-i2\pi f t} dt
+
+- To compute the wavelet transform, all we need are filters. 
+- Rather than taking the scalar product of the scaling function or the wavelet with the signal, we **convolve the signal with filters**
+- **number of points is gradually decreased** through successive decimation. 
+    - signal of points 2^j, then, in the following level 2^{j-1}, we have wavelet coefficients. 
+    - maximum decomposition level is equal to j
+
+- filtering algorithm is, in fact, a classical scheme known as a two-channel subband coding using **quadrature mirror filters (QMF’s)**
+- **Fig. 3. Implementation of discrete WPD.**
+
+- method of decomposition described above does not result in a WPT tree displayed in increasing frequency order. 
+- This is because aliasing occurs, which exchanges the frequency ordering of some nodes of the tree. 
+- A simple swapping of the appropriate nodes results in the increasing frequency ordering referred to as the **Paley ordering**
+
+- Whereas the **FWT decomposes only the low-frequency components**, 
+- **WPT decomposes** the signal utilizing both the low-frequency components and the high-frequency components
+- One deficiency that wavelet bases inherently possess is the **lack of a translation-invariant property**
+- **node energy representation** provides us with a more robust signal feature for classification than using coefficients directly
+    - wavelet packet coefficient: w_{j,n,k} = \langle f, W_{j,k}^n\rangle = \langle f, 2^{j/2} W^n (2^jt-k) \rangle
+    - wavelet packet node energy: c_{j,n} = \sum_k w_{j,n,k}^2
+    - where is j a scaling parameter, n  is a translation parameter, k is an oscillation parameter.
+
+- each **wavelet packet node energy** value was defined as an **individual feature component** 2^{r+1} - 2 components
+- direct manipulation of a whole set of node energies is prohibitive because the space normally has **very high dimensionality**, 
+- and the existence of undesired components makes the classification unnecessarily difficult
+- One popular technique in reducing the feature dimensionality is the **Karhumen–Loéve (K–L) transform**
+- LDA - idea is to find a linear transformation that projects the samples onto a lower dimensional space in 
+    - he variability of samples within each class is as close as possible, and the dispersion of the class mean vectors about the mean vector is as separated as possible
+    - ability to classify patterns relies on the implied assumption that **different classes occupy distinct regions in the pattern space**.
+
+- criterion function for **evaluating the discriminant power of a feature** could be assessed by measuring the **overlap** between and probs p(x|c1) p(x|c2). A high overlap corresponds to a low discriminant power and vice versa.
+    - efficient criterion function known as **Fisher’s criterion**
+    - \mu are the mean values of the k-th feature, f_k, for class i, j; and are the variance \sigma
+    - When there are more than two classes of data, the general approach is to take the summation of the pairwise combinations of i,j
+    - Eq: J(f_1) \geq J(f_2) \geq \dots J(F_n)
+    - LDA: \Sigma_B = \frac{1}{C} \sum_{i = 1}^{C} (\mu_i - \mu)(\mu_i - \mu)^T
+    - Fisher: J_{f_k}(i,j)= \frac{|\mu_{i,f_k} - \mu_{i,f_k}|^2}{\sigma^2_{i,f_k} + \sigma^2_{i,f_k}}
+- select a feature subset based on (3.14) for each possible pair of classes. 
+    - Then, we take the **union of feature components selected from each pair of classes** to form the final feature vector. (p.11)
+- The Westland data set [24] transmission vibartions
+- **mean estimate is subtracted from the random signal** before computing the power spectrum estimate
+- some sensors are not sensitive to the detection of specific fault symptoms. This suggests the need to use multiple-sensor data to search for class-specific features.
+
+- there is a slight **amount of frequency overlap among the wavelet basis** functions, 
+    - particular frequency may be sensed by two different basis functions. 
+    - This frequency leakage may lead to worse performance using wavelet-packet-based features.
+- **noise** 
+    - from machine components (other than the faulty response), 
+    - neighboring machinery, 
+    - measurement noise
+    - better results are obtained via the wavelet-packet-based approach.
 
 ## A wavelet approach to dimension reduction and classiﬁcation of hyperspectral data
 \cite{wickmann_wavelet_2007}
+- p.29 - i) The Continuous Wavelet Transform (CWT) 
+- p.39 - (ii) The Discrete Wavelet Transform (DWT) 
+- (iii) The Wavelet Packet Decomposition (WPD)
+- p.76 - In figure 4.8 the “reduce” step is replaced by the PCA. The experiment is conducted as described in section 3.4.
 	
-## The MFBD: a novel weak features extraction method for rotating machinery
-\cite{song_mfbd_2021}
 
 
 ## On the computational complexity of the empirical mode decomposition algorithm
@@ -556,13 +724,49 @@ Find coeficients by system of equations - tridiagonal matrix solver
 	2. EMD analysis is then applied to each data series of the ensemble. 
 	3. Finally, the IMFs are obtained by averaging the respective components in each realization over the ensemble.
 
-## Novel self-adaptive vibration signal analysis: Concealed component decomposition and its application in bearing fault diagnosis
-\cite{tiwari_novel_2021}
 
 
 
 ## Fault Feature Extraction and Enhancement of Rolling Element Bearings Based on Maximum Correlated Kurtosis Deconvolution and Improved Empirical Wavelet Transform
 	\cite{li_fault_2019}
+- The key step of **EWT is segmenting the Fourier spectrum** of the collected signal. 
+- EWT divides the spectrum into several portions, 
+    - each portion corresponds to a **mode centered at the specific frequency and compact support**, such as AM-FM signal.
+
+- Assuming that we want to **segment the Fourier spectrum into N continuous segments**
+    - it needs to find **(N − 1) the largest local maxima** in the Fourier spectrum. In most cases, 0 and π are always taken as two boundaries
+    - For this set of maxima, we define that ωn is the boundary between each segment, where ω0 = 0 and ωN = π. Each segment is shown as An = [ωn−1, ωn], then ∪N n=1An = [0, π]. Centered on each ωn, we define a transition phase Tn, with width 2τn and τn = γωn; γ is properly chosen to get a tight frame and is given in Equation
+    - p. 5 - According to the boundaries defined by the **segmentation of the Fourier spectrum**, 
+    - a **series of empirical wavelets** can be constructed as **bandpass filters** based on the idea of the construction 
+    of both **Littlewood-Paley and Meyer’s wavelets**
+    - \gamma = \min_n\left(\frac{\omega_{n+1} - \omega_n}{\omega_{n+1} + \omega_n}\right)
+- following **threshold**according to the method of literature: 
+    - λ denotes the pre-set threshold, Ah and Al are, respectively, 
+    - the maximum and minimum magnitudes of the spectrum and 
+    - r is inversely proportional to the SNR
+    - \lambda = A_l + \frac{C}{\mathrm{SNR}}(A_h - A_l)
+- If the number of the local maxima points above the threshold is larger than the pre-defined number N of the components, 
+    - then keep on calculating the **envelope curve of the spectrum** until the number of the local maxima points is equal or less 
+    - than the pre-defined number N of the components
+- **Calculate the kurtosis value** of each component and choose the component with the maximum kurtosis value to further detect the fault feature.
+
+- more reliable segmentation methodology for the signal spectrum is introduced by calculating the envelope curve of the amplitude spectrum of the signal.
+-  We calculate the envelope curve at first, 
+    - and then modify the envelope curve with a **pre-set threshold \lambda** according to the SNR value. 
+    - Finally, we segment the signal spectrum based on the local extrema of the modified envelope curve
+    - Calculate the envelope curve of the amplitude spectrum based on the **local maxima and minima by linear interpolation method**, then modify the envelope curve according to the threshold
+
+- the **improved EWT can adaptively segment the spectrum** of the rolling element bearing in strong noise conditions.
+- Secondly, compared with the FK and OPWT methods, the MCKD-EWT method is more effective in weak fault feature extraction and enhancement.
+- When the fault is large enough, FK, OPWT (Optimal Wavelet Packet Transform), and MCKD-EWT methods can find the resonant frequency band and realize fault diagnosis.
+
+- there is a **large rotational speed fluctuation**, the proposed method may be **useless** because the MCKD method needs to ensure the periodicity of the spacing of the pulses. 
+- The cost time of building the filters banks is too long, so it **cannot be used in on-line fault diagnosis**
+- **Further investigation** should be performed
+    - choosing the optimal parameters of MCKD-EWT
+    - finding an enhanced method for rotational speed fluctuations condition 
+    - finding a faster method.
+
 p.8 - rolling element bearing equation mechanics
 Detect bearing faults - impulses (transients)
 Maximum Correlated Kurtosis Deconvolution (MCKD)
@@ -572,26 +776,42 @@ Maximum Correlated Kurtosis Deconvolution (MCKD)
 	- address the mode mixing or over-estimation phenomenon of the EMD
 	- EWT divides the spectrum into several portions, and each portion corresponds to a mode centered at the specific frequency and compact support, such as AM-FM signal
 - Algorithm MKCD-EWT
-- De-noise the signal by MCKD.
-- Spectrum segmentation. Calculate the envelope curve of the amplitude spectrum of the de-noising signal.
-- Signal decomposition. Design the wavelet filter banks
-- IMF (Intrinsic Mode Function) selection. Calculate the kurtosis of each sub-signal
-- Feature extraction. Calculate the squared envelope spectrum and teager energy operator spectrum of the chosen mode
+- De-noise the signal by MCKD 
+    - MCKD encourages the **periodicity of the periodic impacts or impulse-like vibration** behaviors by selecting a finite impulse response (FIR) filter to maximize the CK of the filtered signal
+    - p.3 - The MCKD is used to search a reverse FIR filter f by maximizing the CK of the impulses y(n). The CK is defined as:
+- **Steps** p.7
+    - Spectrum segmentation. Calculate the envelope curve of the amplitude spectrum of the de-noising signal.
+     Signal decomposition. Design the wavelet filter banks
+    - IMF (Intrinsic Mode Function) selection. Calculate the kurtosis of each sub-signal
+    - Feature extraction. Calculate the squared envelope spectrum and teager energy operator spectrum of the chosen mode
+
+
 - Highest kurtosis values of these modes IMF1 - 4 in the largest IMF
+- Genetic algorithm in OWPT
 
 - Teager-Kaiser operator (TKEO)
 - Teager Energy Operator (TEO)
 - $x(t)  = (dx/dt)^2+ x(t)(d^2x/dt^2) $
 - $[x[n]] = x^2[n] + x[n - 1]x[n + 1]$ TKEO
 - When Ψc is applied to signals produced by a simple harmonic oscillator, e.g. a mass spring oscillator who’s equation of motion can be derived from the Newton’s Law - It can track the oscillator’s energy
-
-
-## An Improved Empirical Wavelet Transform for Noisy and Non-Stationary Signal Processing
-	\cite{zhuang_improved_2020}
+- In the squared envelope spectrum and teager energy operator spectrum, it can be seen that both methods successfully extract the outer race fault feature.
 
 
 ## Time and frequency domain scanning fault diagnosis method based on spectral negentropy and its application
 \cite{yonggang_time_2020}
+p.6 - **The empirical scaling function b ∅n ω ðÞ[25] and the empirical wavelet function b Ψn ω ðÞ [25] are defined as follows:**
+
+- EWT and spectral negentropy are combined to adopt the filtering method by changing the bandwidth and central frequency. 
+    - EWT is used to adaptively divide the signal boundary and reconstruct the filtered signal. 
+    - Spectral negentropy is used to detect non-equilibrium disturbances in the system, which contains fault information.
+
+1. signal is filtered by the EWT scan filter to obtain all components and the average of their spectral negentropy is calculated,
+2. retaining components with negative entropy values greater than the mean, 
+3. taking the center frequency of these components as the center frequency of the resonant band. 
+4. The **central frequency fcj of all resonance bands** is determined by using the **index of spectral negentropy in frequency domain**. 
+5. the scanning filter with a fixed central frequency and a changing bandwidth is used to process signal, 
+6. the **bandwidth Bwk of resonance band** is determined by using **spectral negentropy in time domain**.
+
 - https://www.mathworks.com/help/signal/ref/pkurtosis.html#mw_95d59e55-8d7b-4145-9009-6f9384f3fd9e
 - https://www.mathworks.com/help/signal/ref/kurtogram.html
 - Time-frequency domain scanning empirical spectral negentropy method (T-FSESNE)
@@ -608,7 +828,7 @@ Maximum Correlated Kurtosis Deconvolution (MCKD)
 - Spectral kurtosis shortcomings:
 	- The decomposition results are influenced by monopulse signals. 
 	- Due to the unreasonable division of frequency band, the extracted sideband contains insufficient fault information.
-- New method:
+- **New method:**
 	+ the signal is filtered by the EWT scan filter to obtain all components 
 	- the average of their spectral negentropy is calculated, retaining components with negative entropy values greater than the mean, 
 	- taking the center frequency of these components as the center frequency of the resonant band
@@ -619,17 +839,221 @@ Maximum Correlated Kurtosis Deconvolution (MCKD)
 - time-domain spectrum negentropy (TSNE)
 - **The center frequency is f_ci with the bandwidth B_w.**
 
+- whole normalized Fourier spectrum is divided on [0, π]by [ω f ci −ωBw=2, ω f ci þ ωBw=2 ]. 
+- EWT filters are constructed with the boundaries ½ω f ci−ωBw=2, ω f ci þ ωBw=2 ]. 
+- the frequency bands ω f ci −ωBw=2; ω f ci þ ωBw=2 are extracted to obtain the components
+- center frequency is fci with the bandwidth Bw.
+
 - Empirical Wavelet Decomposition EWT is a new signal-processing algorithm to detect the different vibration modes based on the EMD method and wavelet analysis theory. 
 -It can effectively extract the different modes from a mixed vibration signal, by adaptively establishing an appropriate filter bank based on the Fourier spectrum.
+- Determining more **reasonable center frequency and bandwidth** is the precondition of accurate envelope analysis and bearing fault diagnosis
 
+## The MFBD: a novel weak features extraction method for rotating machinery
+\cite{song_mfbd_2021}
+- **multiple frequency bands demodulation (MFBD)** method has better demodulation performance than Fast Kurtogram, Autogram and Fast-SC for weak modulation features
+
+- Compared with the **cyclostationary analysis** method, the **envelope analysis** has lower computational complexity
+- Antoni further presented an efficient algorithm and optimized the filter, called **Fast Kurtogram**
+- demodulation performance of **Fast Kurtogram would decrease sharply under low signal to noise ratio** (SNR)
+
+- Aodulation frequency band by **Gini index**
+- In previous studies, the periodic modulation wave signal is extracted by **combining time frequency analysis and PCA**. 
+- This method has been well used for fault feature extraction [20]. The superiority of the proposed method is verified by
+   simulation analysis and applications of a centrifugal pump and a propeller
+
+- **proposed MFBD method**, the decomposition level is three 
+    - the global frequency band is separated into eight narrow bands as a list in Fig. 4(d). 
+    - Five frequency bands are selected including **frequency bands 3, 4, 5, 6, and 7**. 
+    - Four selected principal components are plotted
+
+- Besides, **Autogram and Fast-SC** are two very good weak signal extraction algorithms. 
+    - In order to verify the robust demodulation performance of MFBD, 
+    - different white noise levels are added to signal x(t)
+
+- MFBD provided a clearer characteristic frequency identification than Fast Kurtogram, especially under weak modulation condition.
+- Carrier signals include resonance signal, line-spectrum signal and noise signal
+
+- The monitoring signal is decomposed **into narrow bands by WPD**. 
+    - the decomposition level n of WPD is derived as Eq. (2). 
+    - For the multiple values n that meet the conditions, the smaller value should be selected
+    - \frac{1}{2^n} > \frac{4f_{priori}}{Fs}
+    - where:
+        - n denotes the decompose level of wavelet packet decomposition, 
+        - Fs denotes sampling frequency, 
+        - fpriori denotes the prior frequency of modulation which can be predicted from rotating machinery working condition.
+    - Energy: E_i^n = \lVert wpc_i^n \rVert_2^2
+
+- **Based on PCA**, the weak modulation features can be enhanced by extracting from multiple narrow band signal components.
+- The energy coefficient of frequency band can be calculated:
+    - \eta_i^n = \frac{E_i^n}{\sum_{i = 2}^{2^n}E_i^n \cdot 100%}
+- The components with biggest m energy coefficients are considered for weak feature extraction
+- the weak modulation signals are extracted from envelope components matrix ewpmn(t) based on PCA
+- The envelope signal of decomposed component wpcn i (t) can be calculated: sqrt{wpc_i^2 + Hilbert^2|}
+- The criterion for multiple principal components selection can be expressed as Eq. (12). 80% could represent the main modulation components
+
+
+## Novel self-adaptive vibration signal analysis: Concealed component decomposition and its application in bearing fault diagnosis
+\cite{tiwari_novel_2021}
+- Look at the **figure and flowchart at page 5**
+
+
+-phenomenon of **mode mixing** has been a concern in every signal decomposition technique since its inception
+- Concealed component decomposition (CCD)
+- p.26 - results on VMD, another self-adaptive technique, which has been found promising in extracting features for classification and diagnosis in various work, is done, and some thought-provoking effects are found
+- p.39 - CCD provides partially filtered and segmented derivatives having high regularity and low noise. 
+    - On comparing the proposed technique with existing self-adaptive techniques such as LMD, EEMD, and VMD,
+    - one may conclude the superiority of the former over the latter. 
+    - The impulsive characteristics in CCD may also be a criterion of selecting the prime rotation component;
+        - however, in the other approaches, this is quite difficult.
+- p. 3 The abilities of CCD make it suitable for analyzing the signal from different domains. 
+- It can process the non-stationary biological signal, mechanical vibration signal, earthquake, and structural vibration signatures. 
+
+The following steps are involved in the **extraction of the concealed rotation components** from the unfiltered vibration signal:
+
+- **Identify all local maxima and local minima**. The identification of the local minima and maxima 
+- is made with nonparametric methods with minimal window length (i.e., 3). 
+- join them to have the two envelope functions XM(t) and Xm(t) as the **upper and lower envelope**, respectively
+
+- Construction of envelope may be done using **Hilbert transform**. 
+- Other options such as:
+    - RMS envelopes with sliding window, 
+    - peak envelope with spline interpolation
+    - peak separation parameter can also be recommended
+
+- **Divide dn i into two fractions, ξ and (1 − ξ ), and place a pivot point at the junction**. 
+- The fractions must be in such a way that distance between xi and the pivot point is ξ dn i. vii) 
+- The same process must be repeated for all pairs of minima and maxima.
+
+- The pivots so collected are joined with a cubic function and coined as a low-frequency function Xlj(t). ix) 
+- **The first rotation component** Xrj (t) is obtained by subtraction the acquired low-frequency function Xlj(t) from X(t)
+
+- Calculate the value of ξ for the next step utilizing the **proposed operator** (Eq.)
+- Repeat the steps iv to x till a monotonic trend function is attained.
+
+## An Improved Empirical Wavelet Transform for Noisy and Non-Stationary Signal Processing
+\cite{zhuang_improved_2020}
+- method combines the advantages of **piecewise cubic Hermite interpolating polynomial (PCHIP) and the EWT**, and is named PCHIP-EWT. 
+- Ki(f ) = a1 +a2(f −fi)+a3(f −fi)2 +a4(f −fi)2(f −fi+1) (9) where: 
+    - a1 : = Y (fi−1) 
+    - a2 : = Y [fi−1, fi] = Y ′i(f ) 
+    - a3 : = Y [fi−1, fi−1, fi] = (mi − Y ′i(f ))/ki 
+    - a4 : = Y [fi−1, fi−1, fi, fi] = (Y ′i+1(f ) + Y ′i(f ) − 2mi)/k2 i
+
+- select useful sub-bands from the spectrum envelope. 
+    - selects the maximum points of the spectrum to reconstruct the spectrum envelope on the basis of PCHIP. 
+    - a new concept and a threshold named the Local Power (LP) and λ are defined.
+    - Based on the new concept LP and the λ, the useful sub-bands can be obtained
+
+- Gilles [11] proposed a new method named EWT which can decompose the noisy and non-stationary signals into several IFMs adaptively.
+- EWT is an **adaptive decomposition method which extracts narrow-band frequency components** from the analyzed signal based on the frequency information contained in the signal spectrum. 
+- Compared with the EMD, the EWT performs more effectively in processing the noisy and non-stationary signals.
+- some **drawbacks of EWT** have already appeared, such as **improper segmentations when the noisy** and non-stationary signals are processed.
+
+- **PCHIP-EWT** reducing the number of parameters that need to be determined in advance
+- **EWT** - key idea is to obtain the intrinsic mode of the signal through devising a proper wavelet filter bank. 
+    - getting the local maximum of the spectrum; 
+    - segmenting the spectrum by classifying boundaries; 
+    - establishing a wavelet filter group. 
+    - Gilles utilizes the Littlewood-Paley and Meyer wavelets to construct the filter group
+    - it is sensitive to noise and needs to set some parameters in advance
+
+- PCHIP-EWT detects boundaries in the spectral envelope calculated by the PCHIP algorithm 
+    - **Calculate the spectrum envelope** of the K (f ) from the spectrum Y (f ) based on the **PCHIP**.
+        - we use the spectrum envelope by the PCHIP instead of the Fourier spectrum to segment the boundaries
+    - In Section 3.2, calculate LP pi(f )of the spectrum envelope K (f )
+    - select the helpful sub-bands based on the LP and threshold λ. 
+    - Process the signal through the EWT.
+
+- DETECTING THE BOUNDARIES
+    - If p_i(f) \geq \lambda, it means that this sub-band contains useful information. 
+    - If p_i(f) \leq \lambda, it means this sub-band is consisted of noise
+    - p_i(f) = \frac{K_{max(i)(f)}}{f_k_{min(i+1)} - f_k_{min(i)}}
+    - **this is maximum of segment (n-th local maximum of spectral envelope) divided by adjacent minima**
+    - \gamma = \frac{p_max}{p_min}
+    - \lambda = \gamma / 10 (\gamma \geq 1000), \gamma (10, 100), 10\gamma (\gamma 0 .. 10)
+    - pmax and pmin represent the maximum and minimum of the local power.
+
+- Each boundary is the upper cut-off frequency of the useful sub-bands in the spectrum envelope K (f ). 
+- If the useful sub-bands are defined as sbn and detected boundaries are defined as wn, then: wn = fkmin(n+1) 
+- where fkmin(n+1) is the index of the local minimum of the K (f ) which is the nearest to Kmax(i) on the right
+
+- In Fig.10(b), it can be observed that the **PCHIP-EWT method can generate the optimal boundaries** to identify the close frequencies accurately.
+- PCHIP-EWT more effective than the EWT method for the multi-component signal that is consisted of closed frequency components.
+- Noise: hese two different approaches, the **EWT generates too many boundaries**, which will lead to too many useless components in time decomposition
 
 ## An Adaptive Spectrum Segmentation Method to Optimize Empirical Wavelet Transform for Rolling Bearings Fault Diagnosis
 \cite{xu_adaptive_2019}
-	
-## Improved empirical wavelet transform (EWT) and its application in non‑stationary vibration signal of transformer
-\cite{ni_improved_2022}
+- key spectral negentropy has stronger anti-noise ability than kurtosis.
+- EWT - The method consists of four steps: 
+   1. Setting parameters and choosing the way to split the spectrum; 
+   2. The Fourier spectrum is adaptively segmented to obtain a set of boundaries; 
+   3. Constructing filter banks based on boundaries and empirical wavelets; 
+   4. A series of empirical modal components with compactly supported Fourier spectra can be obtained by filtering and reconstruction.
+
+- EWT can achieve better results than EMD and Ensemble EMD in extracting fault features and associated harmonics. 
+    - EWT has been widely used in many fields, 
+    - such as wind turbine via [12], 
+    - wheel-bearing of trains [13], 
+    - rotor rubbing [14], 
+    - and the impact vibration experiment of solar arrays
+
+- The **root mean square, kurtosis, and skewness of empirical mode** are combined into feature vectors,
+- and then **kernel density estimation and mutual information are used to classify fault features**
+
+- new index called key spectral negentropy (KSNE)
+    - The left and right boundaries of the band with the maximum KSNE were used to reconstruct the empirical modes
+
+- When **accidental shocks occur** in the system, the new shock information breaks the balance of the original system, 
+    - the **entropy of the system decreases** . 
+    - entropy has the ability similar to the kurtosis to test the unbalanced disturbance in the system.
+    - **When the energy flow is constant**, the **maximum** key spectral entropy appears;
+    - when the energy flow is compressed **into a single pulse**, the **minimum** key spectral entropy appears.
+
+- Key spectral negentropy is proposed to reduce the steps of empirical mode selection
+- In order to reduce the selection of parameters and debugging steps,
+    - this paper proposed a novel method called adaptive and **fast empirical wavelet transform (AFEWT)**
 
 
+#### **Algorithm of EWT (page 4) - good description**
+    - **Meyer wavelet**
+    - EWT takes the minimum between the local maxima of the spectrum as boundaries, and the boundaries are used to segment the spectrum
+
+
+
+# Empirical wavelet transform 
+Jerome Gilles 
+- extract the different modes of a signal by designing an **appropriate wavelet filter bank**. 
+- This construction leads us to a new wavelet transform, called the empirical wavelet transform.
+- some experiments [5]–[7] show that EMD behaves like an adaptive filter bank
+
+- In 1998, Huang et al. [9] proposed an original method called **Empirical Mode Decomposition (EMD)** to decompose a signal into specific modes
+    - An IMF is an amplitude modulated-frequency modulated function which can be written in the form
+
+- most known method is the **wavelet packets** in a basis pursuit framework based on successive scale refinements of the expansion
+    - they use a constant prescribed ratio in the subdivision scheme, which limits their adaptability.
+
+- recent work of Daubechies et al. [4] entitled **“synchrosqueezed wavelets”**.
+    - algorithm permits to obtain a more accurate time-frequency representation and consecutively 
+    - it is possible to extract specific “modes” by choosing the appropriate information to keep
+
+- start by assuming that the **Fourier support [0, π]** - **normalized frequencies \omega=2\pi f \omega / fs** is segmented into N contiguous segments
+- empirical wavelets are defined as bandpass filters on each Λn. To do so, we utilize the idea used in the construction of both Littlewood-Paley and Meyer’s wavelets
+- 1000 Hz * 2 * pi / fs je [0, pi] 
+
+- p.5 - we know how to build a tight frame set of empirical wavelets
+- The detail coefficients are given by the inner products with the empirical wavelets
+
+- p.5 - **Fig. 6 gives an empirical filter bank** example based on the set
+    -  ωn ∈ {0, 1.5, 2, 2.8, π} 
+    - with γ = 0.05 (the theory tells us that γ < 0.057). 
+    - (3.14 - 2.8) /  (3.14 + 2.8) = 0,057239057 je minimum
+
+
+- **Empirical wavelets (eq.8, eq.9)**
+    - detail coefficients (inner product) - Eq.8:
+        - \mathcal{W}_f^\varepsilon(n, t) = \langle f, \psi_n \rangle = \int f(\tau) \psi_n(\tau - t) d\tau
+    - approximation coeficients (with scaling function) - Eq.9:
+        - \mathcal{W}_f^\varepsilon(0, t) = \langle f, \phi_n \rangle = \int f(\tau) \phi_n(\tau - t) d\tau
 
 
 
@@ -637,49 +1061,246 @@ Maximum Correlated Kurtosis Deconvolution (MCKD)
 
 
 
-
-## Analysis of different RNN autoencoder variants for time series classification and machine prognostics
-\cite{yu_analysis_2021}
-
-
 ## Anomaly Detection for Data Streams Based on Isolation Forest using Scikit-multiflow
 \cite{gervasi_anomaly_2020}
+- **Scikit-Multiflow** [20] is the main open source machine learning framework for multi-output, multi-label and data streaming. 
+- Implemented in Python language, it includes various algorithms and methods for streams mining and 
+- in particular the popular **Half-space Trees algorithm**
+
+- **IForestASD** and compare it with a well known and state of art anomaly detection algorithm for data streams called Half-Space Trees
+- When compared with a state-ofthe-art method (Hoeffding Trees) its performs favorably in terms of detection accuracy and run-time performance
+- expect **HS-Trees to perform better than Isolation Forest ASD** as well in term of speed,
+
+- **Anomaly Detection in Data Stream (ADiDS)** presents many challenges due to the characteristics of this type of data. 
+    - data stream treatment has to be performed in a single pass to deal with memory limits and methods have to be applied in an online way.
+    - outlier detection in data stream like concept drift, uncertainty and arrival rate.
+    - nomaly detection methods are based on the facts that **anomalies are rare** and have a different behavior compared to normal data
+
+- Anomaly detection:
+    - **statistics** - establish a model that characterizes the normal behavior based on the dataset. Prior knowledge not avalibale - non-parametric methods
+    - **clustering**/**nearest-neighbors** - based on the proximity between observations. suffer - need to compute the distance or the density between all the observations
+    - **isolation-based** - are supposed to be very different from normal ones. 
+        - They are also supposed to represent a very small proportion of the whole dataset. 
+        - likely to be quickly isolated
+
+- p.6 - **Comparison of ADiDS approaches.**
+- p.8 - **Classification of data stream anomaly detection methods**
+
+- **Isolation forest (IForest)** is an isolation-based method which isolates observations by splitting dataset.
+    - needs many passes over the dataset to build all the random forest. 
+    - it is not adapted to data stream context
+
+- **Evaluation**:
+    - **F1 metric**: if there is an imbalanced class distribution and we search for a balance between precision and recall
+    - **Running Time Ratio** (IForestASD coefficient ratio) - IRa Since **HalfSpace Trees (HST) is always faster than IForestASD**
+    - **Model Size Ratio** (HSTrees coefficient ratio) 
+       - HRa In the opposite of the running time, when we consider the model size, we observe that **IFA always used less memory then HST**.
+- IForestASD used less memory than HSTrees (≈ 20 times less), this is explained by the fact that with IForestASD, update policy
+- IForestASD is faster with a small window size while Half-Space Trees is faster with bigger window size
+- testing time of IForestASD – in the right axis in red line **can be 100x longer than HSTrees testing time**
+- If a fast model and especially a fast scoring time is needed, HSTrees should be the privileged option as it is still the state-ofthe-art
+- approach to be more efficient for drift detection in streaming data or use existing methods in **scikit-multiflow such as ADWIN** to automatically adapt the sliding window size
+
+- we assume that IForestASD performs better on data set with relatively high anomaly rate.
+
+- Forest-Cover Dataset
+    - we **fixed the sliding window size (50, 100, 500, 100)**
+    - vary **the number of Trees (30, 50, 100)** to compare HST and IForestASD running time
+
 
 ## One-Class Classification with LOF and LOCI: An Empirical Comparison
 \cite{janssens_one-class_2007}
+- **LOF and LOCI** are two widely used **density-based outlier-detection methods**. 
+- Generally, LOCI is assumed to be superior to LOF,becauseLOCI constitutes a multi-granular method.
+- **LOCI does not outperform LOF.**
+- We discuss possible reasons for the results obtained and argue that the multi-granularity of LOCI 
+- in some cases may hamper rather than help the detection of outliers.
+
+- **Outlier:** "a rare observation that deviates so much from other observations as to arouse suspicion that it was generated by a different mechanism."
+    - “anomalies”, “novelties”, and “exceptions”
+
+- Traditional two-class or multi-class classifiers require training objects from all classes.
+- **classifier can be thought of as a function** f which maps the input object xi to some output label yi.
+- in many real-world problems it may be difficult or expensive to **gather examples from one or more classes** 
+    - (e.g., machine fault detection)
+- Outliers: **dissimilarity measure δ and (2) a threshold θ**
+    - classifiers are evaluated on a complete range of thresholds using the AUC performance measure.
+
+p.4 - **LOF and LOCI classify an object xi by**: 
+    - constructing a neighbourhood around xi, 
+    - estimating the density of the neighbourhood, and 
+    - comparing this density with the neighbourhood densities of the neighbouring objects.
+
+1. Step 1: **Constructing the Neighbourhood** : Euclidean distance d from xi to its kth nearest neighbour 
+    - NN(x_i,k): d_{border}(x_i,k) = d(x_i, NN(x_i,k))
+    - N (xi,k)={xj ∈Dtrain \{xi} | d(xi, xj ) ≤ dborder(xi,k)}. 
+2. Step 2: **Estimating the Neighbourhood Density:** 
+    - the density of the constructed neighbourhood, the **reachability distance** is introduced.
+    - The reachability distance dreach is formally given by: 
+       d_{reach}(x_i, x_j ,k) = max{d_{border}(x_j ,k), d(x_j, x_i)}. (asymmetric measure)
+    - **The neighbourhood density ρ** of object xi depends on the **number of objects in the neighbourhood, |N (xi,k)|**, and on their reachability distances.
+       - \rho(\mathbf{x}_i, k) = \frac{|\mathcal{N}(x_i,k)|}{\sum_{\mathbf{x}_j \in \mathcal{N}(x_i,k)} d_{reach}(\mathbf{x}_i, \mathbf{x}_j, k)}
+    - Objects xj in the neighbourhood that are further away from object xi, have a smaller impact on the neighbourhood density
+3. Step 3: **Comparing the Neighbourhood Densities**
+    - LOF:
+    - \omega(x_i,k)= \frac{
+\sum_{\mathbf{x}_j \in \mathcal{N}(\mathbf{x}_i, k)} \frac{\rho(\mathbf{x}_j, k)}{\rho(\mathbf{x}_i, k)}}{|\mathcal{N}(x_i,k)|}
+
+
+- **The Local Correlation Integral (LOCI) method**
+    - improvement over LOF.
+    - **the authors state that the choice of the neighbourhood size k in LOF is non-trivial**
+    - and may lead to erroneous outlier detections.
+
+   1. LOCI defines two neighbourhoods for an object xi: (
+       - the extended neighbourhood: N_{ext}(x_i,r) = {x_j \in D_{train} | d(x_j, x_i) \leq r} ∪ x_i,
+       - local neighbourhood: N_{loc}(x_i,r,\alpha) = {xj ∈ Dtrain | d(xj , xi) ≤ αr} ∪ xi,
+   2. Step 2: Estimating the Neighbourhood Density
+       - average density of the local neighbourhoods of all objects in the extended neighbourhood of object xi
+       - \rho(x_i,r,\alpha) = \frac{
+\sum_{\mathbf{x}_j \in \mathcal{N}_{ext}(\mathbf{x}_i, k)} \rho(\mathbf{x}_j, \alpha r)}{|\mathcal{N}_{ext}(x_i,k)
+   3. Step 3: Comparing the Neighbourhood Densities
+       - multi-granularity deviation factor (MDEF) - MDEF (xi,r,α)=1− \frac{ρ(x_i,αr)}{ρ(x_i,r,α)}
+       - o determine whether an object is an outlier, LOCI introduces the normalized MDEF
+       - he dissimilarity measure δ LOCI as the maximum ratio of MDEF to σMDEF of all radii r ∈R
+
+**Results**: 
+    - LOF, LOCI,andα-LOCI achieved an average performance on all datasets of 80.84 (18.2), 74.49 (19.0), and 77.73 (17.5)
+    - The first possible reason is that the multiscale analysis of LOCI can be both a blessing and a problem
+    - LOCI constructs a neighbourhood with a given radius. 
+       - For small radii, the extended neighbourhood may contain only one object, implying that no deviation in the density can occur 
+       - LOF, does not suffer from this because it constructs a neighbourhood with a given number of objects.
+
 
 ## Designing a Streaming Algorithm for Outlier Detection in Data Mining - An Incremental Approach
 \cite{yu_designing_2020}
+- **Update LOF**: Apart from them, the lrd value of point pn itself need to be updated since the Euclidian distances 
+- to every of its k neighbours have changed. 
+- For update of LOF values, it is the same as insertion and deletion operations.
+- we need to simplify the update operation when the change of position is tiny.
+-p.12 - **Incremental LOF**
+    - the result of applying their incremental LOF algorithm is the same as the result of applying 
+    - the static version of LOF algorithm after receiving N data points, and it is also independent of the order of the inse
 
 ## Density-Based Clustering over an Evolving Data Stream with Noise
 \cite{cao_density-based_2006}
+- we present **DenStream**, a new approach for discovering clusters in an evolving data stream. 
+The “dense” micro-cluster (named core-micro-cluster) is introduced to summarize the clusters with arbitrary shape
+    - potential **core-micro-cluster and outlier micro-cluster** structures are proposed
+    - to maintain and distinguish the potential clusters and outliers.
+- **goal of clustering** is to group the streaming data into meaningful classes.
 
-## A Modified Approach of OPTICS Algorithm for Data Streams
-\cite{shukla_modified_2017}
+- evolving data streams lead to the following **requirements for stream clustering**: 
+   1. No assumption on the number of clusters. The number of clusters is often unknown in advance. 
+   2. Discovery of clusters with arbitrary shape. 
+   3. Ability to handle outliers. - in the data stream scenario, due to the influence of various factors
 
-## Data Clustering - Algorithms and Applications
-\cite{aggarwal_data_2014}
+-p.2 - cluster partitions on evolving data streams computed based on **certain time intervals (or windows)**. 
+    - **window models: landmark window, sliding window and damped window**
+    
+- In **damped window model**, fading function f (t) = 2−λ·t, where λ > 0
+- In static environment, the clusters with arbitrary shape are represented by **all the points which belong to the clusters**
+
+- unrealistic to provide such a precise result, approximate result and introduce a summary representation - **core-micro-cluster**
+- number of c-micro-clusters is much larger than the number of natural clusters. 
+- On the other hand, it is significantly smaller than the number of points
+- **(potential) p-micro-clusters** and **(outlier) o-micro-clusters** can be maintained incrementally.
+
+1. online part of micro-cluster maintenance
+2. offline part of generating the final clusters, on demand by the user.
+
+- we should provide opportunity for an o-micro-cluster to grow into a p-micro-cluster
+- When a clustering request arrives, a **variant of DBSCAN algorithm** is applied on the set of on-line maintained pmicro-clusters to get the final result of clustering
+- DBSCAN: **two parameters \varepsilon and \mu.**
+    - For \epsilon, if it is too large, it may mess up different clusters. 
+    - If it is too small, it requires a corresponding smaller μ. 
+    - However, a smaller μ will result in a larger number of micro-clusters
+
+DenStream adopt the following setting: 
+    - initial number of points InitN = 1000, 
+    - stream speed v = 1000, 
+    - decay factor λ = 0.25, 
+    - \epsilon = 16, μ = 10, outlier threshold β = 0.2.
+- DenStream outperforms CluStream for all parameter settings
+
+
+## Review of Artificial Intelligence-based Bearing Vibration Monitoring
+\cite{sheng_review_2020}
+p.2 - three main machine learning methods used in health monitoring are introduced, including 
+- **KNN, ANN and SVM**
+- **KNN**
++Plus
+- 1. Easy to understand and implement, no need to estimate parameters, and no need to train; 
+- 2.Suitable for the classification of rare events; 
+- 3. Especially suitable for multi-modal problems of having multiple category tags. 
+-Minus
+- 1. When samples are unbalanced, the number of samples will not affect the operation result; 
+- 2. Heavy calculation cost;
+- 3. Poor comprehensibility.
+
+- **Main vibration features** include:
+    - mean, median, Kurtosis, peakto-peak values, root mean square, nuclear density estimation, fault frequencies, time-frequency parameters
+
+- Different:
+    - **distance functions** (e.g., Euclidean, correlation and Mahalanobis distances) 
+    - different **number of nearest neighbors** (K) are applied
+
+- **how to improve the self-learning and generalization ability** of various intelligent diagnostic methods using
+- such unbalanced small sample data is the focus of future research.
+- Experimental results show that the ANN model is more effective than the KNN model in diagnosing multiple faults
+- a new transfer learning based on pre-trained VGG-19 is proposed for fault diagnosis. 
+- The proposed method was tested on the famous motor bearing data set of **Case Western Reserve University**. The accuracy obtained is about **99.175%** and the training time is only nearly 200 seconds.
+
+## Semi-Supervised Learning on Data Streams via Temporal Label Propagation
+\cite{wagner_semi-supervised_2018}
+Semi-Supervised Learning on Data Streams via Temporal Label Propagation
+- The labels are spread in the graph by a random walk process that moves through the unlabeled nodes until reaching a labeled node. 
+- The labeling computed by this process is known as the harmonic solution
+- Temporal Label Propagation (TLP), a streaming SSL algorithm
+- The short-circuit operator is a way to compress a large graph G into a much smaller graph H
+- nodes of interest called terminals, while preserving some global properties of G.
+- terminals as the most recent points on the stream,
+- Online SSL is a relatively new field that has generated considerable interest
+- **transduction vs. induction**
+	+ Most graphbased SSL algorithms are **transductive**, which means the unlabeled data is fully given to them in advance
+	+ Inductive algorithms can also label new test points. do not use the new points to learn how to label future points (goal of online SSL)
+- Graphs - weighted undirected
+- https://en.wikipedia.org/wiki/Laplacian_matrix
+- Offline - The input to the label propagation algorithm is a weighted undirected graph G = (V, E, w), in which a small subset of nodes Vl ⊂ V are labeled and the rest Vu ⊂ V are unlabeled
+- The weight of an edge (x, y) represents some measure of similarity between its endpoints.
+- The algorithm computes f_u (unlabeled fractional lables) by **minimizing the energy function of the graph** - is called the harmonic solution
+- Electrical network solution:
+	- View the similarity graph G as an electric network where every edge (x, y) is a resistor with conductance wx,y.
+	- Connect a +1V voltage source to all nodes in Vl labeled with 1
+	- a ground source (0V) to all nodes in Vl labeled with 0. 
+	- The potentials induced at the unlabeled nodes are equal to the harmonic solution.
+	- The short-circuit operator allows us to encode G into a smaller network G〈Vt〉 whose only nodes are the terminals.
+	- However, G〈Vt〉 can also be computed by a sequence of local operations, known as **star-mesh transforms**. This will be useful for the streaming setting. (offline: inverting a large Laplacian submatrix with Shur complement)
+		1. **Star**: Remove xo from G with its incident edges. 
+		2. **Mesh**: Every pair of points where x_o has junction replace with direct edges between neighbours - weight (w_(x-x0) w_(x′_x0)) / deg(xo). If (x, x′) is already in E then add the new weight to its current weight
+- The essence of a streaming algorithm is in maintaining a compressed representation of the stream, from which the desired output can still be computed
+- The challenge here is two-fold since the algorithm needs to not only compress the data, but also update the compressed representation as new points arrive.
+- https://en.wikipedia.org/wiki/Similarity_measure (Cosine similarity)
+- we should favor smoothness across temporally adjacent points.
+- Experimental Setting. **We use the standard RBF similarity, Sim(x, y) = exp(−‖x − y‖2/σ2).** We set σ = 0.1 for Incart-ECG, Daphnet-Gait, and CamVid and σ = 10 for Caltech10-101.
+- However, when there is no natural temporal ordering (such as with Caltech10-101 data), we did not observe an advantage over the other methods.
+- For example, on the Incart-ECG dataset, TLP can get to a 95% classification accuracy given only two labeled examples
+- **Shingling**. A useful technique when dealing with timeseries data is to group consecutive sequences (N -grams) of points into shingles. This lifts the data into a higher dimension N and allows for a richer representation of inputs.
 
 ## State-of-the-art on clustering data streams
 \cite{ghesmoune_state---art_2016}
 
 ## Cluster-Reduce: Compressing Sketches for Distributed Data Streams
 \cite{zhao_cluster-reduce_2021}
-	
 
 ## Fast Anomaly Detection for Streaming Data
 \cite{tan_fast_2011}
 
-
-## Review of Artificial Intelligence-based Bearing Vibration Monitoring
-\cite{sheng_review_2020}
-
-## Semi-Supervised Learning on Data Streams via Temporal Label Propagation
-\cite{wagner_semi-supervised_2018}
-
 ## Minimum covariance determinant and extensions
 \cite{hubert_minimum_2018}
 
+## A Novel Online Machine Learning Approach for Real-Time Condition Monitoring of Rotating Machines
+\cite{maurya_condition-based_2021}
 
 ## Feature-based performance of SVM and KNN classifiers for diagnosis of rolling element bearing faults
 \cite{jamil_feature-based_2021}
@@ -707,8 +1328,10 @@ Maximum Correlated Kurtosis Deconvolution (MCKD)
 ## Semi-Supervised Learning
 \cite{chapelle_semi-supervised_2006}
 
-## A Novel Online Machine Learning Approach for Real-Time Condition Monitoring of Rotating Machines
-\cite{maurya_condition-based_2021} 
+## Data Clustering - Algorithms and Applications
+\cite{aggarwal_data_2014}
+
+ 
 
 
 
