@@ -100,7 +100,7 @@ When creating new features from multiple predictors, there is a possibility of c
 - Equations for features:
 	+ rms:   X_{rms} = \left(\frac{1}{N}\sum_{i = 1}^{N}{x_i^2}\right)^\frac{1}{2}
 	+ kurtosis value:  X_{kv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^4}
-	+ skewness value: X_{kv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^3}
+	+ skewness value: X_{sv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^3}
 	+ peak-peak value: X_{ppv} = \max(x_i) - \min(x_i)
 	+ crest factor: X_{cf} = \frac{max(|x_i|)}{\left( \frac{1}{N} \sum_{i=1}^{N}{x_i^2} \right)^\frac{1}{2}}
 	+ impulse factor: X_{if} = \frac{max(|x_i|)}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}}
@@ -221,7 +221,7 @@ Spectral features  1. Spectral shape description
 - **Spectral roll-off** - 95\% of the signal energy is contained below this frequency (sr/2 - nyquist frequecy, fc - spectral frequency roll-off)
 - \sum_{0}^{f_c}a^2(f) = 0.95 \sum_{0}^{\mathrm{sr} / 2}a^2(f)
 - **Temporal variation of spectrum** - spectral flux - correlation of normalized cross-correlation between two succesive amplitude spectra - Close to 0 = similiar, 1 = dissimiliar
-- \mathrm{flux} = 1 - \frac{\sum_k a(t-1, k) \cdot a(t,k)}{\sqrt{\sum_k a(t-1, k)^2} \sqrt{\sum_k a(t, k)^2}}
+- X_{\mathrm{flux}} = 1 - \frac{\sum_k a(t-1, k) \cdot a(t,k)}{\sqrt{\sum_k a(t-1, k)^2} \sqrt{\sum_k a(t, k)^2}}
 
 
 **Harmonic features** -p.17
