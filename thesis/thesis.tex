@@ -49,12 +49,17 @@
 \renewcommand*{\bibfont}{\normalfont\small}
 \addbibresource{literature.bib}
 
+% Abbreviations
+% \makenomenclature
+% \renewcommand{\nomname}{List of Terminology and Abbreviations}
 
-% Zoznam skratiek
-\makenomenclature
-%\renewcommand{\nomname}{Zoznam skratiek a pojmov}
+% Formulas
+\newcommand{\listequationsname}{List of Equations}
+\newlistof{myequations}{equ}{\listequationsname}
+\newcommand{\myequations}[1]{
+\addcontentsline{equ}{myequations}{\protect\numberline{\theequation}\quad #1}}
 
-% Algoritmy
+% Algorithms
 \makeatletter
 \renewcommand*{\ALG@name}{Algorithms}
 %\renewcommand{\listalgorithmname}{Zoznam algoritmov}
@@ -115,11 +120,11 @@
     captionpos=b,
     breaklines=true,
     texcl=true,
-	numbersep=8pt,
-	framexleftmargin=15pt,
-	xleftmargin=5ex,
-    xrightmargin=3.4pt,
-	morekeywords = {uint8_t,uint16_t,int16_t,uint32_t,int32_t,bool}
+		numbersep=8pt,
+	  framexleftmargin=15pt,
+	  xleftmargin=5ex,
+   xrightmargin=3.4pt,
+	 morekeywords = {uint8_t,uint16_t,int16_t,uint32_t,int32_t,bool}
 }
 \lstdefinestyle{docs}{
     language=C,
@@ -165,41 +170,44 @@
 
 \begin{document}
 \nomenclature{\textbf{Pojem}}{Vysvetlenie}
-% Obal -----------------------------------------------------------------------
+% Cover -------------------------------------------------------------
 \input{chapters/preliminaries/cover}
 \emptypage
 
-%  Hlavná časť -----------------------------------------------------------------------
+%  Main part ------------------------------------------------------
 \newgeometry{top=2.5cm, bottom=3cm, right=2.5cm, left=3.5cm}
 
-% Titulný list
+% Title page
 \pagenumbering{roman}
 \input{chapters/preliminaries/titlepage}
 \emptypage
 
-% Zadanie
+% Thesis assignment
 \thispagestyle{empty}
 \includepdf[pages=-, scale=1]{chapters/assignment}
 \emptypage
 
+% Declaration of Honour
 \input{chapters/preliminaries/declaration}
 \emptypage
 
-%TODO
-	%\input{chapters/preliminaries/acknowledgments}
-	%\emptypage
+% TODO (DP2): Acknowledgments
+%\input{chapters/preliminaries/acknowledgments}
+%\emptypage
 
-\input{chapters/preliminaries/annotation}
+% TODO (DP2): Annotations
+% \input{chapters/preliminaries/annotation}
 
-% Obsah
+% Contents
 \pagestyle{empty}
 \tableofcontents{}
 \listoffigures
-{\let\clearpage\relax \printnomenclature}
+\listofmyequations
+%{\let\clearpage\relax \printnomenclature}
 \emptypage
 
 \pagestyle{fancy}
-% Kapitoly
+% Chapters
 \pagenumbering{arabic}
 
 \input{chapters/01-introduction}
@@ -222,7 +230,7 @@ The basis we build upon is the domain knowledge of the mechanical engineers in v
 %\nocite{*}
 \printbibliography[heading=bibintoc, title={Literature}]
 
-%  Prílohy -----------------------------------------------------------------------
+%  Appendix ---------------------------------------------------------
 \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
 \addtocontents{toc}{\cftpagenumbersoff{chapter}}
 \let\svaddcontentsline\addcontentsline
@@ -234,7 +242,8 @@ The basis we build upon is the domain knowledge of the mechanical engineers in v
 \titleformat{\chapter}{\normalfont\huge\bf}{Appendix \thechapter:}{1em}{}
 \renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{Appendix \thechapter.\ #1}}{}}
 
-\input{chapters/appendix/A-resume}
+% TODO(DP2): Resume
+% \input{chapters/appendix/A-resume}
 
 \input{chapters/appendix/B-plan-of-work}
 
@@ -242,7 +251,7 @@ The basis we build upon is the domain knowledge of the mechanical engineers in v
 % \input{chapters/appendix/B-technical-docs}
 % Ak nechce vypísať čísla strán na konci prílohy: \cleardoublepage
 	
-%TODO
-	% \input{chapters/appendix/C-digital-medium}
+%TODO: Digital medium
+% \input{chapters/appendix/C-digital-medium}
 
 \end{document}

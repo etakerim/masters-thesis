@@ -1,26 +1,51 @@
-\chapter{Design}
+\chapter{Design} \label{section:design}
+In the spirit of an extensive overview of standardized procedures of industrial vibration acquisition and monitoring, the methods in feature selection, feature selection, and machine diagnostics from vibration signals, we propose a preliminary design of elements in the sensor network capable of discriminating machinery faults.
 
-\section{Research questions}
+\section{Preparatory exploration}
+The wood processing factory we plan to collaborate with has to choose machines that are worthy of condition monitoring. In the meantime, the data processing pipeline will be put together in Python language and packages for scientific computing. The pipeline will consist of the following stages.
+
 \begin{enumerate}
-\item \emph{Which time-frequency features can be extracted from vibrational signals to provide an accurate record of machinery faults?}
-\item \emph{What are the savings in transmission bandwidth when chosen signal features are used in comparison to raw sampled measurement or lossless compression techniques?}
-\item \emph{How can the machinery faults be continuously identified based on collected events?}
+    \itemsep0pt
+    \item Detrending
+    \item Adaptive noise cancellation of the background interference
+    \item Vector of all features
+    \begin{itemize}
+        \itemsep0pt
+        \item Time domain: statistical measures (Tab.~\ref{tab:td-features})
+        \item Frequency domain: PSD estimation with FFT and Welch averaging with the resolution of 1 Hz combined with Hann window (Tab.~\ref{tab:fd-features})
+        \item Time-frequency domain: energy and entropy in wavelet coefficients from WPD and EWT filter banks.
+    \end{itemize}
+    \item Feature selection on evaluation datasets and experimental measurements from the factory to prune away irrelevant features with pearson correlation, Fisher score, and mutal information.
+    \item Model evaluation and comparison of novelty detection methods and precision of classification with different sets of predictors. The range of optimal parameters will be found for the DenStream ($\mu$, $\epsilon$, $beta$, $\lambda$), Half-Space Trees (window size, ensemble size), and kNN (distance metric, $k$ neighbours). Evaluation metrics associated with confusion matrices will be used like accuracy, precision, true positive rate, and false positive rate.
 \end{enumerate}
 
-\section{Infrastructure}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{assets/ml-lifecycle.png}
+\caption{Machine learning lifecycle of feature discovery}
+\end{figure}
+
+
+\section{Vibration processing}
  \begin{itemize}
+ \itemsep0pt
 \item \textbf{Input:} Samples from three-axis MEMS accelerometers, RPM tachometer, Noise background
-\item \textbf{Output is either:} machine overall status, type of fault,
-\item \textbf{Output for domain expert}: Control chart of trend features
+\item \textbf{Output:} machine health status / type of fault
+\item \textbf{Output on demand}: Control chart of trend features
 \end{itemize}
 
 \begin{enumerate}
-\item MEMS accelerometers are placed on at least two distinict measurement points in two perpendicular axis and one sensor in base for denoising. Rotational speed is captured at the same time too.
-\item Sensors are triggered in regular intervals (every 15 minutes) to collect sample recording from the band saw.
-\item \textbf{Features} are computed and compared to recent measurements. If there is an statistically significant change the whole summary is send, otherwise keepalive notification is send.
-\item Set of features - at the explatory stage all are computed and stored locally. Use features in conjunction with transformation techniques and diagnostics model to reduce the set of features to minimum with the k-fold cross-validation.
-\item Database stores history of measurements
-\item \textbf{Diagnosis panel runs clustering} with introduction of annotations to notify the operator about observed fault and imminent failure of the machine.
+\itemsep0pt
+\item \textbf{Accelerometer} - MEMS accelerometers will be placed on at least two distinct measurement points in two perpendicular axes and one sensor in the machine base for denoising purposes. Rotational speed has to be captured at the same time too. The sampling frequency shall be around 2 kHz if unbalance and looseness is to be identified, and 10 kHz if bearing faults are also of interest. The range of overall rms vibrations is not expected to exceed 30 mm/s according to the vibration severity chart.
+\item \textbf{Acquisition interval} - sensor units will be triggered in regular intervals (every 15 - 60 minutes) to collect vibration recordings from the band saw (or another machine of choice). The machine has to be under the same load conditions every time is recording is active. 
+\item \textbf{Features} - most relevant features are computed and compared to recent measurements. If there is a statistically significant change the whole summary is sent, otherwise keep-alive notification is sent. 
+\item \textbf{Wireless network} - earlier design decision has been made to establish wireless connections. Therefore, the sensor unit will send data over Wifi (IEEE 802.11), or Thread with IEEE 802.15.4 over 2.4 GHz or 868 MHz frequency bands. The application protocol shall be Constrained Application Protocol (CoAP). The messages will be encoded by Concise Binary Object Representation (CBOR) or MessagePack which provides the best compression ratio and is widely supported.
+\item \textbf{Time series database} - stores history of trend values. Raw vibration measurements can be requested by the operator at any time but are available and delayed according to transfer speeds and other network constraints. The promissing database technologies is TimescaleDB.
+\item \textbf{Diagnosis panel} - continuously updates the anomaly detection and classification models with the introduction of annotations to notify the operator about observed faults and imminent failure of the machine. The dashboard is provided to display the current status of multiple machines.
 \end{enumerate}
 
-
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{assets/sensor-network.png}
+\caption{Sensor network components}
+\end{figure}

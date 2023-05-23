@@ -1,7 +1,7 @@
-\section{Evaluation datasets}
-The experimentally designed features' relevancy is first proven in comparison to comprehensive benchmark datasets. There are a few standardized datasets used in the related work, e.g. \cite{ribeiro_rotating_2017}. The datasets listed below are also publically available in Comma-Separated Values files online.
+\section{Evaluation datasets} \label{section:evaluation-datasets}
+The experimentally designed features' relevancy is first proven in comparison to comprehensive benchmark datasets. There are a few standardized datasets used in the related work, e.g. \cite{ribeiro_rotating_2017}. The datasets listed below are also publically available online in Comma-Separated Values files.
 
-\emph{MaFaulDa} dataset combines vibration and acoustic measurements of the shaft in deviating positions and bearings abnormalities.\emph{CWRU dataset} focuses solely on faults in ball bearings. Another less known dataset concerns shaft unbalance, but compared to the previous two, it demonstrates behavior during revolution speed up.  
+\emph{MaFaulDa} dataset combines vibration and acoustic measurements of the shaft in deviating positions and bearings abnormalities. \emph{CWRU dataset} focuses solely on faults in ball bearings. Another less known dataset concerns shaft unbalance, but compared to the previous two, it demonstrates behavior during revolution speed up.  
 
 \subsection{Machinery Fault Database}
 MaFaulDa\footnote{\url{https://www02.smt.ufrj.br/~offshore/mfs/page_01.html}} is a collection of 1951 multivariate time series for 4 different operational conditions on rotor kit Alignment Balance Vibration Trainer (ABVT)~(Fig.~\ref{fig:mafaulda-simulator}). Each series has 5~seconds in duration and is captured at 50 kHz. Vibration signals were obtained with piezoelectric accelerometers with a linear response up to 10~kHz, amplitude range to $\pm$490 $m/s^2$, and resolution step of 10.2~mV per $m/s^2$. 
@@ -45,9 +45,9 @@ This database contains normal operating conditions, faults out of unbalance, hor
 \itemsep0pt
 \item \textbf{Normal} conditions are baseline without the adverse effect of fault in 49 different rotation speeds. 
 \item \textbf{Unbalance} shaft time series uses 8 unbalancing weights from 6 to 35 grams and varying 45 - 49 speeds for each weight adding to 333 mass unbalance loads. 
-\item \textbf{Vertical misalignement} set is comprised of 50 signals each (or 51 in one instance) obtained under displacements: 0.51, 0.63, 1.40, 1.90, 1.27, 1.78 mm.
-\item \textbf{Horizontal misalignement} signals were recorded under displacements: 0.50, 1.00, 1.50, 2.00 mm, each with 49 different speeds (or 50 in one instance)~\cite{pestana-viana_influence_2016}.
-\item \textbf{Bearing faults} are unnoticable without unbalance. Therefore, weights of 6, 20, and 35 grams were attached to induce a detectable effect. Each unbalance mass was combined with cage, outer race, and ball faults at multiple rotation speeds, usually at 50 different speeds.
+\item \textbf{Vertical misalignment} set is comprised of 50 signals each (or 51 in one instance) obtained under displacements: 0.51, 0.63, 1.40, 1.90, 1.27, 1.78 mm.
+\item \textbf{Horizontal misalignment} signals were recorded under displacements: 0.50, 1.00, 1.50, 2.00 mm, each with 49 different speeds (or 50 in one instance)~\cite{pestana-viana_influence_2016}.
+\item \textbf{Bearing faults} are unnoticeable without unbalance. Therefore, weights of 6, 20, and 35 grams were attached to induce a detectable effect. Each unbalance mass was combined with cage, outer race, and ball faults at multiple rotation speeds, usually at 50 different speeds.
 \end{itemize}
 
 
@@ -85,9 +85,9 @@ Single point defects were created with diameters of 0.007, 0.014, 0.021, 0.028, 
 \label{tab:cwru-columns}
 \end{table}
 
-The sampling frequency during baseline set, drive end, and fan end bearing capture is 12 kHz, exclusively for drive end bearings samples were taken at 48 kHz. The duration of the time series is varied from 5 to 40 seconds. Drive end and fan end bearings signals are measured in each experiment sometimes accelerometer was mounted on the supporting base plate.
+The sampling frequency during baseline set, drive end, and fan end bearing capture is 12 kHz, exclusively for drive end bearings samples were taken at 48 kHz. The duration of the time series is varied from 5 to 40 seconds. Drive end and fan end bearings signals are measured in each experiment. Accelerometer was sometimes mounted on the supporting base plate.
 
-\subsection{Unbalance on the rotating shaft}
+\subsection{Unbalance of the rotating shaft}
 Unbalance Detection of a Rotating Shaft\footnote{\url{https://www.kaggle.com/datasets/jishnukoliyadan/vibration-analysis-on-rotating-shaft}} is a Kaggle dataset that simulates 4 different unbalance strengths. 
 \begin{figure}[h]
 \centering
