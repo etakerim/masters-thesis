@@ -26,7 +26,6 @@
 \usepackage[fleqn]{amsmath}
 \usepackage{pdfpages}
 \usepackage{nccmath}
-\usepackage{tocloft}
 \usepackage{csquotes}
 \usepackage{diagbox}
 \usepackage{ifthen}
@@ -34,9 +33,18 @@
 \usepackage{algpseudocode}
 \usepackage[super]{nth}
 
+\usepackage[titles]{tocloft} % TOC header same as chapter title
+%\usepackage{showframe}
+\usepackage{titlesec}
+\titlespacing*{\chapter}{0pt}{0pt}{40pt}
+
 \usepackage{colortbl}
 \usepackage{tabulary}
 \usepackage{adjustbox}
+
+\usepackage{lmodern}
+\usepackage{fourier-orns}
+\newlength\longest
 
 
 \usepackage{nomencl}
@@ -74,6 +82,11 @@
 \thispagestyle{empty}%
 \newpage%
 \if@twocolumn\hbox{}\newpage\fi\fi\fi}
+\makeatother
+
+% roman numerals
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
 \makeatother
 
 
@@ -141,8 +154,8 @@
 \newcommand{\Faculty}[0] {Fakulta informatiky a informačných technológií}
 \newcommand{\FacultyEN}[0] {Faculty of Informatics and Information Technologies}
 
-\newcommand{\ThesisTitle}[0] {Priebežná správa o riešení DP1}
-\newcommand{\ThesisTitleEN}[0] {Progress report in Master's thesis project I}
+\newcommand{\ThesisTitle}[0] {Priebežná správa o riešení DP2}
+\newcommand{\ThesisTitleEN}[0] {Progress report in Master's thesis project \rom{2}}
 
 \newcommand{\Thesis}[0] {Diplomová práca}
 \newcommand{\ThesisEN}[0] {Master's Thesis}
@@ -157,15 +170,16 @@
 \newcommand{\ConsultantEN}[0] {Lukáš Doubravský}
 
 \newcommand{\RegNo}[0] {FIIT-xxxx-xxxxxx}
-\newcommand{\Date}[0] {Jún 2023}
-\newcommand{\DateEN}[0] {June 2023}
+\newcommand{\Date}[0] {Január 2024}
+\newcommand{\DateEN}[0] {January 2024}
+\newcommand{\SignDateEN}[0] {January 2024}
 \newcommand{\StudyProgramme}[0] {Inteligentné softvérové systémy}
 \newcommand{\StudyProgrammeEN}[0] {Intelligent Software Systems}
 \newcommand{\StudyField}[0] {Informatika}
 \newcommand{\StudyFieldEN}[0] {Informatics}
 \newcommand{\Institute}[0] {Institute of Computer Engineering and Applied Informatics}
 \newcommand{\SignPlace}[0] {Bratislava, }
-\newcommand{\SignDateEN}[0] {June 2023}
+
 
 
 \begin{document}
@@ -192,11 +206,11 @@
 \emptypage
 
 % TODO (DP2): Acknowledgments
-%\input{chapters/preliminaries/acknowledgments}
-%\emptypage
+% \input{chapters/preliminaries/acknowledgments}
+\emptypage
 
-% TODO (DP2): Annotations
-% \input{chapters/preliminaries/annotation}
+% Annotations
+\input{chapters/preliminaries/annotation}
 
 % Contents
 \pagestyle{empty}
@@ -223,12 +237,8 @@ The basis we build upon is the domain knowledge of the mechanical engineers in v
 
 \input{chapters/03-design}
 
-%\section{Sensor and microcontroller}
-% Intelligent Sensor Networks: The Integration of Sensor Networks, Signal Processing and Machine Learning
-%\cite{hu_intelligent_2012} 
-
 %\nocite{*}
-\printbibliography[heading=bibintoc, title={Literature}]
+\printbibliography[heading=bibintoc]
 
 %  Appendix ---------------------------------------------------------
 \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
@@ -242,8 +252,8 @@ The basis we build upon is the domain knowledge of the mechanical engineers in v
 \titleformat{\chapter}{\normalfont\huge\bf}{Appendix \thechapter:}{1em}{}
 \renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{Appendix \thechapter.\ #1}}{}}
 
-% TODO(DP2): Resume
-% \input{chapters/appendix/A-resume}
+% Resume
+\input{chapters/appendix/A-resume}
 
 \input{chapters/appendix/B-plan-of-work}
 
