@@ -5,9 +5,9 @@ The vibration signals in a factory environment are inherently full of disturbanc
 The oscillatory motion should be centered around the zero level for further manipulation. The constant offset is eliminated simply by subtracting the overall mean from the signal. Moreover high pass DC blocker infinite impulse response (IIR) filter of 1st order can adjust to shifts of the average value over time (Equation~\ref{equ:iir-dc-blocker}). The transition band depends upon the choice of corner frequency $f_{3dB}$ (Fig.~\ref{fig:dc-blocker}).
 
 \myequations{DC blocker IIR filter of 1st order}
-\begin{equation} \label{equ:iir-dc-blocker}
+\begin{ceqn}\begin{align} \label{equ:iir-dc-blocker}
 y_k = (1 - \frac{\omega}{2}) \cdot (x_k  -  x_{k - 1}) + (1 - \omega) \cdot y_{k - 1}; \quad \omega = 2\pi \cdot \frac{f_{3dB}}{f_s}
-\end{equation}
+\end{align}\end{ceqn}
 
 A steeper 3~dB attenuation band can be achieved by increasing the order of the filter. Then the cutoff frequency should be such that filter coefficients are fractions to counteract rounding errors~\cite{tittelbach-helmrich_digital_2021}.
 
