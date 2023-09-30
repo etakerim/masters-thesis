@@ -1,7 +1,11 @@
 /*
- * ssh 192.168.7.2 -l debian
+ * debian:temppwd
+ *
+ * ssh debian@192.168.7.2
  * gcc sampler.c -o sampler
+ *
  * sudo nice -n -20 ./sampler out.tsv
+ * scp debian@192.168.7.2:/home/debian/out.tsv out.tsv
  */
 
 #include <stdio.h>
@@ -14,34 +18,27 @@
 #include <sys/time.h>
 #include <sys/timerfd.h>
 
-/*
- * https://www.analog.com/en/products/adxl335.html
-low-pass filtering for antialiasing and noise reduction.
-Bandwidth (Hz) Capacitor (μF)
-    1 4.7
-    10 0.47
-    50 0.10
-    100 0.05
-    200 0.027
-    500 0.01
-*/
 // One second
 // #define PERIOD_NS   1000000
 
 // ODR = 500 Hz
-// Sampling frequency = 2000 Hz
-#define PERIOD_NS           500
+// Sampling frequency = 4 kHz
+#define PERIOD_NS           250
 #define ANALOG_IN_PATH      "/sys/bus/iio/devices/iio:device0/"
 #define AIN_CH              3
 #define AIN0                ANALOG_IN_PATH "in_voltage0_raw"
 #define AIN1                ANALOG_IN_PATH "in_voltage1_raw"
 #define AIN2                ANALOG_IN_PATH "in_voltage2_raw"
+#define AIN3                ANALOG_IN_PATH "in_voltage3_raw"
+#define AIN4                ANALOG_IN_PATH "in_voltage4_raw"
+#define AIN5                ANALOG_IN_PATH "in_voltage5_raw"
+#define AIN6                ANALOG_IN_PATH "in_voltage6_raw"
 #define BUF_SIZE            8192
 
 
 int make_periodic(unsigned int period)
 {
-    int fd = timerfd_create(CLOCK_REALTIME, 0);
+    int fd = timerfd_create(CLOCK_MONOTONIC, 0);
     if (fd == -1)
         return fd;
 
@@ -86,12 +83,15 @@ int main(int argc, char* argv[])
     unsigned long long samples = 0;
 
     // period in nanoseconds
-    const char *ain_channels[AIN_CH] = {AIN0, AIN1, AIN2};
+    const char *ain_channels[AIN_CH] = {AIN0, AIN2, AIN6};
     puts("Sampler");
 
     char buffer[BUF_SIZE];
     ssize_t ret;
     int log = open(argv[1], O_WRONLY | O_CREAT, 0644);
+
+    printf("Sampling period: %d ns\n", PERIOD_NS);
+    printf("Sampling frequency: %.2f Hz\n", 1.0 / (PERIOD_NS / 1000000.0));
     puts("Recording to input file ...");
 
     int timer = make_periodic(PERIOD_NS);
@@ -117,7 +117,6 @@ int main(int argc, char* argv[])
     }
 
     close(log);
-    printf("Sampling frequency: 2 kHz\n");
     printf("Writen: %llu samples\n", samples);
     puts("Finish!");
 }
