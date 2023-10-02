@@ -14,8 +14,8 @@ from multiprocessing.pool import ThreadPool
 FS_HZ = 50000
 
 
-def import_files(zip_file, file_list, func):
-    pool = ThreadPool(processes=4)
+def import_files(zip_file, file_list, func, cores=4):
+    pool = ThreadPool(processes=cores)
     
     return pd.concat([
         pool.apply_async(func, (zip_file, name, )).get()
@@ -36,13 +36,13 @@ def normality_tests(ts, columns=None):
 
 def resolution_calc(fs, window):
     print('Window size:', window)
-    print('Heinsenberg rectangle')
-    print('Time step:', window / fs * 1000, 'ms')
-    print('Frequency step:', fs / window, 'Hz')
+    print('Heinsenberg box')
+    print('\tTime step:', window / fs * 1000, 'ms')
+    print('\tFrequency step:', fs / window, 'Hz')
 
 
 def rms(x):
-    return np.sqrt((x ** 2).mean())
+    return np.sqrt(np.mean(x ** 2))
 
 
 def get_mafaulda_files(zip_file):
@@ -100,7 +100,7 @@ def fft_csv_import(zip_file, filename, window=4096, overlap=0.5, fs=50000, is_we
         freqs = [i * (fs / window) for i in range(window // 2 + 1)]
 
     else:
-        freqs, spectra = welch(v, fs, 'hamming', nperseg=window, scaling='spectrum', average='mean')
+        freqs, spectra = welch(v, fs, 'hann', nperseg=window, scaling='spectrum', average='mean')
         spectra = [spectra]
 
 
@@ -125,7 +125,7 @@ def fft_csv_import_by_axis(zip_file, filename, axis='ax', window=4096, overlap=0
         freqs = [i * (fs / window) for i in range(window // 2 + 1)]
 
     else:
-        freqs, spectra = welch(v, fs, 'hamming', nperseg=window, scaling='spectrum', average='mean')
+        freqs, spectra = welch(v, fs, 'hann', nperseg=window, scaling='spectrum', average='mean')
         spectra = [spectra]
 
 
