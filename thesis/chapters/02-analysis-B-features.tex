@@ -73,10 +73,10 @@ The other significant time-domain attributes are derived as ratios of previous s
 \begin{tabular}{|l|l|l|l|}
 \hline
 \textbf{Feature}            & \textbf{Equation}                                                                    & \textbf{Feature}        & \textbf{Equation}                                                                                                  \\ \hline
-\textit{Standard deviation} & $ \sigma = \sqrt{\frac{1}{N}\sum_{i = 1}^{N}{\left(x_i - \bar{x}\right)^2}} $        & \textit{Crest factor}   & $ X_{cf} = \frac{max(|x_i|)}{\left( \frac{1}{N} \sum_{i=1}^{N}{x_i^2} \right)^\frac{1}{2}} $                       \\ \hline
+\textit{Standard deviation} & $ \sigma = \sqrt{\frac{1}{N}\sum_{i = 1}^{N}{\left(x_i - \bar{x}\right)^2}} $        & \textit{Crest factor}   & $ X_{cf} = \frac{max(|x_i|)}{X_{rms}} $                       \\ \hline
 \textit{Skewness}           & $ X_{sv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^3}$ & \textit{Margin factor}  & $ X_{mf} = \frac{max(|x_i|)}{\left( \frac{1}{N} \sum_{i=1}^{N}{\sqrt{|x_i|}} \right)^2} $                          \\ \hline
 \textit{Kurtosis}           & $ X_{kv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^4}$ & \textit{Impulse factor} & $ X_{if} = \frac{max(|x_i|)}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}} $                                                  \\ \hline
-\textit{Root mean square}   & $ X_{rms} = \left(\frac{1}{N}\sum_{i = 1}^{N}{x_i^2}\right)^\frac{1}{2}$             & \textit{Shape factor}   & $ X_{sf} = \frac{\left( \frac{1}{N} \sum_{i=1}^{N}{x_i^2} \right)^\frac{1}{2}}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}}$ \\ \hline
+\textit{Root mean square}   & $ X_{rms} = \sqrt{\frac{1}{N}\sum_{i = 1}^{N}{x_i^2}} $             & \textit{Shape factor}   & $ X_{sf} = \frac{X_{rms}}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}}$ \\ \hline
 \textit{Peak-to-peak}       & $ X_{ppv} = \max(x_i) - \min(x_i) $                                                  & \textit{Maximum}        & $ X_{max} = \max(|x_i|) $                                                                                          \\ \hline
 \end{tabular}
 \end{adjustbox}
@@ -128,12 +128,12 @@ v_i^{(r)} = \frac{v_j}{\min{|v_j - r \cdot v_i|}}
 \hline
 \textbf{Feature}           & \textbf{Equation}                                                                                                  \\ \hline
 \textit{Spectral centroid} & $ X_{fc} = \frac{\sum_{i = 0}^{N - 1}{f_i \cdot a(f_i)}}{\sum_{i = 0}^{N - 1}{a(f_i)}}$                   \\ \hline 
-\textit{Spectral roll-off} & $ \sum_{0}^{f_c}a^2(f) = 0.95 \sum_{0}^{f_s / 2}a^2(f)$                                                   \\ \hline
-\textit{Spectral flux}     & $X_{\mathrm{flux}} = 1 - \frac{\sum_k a(t-1, k) \cdot a(t,k)}{\sqrt{\sum_k a(t-1, k)^2} \sqrt{\sum_k a(t, k)^2}}$ \\ \hline 
+\textit{Spectral roll-off} & $ E(f_c) = 0.95 \cdot E(f_s / 2) $                                                   \\ \hline
+\textit{Spectral flux}     & $X_{\mathrm{flux}} = 1 - \mathrm{corr}(A_{t-1}) A_t)$ \\ \hline 
 \textit{Harmonic spectral deviation} & $ X_{\mathrm{HDEV}} = \frac{1}{H}\sum_h(a(h) - \mathrm{SE}(h))$                                          \\ \hline
 \textit{Noisiness}                   & $X_{noise} = \frac{\sum_{k \notin h}^{N}E_k}{\sum_{i = 1}^{N}E_i} $                             \\ \hline
 \textit{Inharmonicity}               & $X_{inharmo} = \frac{2}{f_0} \cdot \frac{\sum_h | f(h) - h \cdot f_0| \cdot a^2(h)}{\sum_h a^2(h)}$ \\ \hline
-\textit{Energy}            & $ E = \sum_{i = 0}^{N - 1}|x(t)|^2 $                                                                    \\ \hline \textit{Energy ratio}                & $E_i = \frac{E_i}{\sum_{i = 1}^{N}E_i} $                                                        \\ \hline
+\textit{Energy}            & $ E(N) = \sum{i = 1}^{N} a^2(t) $                                                                    \\ \hline \textit{Energy ratio}                & $E_i = \frac{E_i}{\sum_{i = 1}^{N}E_i} $                                                        \\ \hline
 \textit{Shannon entropy}      & $H(X) = - \sum_{i} P(X = x_i) \cdot \ln(P(X = x_i)) $                                                  \\ \hline
 \end{tabular}
 %\end{adjustbox}
