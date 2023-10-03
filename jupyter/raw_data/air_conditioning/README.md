@@ -1,7 +1,11 @@
 # Obhliadka
 
-- Dátum: 3.10.2023, 9:00
+- Dátum: 3.10.2023, 9:00 - 10:30
 - Prítomný: Miroslav Hájek, Marcel Baláž, Lukáš Doubravský, Michal Ország
+
+
+Pozor (skontrolovať): Výsledky v graphs môžu byť nepresné vo frekvenciách, vzorkovač nemusí byť dobre prerátaný a možno sa líši o násobok (zrýchlený záznam).
+
 
 ## Vybavenie
 - Notebook Acer Aspire 5
@@ -17,7 +21,7 @@
 - Klimatizácia
 	- Sála 1 - VERTIV
 	- Sála 3 - EXCOOL
-	- SHC2 - VERTIV
+	- SHC2 - VERTIV  (striedavo sa vypínal a zapínal kompresor, to vidieť viacej harmonickými, meranie na vrchu skrine, y smerom dozadu od predného panelu)
 - Rotačná UPS
 - Šum pri pozadia (na podlahe) pri strojoch
 
