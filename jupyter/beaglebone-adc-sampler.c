@@ -6,6 +6,9 @@
  *
  * sudo nice -n -20 ./sampler out.tsv
  * scp debian@192.168.7.2:/home/debian/out.tsv out.tsv
+ *
+ * FILE COLUMNS
+ * x[raw]  y[raw]  z[raw]  time_interval[us]
  */
 
 #include <stdio.h>
@@ -17,15 +20,18 @@
 #include <fcntl.h>
 #include <sys/time.h>
 #include <sys/timerfd.h>
+#include <inttypes.h>
 
-// One second
-// #define PERIOD_NS   1000000
 
+#define US_PER_SECOND       1000000
+#define NS_PER_SECOND       1000000000
 // ODR = 500 Hz
-// Sampling frequency = 4 kHz
-#define PERIOD_NS           250
+#define FS_HZ               4000
+#define PERIOD_US           (US_PER_SECOND / (double)FS_HZ)
+
 #define ANALOG_IN_PATH      "/sys/bus/iio/devices/iio:device0/"
 #define AIN_CH              3
+
 #define AIN0                ANALOG_IN_PATH "in_voltage0_raw"
 #define AIN1                ANALOG_IN_PATH "in_voltage1_raw"
 #define AIN2                ANALOG_IN_PATH "in_voltage2_raw"
@@ -36,6 +42,7 @@
 #define BUF_SIZE            8192
 
 
+// Time events
 int make_periodic(unsigned int period)
 {
     int fd = timerfd_create(CLOCK_MONOTONIC, 0);
@@ -59,12 +66,44 @@ void wait_period(int timer)
 {
     unsigned long long missed;
 
-    int ret =  read(timer, &missed, sizeof(missed));
+    int ret = read(timer, &missed, sizeof(missed));
     if (ret == -1) {
         perror("read timer");
         return;
     }
 }
+
+
+// Measure time intervaô
+uint64_t sub_timespec(struct timespec *a, struct timespec *b)
+{
+    struct timespec r;
+    r.tv_nsec = b->tv_nsec - a->tv_nsec;
+    r.tv_sec  = b->tv_sec - a->tv_sec;
+
+    if (r.tv_sec > 0 && r.tv_nsec < 0) {
+        r.tv_nsec += NS_PER_SECOND;
+        r.tv_sec--;
+    }
+    else if (r.tv_sec < 0 && r.tv_nsec > 0) {
+        r.tv_nsec -= NS_PER_SECOND;
+        r.tv_sec++;
+    }
+
+    return NS_PER_SECOND * r.tv_sec + r.tv_nsec;
+}
+
+struct timespec write_interval_ns(int log_fd, struct timespec before)
+{
+    char s[20];
+    struct timespec now;
+
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    snprintf(s, 20, "%llu", sub_timespec(&before, &now) / 1000);
+    write(log_fd, s, strlen(s));
+    return now;
+}
+
 
 
 volatile sig_atomic_t done = 0;
@@ -80,7 +119,9 @@ int main(int argc, char* argv[])
     memset(&action, 0, sizeof(action));
     action.sa_handler = term;
     sigaction(SIGINT, &action, NULL);
+
     unsigned long long samples = 0;
+    struct timespec t = {};
 
     // period in nanoseconds
     const char *ain_channels[AIN_CH] = {AIN0, AIN2, AIN6};
@@ -90,11 +131,9 @@ int main(int argc, char* argv[])
     ssize_t ret;
     int log = open(argv[1], O_WRONLY | O_CREAT, 0644);
 
-    printf("Sampling period: %d ns\n", PERIOD_NS);
-    printf("Sampling frequency: %.2f Hz\n", 1.0 / (PERIOD_NS / 1000000.0));
-    puts("Recording to input file ...");
+    puts("Recording to file ...");
 
-    int timer = make_periodic(PERIOD_NS);
+    int timer = make_periodic(PERIOD_US);
     while (!done) {
         for (int i = 0; i < AIN_CH; i++) {
             int ain = open(ain_channels[i], O_RDONLY);
@@ -111,6 +150,9 @@ int main(int argc, char* argv[])
             }
             close(ain);
         }
+        ///////////////////////////////////////////
+        t = write_interval_ns(log, t);
+        ////////////////////////////////////////////
         write(log, "\n", 1);
         samples++;
         wait_period(timer);
@@ -120,4 +162,3 @@ int main(int argc, char* argv[])
     printf("Writen: %llu samples\n", samples);
     puts("Finish!");
 }
-
