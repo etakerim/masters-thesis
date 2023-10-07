@@ -4,6 +4,7 @@ scipy
 statsmodels
 pandas
 jupyterlab
+padasip
 
 # Plots
 tqdm
