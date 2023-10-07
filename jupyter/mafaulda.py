@@ -2,16 +2,33 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import statsmodels.api as sm
+
 from scipy.stats import skew, kurtosis, kstest
 from scipy.signal import welch
 from scipy.fft import rfft
 from scipy.signal import butter, filtfilt, find_peaks
+
 from tqdm.notebook import tqdm
 import matplotlib.pyplot as plt
 
 from multiprocessing.pool import ThreadPool
 
 FS_HZ = 50000
+COLUMNS = ['ax', 'ay', 'az', 'bx', 'by', 'bz', 'mic']
+
+
+def parse_filename(filename: str) -> (str, str, str):
+    path = filename.split('/')
+    if path[0].strip() in ('overhang', 'underhang'):
+        fault = f'{path[0]}-{path[1]}'
+        severity = path[2]
+        seq = path[3]
+    elif path[0].strip() == 'normal':
+        fault, severity, seq = path[0], '', path[1]
+    else:
+        fault, severity, seq = path
+
+    return fault, severity, seq
 
 
 def import_files(zip_file, file_list, func, cores=4):
@@ -21,17 +38,6 @@ def import_files(zip_file, file_list, func, cores=4):
         pool.apply_async(func, (zip_file, name, )).get()
         for name in tqdm(file_list)
     ])
-
-def normality_tests(ts, columns=None):
-    columns = columns or ['ax', 'ay', 'az', 'bx', 'by', 'bz']
-    figure, axes = plt.subplots(2, 3, figsize=(10, 5))
-
-    for i, col in enumerate(columns):
-        print('Normality test p-value: ', kstest(ts[col], 'norm').pvalue, '(<0.05 is not normal)')
-        sm.qqplot(ts[col], line='45', ax = axes[i // 3, i % 3])
-
-    plt.tight_layout()
-    plt.show()
 
 
 def resolution_calc(fs, window):
@@ -73,7 +79,6 @@ def preprocess(ts):
     )
 
 
-
 def csv_import(zip_file, filename):
     ts = pd.read_csv(
         zip_file.open(filename),
@@ -81,6 +86,18 @@ def csv_import(zip_file, filename):
     )
     ts = preprocess(ts)
     return ts.assign(key=filename)
+
+
+def normality_tests(ts, columns=None):
+    columns = columns or ['ax', 'ay', 'az', 'bx', 'by', 'bz']
+    figure, axes = plt.subplots(2, 3, figsize=(10, 5))
+
+    for i, col in enumerate(columns):
+        print('Normality test p-value: ', kstest(ts[col], 'norm').pvalue, '(<0.05 is not normal)')
+        sm.qqplot(ts[col], line='45', ax = axes[i // 3, i % 3])
+
+    plt.tight_layout()
+    plt.show()
 
 
 def fft_csv_import(zip_file, filename, window=4096, overlap=0.5, fs=50000, is_welch=False):

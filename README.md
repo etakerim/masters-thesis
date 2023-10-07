@@ -56,6 +56,9 @@ in way similiar to how human expert of vibrodiagnostics would analyze the freque
 - propose some kind spectral segmentation based of peak/energy/envelope extraction.
 - Evaluate the invented method is optimal in comparision to regular statistics
 
+---
+## Feature extraction datasets
+- [**Features**](https://drive.google.com/drive/folders/19PlPF5jPp-z7-0l0es14bSgUsELUx3BR?usp=sharing)
 
 ____
 ## Evaluation datasets
