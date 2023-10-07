@@ -8,9 +8,11 @@ from scipy.stats import skew, kurtosis, entropy
 from scipy.signal import welch, windows, find_peaks
 from scipy.interpolate import interp1d
 from scipy.fft import rfft
+
+from scipy.signal import butter, iirfilter, freqz, lfilter, decimate
 import pywt
 
-import matplotlib.pyplot as plt
+import matplotlib.pylab as plt
 import mafaulda
 
 
@@ -148,6 +150,40 @@ def features_wavelet_domain(zip_file: ZipFile, filename: str) -> pd.DataFrame:
             result.append(row)
 
     return pd.DataFrame(result)
+
+
+###############################################################
+# https://dsp.stackexchange.com/questions/19084/applying-filter-in-scipy-signal-use-lfilter-or-filtfilt
+
+def dc_blocker(x: np.array, cutoff: float, order=1, fs=mafaulda.FS_HZ, plot=False):
+    b, a = iirfilter(order, cutoff, btype='highpass', fs=fs)
+    if plot:
+        plot_filter_response(b, a)
+    y = lfilter(b, a, x)
+    return y
+
+
+def downsample(x: np.array, k=None, fs_reduced=mafaulda.FS_HZ, fs=mafaulda.FS_HZ):
+    if k is None:
+        k = fs // fs_reduced
+    return decimate(x, k, ftype='iir')
+
+
+def lowpass_filter(x: np.array, cutoff: float, order=2, fs=mafaulda.FS_HZ, plot=False):
+    b, a = butter(order, cutoff, btype='lowpass', fs=fs)
+    if plot:
+        plot_filter_response(b, a)
+    y = lfilter(b, a, x)
+    return y
+
+
+def plot_filter_response(b, a, title=''):
+    w, h = freqz(b, a, fs=mafaulda.FS_HZ)
+    fig, ax = plt.subplots()
+    ax.plot(w, 20 * np.log10(abs(h)), 'b')
+    ax.set_xlabel('Frequency [Hz]')
+    ax.set_ylabel('Amplitude [dB]')
+    ax.set_title(title)
 
 
 ###############################################################

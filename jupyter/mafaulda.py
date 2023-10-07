@@ -243,13 +243,6 @@ def axis_spectrograms(df):
     g = plt.colorbar(cax, ax=ax)
 
 
-def butter_lowpass_filter(data, cutoff, fs, order):
-    normal_cutoff = cutoff / nyq
-    b, a = butter(order, normal_cutoff, btype='low', analog=False)
-    y = filtfilt(b, a, data)
-    return y
-
-
 def rms_orbitals(ts, n=100):
     fig, ax = plt.subplots(1, 3, figsize=(20, 5))
     
