@@ -40,6 +40,17 @@ def import_files(zip_file, file_list, func, cores=4):
     ])
 
 
+def load_dataset_matrix(zip_file, file_list, col):
+    X = []
+    for filename in tqdm(file_list):
+        ts = csv_import(zip_file, filename)
+        stream = ts[col].to_numpy()
+        a = stream[:220000]
+        X.append(a)
+
+    return np.array(X)
+
+
 def resolution_calc(fs, window):
     print('Window size:', window)
     print('Heinsenberg box')
