@@ -1,4 +1,5 @@
 /*
+ * WARNING: very unreliable - not precise sampling frequency - uses sw timer
  * debian:temppwd
  *
  * ssh debian@192.168.7.2
@@ -74,7 +75,7 @@ void wait_period(int timer)
 }
 
 
-// Measure time intervaô
+// Measure time interval
 uint64_t sub_timespec(struct timespec *a, struct timespec *b)
 {
     struct timespec r;
