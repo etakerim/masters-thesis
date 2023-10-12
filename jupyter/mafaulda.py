@@ -72,21 +72,24 @@ def get_mafaulda_files(zip_file):
     return filenames
 
 
-def preprocess(ts):
+def rpm_calc(tachometer: pd.Series) -> float:
+    t = tachometer.index.to_numpy()
+    y = tachometer.to_numpy()
+    peaks, _ = find_peaks(y, prominence=3, width=50)
+    interval = np.diff(t[peaks]).mean()
+    return 60 / interval
+
+
+def preprocess(ts: pd.DataFrame):
     return (
         ts
         .assign(t = lambda x: x.index * (1 / FS_HZ))
         .assign(mag_a = lambda x: np.hypot(x.ax, x.ay, x.ay))
         .assign(mag_b = lambda x: np.hypot(x.bx, x.by, x.by))
-        .assign(rev = lambda x: (x.tachometer - x.shift(-1).tachometer) >= 3)
-        .assign(rpm = lambda x: 60 / (x[x.rev == True].t - x[x.rev == True].shift(1).t))
-        .assign(rpm = lambda x: x.rpm.ffill().rolling(
-            (x[x.rev == True].index.values - np.roll(x[x.rev == True].index.values, 1)).max()
-        ).median())  # Smooth out outliers by robust filter
-        .dropna()
-        .reset_index(drop=True)
+        .reset_index()
         .assign(t = lambda x: x.index * (1 / FS_HZ))
         .set_index('t')
+        .assign(rpm = lambda x: rpm_calc(x.tachometer))
     )
 
 
