@@ -1,20 +1,34 @@
 /*
  * debian:temppwd
  *
+ * scp recorder.c debian@192.168.7.2:/home/debian/recorder.c
  * ssh debian@192.168.7.2
- * gcc sampler.c -o sampler
  *
- * sudo nice -n -20 ./sampler out.tsv
+ * FS = 2560 Hz (<2580)
+ * gcc -Wall -Wextra -O2 recorder.c -o recorder
+ * timeout --signal=SIGINT 10s ./recorder out
+ *
  * scp debian@192.168.7.2:/home/debian/out.tsv out.tsv
  *
  * FILE COLUMNS
- * x[raw]  y[raw]  z[raw]  time_interval[us]
+ * x[raw]  y[raw]  z[raw]
+ *
+ * Manuals:
+ * https://elinux.org/EBC_Exercise_10a_Analog_In
+ * https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-bus-iio
+ * https://www.kernel.org/doc/Documentation/devicetree/bindings/input/touchscreen/ti-tsc-adc.txt
+ *
+ * TI-am335x-adc.0.auto
+ * https://software-dl.ti.com/processor-sdk-linux/esd/docs/latest/linux/Foundational_Components/Kernel/Kernel_Drivers/ADC.html
+ *
+ * ADC config:
+ * /opt/source/bb.org-overlays/src/arm/BB-ADC-00A0.dts
+ *
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
-#include <pthread.h>
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -23,15 +37,9 @@
 #include <inttypes.h>
 
 
-#define US_PER_SECOND       1000000
-#define NS_PER_SECOND       1000000000
-
-#define FS_HZ               8000
-#define PERIOD_US           (US_PER_SECOND / (double)FS_HZ)
-
+#define NS_PER_SECOND       1000000000.0
 #define ANALOG_IN_PATH      "/sys/bus/iio/devices/iio:device0"
 #define ANALOG_IN_DEV       "/dev/iio:device0"
-#define AIN_CH              3
 
 #define BUFFER_LENGTH_PATH  ANALOG_IN_PATH "/buffer/length"
 #define BUFFER_ENABLE_PATH  ANALOG_IN_PATH "/buffer/enable"
@@ -42,10 +50,16 @@
 #define AIN4                ANALOG_IN_PATH "/scan_elements/in_voltage4_en"
 #define AIN5                ANALOG_IN_PATH "/scan_elements/in_voltage5_en"
 #define AIN6                ANALOG_IN_PATH "/scan_elements/in_voltage6_en"
-#define CNT_SAMPLES         100
+
+#define AIN_CH              3
+#define CNT_SAMPLES         256
 #define BUF_SIZE            AIN_CH * CNT_SAMPLES
+#define BUFFER_ALLOC        3 * BUF_SIZE
+
+#define FILENAME_LENGTH     200
 
 
+static const char *channels[AIN_CH] = {AIN0, AIN2, AIN6};
 volatile sig_atomic_t done = 0;
 
 void term(int signum)
@@ -56,7 +70,6 @@ void term(int signum)
 void adc_enable(void)
 {
     FILE *ain;
-    const char *channels[AIN_CH] = {AIN0, AIN2, AIN6};
 
     // Enable AIN
     for (int i = 0; i < AIN_CH; i++) {
@@ -75,7 +88,7 @@ void adc_enable(void)
         perror("Setting buffer length ...");
         exit(1);
     }
-    fprintf("%d", 2 * AIN_CH * CNT_SAMPLES)
+    fprintf(ain, "%d", BUFFER_ALLOC);
     fclose(ain);
 
     // Enable continous mode
@@ -93,7 +106,7 @@ void adc_disable()
     puts("Turning off input");
 
     //  Disable continous
-    ain = fopen(BUFFER_ENABLE_PATH, "w");
+    FILE *ain = fopen(BUFFER_ENABLE_PATH, "w");
      if (ain == NULL) {
         perror("Enabling continous mode ...");
         exit(1);
@@ -113,26 +126,93 @@ void adc_disable()
     }
 }
 
-void input_loop(const char *filename)
+void set_extension(char *filename, const char *src, int buffer_len, const char *ext)
 {
+    memset(filename, '\0', buffer_len);
+    strncpy(filename, src, buffer_len - strlen(ext));
+    strcat(filename, ext);
+}
+
+
+uint64_t diff_timespec(struct timespec *a, struct timespec *b)
+{
+    struct timespec r;
+    r.tv_nsec = b->tv_nsec - a->tv_nsec;
+    r.tv_sec  = b->tv_sec - a->tv_sec;
+
+    if (r.tv_sec > 0 && r.tv_nsec < 0) {
+        r.tv_nsec += NS_PER_SECOND;
+        r.tv_sec--;
+    }
+    else if (r.tv_sec < 0 && r.tv_nsec > 0) {
+        r.tv_nsec -= NS_PER_SECOND;
+        r.tv_sec++;
+    }
+
+    return NS_PER_SECOND * r.tv_sec + r.tv_nsec;
+}
+
+
+
+uint64_t input_loop(const char *filename)
+{
+    char dst[FILENAME_LENGTH];
+    set_extension(dst, filename, FILENAME_LENGTH, ".bin");
+
     FILE *stream = fopen(ANALOG_IN_DEV, "rb");
-    FILE *log = fopen(filename, "wb");
+    FILE *log = fopen(dst, "wb");
 
     if (stream == NULL || log == NULL) {
         perror("Cannot open stream or file");
         exit(1);
     }
 
-    uint64_t samples = 0;
     uint16_t buffer[BUF_SIZE];
+    struct timespec start, stop;
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
     while (!done) {
         fread(&buffer, sizeof(uint16_t), BUF_SIZE, stream);
         fwrite(&buffer, sizeof(uint16_t), BUF_SIZE, log);
     }
+    clock_gettime(CLOCK_MONOTONIC, &stop);
 
     fclose(log);
     fclose(stream);
+    return diff_timespec(&start, &stop);
 }
+
+
+uint64_t save_to_csv(const char *filename)
+{
+    char src[FILENAME_LENGTH];
+    char dst[FILENAME_LENGTH];
+
+    set_extension(src, filename, FILENAME_LENGTH, ".bin");
+    set_extension(dst, filename, FILENAME_LENGTH, ".tsv");
+
+    FILE *samples = fopen(src, "rb");
+    FILE *csv = fopen(dst, "w");
+    uint64_t row;
+
+    for (row = 0; !feof(samples); row++) {
+        uint16_t v;
+        fread(&v, sizeof(uint16_t), 1, samples);
+        fprintf(csv, "%u", v);
+
+        if ((row + 1) % AIN_CH != 0) {
+            putc('\t', csv);
+        } else {
+            putc('\n', csv);
+        }
+    }
+
+    fclose(samples);
+    fclose(csv);
+
+    return row / AIN_CH;
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -141,7 +221,7 @@ int main(int argc, char* argv[])
     action.sa_handler = term;
     sigaction(SIGINT, &action, NULL);
 
-    if (args < 2) {
+    if (argc < 2) {
         puts("Missing filename");
         return 1;
     }
@@ -151,25 +231,14 @@ int main(int argc, char* argv[])
     puts("Press ^C to stop");
 
     adc_enable();
-    input_loop(argv[1]);
+    uint64_t elapsed_ns = input_loop(argv[1]);
+    double elapsed_s = elapsed_ns / NS_PER_SECOND;
     adc_disable();
 
+    uint64_t samples = save_to_csv(argv[1]);
 
-
-    // TODO: Postprocess to csv
-    /*
-    for (int i = 0; i < AIN_CH * CNT_SAMPLES; i += AIN_CH) {
-        uint16_t x, y, z;
-        fread(&x, sizeof(uint16_t), 1, stream);
-        fread(&y, sizeof(uint16_t), 1, stream);
-        fread(&z, sizeof(uint16_t), 1, stream);
-        fprintf("%d\t%d\t%d\n", x, y, z);
-                samples++;
-    }
-    */
-    // https://numpy.org/doc/stable/reference/generated/numpy.fromfile.html
-
-    printf("Writen: %llu samples\n", samples);
+    printf("Written: %llu samples\n", samples);
+    printf("Duration: %.3f s\n", elapsed_s);
+    printf("Sampling rate: %.3f Hz\n", samples / elapsed_s);
     puts("Finish!");
 }
-
