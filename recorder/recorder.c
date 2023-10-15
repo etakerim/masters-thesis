@@ -4,7 +4,7 @@
  * scp recorder.c debian@192.168.7.2:/home/debian/recorder.c
  * ssh debian@192.168.7.2
  *
- * FS = 2560 Hz (<2580)
+ * FS = 2551 Hz (7.653 kHz / channels)
  * gcc -Wall -Wextra -O2 recorder.c -o recorder
  * timeout --signal=SIGINT 10s ./recorder out
  *
@@ -18,11 +18,26 @@
  * https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-bus-iio
  * https://www.kernel.org/doc/Documentation/devicetree/bindings/input/touchscreen/ti-tsc-adc.txt
  *
- * TI-am335x-adc.0.auto
+ * ADC DRIVER: TI-am335x-adc.0.auto
+ * https://github.com/torvalds/linux/blob/master/drivers/iio/adc/ti_am335x_adc.c
  * https://software-dl.ti.com/processor-sdk-linux/esd/docs/latest/linux/Foundational_Components/Kernel/Kernel_Drivers/ADC.html
  *
- * ADC config:
- * /opt/source/bb.org-overlays/src/arm/BB-ADC-00A0.dts
+ * ADC config (Reconfigure driver): set SAMPLING_FREQUENCY accordingly 10 = 4000Hz, 80=3125Hz, 160=2500Hz
+ * cd /opt/source/bb.org-overlays/
+ * vim src/arm/BB-ADC-00A0.dts
+ * make
+ * sudo make install
+ * reboot
+ *
+ * &tscadc {
+        status = "okay";
+        adc {
+            ti,adc-channels = <0 1 2 3 4 5 6 7>;
+            ti,chan-step-opendelay = <160 160 160 160 160 160 160 160>;
+            ti,chan-step-avg = <16 16 16 16 16 16 16 16>;
+            ti,chan-step-sampledelay = <0 0 0 0 0 0 0 0>;
+        }
+    }
  *
  */
 
@@ -35,6 +50,7 @@
 #include <sys/time.h>
 #include <sys/timerfd.h>
 #include <inttypes.h>
+
 
 
 #define NS_PER_SECOND       1000000000.0
@@ -52,11 +68,12 @@
 #define AIN6                ANALOG_IN_PATH "/scan_elements/in_voltage6_en"
 
 #define AIN_CH              3
-#define CNT_SAMPLES         256
+#define CNT_SAMPLES         100
 #define BUF_SIZE            AIN_CH * CNT_SAMPLES
 #define BUFFER_ALLOC        3 * BUF_SIZE
 
 #define FILENAME_LENGTH     200
+#define SAMPLING_FREQUENCY  2500
 
 
 static const char *channels[AIN_CH] = {AIN0, AIN2, AIN6};
@@ -108,7 +125,7 @@ void adc_disable()
     //  Disable continous
     FILE *ain = fopen(BUFFER_ENABLE_PATH, "w");
      if (ain == NULL) {
-        perror("Enabling continous mode ...");
+        perror("Disabling continous mode ...");
         exit(1);
     }
     putc('0', ain);
@@ -228,17 +245,15 @@ int main(int argc, char* argv[])
 
     puts("Sampler");
     puts("Recording to file ...");
+    printf("Sampling frequency: %d Hz\n", SAMPLING_FREQUENCY);
     puts("Press ^C to stop");
 
     adc_enable();
     uint64_t elapsed_ns = input_loop(argv[1]);
-    double elapsed_s = elapsed_ns / NS_PER_SECOND;
     adc_disable();
-
     uint64_t samples = save_to_csv(argv[1]);
 
     printf("Written: %llu samples\n", samples);
-    printf("Duration: %.3f s\n", elapsed_s);
-    printf("Sampling rate: %.3f Hz\n", samples / elapsed_s);
+    printf("Measured duration: %.3f s\n", elapsed_ns / NS_PER_SECOND);
     puts("Finish!");
 }
