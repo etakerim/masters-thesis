@@ -1,3 +1,4 @@
+# Python3.8
 # Base scientific packages
 numpy
 scipy
@@ -16,6 +17,7 @@ ipywidgets
 scikit-learn
 
 # Streaming algorithms
+pytest
 river
 # scikit-multiflow
 
