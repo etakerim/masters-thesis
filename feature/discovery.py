@@ -13,7 +13,7 @@ from scipy.signal import butter, iirfilter, freqz, lfilter, decimate
 import pywt
 
 import matplotlib.pylab as plt
-import mafaulda
+from feature import mafaulda
 
 
 def features_time_domain(zip_file: ZipFile, filename: str) -> pd.DataFrame:
@@ -251,7 +251,6 @@ def harmonic_series_detection(f: np.array, Pxx: np.array, fs: int, fft_window: i
                 break
 
         if len(series) > 1:
-            print(series, end='\n\n')
             result.append(series)
 
     return result
@@ -374,6 +373,6 @@ def plot_spectral_envelope(dataset, file, axis):
 
     fig, ax = plt.subplots(1, 1, figsize=(20, 5))
     ax.plot(f, Pxx)
-    ax.scatter(f[peaks], Pxx[peaks], color='red')
+    #ax.scatter(f[peaks], Pxx[peaks], color='red')
     ax.plot(f, y_env)
 

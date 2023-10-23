@@ -26,6 +26,51 @@ The wood processing factory we plan to collaborate with has to choose machines t
 \end{figure}
 
 
+\section{Measurment strategy}
+Describe technical inspection in VNET, a.s. datacentres (DC Digitalis, SHC\rom{2}) from 12th October 2023
+and 
+
+HVAC - Air conditioning, Refrigirator
+Devices:
+	- Adiabatic plunger pump: better candidates because of fraquent faults, datacentere is inspected daily and maintaned regulary so it is not that critical, turns off under 26°C to save electricity consumption in winter, we do not have faulty machines for comparision
+	
+	- Scroll compressor: example Copeland ZR16M3E-TWD-561 (2900 RPM @ 50 Hz; 9,7 kW (13 HP); 380/420V; 25 A) 3500 RPM @ 60Hz
+	
+	Faults (\url{https://www.mdpi.com/1099-4300/17/10/7076})
+	- unbalance of the rotor, fault of the scroll, mechanical assembly loose, bearing loose
+	
+	- Fig: insert image of cut of compressor
+	- Fig: insert spectrograms, orbitals from exploratory measurements
+	
+- How to obtain dataset (plan had to been aggreed to by datacentre technician)
+ 	- every 2 or 3 weeks (4 - 6 times)
+ 	- 60 - 90 s recordings in each place
+  	- good and bad compressor (4 x top, 4x side, 1x base)
+	
+	
+\section{Embedded system for dataset measurement}	
+Functional requirements
+\begin{itemize}
+	\item MCU has interface to accept commands and storage to save measurements
+	\item Driver for accelerometer is build in
+	\item Accelerometer has frequency response at least 500 Hz (FS = min. 3200 Hz)
+\end{itemize}
+Business (management) requirements: because of time constraints before first technical inspection: build from parts already on stock or inexpensive and quickly procurable, driver should be available, easily save massive recordings to persistant storage, extensible platform in case better option would not be avaiable in the future
+
+Hardware parts:
+Faster than target device to enable experimentation, ARM platform
+\begin{itemize}
+	\item Beaglebone Black 
+		(Texas Instruments Sitara AM3358: 1GHz ARM Cortex-A8, 
+		 SDRAM: 512MB DDR3L 800MHZ, 
+		 Onboard Flash: 4GB)
+	\item OS: Debian 10 Kernel 5.10.168-ti-r72
+	\item Accelerometer ADXL335, 3-Axis $\pm$3 g Accelerometer, 
+	      Bandwidths X, Y axes: (0.5 Hz - 1.6 kHz), Z axes: (0.5 Hz - 0.55 kHz)
+	  (via 8 channel 12-bit SAR ADC, 1.8V, 200 MSPS)
+	 \item Later: ADXL345 (SPI, ODR: 3.2 kHz) 
+\end{itemize}
+
 \section{Vibration processing}
  \begin{itemize}
  \itemsep0pt

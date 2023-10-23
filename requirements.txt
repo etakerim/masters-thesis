@@ -6,12 +6,15 @@ statsmodels
 pandas
 jupyterlab
 padasip
+tsfel
 
 # Plots
 tqdm
 seaborn
 matplotlib
 ipywidgets
+tabulate
+nbconvert[webpdf]
 
 # Machine learning
 scikit-learn
