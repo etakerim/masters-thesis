@@ -1,3 +1,4 @@
+import os.path
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,6 +16,9 @@ TIME_FEATURES_PATH = '../../../datasets/features_data/td_features_no_filter.csv'
 FREQ_FEATURES_PATH = '../../../datasets/features_data/fd_features_no_filter.csv'
 WPD_FEATURES_PATH = '../../../datasets/features_data/wpd_features_no_filter.csv'
 
+TIME_FEATURES_PATH_NEW = 'td_features.csv'
+FREQ_FEATURES_PATH_NEW = 'fd_features.csv'
+
 TD_COLUMNS = ['mean', 'std', 'skew', 'kurt', 'rms', 'pp', 'crest', 'margin', 'impulse', 'shape']
 FD_COLUMNS = [
     'centroid', 'std', 'skew', 'kurt', 'roll-off', 'flux_mean', 'flux_std',
@@ -23,6 +27,27 @@ FD_COLUMNS = [
 WPD_COLUMNS_EXCLUDE = {
     'fault', 'severity', 'seq', 'rpm', 'axis', 'feature'
 }
+
+METADATA_COLUMNS = ['fault', 'severity', 'seq', 'rpm']
+METADATA_COLUMNS_ALL = METADATA_COLUMNS + ['severity_class', 'severity_level']
+
+#########################################################
+
+def load_td_feat(axis, path=''):
+    features = pd.read_csv(os.path.join(path, TIME_FEATURES_PATH_NEW))
+    columns = features.columns.isin(METADATA_COLUMNS) | features.columns.str.startswith(tuple(axis))
+    features = features[features.columns[columns]]
+    features['fault'] = features['fault'].astype('category')
+    return features
+
+
+def load_fd_feat(axis, path=''):
+    features = pd.read_csv(os.path.join(path, FREQ_FEATURES_PATH_NEW))
+    columns = features.columns.isin(METADATA_COLUMNS) | features.columns.str.startswith(tuple(axis))
+    features = features[features.columns[columns]]
+    features['fault'] = features['fault'].astype('category')
+    return features
+
 
 #################################################################
 

@@ -2,6 +2,7 @@ from zipfile import ZipFile
 import numpy as np
 import pandas as pd
 from itertools import pairwise
+from typing import List
 
 from numpy.lib.stride_tricks import sliding_window_view
 from scipy.stats import skew, kurtosis, entropy
@@ -11,87 +12,128 @@ from scipy.fft import rfft
 
 from scipy.signal import butter, iirfilter, freqz, lfilter, decimate
 import pywt
+import tsfel
 
 import matplotlib.pylab as plt
 from feature import mafaulda
 
 
-def features_time_domain(zip_file: ZipFile, filename: str) -> pd.DataFrame:
+def split_dataframe(dataframe: pd.DataFrame, parts: int) -> List[pd.DataFrame]:
+    step = len(dataframe) // parts
+    return [dataframe.iloc[i:i + step] for i in range(0, len(dataframe), step)]
+
+
+def features_time_domain(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:
     print(f'Processing: {filename}')
 
     columns = mafaulda.COLUMNS
     ts = mafaulda.csv_import(zip_file, filename)
     fault, severity, seq = mafaulda.parse_filename(filename)
 
-    rpm = ts['rpm'].mean()
-
-    feature_vector = [
-        ts[columns].mean().rename('mean'),
-        ts[columns].std().rename('std'),
-        ts[columns].apply(lambda x: skew(x)).rename('skew'),
-        ts[columns].apply(lambda x: kurtosis(x)).rename('kurt'),
-        ts[columns].apply(mafaulda.rms).rename('rms'),
-        ts[columns].apply(lambda x: np.max(x) - np.min(x)).rename('pp'),
-        ts[columns].apply(lambda x: np.max(np.absolute(x)) / mafaulda.rms(x)).rename('crest'),
-        ts[columns].apply(lambda x: np.max(np.absolute(x)) / np.mean(np.sqrt(np.absolute(x))) ** 2).rename('margin'),
-        ts[columns].apply(lambda x: np.max(np.absolute(x)) / np.mean(np.absolute(x))).rename('impulse'),
-        ts[columns].apply(lambda x: mafaulda.rms(x) / np.mean(np.absolute(x))).rename('shape'),
-        ts[columns].max().rename('max'),
-    ]
-    return (
-        pd.concat(feature_vector, axis=1)
-        .assign(fault=fault, severity=severity, seq=seq, rpm=rpm)
-        .reset_index()
-        .rename(columns={'index': 'axis'})
-    )
-
-
-def features_frequency_domain(zip_file: ZipFile, filename: str) -> pd.DataFrame:
-    # Calculate FFT with Welch method in 5 different Hann window sizes
-    print(f'Processing: {filename}')
-
-    OVERLAP = 0.5
-    WINDOW_SIZES = (2**8, 2**10, 2**12, 2**14, 2**16)
-
-    columns = mafaulda.COLUMNS
-    ts = mafaulda.csv_import(zip_file, filename)
-    fault, severity, seq = mafaulda.parse_filename(filename)
-
-    rpm = ts['rpm'].mean()
+    if parts is not None:
+        dataframe = split_dataframe(ts, parts)
+    else:
+        dataframe = [ts]
 
     result = []
-
-    for window in WINDOW_SIZES:
+    for i, df in enumerate(dataframe):
+        fvector = [
+            ('fault', [fault]),
+            ('severity', [severity]),
+            ('seq', [f'{seq}.part.{i}']),
+            ('rpm', [df['rpm'].mean()])
+        ]
         for col in columns:
-            f, Pxx = spectral_transform(ts, col, window)
+            x = df[col]
+            features = [
+                ('mean', [np.mean(x)]),
+                ('std', [np.std(x)]),
+                ('skew', [skew(x)]),
+                ('kurt', [skew(x)]),
+                ('rms', [mafaulda.rms(x)]),
+                ('pp', [np.max(x) - np.min(x)]),
+                ('crest', [np.max(np.absolute(x)) / mafaulda.rms(x)]),
+                ('margin', [np.max(np.absolute(x)) / (np.mean(np.sqrt(np.absolute(x))) ** 2)]),
+                ('shape', [mafaulda.rms(x) / np.mean(np.absolute(x))]),
+                ('max', [np.max(x)])
+            ]
+            features = [(f'{col}_{f[0]}', f[1]) for f in features]
+            fvector.extend(features)
 
-            fluxes = temporal_variation(ts, col, window)
-            envelope_spectrum = envelope_signal(f, Pxx)
-            loc_harmonics, _ = find_harmonics(f, Pxx)
+        result.append(pd.DataFrame(dict(fvector))) 
 
-            result.append({
-                'fft_window_length': window,
-                'fault': fault,
-                'severity': severity,
-                'seq': seq,
-                'rpm': rpm,
-                'axis': col,
-                'centroid': np.average(f, weights=Pxx),
-                'std': np.std(Pxx),
-                'skew': skew(Pxx),
-                'kurt': kurtosis(Pxx),
-                'roll-off': spectral_roll_off_frequency(f, Pxx, 0.85),
-                'flux_mean': np.mean(fluxes),
-                'flux_std': np.std(fluxes),
-                'hdev': hdev(envelope_spectrum, loc_harmonics, Pxx),
-                'noisiness': signal_to_noise(Pxx),
-                'inharmonicity': inharmonicity(loc_harmonics, f, Pxx),
-                'energy': energy(Pxx),
-                'entropy': entropy(Pxx / np.sum(Pxx)),
-                'negentropy': negentropy(envelope_spectrum)
-            })
 
-    return pd.DataFrame(result)
+    return pd.concat(result).reset_index(drop=True)
+
+
+def features_frequency_domain(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:
+    # Calculate FFT with Welch method in 5 different Hann window sizes
+    print(f'Processing: {filename}')
+    OVERLAP = 0.5
+    WINDOW_SIZES = (2**6, 2**8, 2**10, 2**12, 2**14)
+
+    columns = mafaulda.COLUMNS
+    ts = mafaulda.csv_import(zip_file, filename)
+    fault, severity, seq = mafaulda.parse_filename(filename)
+
+    if parts is not None:
+        dataframe = split_dataframe(ts, parts)
+    else:
+        dataframe = [ts]
+
+    result = []
+    for i, df in enumerate(dataframe):
+        fvector = [
+            ('fault', [fault]),
+            ('severity', [severity]),
+            ('seq', [f'{seq}.part.{i}']),
+            ('rpm', [df['rpm'].mean()])
+        ]
+        for window in WINDOW_SIZES:
+            for col in columns:
+                f, pxx = spectral_transform(df, col, window)
+    
+                fluxes = temporal_variation(df, col, window)
+                envelope_spectrum = envelope_signal(f, pxx)
+                loc_harmonics, _ = find_harmonics(f, pxx)
+                # inharmonicity(loc_harmonics, f, pxx)
+                # hdev(envelope_spectrum, loc_harmonics, pxx)
+        
+                features = [
+                    ('centroid', [np.average(f, weights=pxx)]),
+                    ('std', [np.std(pxx)]),
+                    ('skew', [skew(pxx)]),
+                    ('kurt', [kurtosis(pxx)]),
+                    ('roll_off', [spectral_roll_off_frequency(f, pxx, 0.85)]),
+                    ('flux_mean', [np.mean(fluxes)]),
+                    ('flux_std', [np.std(fluxes)]),
+                    ('noisiness', [signal_to_noise(pxx)]),
+                    ('energy', [energy(pxx)]),
+                    ('entropy', [entropy(pxx / np.sum(pxx))]),
+                    ('negentropy', [negentropy(envelope_spectrum)])
+                ]
+                features = [(f'{col}_{f[0]}_{window}', f[1]) for f in features]
+                fvector.extend(features)
+        result.append(pd.DataFrame(dict(fvector))) 
+
+    return pd.concat(result).reset_index(drop=True)
+
+
+def tsfel_features_import(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:
+    ts = mafaulda.csv_import(zip_file, filename)
+    cfg_file = tsfel.get_features_by_domain()
+
+    if parts is not None:
+        dataframe = split_dataframe(ts, parts)
+    else:
+        dataframe = [ts]
+        
+    result = []
+    for i, df in enumerate(dataframe):
+        df_result = tsfel.time_series_features_extractor(cfg_file, df[mafaulda.COLUMNS], fs=mafaulda.FS_HZ)
+        result.append(df_result)
+
+    return pd.concat(result).reset_index(drop=True)
 
 
 def features_wavelet_domain(zip_file: ZipFile, filename: str) -> pd.DataFrame:
@@ -149,7 +191,7 @@ def features_wavelet_domain(zip_file: ZipFile, filename: str) -> pd.DataFrame:
             row.update(dict(zip(wpd_header, feature_vector)))
             result.append(row)
 
-    return pd.DataFrame(result)
+    return pd.DataFrame(result).reset_index(drop=True)
 
 
 ###############################################################
@@ -375,4 +417,17 @@ def plot_spectral_envelope(dataset, file, axis):
     ax.plot(f, Pxx)
     #ax.scatter(f[peaks], Pxx[peaks], color='red')
     ax.plot(f, y_env)
+
+
+def plot_frequency_spectrum(dataset, file, axis, p, window=1024, dB=False, label=None):
+    ts = mafaulda.csv_import(dataset, file)
+    f, pxx = spectral_transform(ts, axis, window)
+    p.set_xlabel('Frequency [Hz]')
+    if dB:
+        p.set_ylabel('Amplitude [dB]')
+        pxx = 20 * np.log10(pxx / mafaulda.DB_REF)
+    else:
+        p.set_ylabel('Amplitude [m/s^2]')
+    p.plot(f, pxx, label=label)
+    p.grid(True)
 

@@ -10,12 +10,15 @@ from scipy.signal import butter, filtfilt, find_peaks
 
 from tqdm.notebook import tqdm
 import matplotlib.pyplot as plt
+from zipfile import ZipFile
 
 from multiprocessing.pool import ThreadPool
 
 FS_HZ = 50000
-COLUMNS = ['ax', 'ay', 'az', 'bx', 'by', 'bz', 'mic']
+DB_REF = 0.000001                                # 1 dB = 1 um/s^2
+COLUMNS = ['ax', 'ay', 'az', 'bx', 'by', 'bz']   # 'mic'
 
+################################# IMPORT ########################################
 
 def parse_filename(filename: str) -> (str, str, str):
     path = filename.split('/')
@@ -24,11 +27,20 @@ def parse_filename(filename: str) -> (str, str, str):
         severity = path[2]
         seq = path[3]
     elif path[0].strip() == 'normal':
-        fault, severity, seq = path[0], '', path[1]
+        fault, severity, seq = path[0], '0', path[1]
     else:
         fault, severity, seq = path
 
     return fault, severity, seq
+
+
+def import_files_split(zip_file, file_list, func, parts, cores=4):
+    pool = ThreadPool(processes=cores)
+    
+    return pd.concat([
+        pool.apply_async(func, (zip_file, name, parts )).get()
+        for name in tqdm(file_list)
+    ])
 
 
 def import_files(zip_file, file_list, func, cores=4):
@@ -38,28 +50,6 @@ def import_files(zip_file, file_list, func, cores=4):
         pool.apply_async(func, (zip_file, name, )).get()
         for name in tqdm(file_list)
     ])
-
-
-def load_dataset_matrix(zip_file, file_list, col):
-    X = []
-    for filename in tqdm(file_list):
-        ts = csv_import(zip_file, filename)
-        stream = ts[col].to_numpy()
-        a = stream[:220000]
-        X.append(a)
-
-    return np.array(X)
-
-
-def resolution_calc(fs, window):
-    print('Window size:', window)
-    print('Heinsenberg box')
-    print('\tTime step:', window / fs * 1000, 'ms')
-    print('\tFrequency step:', fs / window, 'Hz')
-
-
-def rms(x):
-    return np.sqrt(np.mean(x ** 2))
 
 
 def get_mafaulda_files(zip_file):
@@ -101,7 +91,30 @@ def csv_import(zip_file, filename):
     ts = preprocess(ts)
     return ts.assign(key=filename)
 
+################################# DATASET INDEX ########################################
 
+def extract_metadata(zip_file: ZipFile, filename: str) -> pd.DataFrame:
+    ts = csv_import(zip_file, filename)
+    fault, severity, seq = parse_filename(filename)
+    result = [{
+        'filename': filename,
+        'fault': fault,
+        'severity': severity,
+        'seq': seq,
+        'length': len(ts.index),
+        'duration': ts.index.max(), 
+        'rpm': ts['rpm'].mean(),
+        'fs': FS_HZ,
+    }]
+    return pd.DataFrame(result)
+
+def dataset_index(path: str) -> pd.DataFrame:
+    dataset = ZipFile(path)
+    files = get_mafaulda_files(dataset)
+    return import_files(dataset, files, extract_metadata)
+
+
+################################# ANALYSIS ########################################
 def normality_tests(ts, columns=None):
     columns = columns or ['ax', 'ay', 'az', 'bx', 'by', 'bz']
     figure, axes = plt.subplots(2, 3, figsize=(10, 5))
@@ -275,3 +288,25 @@ def rms_orbitals(ts, n=100):
     ax[2].set_xlabel('y')
     ax[2].set_ylabel('z')
     ax[2].scatter(ay_rms, az_rms, s=1)
+
+
+def load_dataset_matrix(zip_file, file_list, col):
+    X = []
+    for filename in tqdm(file_list):
+        ts = csv_import(zip_file, filename)
+        stream = ts[col].to_numpy()
+        a = stream[:220000]
+        X.append(a)
+
+    return np.array(X)
+
+
+def resolution_calc(fs, window):
+    print('Window size:', window)
+    print('Heinsenberg box')
+    print('\tTime step:', window / fs * 1000, 'ms')
+    print('\tFrequency step:', fs / window, 'Hz')
+
+
+def rms(x):
+    return np.sqrt(np.mean(x ** 2))

@@ -1,4 +1,5 @@
 build
+datasets
 **/.ipynb_checkpoints
 *.backup
 *.bak
