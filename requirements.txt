@@ -16,6 +16,9 @@ ipywidgets
 tabulate
 nbconvert[webpdf]
 
+# Knee/Elbow analysis
+kneed
+
 # Machine learning
 scikit-learn
 
