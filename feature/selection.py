@@ -12,12 +12,13 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 
 # Dataset paths and attributes
-TIME_FEATURES_PATH = '../../../datasets/features_data/td_features_no_filter.csv'
-FREQ_FEATURES_PATH = '../../../datasets/features_data/fd_features_no_filter.csv'
-WPD_FEATURES_PATH = '../../../datasets/features_data/wpd_features_no_filter.csv'
+TIME_FEATURES_PATH = 'td_features.csv'
+FREQ_FEATURES_PATH = 'fd_features.csv'
+WPD_FEATURES_PATH = 'wpd_features.csv'
 
-TIME_FEATURES_PATH_NEW = 'td_features.csv'
-FREQ_FEATURES_PATH_NEW = 'fd_features.csv'
+TIME_FEATURES_PATH_ALL = 'all_td_features.csv'
+FREQ_FEATURES_PATH_ALL = 'all_fd_features.csv'
+
 
 TD_COLUMNS = ['mean', 'std', 'skew', 'kurt', 'rms', 'pp', 'crest', 'margin', 'impulse', 'shape']
 FD_COLUMNS = [
@@ -29,45 +30,35 @@ WPD_COLUMNS_EXCLUDE = {
 }
 
 METADATA_COLUMNS = ['fault', 'severity', 'seq', 'rpm']
-METADATA_COLUMNS_ALL = METADATA_COLUMNS + ['severity_class', 'severity_level']
+METADATA_COLUMNS_ALL = METADATA_COLUMNS + ['severity_class', 'severity_level', 'anomaly']
 
 #########################################################
+def filter_out_metadata_columns(df):
+    return df[df.columns[~df.columns.isin(METADATA_COLUMNS_ALL)]]
 
-def load_td_feat(axis, path=''):
-    features = pd.read_csv(os.path.join(path, TIME_FEATURES_PATH_NEW))
+
+def load_td_feat(axis, path='', all=False):
+    filename = TIME_FEATURES_PATH_ALL if all else TIME_FEATURES_PATH
+
+    features = pd.read_csv(os.path.join(path, filename))
     columns = features.columns.isin(METADATA_COLUMNS) | features.columns.str.startswith(tuple(axis))
     features = features[features.columns[columns]]
     features['fault'] = features['fault'].astype('category')
     return features
 
 
-def load_fd_feat(axis, path=''):
-    features = pd.read_csv(os.path.join(path, FREQ_FEATURES_PATH_NEW))
+def load_fd_feat(axis, path='', all=False):
+    filename = FREQ_FEATURES_PATH_ALL if all else FREQ_FEATURES_PATH
+
+    features = pd.read_csv(os.path.join(path, filename))
     columns = features.columns.isin(METADATA_COLUMNS) | features.columns.str.startswith(tuple(axis))
     features = features[features.columns[columns]]
     features['fault'] = features['fault'].astype('category')
-    return features
-
-
-#################################################################
-
-def load_time_domain_features(axis):
-    features = pd.read_csv(TIME_FEATURES_PATH)
-    features = features[features['axis'].isin(axis)]
-    features['fault'] = features['fault'].astype('category')
-    return features
-
-
-def load_frequency_domain_features(axis):
-    features = pd.read_csv(FREQ_FEATURES_PATH)
-    features = features[features['axis'].isin(axis)]
-    features['fault'] = features['fault'].astype('category')
-    features['fft_window_length'] = features['fft_window_length'].astype('category')
     return features
 
 
 def load_wavelet_domain_features(axis):
-    features = pd.read_csv(WPD_FEATURES_PATH)
+    features = pd.read_csv(os.path.join(path, WPD_FEATURES_PATH))
     features['axis'] = features['axis'].astype('category')
     features['feature'] = features['feature'].astype('category')
     features['fault'] = features['fault'].astype('category')
