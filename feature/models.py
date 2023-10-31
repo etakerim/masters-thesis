@@ -78,7 +78,6 @@ def anomalies_undersample(X, y, anomaly_ratio):
         minority = len(minority)
         majority = int((minority - anomaly_ratio * minority) / anomaly_ratio)
 
-
     y = pd.concat([
         majority_class.sample(n=majority, random_state=100), 
         minority_class.sample(n=minority, random_state=100)
@@ -99,8 +98,8 @@ def pipeline_v1_core(func_select, nfeat, X_train, y_train, X_test, y_test):
     if nfeat >= len(X_train.columns):
         nfeat = 'all'
 
+    # selector = SelectPercentile(func_select, percentile=20)
     selector = SelectKBest(func_select, k=nfeat)
-    # selector = SelectPercentile(mutual_info_classif, percentile=20)
     
     selector.fit_transform(X_train, y_train)
     selector.transform(X_test)
