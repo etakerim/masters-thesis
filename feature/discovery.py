@@ -20,7 +20,52 @@ from feature import mafaulda
 
 def split_dataframe(dataframe: pd.DataFrame, parts: int) -> List[pd.DataFrame]:
     step = len(dataframe) // parts
-    return [dataframe.iloc[i:i + step] for i in range(0, len(dataframe), step)]
+    return [
+        dataframe.iloc[i:i + step].reset_index(drop=True)
+        for i in range(0, len(dataframe), step)
+    ]
+
+
+def features_list():
+    config = tsfel.get_features_by_domain()
+    for domain in config.values():
+        for feature, options in domain.items():
+            if options['n_features'] != 1:
+                options['use'] = 'no'
+    return config
+
+
+def tsfel_features_generate(dataset: ZipFile, filename: str, parts=None) -> pd.DataFrame:
+    print(f'Processing: {filename}')
+
+    conf_extraction = features_list()
+    columns = mafaulda.COLUMNS
+
+    ts = mafaulda.csv_import(dataset, filename)
+    fault, severity, seq = mafaulda.parse_filename(filename)
+    dataframe = [ts] if parts is None else discovery.split_dataframe(ts, parts)
+
+    results = []
+    for i, df in enumerate(dataframe):
+        fv = pd.DataFrame({
+            'fault': [fault],
+            'severity': [severity],
+            'seq': [f'{seq}.part.{i}'],
+            'rpm': [df['rpm'].mean()]
+        })
+
+        for col in columns:
+            features = tsfel.time_series_features_extractor(
+                conf_extraction, df[col], fs=mafaulda.FS_HZ
+            )
+            features.columns = [
+                col + '_' + c.strip('0_').replace(' ', '_').lower()
+                for c in features.columns
+            ]
+            fv = fv.assign(**features)
+        results.append(fv)
+
+    return pd.concat(results).reset_index(drop=True)
 
 
 def features_time_domain(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:

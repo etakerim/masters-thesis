@@ -14,12 +14,14 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 # Dataset paths and attributes
 TIME_FEATURES_PATH = 'td_features.csv'
 FREQ_FEATURES_PATH = 'fd_features.csv'
+TIME_AND_FREQ_FEATURES_PATH = 'time_freq_features.csv'
 WPD_FEATURES_PATH = 'wpd_features.csv'
+TSFEL_FEATURES_PATH = 'tsfel_features.csv'
 
 TIME_FEATURES_PATH_ALL = 'all_td_features.csv'
 FREQ_FEATURES_PATH_ALL = 'all_fd_features.csv'
 WPD_FEATURES_PATH_ALL = 'all_wpd_features.csv'
-
+TSFEL_FEATURES_PATH_ALL = 'all_tsfel_features.csv'
 
 TD_COLUMNS = ['mean', 'std', 'skew', 'kurt', 'rms', 'pp', 'crest', 'margin', 'impulse', 'shape']
 FD_COLUMNS = [
@@ -30,6 +32,7 @@ WPD_COLUMNS_EXCLUDE = {
     'fault', 'severity', 'seq', 'rpm', 'axis', 'feature'
 }
 
+FAULT_CLASSES = {'normal': 'N', 'imbalance': 'I', 'horizontal-misalignment': 'HM', 'vertical-misalignment': 'VM'}
 METADATA_COLUMNS = ['fault', 'severity', 'seq', 'rpm']
 METADATA_COLUMNS_ALL = METADATA_COLUMNS + ['severity_class', 'severity_level', 'anomaly']
 
@@ -44,6 +47,16 @@ def remove_column_prefix(df):
 
 def fd_extract_feature_name(column):
     return column.str.extract(r'[A-Za-z]+_(.*)_\d+$')[0]
+
+
+def merge_feature_domains(time_domain: str, freq_domain: str):   
+    td_features = pd.read_csv(time_domain)
+    fd_features = pd.read_csv(freq_domain)
+    merged = td_features.merge(
+        fd_features, on=['fault', 'severity', 'seq', 'rpm'], 
+        how='inner', validate='one_to_one'
+    )
+    return merged
 
 
 def load_td_feat(axis, path='', all=False):

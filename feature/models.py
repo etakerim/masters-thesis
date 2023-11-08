@@ -2,11 +2,12 @@ import numpy as np
 import pandas as pd
 from feature.selection import  METADATA_COLUMNS_ALL
 import matplotlib.pyplot as plt
+import seaborn as sb
 
+from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 
-# Feature selection
 from scipy.stats import pearsonr
 from sklearn.feature_selection import mutual_info_classif, f_classif
 from sklearn.feature_selection import SelectPercentile, SelectKBest
@@ -178,3 +179,76 @@ def cross_cuts_3d_anomalies(dataframe, anomalies):
             x = df.loc[points, df.columns[a]]
             y = df.loc[points, df.columns[b]]
             ax[i].scatter(x, y, color=color, s=1)
+
+
+def scatter_classif(X, y_label, categories, colors, ax):
+    for label, color in zip(categories, colors):
+            rows = list(y_label[y_label == label].index)
+            x = X.loc[rows,0]
+            y = X.loc[rows,1]
+            ax.scatter(x, y, s=2, color=color, label=label)
+
+
+def project_classifier_map_plot(X, y_true, y_predict): 
+    y_true = y_true.astype('category') 
+    y_predict = y_predict.astype('category')
+
+    pca = PCA(n_components=2)
+    X_pca = pca.fit_transform(X)
+    X_pca = pd.DataFrame(X_pca)
+
+    categories = y_true.cat.categories
+    colors = sb.color_palette('hls', len(categories))
+
+    # Plot
+    fig, ax = plt.subplots(1, 3, figsize=(20, 5))
+
+    scatter_classif(X_pca, y_true, categories, colors, ax[0])
+    scatter_classif(X_pca, y_predict, categories, colors, ax[1])
+
+    match = y_predict == y_true[y_predict.index]
+    good = y_predict[match == True].index
+    bad = y_predict[match == False].index
+
+    ax[2].scatter(X_pca[0].loc[good], X_pca[1].loc[good], s=2, color='green', label='Good')
+    ax[2].scatter(X_pca[0].loc[bad], X_pca[1].loc[bad], s=2, color='red', label='Bad')
+    
+    var = 100 * pca.explained_variance_ratio_
+    for i in range(3):
+        ax[i].set_xlabel(f'PC1 ({var[0]:.2f} %)')
+        ax[i].set_ylabel(f'PC2 ({var[1]:.2f} %)')
+        ax[i].grid()
+        ax[i].legend()
+
+    return bad
+
+
+def project_anomaly_map_plot(X, y_true, y_score, threshold=7):
+    pca = PCA(n_components=2)
+    X_pca = pca.fit_transform(X)
+    X_pca = pd.DataFrame(X_pca)
+
+    y_true = y_true.astype('category')
+    categories = y_true.cat.categories
+    colors = sb.color_palette('hls', len(categories))
+
+    fig, ax = plt.subplots(1, 3, figsize=(20, 5))
+    scatter_classif(X_pca, y_true, categories, colors, ax[0])
+    anomaly_colors = sb.color_palette('Blues', 10).as_hex()
+    
+    scaler = MinMaxScaler(feature_range=(0, 9))
+    scores = scaler.fit_transform(y_score.reshape(-1, 1))
+    scores = scores.reshape(1, -1)[0]
+
+    for x, y, score in zip(X_pca[0], X_pca[1], scores):
+        ax[1].plot(x, y, '.', color=anomaly_colors[int(score)], markersize=2)
+
+    for x, y, score in zip(X_pca[0], X_pca[1], scores):
+        color = "red" if int(score) >= threshold else "green"
+        ax[2].plot(x, y, '.', color=color, markersize=2)
+    
+    for i in range(3):
+        ax[i].set_xlabel(f'PC1')
+        ax[i].set_ylabel(f'PC2')
+        ax[i].grid()
+        ax[i].legend()
