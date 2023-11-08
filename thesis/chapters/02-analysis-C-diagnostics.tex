@@ -3,6 +3,10 @@ Fault identification in the rotating machinery is one-class or multi-class class
 
 The guiding principles for algorithm selection are simplicity in terms of their straightforward visual explanation for the production managers, and the ability to progressively improve the model on the streaming data to address peculiarities in individual machine constructions.
 
+\subsection{Concept drift}
+% TODO: ADWIN (ADaptive WINdowing)
+% Kolmogorov-Smirnov Windowing method for concept drift detection.
+
 \subsection{Novelty detection}
 Anomaly, novelty, or outlier detection determines whether a health status deviates considerably from the baseline profile. The expert can then step in and diagnose the machine after the notice. Anomaly is a rare observation different from the others raising suspicion that it was created with an unrelated behavior~\cite{aggarwal_outlier_2016}. The observations get assigned anomaly scores, and those over the threshold are novelties.
 
@@ -34,6 +38,10 @@ A full binary tree is built before the novelty detection begins by splitting tre
 The anomaly profile in the latest window is always compared to the predecessor reference window. After the latest window is filled up it replaces the reference window. It suffices to use a window size of 250 and 25 tree ensemble~\cite{tan_fast_2011}.
 
 \subsection{Classification}
+% TODO: HoeffdingTreeClassifier
+% https://analyticsindiamag.com/a-beginners-guide-to-hoeffding-tree-with-python-implementation/
+% https://www.cms.waikato.ac.nz/~abifet/book/chapter_5.html
+
 Accurate multi-class classification of machine fault causes out of the characteristics of known ones is a much more difficult task than novelty detection. Universal enough fault baseline has to be recorded and transformed into feature space. Interactions among fault manifestations have to be accounted for. We are aware of rapid advances in knowledge transfer for deep neural networks~\cite{maurya_condition-based_2021}. So far, solutions seem not production ready. Therefore, we opt to use a more rudimentary model.
 \bigbreak
 
@@ -55,7 +63,10 @@ Accurate multi-class classification of machine fault causes out of the character
     \caption{Nearest neighbors classification algorithm~\cite{chen_skyline_2009}}
 \end{figure}
 
-The sense of distance between feature vectors $\mathbf{x}$, $\mathbf{y}$ have to be defined, so several metrics are available like \emph{Euclidian distance}, \emph{Mahalanobis distance}, or \emph{RBF kernel} (Tab.~\ref{tab:knn-distance})~\cite{sheng_review_2020}. The demanding neighborhood queries are sped up by a Metric search tree data structure such as \emph{M-Tree} (Fig.~\ref{fig:m-tree}). The optimal $k$ parameter is set in supervised learning according to the breaking point in the elbow curve that plots choices of $k$ against the error rate.
+% TODO: Spatial database
+% TODO: Sliding WIndow-based Nearest Neighbor (SWINN) 
+
+The sense of distance between feature vectors $\mathbf{x}$, $\mathbf{y}$ have to be defined, so several metrics are available like \emph{Euclidian distance}, \emph{Mahalanobis distance}, or \emph{Manhatann distance} (Tab.~\ref{tab:knn-distance})~\cite{sheng_review_2020}. The demanding neighborhood queries are sped up by a Metric search tree data structure such as \emph{M-Tree} (Fig.~\ref{fig:m-tree}). The optimal $k$ parameter is set in supervised learning according to the breaking point in the elbow curve that plots choices of $k$ against the error rate.
 
 \begin{table}[ht]
 \centering
@@ -63,9 +74,9 @@ The sense of distance between feature vectors $\mathbf{x}$, $\mathbf{y}$ have to
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Distance}     & \textbf{$d(\mathbf{x}, \mathbf{y})$}                                   \\ \hline
+Manhatann distance	 & $ |x_i - y_i| $													   \\ \hline
 Euclidian distance    & $ \sqrt{\sum_{i = 1}^{n}(x_i - y_i)^2} $                               \\ \hline
 Mahalanobis distance  & $ (\mathbf{x} - \mathbf{y})^T C^{-1} (\mathbf{x} - \mathbf{y}) $       \\ \hline
-Radial basis function & $ \exp\left(-\frac{\lVert \mathbf{x} - \mathbf{y} \rVert^2}{t}\right) $ \\ \hline
 \end{tabular}
 \caption{Distance metrics for kNN}
 \label{tab:knn-distance}
@@ -74,3 +85,7 @@ Radial basis function & $ \exp\left(-\frac{\lVert \mathbf{x} - \mathbf{y} \rVert
 Nearest-neighbour classifier has been successfully applied in machinery fault diagnostics. On the CWRU bearing dataset, the kNN with the accuracy of 96.2\% slightly outperformed SVM (95\%) on the combination of time and frequency-domain features, time-domain features - kNN 91.2\%, SVM 88.8\%, and frequency domain features - kNN (98.8\%), SVM (96.2\%)~\cite{jamil_feature-based_2021}. 
 
 Comparison of kNN and KLDA on a feature set consisting of average, kurtosis, skewness, and standard deviation vectors in each domain has been conducted, achieving a data reduction rate of 95\%. Best accuracies were reached for PSD features with 99.13\% with KLDA and 96.64\% with KNN classifiers and Mahalanobis metric. The sampling frequency was set at 40 kHz~\cite{altaf_new_2022}. Despite kNN lagging in accuracy, we have to keep in mind annotations for faults were complete and machine learning was not tested in a streaming context.
+
+
+\subsection{Online model evaluation}
+% TODO

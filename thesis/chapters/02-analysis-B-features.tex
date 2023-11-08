@@ -66,6 +66,7 @@ The most widely found features in the literature are rudimentary statistical mea
 
 The other significant time-domain attributes are derived as ratios of previous simpler ones. These ratios are crest factor, margin factor, impulse factor, and shape factor~(Tab.~\ref{tab:td-features})~\cite{nandi_condition_2019}. Many articles have been successful in bearing fault detection out of transients in impulsive signals with kurtosis, crest factor, and margin indicators \cite{brito_fault_2021}. It is also suggested that the shape factor can signify unbalance and misalignment faults~\cite{nandi_condition_2019}.
 
+% TODO: add td and fd features from tsfel
 \begin{table}[h]
 \centering
 \renewcommand{\arraystretch}{2}
@@ -260,30 +261,7 @@ Tool wear diagnosis based on acoustic emission (AE) signal considers \emph{wavel
 
 Discrete wavelet transform and wavelet packets partition the spectrum into predefined frequency bands that do not always adequately capture individual elementary oscillations. Adaptive spectral segmentation is needed to extract separate intrinsic mode functions (IMF).
 
-\textbf{Empirical Wavelet Transform} (EWT) constructs adaptive bandpass filters with Meyer wavelet. The scaling function $\hat{\phi_n}$ and wavelet function are defined according to equations (\ref{equ:ewt-scaling}) and (\ref{equ:ewt-wavelet}) respectively. The inner product of the signal with the scaling function obtains the approximation coefficients and the inner product with the wavelet function results in detail coefficients.
-
-\myequations{Empirical scaling function}
-\begin{ceqn}\begin{align}
-\hat{\phi_n}(\omega) = 
-\begin{cases}
-1       & \text{if } |\omega| \leq \omega_n - \tau_n \\
-\cos\left[\frac{\pi}{2}\cdot \beta\left(\frac{1}{2\tau_n}(|\omega| - \omega_n + \tau_n)\right)\right]  &  \text{if } \omega_n  - \tau_n \leq |\omega| \leq \omega_n + \tau_n \\
-0       & \text{otherwise }
-\end{cases}
-\label{equ:ewt-scaling}
-\end{align}\end{ceqn}
-
-\myequations{Empirical wavelet function}
-\begin{ceqn}\begin{align}
-\hat{\psi_n}(\omega) = 
-\begin{cases}
-1       & \text{if } \omega_n + \tau_n \leq |\omega| \leq \omega_{n+1} - \tau_{n+1} \\
-\cos\left[\frac{\pi}{2}\cdot \beta\left(\frac{1}{2\tau_{n+1}}(|\omega| - \omega_{n+1} + \tau_{n+1})\right)\right] & \text{if } \omega_{n+1} - \tau_{n+1} \leq |\omega| \leq \omega_{n+1} + \tau_{n+1} \\
-\sin\left[\frac{\pi}{2}\cdot \beta\left(\frac{1}{2\tau_n}(|\omega| - \omega_n + \tau_n)\right)\right] & \text{if }\omega_n - \tau_n \leq |\omega| \leq \omega_{n} + \tau_{n} \\
-0       & \text{otherwise }
-\end{cases}
-\label{equ:ewt-wavelet}
-\end{align}\end{ceqn}
+\textbf{Empirical Wavelet Transform} (EWT) constructs adaptive bandpass filters with Meyer wavelet. The inner product of the signal with the scaling function $\hat{\phi_n}$ obtains the approximation coefficients and the inner product with the wavelet function results in detail coefficients.
 
 The normalized frequency axis in range $\omega \in [0, \pi]$ is divided by split points $\omega_0, \dots, \omega_N$ where $\omega_n = f_n \cdot 2 \pi\;/\;f_s$ (Fig.~\ref{fig:ewt-spectrum-segmentation}). Each segment is bounded between $[\omega_{n-1}, \omega_n]$ with transition phase of width $2\tau_n$ and polynomial transition function $\beta(x)$. A tight frame set of empirical wavelets is built by setting the transition phase proportional to the band boundary: $\tau_n = \lambda \omega_n$, and proportional constant must obey constrain: $\lambda = \min\left(\frac{\omega_{n+1} - \omega_n}{\omega_{n+1} + \omega_n}\right)$. The $N$ boundaries defining different portions of the Fourier spectrum are placed at the center between two consecutive local maxima~\cite{gilles_empirical_2013}.
 
@@ -333,6 +311,11 @@ The inspiration for filtering with adaptive basis comes from \textbf{Empirical m
 The EMD is not recommended for practical applications because it suffers from mode mixing problems and lacks rigid theoretical foundations. Many improvements based on the mode sifting process, such as Local Mean Decomposition (LMD), Ensemble Empirical Mode Decomposition (EEMD), Concealed Component Decomposition (CCD)~\cite{tiwari_novel_2021}, and Empirical Wavelet Transform, have been devised as being capable of estimating more reasonable modes.
 
 The time-frequency representation offers plenty of features depending on the choice of spectral transformation. We have reviewed Short-time Fourier transform, Continuous Wavelet transform, Synchrosqueezing transform, Discrete Wavelet transform, Wavelet packet decomposition, Empirical Wavelet transform, and operators of negentropy, TKEO, and TEO.
+
+% TODO: we did not utilize wavelets as of yet
+% 
+% 
+%
 
 \subsection{Feature transformation}
 Numeric features from the feature extraction phase have non-normal distributions and span the range of scales. Broad differences among features skew the spread in the particular axis. Inevitably it can degrade the discernment of fault diagnostics models that map input onto smooth function as regression does~\cite{zheng_feature_2018}. The feature scaling, power transform, and principal component analysis modify attribute values to gain more meaningful predictors, but one must be cautious in model interpretation.

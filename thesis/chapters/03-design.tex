@@ -94,3 +94,38 @@ Faster than target device to enable experimentation, ARM platform
 \includegraphics[width=0.7\textwidth]{assets/sensor-network.png}
 \caption{Sensor network components}
 \end{figure}
+
+
+\chapter{ML Pipeline Design}
+
+Mafaulda dataset
+Jupyter notebook - Python
+
+
+\section{Data labeling and cleaning}
+- Mafaulda labeling and creating subset (RPM range, 4 classes, Anomaly class)
+- Measurement of custom datasets (Schiratech iComox, Beaglebone) - air conditioning, compressor
+
+\section{Feature relevance}
+- supervised - correlation, fisher, mi
+- custom, tsfel, in sensor and in one axis
+- online learning features
+
+\section{Nearest neighbour classifier}
+- kNN (fault and anomaly)
+	- Offine (baseline)
+	- Online (evolution)
+- parameters: k-neigh, distance
+- metrics: accuracy, precision, recall
+
+\section{Clustering}
+- Density based clustering
+	- DBSCAN (all features, PCA, subset of best)
+	- DenStream (all features, subset of best)
+
+\section{Anomaly detection / Decision Trees}
+- Offline (DecisionTree)
+- Online (Hoefing Tree)
+
+\section{Comparision to real data}
+- Can be part of original chapters
