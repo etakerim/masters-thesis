@@ -375,7 +375,7 @@ r(i) = \frac{\mathrm{cov}(f_i, c)}{\sqrt{\mathrm{var}(f_i) \cdot \mathrm{var}(c)
 
 \myequations{Fisher score}
 \begin{ceqn}\begin{align}
-\mathrm{FS}(X^j) = \frac{\sum_{i=1}^{C} n_i(\mu_i^j - \mu^i)^2}{\sum_{i=1}^{C} n_i (\sigma_i^j)^2}
+\mathrm{FS}(X^j) = \frac{\sum_{i=1}^{C} n_i(\mu_i^j - \mu^i)^2}{\sum_{i=1}^{C} (n_i - 1) \cdot (\sigma_i^j)^2}
 \label{equ:fisher-score}
 \end{align}\end{ceqn}
 
