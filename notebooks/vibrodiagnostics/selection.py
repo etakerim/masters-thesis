@@ -106,7 +106,27 @@ def plot_bar_chart(ax, x, y, title):
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
 
 
-############### ONLINE FISHER SCORE ###############################
+############### ONLINE FEATURE SELECTION SCORE ###############################
+class Correlation(stats.base.Bivariate):
+
+    def __init__(self):
+        self.labels = {}
+
+    def update(self, x, y):
+        if y not in self.labels:
+            self.labels[y] = stats.PearsonCorr()
+
+        for label, corr in self.labels.items():
+            if label == y:
+                corr.update(x, 1)
+            else:
+                corr.update(x, 0)  
+        return self
+
+    def get(self):
+        return np.mean([abs(corr.get()) for corr in self.labels.values()])
+
+
 class FisherScore(stats.base.Bivariate):
 
     def __init__(self):
@@ -199,16 +219,21 @@ class MutualInformation(stats.base.Bivariate):
 def corr_classif(X, y):
     X = pd.DataFrame(X)
     y_dummies = pd.get_dummies(y)
-    dataset = pd.concat([X, y_dummies], axis=1)
     scores = []
 
     for col in X.columns:
-        x = dataset[col].fillna(0)
-        corr = np.array([
-            np.abs(pearsonr(x, dataset[category])[0])
-            for category in np.unique(y)
-        ])
-        scores.append(corr.mean())
+        x = X[col]
+
+        if (x == x.iloc[0]).all():
+            # Correlation of constant list is not defined
+            # Say that it is not infomative by corr = 0
+            scores.append(0)   
+        else:
+            corr = np.array([
+                np.abs(pearsonr(x, y_dummies[category])[0])
+                for category in np.unique(y)
+            ])
+            scores.append(corr.mean())
 
     return np.array(scores)
 
