@@ -18,6 +18,21 @@ import matplotlib.pylab as plt
 from vibrodiagnostics import mafaulda
 
 
+
+def plot_label_occurences(y):
+    observations = []
+    columns = list(y.astype('category').cat.categories)
+    empty = dict(zip(columns, len(columns) * [0]))
+
+    for row in y.astype('category').cat.codes:
+        sample = empty.copy()
+        sample[row] = 1
+        observations.append(sample)
+
+    class_occurences = pd.DataFrame.from_records(observations).cumsum()
+    class_occurences.plot(grid=True, figsize=(10, 3), xlabel='Observations', ylabel='Label occurences')
+
+
 def split_dataframe(dataframe: pd.DataFrame, parts: int) -> List[pd.DataFrame]:
     step = len(dataframe) // parts
     return [
