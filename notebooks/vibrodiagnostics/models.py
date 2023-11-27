@@ -13,49 +13,6 @@ from sklearn.feature_selection import mutual_info_classif, f_classif
 from sklearn.feature_selection import SelectPercentile, SelectKBest
 
 
-def features_subset_online(filename, classes, axis, label, train_size=0.7, anomaly_severity=0.7):
-    features = pd.read_csv(filename).fillna(0)
-    features = fault_labeling(features, classes, anomaly_severity=anomaly_severity)
-
-    groups = [
-        df.sample(frac=1, random_state=10)
-        for i, df in (
-            features.sort_values(by='severity_level').groupby('severity_level')
-        )
-    ]
-    features = pd.concat(groups).reset_index(drop=True)
-
-    columns = features.columns.str.startswith(tuple(axis))
-    features.columns[columns]
-    X = features[features.columns[columns]]
-    y = features[label].astype('category').cat.codes
-
-    # X, y = anomalies_undersample(X, y, 0.1)
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_size, random_state=10
-    )   
-    return (
-        X_train.sort_index(), y_train.sort_index(),
-        X_test.sort_index(), y_test.sort_index()
-    )
-
-
-def features_subset_offline(filename, classes, axis, label, train_size=0.7, anomaly_severity=0.7):
-    features = pd.read_csv(filename).fillna(0)
-    features = fault_labeling(features, classes, anomaly_severity=anomaly_severity)
-
-    columns = features.columns.str.startswith(tuple(axis))
-    X = features[features.columns[columns]]
-    y = features[label].astype('category')
-
-    # X, y = anomalies_undersample(X, y, 0.1)
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_size, stratify=y, random_state=10
-    )
-    
-    return X_train, y_train, X_test, y_test
-
-
 def fault_labeling(dataset, classes, anomaly_severity=0.7, debug=False):
     # Faults
     df = dataset.copy()

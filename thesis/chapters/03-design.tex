@@ -1,19 +1,19 @@
 \chapter{Design} \label{section:design}
 In the spirit of an extensive overview of standardized procedures of industrial vibration acquisition and monitoring, the methods in feature selection, feature selection, and machine diagnostics from vibration signals, we propose a preliminary design of elements in the sensor network capable of discriminating machinery faults.
 
-\section{Preparatory exploration}
-The wood processing factory we plan to collaborate with has to choose machines that are worthy of condition monitoring. In the meantime, the data processing pipeline will be put together in Python language and packages for scientific computing. The pipeline will consist of the following stages.
+\section{Machine learning pipeline}
 
+Mafaulda dataset
+Jupyter notebook - Python
 \begin{enumerate}
     \itemsep0pt
     \item Detrending
-    \item Adaptive noise cancellation of the background interference
+    \item (Optional) Adaptive noise cancellation of the background interference
     \item Vector of all features
     \begin{itemize}
         \itemsep0pt
         \item Time domain: statistical measures (Tab.~\ref{tab:td-features})
         \item Frequency domain: PSD estimation with FFT and Welch averaging with the resolution of 1 Hz combined with Hann window (Tab.~\ref{tab:fd-features})
-        \item Time-frequency domain: energy and entropy in wavelet coefficients from WPD and EWT filter banks.
     \end{itemize}
     \item Feature selection on evaluation datasets and experimental measurements from the factory to prune away irrelevant features with pearson correlation, Fisher score, and mutal information.
     \item Model evaluation and comparison of novelty detection methods and precision of classification with different sets of predictors. The range of optimal parameters will be found for the DenStream ($\mu$, $\epsilon$, $beta$, $\lambda$), Half-Space Trees (window size, ensemble size), and kNN (distance metric, $k$ neighbours). Evaluation metrics associated with confusion matrices will be used like accuracy, precision, true positive rate, and false positive rate.
@@ -26,52 +26,104 @@ The wood processing factory we plan to collaborate with has to choose machines t
 \end{figure}
 
 
-\section{Measurment strategy}
-Describe technical inspection in VNET, a.s. datacentres (DC Digitalis, SHC\rom{2}) from 12th October 2023
-and 
+\section{Research questions}
+Main goals:
+	- How does vibration data look like (spectral and time domain)?
+	- Create dataset of machinery vibrations
+	- Reduce number of features (samples) send from edge device - to minimal amount
+	- Adapt to features changing over time (RiverML can handle it, find proof)
+	- Evaluate model performance on all features and different feature sets
+	- Keep in mind: data ordering!
 
-HVAC - Air conditioning, Refrigirator
-Devices:
-	- Adiabatic plunger pump: better candidates because of fraquent faults, datacentere is inspected daily and maintaned regulary so it is not that critical, turns off under 26°C to save electricity consumption in winter, we do not have faulty machines for comparision
+\section{Data preparation}
+- Mafaulda dataset
+	- Choose 4 faults - normal (N), imbalance (I), vertical (VM) and horizonal misalignment (HM)
+	- Convert severity to 0 - 1 scale.
+		- Label samples above 0.5, 0.7, 0.9 as anomalous
+	- Choose rpm range 2900 $\pm$ 500 (around rotational speed of machinery with some spread, some features are correlated with rpm 
+	- Counts before split: 
+		- Split to 5 parts of 1 second intervals
+	- Two measurement points A, B
+	- Detrending by removing mean
+	- Calculate features: temporal, spectral (in 5 window sizes): welch averaging, hann window
 	
-	- Scroll compressor: example Copeland ZR16M3E-TWD-561 (2900 RPM @ 50 Hz; 9,7 kW (13 HP); 380/420V; 25 A) 3500 RPM @ 60Hz
-	
-	Faults (\url{https://www.mdpi.com/1099-4300/17/10/7076})
-	- unbalance of the rotor, fault of the scroll, mechanical assembly loose, bearing loose
-	
-	- Fig: insert image of cut of compressor
-	- Fig: insert spectrograms, orbitals from exploratory measurements
-	
-- How to obtain dataset (plan had to been aggreed to by datacentre technician)
- 	- every 2 or 3 weeks (4 - 6 times)
- 	- 60 - 90 s recordings in each place
-  	- good and bad compressor (4 x top, 4x side, 1x base)
-	
-	
-\section{Embedded system for dataset measurement}	
-Functional requirements
-\begin{itemize}
-	\item MCU has interface to accept commands and storage to save measurements
-	\item Driver for accelerometer is build in
-	\item Accelerometer has frequency response at least 500 Hz (FS = min. 3200 Hz)
-\end{itemize}
-Business (management) requirements: because of time constraints before first technical inspection: build from parts already on stock or inexpensive and quickly procurable, driver should be available, easily save massive recordings to persistant storage, extensible platform in case better option would not be avaiable in the future
+	- Batch: 
+		- Balancing dataset with oversampling minority classes	
+		- Hold-out validation - split to train and test set
+	- Online: Order by severity
 
-Hardware parts:
-Faster than target device to enable experimentation, ARM platform
-\begin{itemize}
-	\item Beaglebone Black 
-		(Texas Instruments Sitara AM3358: 1GHz ARM Cortex-A8, 
-		 SDRAM: 512MB DDR3L 800MHZ, 
-		 Onboard Flash: 4GB)
-	\item OS: Debian 10 Kernel 5.10.168-ti-r72
-	\item Accelerometer ADXL335, 3-Axis $\pm$3 g Accelerometer, 
-	      Bandwidths X, Y axes: (0.5 Hz - 1.6 kHz), Z axes: (0.5 Hz - 0.55 kHz)
-	  (via 8 channel 12-bit SAR ADC, 1.8V, 200 MSPS)
-	 \item Later: ADXL345 (SPI, ODR: 3.2 kHz) 
-\end{itemize}
+- Measurement of custom datasets 
+	- one 3-axis accelerometer on top of scroll compressor of air conditioning
+		- one in the base to capture noise
+	- water pump
+	
+	- columns: t, x, y, z: rpm
+	- 20 s recordings - split to 5 parts - extract features
+	- do PCA to explore see differences
+	- label as worse, better (classes are hard to provide)
 
-\section{Vibration processing}
+
+\section{Feature relevance}
+- choose 3 features
+- supervised
+	- highly correlated features >= 0.9:
+		- Temporal domain (A)
+			- std, rms, 1.000000
+			- margin, impulse, 0.999079
+			- crest, impulse, 0.996807
+			- crest, margin,	0.992548
+			- pp, max, 0.970055
+			- max, (std, rms), 0.938198
+			- pp, (std, rms), 0.938180 / 0.928
+		- Spectral domain (A)
+			- same feature in different window sizes (0.99)
+			- kurtosis, skewness, 0.980618
+			- std, energy, 0.960110
+			- entropy, noisiness, 0.945514
+
+	- calcultate euclidian measure of feature 
+	- correlation point biserial, fisher, mutual information
+		- Sperman rank correlation: corr, f_stat, 1.000000
+	- calculate feature rank
+		- Temporal (A) - Remove corr: pp, skewness, margin
+			pp	1.442250
+			std	2.080084
+			max	2.714418
+			rms	3.174802
+			skewness	6.082202
+			margin	6.868285
+			
+			(B)			
+			skewness	1.817121
+			rms	1.817121
+			std	2.289428
+			kurtosis	4.308869
+		- Spectral (A) - multiple window sizes 
+			- (energy, roll off, std) 
+
+- online learning features
+	- evolution of feature importace
+
+\section{Nearest neighbour classifier}
+- kNN (fault and anomaly)
+	- Offine (baseline)
+	- Online (evolution)
+- parameters: k-neigh, distance
+- metrics: accuracy, precision, recall
+
+\section{Clustering}
+- Density based clustering
+	- DBSCAN (all features, PCA, subset of best)
+	- DenStream (all features, subset of best)
+
+\section{Novelty detection}
+- Offline (Isolation forest)
+- Online (Half-space Tree)
+
+
+\section{Infrastructure deployment}
+Future work: engineer new feature, deploy, tweek models, validate on real dataset
+
  \begin{itemize}
  \itemsep0pt
 \item \textbf{Input:} Samples from three-axis MEMS accelerometers, RPM tachometer, Noise background
@@ -94,38 +146,3 @@ Faster than target device to enable experimentation, ARM platform
 \includegraphics[width=0.7\textwidth]{assets/sensor-network.png}
 \caption{Sensor network components}
 \end{figure}
-
-
-\chapter{ML Pipeline Design}
-
-Mafaulda dataset
-Jupyter notebook - Python
-
-
-\section{Data labeling and cleaning}
-- Mafaulda labeling and creating subset (RPM range, 4 classes, Anomaly class)
-- Measurement of custom datasets (Schiratech iComox, Beaglebone) - air conditioning, compressor
-
-\section{Feature relevance}
-- supervised - correlation, fisher, mi
-- custom, tsfel, in sensor and in one axis
-- online learning features
-
-\section{Nearest neighbour classifier}
-- kNN (fault and anomaly)
-	- Offine (baseline)
-	- Online (evolution)
-- parameters: k-neigh, distance
-- metrics: accuracy, precision, recall
-
-\section{Clustering}
-- Density based clustering
-	- DBSCAN (all features, PCA, subset of best)
-	- DenStream (all features, subset of best)
-
-\section{Anomaly detection / Decision Trees}
-- Offline (DecisionTree)
-- Online (Hoefing Tree)
-
-\section{Comparision to real data}
-- Can be part of original chapters

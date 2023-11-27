@@ -1,5 +1,5 @@
 \section{Signal preprocessing} \label{section:signal-preprocessing}
-The vibration signals in a factory environment are inherently full of disturbances. Nearby equipment operation and handling of heavy objects in the surroundings can all contribute to the unwanted chaotic movement in otherwise mostly pure oscillatory motion. In addition, accelerometers suffer from systematic measurement errors in the form of thermal noise, zero-g offset as a result of slight miscalibration, and bias originating from a constant force of gravity. These unavoidable distortions are suppressible to some extent with digital filters. In the preprocessing stage, we consider detrending, noise reduction with adaptive filters, and time synchronous averaging to eliminate the external interference.
+The vibration signals in a factory environment are inherently full of disturbances. Nearby equipment operation and handling of heavy objects in the surroundings can all contribute to the unwanted chaotic movement in otherwise mostly pure oscillatory motion. In addition, accelerometers suffer from systematic measurement errors in the form of thermal noise, zero-g offset as a result of slight miscalibration, and bias originating from a constant force of gravity. These unavoidable distortions are to some extent suppressible with digital filters. In the preprocessing stage, we consider detrending, noise reduction with adaptive filters, and time synchronous averaging to eliminate the external interference.
 
 \subsection{Detrending}
 The oscillatory motion should be centered around the zero level for further manipulation. The constant offset is eliminated simply by subtracting the overall mean from the signal. Moreover high pass DC blocker infinite impulse response (IIR) filter of 1st order can adjust to shifts of the average value over time (Equation~\ref{equ:iir-dc-blocker}). The transition band depends upon the choice of corner frequency $f_{3dB}$ (Fig.~\ref{fig:dc-blocker}).
@@ -52,21 +52,20 @@ Time synchronous averaging (TSA) diminishes the impact of vibration sources unre
 \begin{ceqn}\begin{align}
 x_{TSA} = \frac{1}{N} \sum_{n = 0}^{N - 1}{x(t + nT)}
 \label{equ:tsa-average}
-\end{align}\end{ceqn}
+\end{align}\end{ceqn} 
 
+\section{Feature extraction} \label{section:feature-extraction}
+After preprocessing raw numerical vectors are merely low-level descriptors of the underlying physical phenomena. At first, these incomprehensible sequences of numbers are reduced to summary attributes called features in the process of feature extraction or feature discovery. Features can be hand-crafted (as is our case), learned implicitly within the model representation, or explicitly from an optimization problem solution. 
 
-\section{Feature engineering} \label{section:feature-engineering}
-Raw numerical vectors after preprocessing are merely low-level descriptors of the underlying physical phenomena. At first, these incomprehensible sequences of numbers are reduced to summary attributes called features in the process of feature discovery. Normalization and linear transformations are applied here to discriminate different categories in the feature space. The most informative set of features is obtained with feature selection methods for the diagnostic model. Features can be hand-crafted, learned implicitly within the model representation, or explicitly from an optimization problem solution.  
+Predictive maintenance has ideal prerequisites for the application of feature engineering because the signal is usually pseudo-stationary, and the trend monitoring variables come out of extensive domain expertise in mechanics. The advantages of add-in extraction effort, as opposed to processing samples unmodified, are to gain better classification precision, reduce computational burden and storage capacity downstream with dimensionality reduction~\cite{johnson_feature_2019}. 
 
-\subsection{Feature extraction}
-Predictive maintenance has ideal prerequisites for the application of feature engineering because the signal is usually pseudo-stationary, and the trend monitoring variables come out of extensive domain expertise in mechanics. The advantages of add-in extraction effort, as opposed to processing samples unmodified, are to gain better classification precision, reduce computational burden and storage capacity downstream with dimensionality reduction~\cite{johnson_feature_2019}. It is important to note that the design of features is not a standalone step in the machine learning pipeline but it should be performed iteratively to improve the target model.  Signal features are computed in the time, frequency, and time-frequency domain~\cite{brito_fault_2021}. 
+It is important to note that the design of features is not a standalone step in the machine learning pipeline but it should be performed iteratively to improve the target model. Signal features are computed in the time, frequency, and time-frequency domain~\cite{brito_fault_2021}.
 
-\subsection{Time domain features}
-The most widely found features in the literature are rudimentary statistical measures of the central moment: mean, variance, standard deviation, skewness, and kurtosis~(Tab.~\ref{tab:td-features}). Statistics can be calculated in any domain, but the mean value is not to be used in detrended data. The vibration severity metrics out of technical standards are also highly regarded. The characteristics of amplitude include root mean square, peak-to-peak, and maximum~\cite{mostafavi_novel_2021}.
+\subsection{Temporal domain features}
+The most widely found features in the literature are rudimentary statistical measures of the central moment: mean, variance, standard deviation, skewness, and kurtosis~(Tab.~\ref{tab:td-features}). Statistics can be calculated in any domain, but the mean value should not to be used in detrended data. The vibration severity metrics out of technical standards are also highly regarded. The characteristics of amplitude include root mean square, peak-to-peak distance, and maximum~\cite{mostafavi_novel_2021}.
 
 The other significant time-domain attributes are derived as ratios of previous simpler ones. These ratios are crest factor, margin factor, impulse factor, and shape factor~(Tab.~\ref{tab:td-features})~\cite{nandi_condition_2019}. Many articles have been successful in bearing fault detection out of transients in impulsive signals with kurtosis, crest factor, and margin indicators \cite{brito_fault_2021}. It is also suggested that the shape factor can signify unbalance and misalignment faults~\cite{nandi_condition_2019}.
 
-% TODO: add td and fd features from tsfel
 \begin{table}[h]
 \centering
 \renewcommand{\arraystretch}{2}
@@ -74,27 +73,51 @@ The other significant time-domain attributes are derived as ratios of previous s
 \begin{tabular}{|l|l|l|l|}
 \hline
 \textbf{Feature}            & \textbf{Equation}                                                                    & \textbf{Feature}        & \textbf{Equation}                                                                                                  \\ \hline
-\textit{Standard deviation} & $ \sigma = \sqrt{\frac{1}{N}\sum_{i = 1}^{N}{\left(x_i - \bar{x}\right)^2}} $        & \textit{Crest factor}   & $ X_{cf} = \frac{max(|x_i|)}{X_{rms}} $                       \\ \hline
+\textit{Standard deviation} & $ X_\sigma = \sqrt{\frac{1}{N}\sum_{i = 1}^{N}{\left(x_i - \bar{x}\right)^2}} $        & \textit{Crest factor}   & $ X_{cf} = \frac{max(|x_i|)}{X_{rms}} $                       \\ \hline
 \textit{Skewness}           & $ X_{sv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^3}$ & \textit{Margin factor}  & $ X_{mf} = \frac{max(|x_i|)}{\left( \frac{1}{N} \sum_{i=1}^{N}{\sqrt{|x_i|}} \right)^2} $                          \\ \hline
 \textit{Kurtosis}           & $ X_{kv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^4}$ & \textit{Impulse factor} & $ X_{if} = \frac{max(|x_i|)}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}} $                                                  \\ \hline
 \textit{Root mean square}   & $ X_{rms} = \sqrt{\frac{1}{N}\sum_{i = 1}^{N}{x_i^2}} $             & \textit{Shape factor}   & $ X_{sf} = \frac{X_{rms}}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}}$ \\ \hline
 \textit{Peak-to-peak}       & $ X_{ppv} = \max(x_i) - \min(x_i) $                                                  & \textit{Maximum}        & $ X_{max} = \max(|x_i|) $                                                                                          \\ \hline
 \end{tabular}
 \end{adjustbox}
-\caption{Time domain features}
+\caption{Temporal domain features}
 \label{tab:td-features}
 \end{table}
 
-\subsection{Frequency domain features}
-The mechanical faults present themselves as oscillatory patterns which are combinations of frequencies with various amplitudes. The Fourier transform is one of the prominent strategies in power spectral density estimation. Experts on vibrodiagnostics utilize it as a primary signal processing technique for data analysis as it is recommended in ISO 13373-2 standard~\cite{noauthor_iso_2016_2}. 
+\subsection{Spectral domain features}
+The mechanical faults present themselves as oscillatory patterns which are combinations of frequencies with various amplitudes. The Fourier transform is one of the most prominent strategies in power spectral density estimation. Experts on vibrodiagnostics utilize it as a primary signal processing technique for data analysis as it is recommended in ISO 13373-2 standard~\cite{noauthor_iso_2016_2}. 
 
-The inherent symmetries in the Fourier matrix made it possible to invent an efficient implementation of the Fast Fourier transform (FFT) algorithm with time complexity $O(n \log n)$. The drawback of the plain spectral analysis is the lack of resolution for events that occurred at distant time instants, and so their spectral components might adversely blend in together. 
+The inherent symmetries in the Fourier matrix made it possible to implement the Fast Fourier transform (FFT) algorithm with time complexity $O(n \log n)$. The drawback of the plain spectral analysis is the lack of resolution for events that occurred at distant time instants, and so their spectral components might adversely blend in together. 
 
-In the frequency domain, we can obtain spectral centroid, spectral kurtosis, spectral roll-off, spectral flux, energy in frequency bands, and energy ratio (Tab.~\ref{tab:fd-features})~\cite{peeters_large_2004}. In geometry terms, the spectral centroid represents the barycenter of the frequency magnitude plot. Spectral roll-off gives a notion about the spectral distribution because it searches the frequency $f_c$ below which 95\% of the signal energy is contained. The energy in the roll-off calculation is summed up to the Nyquist limit: $f_s / 2$. According to the definition, spectral flux is normalized cross-correlation between two successive amplitude spectra, value of one means spectra are the most dissimilar.
+\begin{table}[ht]
+\renewcommand{\arraystretch}{2}
+\centering
+\begin{adjustbox}{width=\columnwidth,center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Feature}           & \textbf{Equation}                                                                                                  \\ \hline
+\textit{Spectral centroid} & $ X_{fc} = \frac{\sum_{i = 0}^{N - 1}{f_i \cdot a(f_i)}}{\sum_{i = 0}^{N - 1}{a(f_i)}}$                   \\ \hline 
+\textit{Energy}            & $ E(N) = \sum_{i = 1}^{N} a^2(t) $                                                                    \\ \hline \textit{Energy ratio}                & $E_r = E_i \;/\; \sum_{i = 1}^{N}{E_i} $                                                        \\ \hline
+\textit{Spectral roll-on} & $ E(f_c) = 0.05 \cdot E(f_s / 2) $ \\ \hline                    
+\textit{Spectral roll-off} & $ E(f_c) = 0.95 \cdot E(f_s / 2) $                                                   \\ \hline
+\textit{Spectral flux}     & $X_{\mathrm{flux}} = 1 - \mathrm{corr}(A_{t-1}, A_t)$ \\ \hline 
+\textit{Noisiness}                   & $X_{noise} = \mathrm{SNR}(X) = \mu \;/\; \sigma $                             \\ \hline
+\textit{Shannon entropy}      & $H(X) = - \sum_{i} P(X = x_i) \cdot \ln(P(X = x_i)) $                                                  \\ \hline
+\textit{Spectral negentropy}      & $\Delta I_E(f, \Delta f) = \sum_{k = 0}^{N - 1}{\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}} \cdot \ln\left(\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}\right)$                                                \\ \hline
+\end{tabular}
+\end{adjustbox}
+\caption{Frequency domain features}
+\label{tab:fd-features}
+\end{table}
 
-The harmonic frequencies may originate from higher order oscillation modes of the same shaft or other elastic rod supported on both ends. Several harmonics features worth investigating are fundamental frequencies, noisiness, inharmonicity, and harmonic spectral deviation~(Tab.~\ref{tab:fd-features}). Noisiness as a harmonic feature is a ratio of noise (non-harmonic components) energy to the total contained energy. Inharmonicity measures the divergence of spectral components from a purely harmonic to inharmonic signal on scale from 0 to 1. Harmonic spectral deviation adds up differences of amplitudes at harmonic peaks $a(h)$ from the spectral envelope $\mathrm{SE}(h)$~\cite{peeters_large_2004}. 
+In the spectral domain, we can obtain usual statistical properties of the distribution being spectral centroid, skew and kurtosis. Additionaly spectral roll-on and roll-off, fundamental frequency, spectral flux, signal to noise ratio (noisiness), energy in frequency bands, and energy ratio are extracted (Tab.~\ref{tab:fd-features})~\cite{peeters_large_2004}. 
+
+In geometric terms, the spectral centroid represents the barycenter of the frequency magnitude plot. Spectral roll-off gives a notion about the spectral distribution because it identifies the frequency $f_c$ below which 95\% of the signal energy is contained. Complementary, the roll-on frequency is chosen so that 5\% of the signal energy is below this value. According to the definition, spectral flux is normalized cross-correlation between two successive amplitude spectra, a value of one means spectra are the most dissimilar.
+
+``Negentropy measures the inclination of a system to increase its level of organization''~\cite{avoci_spectral_2020}. The larger \emph{spectral negentropy} (Equation~\ref{equ:spectral-negentropy}) suggests more fault-induced impulses. $E(k, f, \Delta f)$ denotes the squared envelope spectrum (SES) which is an envelope in the Fourier domain: $\mathcal{F}\{ |y(k, f, \Delta f)|^2 \}$.
 
 If a single principal frequency exists, it can be determined with maximum likelihood estimation. Such frequency would explain the signal spectrum the best~\cite{peeters_large_2004}.  The frequency spectrum is a discrete set of amplitudes where peaks have to be reliably identified to create representative attributes.
+
 The essential peak-finding approaches are based either on magnitude or gradient. All found extrema are commonly filtered with the magnitude of prominences and the widths at half prominence. In the magnitude-based method, middle point $x_i$ is compared to neighboring two points and the peak is then: $x_{i-1} < x_i > x_{i+1}$. The gradient-based method evaluates the first derivative at the point which is equal to zero in case the point is a local maximum, local minimum, or inflection point~\cite{adikaram_non-parametric_2016}.
 
 A substantial improvement is a robust non-parametric peak identification named \emph{MMS} based on the sum of terms in an arithmetic progression based on maximum, minimum, and sum. MMS max-min finder in the elementary form processes points in the window of length 3, it advances one point and deems its middle point as a local extremum if it satisfies equalities below. Equation~\ref{equ:mms-maxima} is for the hill and Equation~\ref{equ:mms-minima} is for the valley. The filtration techniques are incorporated in the adaptations of the MMS algorithm: MMS-WBF, MMS-SG, MMS-LH~\cite{adikaram_non-parametric_2016}.
@@ -118,35 +141,34 @@ Multiple harmonic series and the sidebands can be separated into a discrete set 
 v_i^{(r)} = \frac{v_j}{\min{|v_j - r \cdot v_i|}}
 \label{equ:harmonic-search}
 \end{align}\end{ceqn}
- 
-\begin{table}[ht]
-\renewcommand{\arraystretch}{2}
-\centering
-%\begin{adjustbox}{width=\columnwidth,center}
-\begin{tabular}{|l|l|}
-\hline
-\textbf{Feature}           & \textbf{Equation}                                                                                                  \\ \hline
-\textit{Spectral centroid} & $ X_{fc} = \frac{\sum_{i = 0}^{N - 1}{f_i \cdot a(f_i)}}{\sum_{i = 0}^{N - 1}{a(f_i)}}$                   \\ \hline 
-\textit{Spectral roll-off} & $ E(f_c) = 0.95 \cdot E(f_s / 2) $                                                   \\ \hline
-\textit{Spectral flux}     & $X_{\mathrm{flux}} = 1 - \mathrm{corr}(A_{t-1}, A_t)$ \\ \hline 
-\textit{Harmonic spectral deviation} & $ X_{\mathrm{HDEV}} = \frac{1}{H}\sum_h(a(h) - \mathrm{SE}(h))$                                          \\ \hline
-\textit{Noisiness}                   & $X_{noise} = \frac{\sum_{k \notin h}^{N}E_k}{\sum_{i = 1}^{N}E_i} = \mathrm{SNR}(X) = \mu \;/\; \sigma $                             \\ \hline
-\textit{Inharmonicity}               & $X_{inharmo} = \frac{2}{f_0} \cdot \frac{\sum_h | f(h) - h \cdot f_0| \cdot a^2(h)}{\sum_h a^2(h)} $ \\ \hline
-\textit{Energy}            & $ E(N) = \sum_{i = 1}^{N} a^2(t) $                                                                    \\ \hline \textit{Energy ratio}                & $E_r = E_i \;/\; \sum_{i = 1}^{N}{E_i} $                                                        \\ \hline
-\textit{Shannon entropy}      & $H(X) = - \sum_{i} P(X = x_i) \cdot \ln(P(X = x_i)) $                                                  \\ \hline
-\end{tabular}
-%\end{adjustbox}
-\caption{Frequency domain features}
-\label{tab:fd-features}
-\end{table}
 
 \subsection{Time-frequency domain features}
 The \textbf{Short-time Fourier transform} (STFT) splits the time-domain signal to an equal-length intervals. Individual chunks have 50\% overlap and are multiplied with weights of window function to balance scalloping loss and spectral leakage due to Fourier transform periodicity assumption. Traditionally, the Hann window is commonly used instead of rectangular window~\cite{ziaran_technicka_2013,noauthor_iso_2016_2}.
 
 In the time-frequency domain, the same features can be derived as in the frequency domain, but in addition, the attributes are time-localized in this way. The STFT has a considerable flaw for implementation in a self-adaptable system and that is fixed resolution. The optimal window size has to be set beforehand or chosen after performing multiple transformations on chunks out of the range of lengths. Welch's methods averages multiple consecutive blocks to better estimate the spectrum. We have already researched the suitability of STFT for online detection of constant frequencies~\cite{hajek_iot_2022}.
 
-The bands for lower frequencies should be longer in duration than for higher frequencies. The \textbf{Wavelet transform} (WT) possesses such multi-scale discrimination property effectively increasing resolution in time-frequency plain. Wavelet basis functions are constructed for that purpose (Equation~\ref{equ:mother-wavelet}). There are several wavelet families, for example, Haar, Daubechies, Coiflets, Symlets, Morlet, and Meyer~\cite{nandi_condition_2019}.
+The alternative to isolating weak impacts with high time resolution is a \textbf{Teager-Kaiser energy operator} (TKEO) (Equation~ \ref{equ:tkeo-operator}). It is a tool for envelope analysis to demodulate characteristic AM-FM signal present during bearing faults. Energy operator output can be utilized as a standalone feature attribute.
 
+\myequations{Teager–Kaiser energy operator}
+\begin{ceqn}\begin{align}
+\psi[x(n)] = [x(n)]^2 - x(n - 1)x(n + 1)
+\label{equ:tkeo-operator}
+\end{align}\end{ceqn}
+
+Improved TKEO is necessary to prevent analysis from suffering from the noisy source. The key idea is to perform TKEO after signal decomposition into narrow-band components with different center frequencies. The extracted modes are reconstructed with weights assigned based on their correlations to the original signal~\cite{shi_application_2022}.
+
+Time-frequency spectrum modification preserving localization of abrupt wide-band spikes at time $t_0$ and simultaneously reducing energy smear over the larger region is a goal of \textbf{Transient-extracting transform} (TET). Post-processing of STFT window $G(t,\omega)$ involves multiplication of the spectrum with the Transient extracting operator (TEO). This operator is expressed in the form of a Dirac delta function $\delta(t)$ (Equation~\ref{equ:tet-transform}).
+
+\myequations{Transient-extracting transform}
+\begin{ceqn}\begin{align}
+\mathrm{Te}(t,\omega) = G(t,\omega) \cdot  \delta(t - t_0)
+\label{equ:tet-transform}
+\end{align}\end{ceqn}
+
+TET representation retains non-zero coefficients where the absolute value of the ratio between two STFTs $G^{tg}[n, k]\;/\;G[n, k]$ is less than half the sampling interval $T$. These two transforms use distinct windows $g[n]$ and $n \cdot g[n]$. Decomposition of signal with TET is proved to produce significantly larger kurtosis (around 38 in TET, 4 in other methods) and hence better discriminate the transient fault~\cite{yu_concentrated_2020}.
+
+\subsection{Wavelet domain features}
+The bands for lower frequencies should be longer in duration than for higher frequencies. The \textbf{Wavelet transform} (WT) possesses such multi-scale discrimination property effectively increasing resolution in time-frequency plain. Wavelet basis functions are constructed for that purpose (Equation~\ref{equ:mother-wavelet}). There are several wavelet families, for example, Haar, Daubechies, Coiflets, Symlets, Morlet, and Meyer~\cite{nandi_condition_2019}.
 
 \myequations{Mother wavelet function}
 \begin{ceqn}\begin{align}
@@ -176,33 +198,13 @@ s(t) = \sum_{k=1}^{K} A_k(t)\cos(\theta_k(t)) + \eta(t)
 
 The components are defined by their instantaneous amplitudes $A_k(t)$ and instantaneous phases $\theta_k(t)$. The energy spread to adjacent bins can be effectively squeezed only in regions with constant phase and large enough component separation. Despite the promising properties of this transform, white noise causes severe interference in the resulting time-frequency map.
 
-The alternative to isolating weak impacts with high time resolution is a \textbf{Teager-Kaiser energy operator} (TKEO) (Equation~ \ref{equ:tkeo-operator}). It is a tool for envelope analysis to demodulate characteristic AM-FM signal present during bearing faults. Energy operator output can be utilized as a standalone feature attribute.
-
-\myequations{Teager–Kaiser energy operator}
-\begin{ceqn}\begin{align}
-\psi[x(n)] = [x(n)]^2 - x(n - 1)x(n + 1)
-\label{equ:tkeo-operator}
-\end{align}\end{ceqn}
-
-Improved TKEO is necessary to prevent analysis from suffering from the noisy source. The key idea is to perform TKEO after signal decomposition into narrow-band components with different center frequencies. The extracted modes are reconstructed with weights assigned based on their correlations to the original signal~\cite{shi_application_2022}.
-
-Time-frequency spectrum modification preserving localization of abrupt wide-band spikes at time $t_0$ and simultaneously reducing energy smear over the larger region is a goal of \textbf{Transient-extracting transform} (TET). Post-processing of STFT window $G(t,\omega)$ involves multiplication of the spectrum with the Transient extracting operator (TEO). This operator is expressed in the form of a Dirac delta function $\delta(t)$ (Equation~\ref{equ:tet-transform}).
-
-\myequations{Transient-extracting transform}
-\begin{ceqn}\begin{align}
-\mathrm{Te}(t,\omega) = G(t,\omega) \cdot  \delta(t - t_0)
-\label{equ:tet-transform}
-\end{align}\end{ceqn}
-
-TET representation retains non-zero coefficients where the absolute value of the ratio between two STFTs $G^{tg}[n, k]\;/\;G[n, k]$ is less than half the sampling interval $T$. These two transforms use distinct windows $g[n]$ and $n \cdot g[n]$. Decomposition of signal with TET is proved to produce significantly larger kurtosis (around 38 in TET, 4 in other methods) and hence better discriminate the transient fault~\cite{yu_concentrated_2020}.
-
 The spectrograms to illustrate the difference in the ability of Fourier transform, continuous Wavelet transform, and their modifications to pick up underlying patterns in bearing faults are shown in the Fig.~\ref{fig:transforms}.
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/stft-spectrogram-sample.png}
-        \caption{STFT + Gaussian window}
+        \caption{STFT \& Gaussian window}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
@@ -212,7 +214,7 @@ The spectrograms to illustrate the difference in the ability of Fourier transfor
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/wt-spectrogram-sample.png}
-        \caption{CWT + Morlet wavelet}
+        \caption{CWT \& Morlet wavelet}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
@@ -261,6 +263,7 @@ Tool wear diagnosis based on acoustic emission (AE) signal considers \emph{wavel
 
 Discrete wavelet transform and wavelet packets partition the spectrum into predefined frequency bands that do not always adequately capture individual elementary oscillations. Adaptive spectral segmentation is needed to extract separate intrinsic mode functions (IMF).
 
+\subsection{Empirical wavelet features}
 \textbf{Empirical Wavelet Transform} (EWT) constructs adaptive bandpass filters with Meyer wavelet. The inner product of the signal with the scaling function $\hat{\phi_n}$ obtains the approximation coefficients and the inner product with the wavelet function results in detail coefficients.
 
 The normalized frequency axis in range $\omega \in [0, \pi]$ is divided by split points $\omega_0, \dots, \omega_N$ where $\omega_n = f_n \cdot 2 \pi\;/\;f_s$ (Fig.~\ref{fig:ewt-spectrum-segmentation}). Each segment is bounded between $[\omega_{n-1}, \omega_n]$ with transition phase of width $2\tau_n$ and polynomial transition function $\beta(x)$. A tight frame set of empirical wavelets is built by setting the transition phase proportional to the band boundary: $\tau_n = \lambda \omega_n$, and proportional constant must obey constrain: $\lambda = \min\left(\frac{\omega_{n+1} - \omega_n}{\omega_{n+1} + \omega_n}\right)$. The $N$ boundaries defining different portions of the Fourier spectrum are placed at the center between two consecutive local maxima~\cite{gilles_empirical_2013}.
@@ -294,31 +297,25 @@ The segmentation boundaries detection can be accomplished also on the spectral e
     \caption{Illustration of improved EWT spectral segmentations}
 \end{figure}
 
-Alternatively, the central frequencies of bands containing the most unevenness measured by negentropy are picked after the EWT processing passed. The filter bank is then reconstructed accordingly. `Negentropy measures the inclination of a system to increase its level of organization'~\cite{avoci_spectral_2020}. The larger \emph{spectral negentropy} (Equation~\ref{equ:spectral-negentropy}) suggests more fault-induced impulses. $E(k, f, \Delta f)$ denotes the squared envelope spectrum (SES) which is an envelope in the Fourier domain: $\mathcal{F}\{ |y(k, f, \Delta f)|^2 \}$.
-
-\myequations{Spectral negentropy}
-\begin{ceqn}\begin{align}
-\Delta I_E(f, \Delta f) = \sum_{k = 0}^{N - 1}{\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}} \cdot \ln\left(\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}\right)
-\label{equ:spectral-negentropy}
-\end{align}\end{ceqn}
-
-In \textbf{time-frequency domain scanning empirical spectral negentropy} method (T-FSESNE) the scanning EWT filter establishes the empirical mode components $X_i(t)$. The central frequencies $f_{cj}$ are retained in resonance bands where the frequency-domain spectrum negentropy (FSNE) is greater than mean $\overline{\Delta I_E}$. The optimal bandwidth for each component is searched among the set of incrementally expanding regions fixed at $f_{cj}$. The interval with the largest time-domain spectrum negentropy (TSNE) is selected to restrict the bounds of the mode $(f_{cj}, B_{wk})$~\cite{yonggang_time_2020}.
-
-The following scheme termed \textbf{adaptive and fast empirical wavelet transform} (AFEWT) calculates spectral negentropy of key functions $K'_i(f)$. The spectral section with the highest entropy is assumed to contribute the most to the rolling bearing fault. First, the Fourier transform of the spectrum establishes the key function $K(f)$. This function is analogous to the cepstrum. The leftmost ridge in the $K(f)$ plot is transformed using inverse FFT to attain trend spectrum $T(f)$. Finally, the array of local minima points in the trend spectrum bound frequency bands whose Fourier transform produces key functions $K'_i(f)$~\cite{xu_adaptive_2019}. 
-
 The inspiration for filtering with adaptive basis comes from \textbf{Empirical mode decomposition} (EMD). This procedure locates local maxima and minima in the time waveform that are interpolated with cubic splines to form signal envelopes. The average of the upper and lower envelope is repeatedly subtracted from the residuals recovering the higher order and lower frequency IMFs~\cite{wang_computational_2014}. 
 
 The EMD is not recommended for practical applications because it suffers from mode mixing problems and lacks rigid theoretical foundations. Many improvements based on the mode sifting process, such as Local Mean Decomposition (LMD), Ensemble Empirical Mode Decomposition (EEMD), Concealed Component Decomposition (CCD)~\cite{tiwari_novel_2021}, and Empirical Wavelet Transform, have been devised as being capable of estimating more reasonable modes.
 
-The time-frequency representation offers plenty of features depending on the choice of spectral transformation. We have reviewed Short-time Fourier transform, Continuous Wavelet transform, Synchrosqueezing transform, Discrete Wavelet transform, Wavelet packet decomposition, Empirical Wavelet transform, and operators of negentropy, TKEO, and TEO.
+Wavelet domain features and associated spectral segmenation appears to be a powerful tool in conserving data bandwidth. For the use in white-box machinery diagnosis these trend indicator turn out to be difficult to comunicate and comprehend. Therefore we use more standardized metrics in the further study.
 
-% TODO: we did not utilize wavelets as of yet
-% 
-% 
-%
+\section{Feature transformations}
+Numerical features from the feature extraction phase have non-normal distributions and span the range of scales. Broad differences among features skew the spread in the particular axis. Inevitably it can degrade the discernment of fault diagnostics models that map input onto smooth function as regression does~\cite{zheng_feature_2018}. The feature scaling, power transform, and principal component analysis modify attribute values to gain more meaningful predictors, but one must be cautious in model interpretation.
 
-\subsection{Feature transformation}
-Numeric features from the feature extraction phase have non-normal distributions and span the range of scales. Broad differences among features skew the spread in the particular axis. Inevitably it can degrade the discernment of fault diagnostics models that map input onto smooth function as regression does~\cite{zheng_feature_2018}. The feature scaling, power transform, and principal component analysis modify attribute values to gain more meaningful predictors, but one must be cautious in model interpretation.
+\subsection{Feature normalization}
+Vibrations are measured with an accelerometer in the form of 3D vectors where each axis has its component. Models have to be resilient to any slight inclination or sensor orientation. To satisfy this prerequisite, feature $f$ extracted from all three dimensions is first composed into a single vector and Euclidian norm is computed~\cite{kamminga_robust_2018}.
+
+\myequations{Feature euclidian norm}
+\begin{ceqn}\begin{align}
+\widetilde{f} = \sqrt{f_x^2 + f_y^2 + f_z^2}
+\label{equ:min-max-scaler}
+\end{align}\end{ceqn}
+
+Feature normalization most often takes two forms. \textbf{Min-max scaling} changes original range of values into interval $[0, 1]$ (Equation~\ref{equ:min-max-scaler}). \textbf{Standardization} (Equation~\ref{equ:standardization-scaler}) constrains the mean of the variable to 0 with a variance of 1~\cite{zheng_feature_2018}.
 
 \myequations{Min-max feature scaling}
 \begin{ceqn}\begin{align}
@@ -332,8 +329,8 @@ Numeric features from the feature extraction phase have non-normal distributions
 \label{equ:standardization-scaler}
 \end{align}\end{ceqn}
 
-Feature normalization most often takes two forms. \textbf{Min-max scaling} changes original range of values into interval $[0, 1]$ (Equation~\ref{equ:min-max-scaler}). \textbf{Standardization} (Equation~\ref{equ:standardization-scaler}) constrains the mean of the variable to 0 with a variance of 1~\cite{zheng_feature_2018}.
 
+\subsection{Principal components analysis}
 Highly correlated features generated from a relatively small original column space are redundant as they do not provide any additional information for diagnostics. \textbf{Principal Component Analysis} (PCA) solves this problem by projecting potentially linearly dependant features into a new feature space where the incoming information is preserved in a smaller number of features~\cite{zheng_feature_2018}. The threshold of how many principal components are picked depends on the amount of explained variance and desired quantity of data reduction. 
 
 \myequations{Singular Value Decomposition}
@@ -344,12 +341,13 @@ Highly correlated features generated from a relatively small original column spa
 
 PCA consists of taking the Singular Value Decomposition (SVD) (Equation~\ref{equ:svd}) of the mean-centered input matrix. The disadvantage of this method is the loss of explainability in transformed space though it generally outperforms the model working with hand-crafted features~\cite{brito_fault_2021}. The signal samples can be processed directly by PCA without going through an intermediate step of calculating statistical measures. 
 
-\subsection{Feature selection}
-Not all features contribute to the model's discriminatory power with an even share. A certain subset can reach better results than other substitute options. The \emph{filtering methods} of feature selection rank the predictors in order of their importance for the problem at hand, or they separate the group of predictors that achieve the top modeling accuracies in unison~\cite{johnson_feature_2019}.
+\section{Feature selection}
+Features do not contribute to predictive power of the model with an even share. A certain subset can reach better results than others. Choosing optimal feature subset is NP-hard combinatorial problem.
 
-Still, the features can be chosen by \emph{embedded methods} intrinsically as a part of a model or else in \emph{wrapper methods} by machine learning search algorithm at a serious computational expense. However, we will focus next only on filtering methods.
+\subsection{Filtering methods}
+The features can be chosen intrinsically as a part of a model by \emph{embedded methods} or by machine learning search algorithm at a serious computational expense in \emph{wrapper methods}. However, we will focus on \emph{filtering methods} which rank the predictors in order of their importance for the problem at hand and separate the best performing group~\cite{johnson_feature_2019}. The most common strategy is \emph{K-Best Selection}.
 
-The general steps in selecting the adequate predictors is outlined next~\cite{nandi_condition_2019}:
+The general steps in selecting the adequate predictors is as follows~\cite{nandi_condition_2019}:
 \begin{enumerate}
     \itemsep0pt
     \item \textbf{Subset generation} - sets of features are generated in different search directions and with various strategies. Attributes are either appended to an empty set or pruned away from a universal set, sequentially or randomly.
@@ -360,15 +358,35 @@ The general steps in selecting the adequate predictors is outlined next~\cite{na
 
 Filter-based feature selection is preprocessing step independent of model choice with small computational requirements. Measures of information, correlation, similarity, and interdependence output the relevancy rating. Predictors are rated individually or in interacting congregations. 
 
+\subsection{Scores for ranking}
 Most of the scores are based on supervised learning, so they expect true class labels to apportion the measurements respectively. After the scores are assigned to the first $n$ features, those below a threshold are removed. 
 
 The frequently used scores upon which the feature relevance is ordered are~\cite{nandi_condition_2019}: 
 \begin{itemize}
 \item \textbf{Variance threshold} - removes low-variance features below set threshold.
-\item \textbf{Pearson correlation} - expresses linear relationship between class label $c$ and features $f_i$. Attributes are ranked in descending order according to the absolute value of their correlation coefficient from zero upwards, i. e. we seek the highest correlations to the class label.
+\item \textbf{Correlation coefficient} - expresses the linear relationship between two variables. The codependent variables are of three sorts: quantitative, ordinal, and nominal. The choice of coefficient calculation is determined by the type of variables under consideration shown in Table \ref{tab:corr-coef}. 
+
+\emph{Pearson correlation} coeficient expresses similarity between two quantitative features $f_i$ and $f_j$. In the classification setting the correlation of feature $f$ makes sense only with dichotomous target class label $c$ using \emph{point biserial coeficient}. Mathematically, this is equivalent to the Pearson coefficient. Rank correspondence is quantified with either Spearman rho or Kendall's Tau~\cite{calkins_more_2005}.
+
+\begin{table}[ht]
+\renewcommand{\arraystretch}{1.5}
+\begin{adjustbox}{width=\columnwidth,center}
+\begin{tabular}{|c|l|l|l|}
+\hline
+\textbf{Variable Y\textbackslash{}X} & \multicolumn{1}{c|}{\textbf{Quantitiative X}} & \multicolumn{1}{c|}{\textbf{Ordinal X}} & \multicolumn{1}{c|}{\textbf{Nominal X}} \\ \hline
+\textbf{Quantitative Y}              & Pearson $r$                                   & Biserial $r_b$                          & Point Biserial $r_{pb}$                 \\ \hline
+\textbf{Ordinal Y}                   & Biserial $r_b$                                & Spearman $\rho$    & Rank Biserial $r_{rb}$                  \\ \hline
+\textbf{Nominal Y}                   & Point Biserial $r_{pb}$                       & Rank Bisereal $r_{rb}$                  & Phi, L, C, Lambda                       \\ \hline
+\end{tabular}
+\end{adjustbox}
+\caption{Correlation coeficients}
+\label{tab:corr-coef}
+\end{table}
+
+Attributes are ranked in descending order according to the absolute value of their correlation coefficient. We seek the highest correlation to the class label.
 \myequations{Pearson correlation coefficient}
 \begin{ceqn}\begin{align}
-r(i) = \frac{\mathrm{cov}(f_i, c)}{\sqrt{\mathrm{var}(f_i) \cdot \mathrm{var}(c)}}
+r(i) = \frac{\mathrm{cov}(f, c)}{\sqrt{\mathrm{var}(f) \cdot \mathrm{var}(c)}}
 \end{align}\end{ceqn}
 
 \item \textbf{Fisher score} - measures the difference among the means of the classes. It is interchangeable with ANOVA F-value, but it is evaluated for each feature $X^j$ separately. Ideally, the features in the subset have large distances between samples of various classes in $C$ and distances within a class are the smallest possible. In the formula (\ref{equ:fisher-score}), $n_j$ is the sample size of $j$th feature, $\mu^j$ is its sample mean, and $\mu$ is the overall mean.
@@ -379,11 +397,13 @@ r(i) = \frac{\mathrm{cov}(f_i, c)}{\sqrt{\mathrm{var}(f_i) \cdot \mathrm{var}(c)
 \label{equ:fisher-score}
 \end{align}\end{ceqn}
 
-\item \textbf{Mutal information} - quantifies the dependence among features, or between features and class labels. It is almost identical to Information Gain. The probability distribution proximity of variables derives from relative entropy known as the Kullback-Leibler distance. Probabilities $P(x)$, $P(y)$, $P(x, y)$ are estimated in the contingency table from event occurrence count to all sample population $|x|\;/\;N$. Joint probability $P(x, y)$ represents samples of feature $x$ simultaneously in class $y$.
+\item \textbf{Mutal information} - quantifies the dependence among features, or between features and class labels. It is almost identical to Information Gain. The probability distribution proximity of variables derives from relative entropy known as the Kullback-Leibler distance. Mutual information presumes variables are discrete. In the case of quantitative variables, mutual information is estimated with binning or nearest neighbors methods~\cite{ross_mutual_2014}.
+
+Probabilities $P(x)$, $P(y)$, $P(x, y)$ are estimated in the contingency table from event occurrence count to all sample population $|x|\;/\;N$. Joint probability $P(x, y)$ represents samples of feature $x$ simultaneously in class $y$.
 
 \myequations{Mutal information}
 \begin{ceqn}\begin{align}
-\mathrm{MI}(X, Y) = \sum_{y \in Y} \sum_{x \in X} P(x, y) \log\left(\frac{P(x, y)}{P(x)P(y)}\right)
+\mathrm{MI}(X, Y) = \sum_{y \in Y} \sum_{x \in X} P(x, y) \cdot \log\left(\frac{P(x, y)}{P(x)P(y)}\right)
 \end{align}\end{ceqn}
 \end{itemize}
 

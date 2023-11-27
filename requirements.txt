@@ -5,6 +5,7 @@ scipy
 statsmodels
 pandas
 jupyterlab
+graphviz
 
 padasip
 tsfel

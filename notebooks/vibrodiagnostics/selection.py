@@ -3,9 +3,10 @@ import math
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import tsfel
 
 from river import stats, preprocessing
-from scipy.stats import pearsonr
+from scipy.stats import pearsonr, pointbiserialr
 from sklearn.feature_selection import mutual_info_classif, f_classif
 
 from sklearn.compose import ColumnTransformer
@@ -14,27 +15,22 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 
 # Dataset paths and attributes
-TIME_FEATURES_PATH = 'td_features.csv'
-FREQ_FEATURES_PATH = 'fd_features.csv'
+MAFAULDA_METADATA = 'mafaulda_metadata.csv'
+TIME_FEATURES_PATH = 'temporal_features.csv'
+FREQ_FEATURES_PATH = 'spectral_features.csv'
 TIME_AND_FREQ_FEATURES_PATH = 'time_freq_features.csv'
 
-TSFEL_FEATURES_PATH = 'tsfel_features.csv'
-TSFEL_TIME_FEATURES_PATH = 'tsfel_td_features.csv'
-TSFEL_FREQ_FEATURES_PATH = 'tsfel_fd_features.csv'
-TSFEL_STAT_FEATURES_PATH = 'tsfel_sd_features.csv'
-
-WPD_FEATURES_PATH = 'wpd_features.csv'
 
 TIME_FEATURES_PATH_ALL = 'all_td_features.csv'
 FREQ_FEATURES_PATH_ALL = 'all_fd_features.csv'
 WPD_FEATURES_PATH_ALL = 'all_wpd_features.csv'
 TSFEL_FEATURES_PATH_ALL = 'all_tsfel_features.csv'
 
-TD_COLUMNS = ['mean', 'std', 'skew', 'kurt', 'rms', 'pp', 'crest', 'margin', 'impulse', 'shape']
-FD_COLUMNS = [
-    'centroid', 'std', 'skew', 'kurt', 'roll-off', 'flux_mean', 'flux_std',
-    'noisiness', 'energy', 'entropy', 'negentropy'
-]
+# TD_COLUMNS = ['mean', 'std', 'skew', 'kurt', 'rms', 'pp', 'crest', 'margin', 'impulse', 'shape']
+# FD_COLUMNS = [
+#     'centroid', 'std', 'skew', 'kurt', 'roll-off', 'flux_mean', 'flux_std',
+#     'noisiness', 'energy', 'entropy', 'negentropy'
+# ]
 WPD_COLUMNS_EXCLUDE = {
     'fault', 'severity', 'seq', 'rpm', 'axis', 'feature'
 }
@@ -56,6 +52,15 @@ def fd_extract_feature_name(column):
     return column.str.extract(r'[A-Za-z]+_(.*)_\d+$')[0]
 
 
+def me_merge_feature_domains(time_domain: str, freq_domain: str):   
+    td_features = pd.read_csv(time_domain)
+    fd_features = pd.read_csv(freq_domain)
+    merged = td_features.merge(
+        fd_features, on=['name'], 
+        how='inner', validate='one_to_one'
+    )
+    return merged
+
 def merge_feature_domains(time_domain: str, freq_domain: str):   
     td_features = pd.read_csv(time_domain)
     fd_features = pd.read_csv(freq_domain)
@@ -64,6 +69,27 @@ def merge_feature_domains(time_domain: str, freq_domain: str):
         how='inner', validate='one_to_one'
     )
     return merged
+
+
+def me_keep_tsfel_some_columns(filename: str, domain: str) -> pd.DataFrame:
+    features = pd.read_csv(filename)
+    columns = tsfel.get_features_by_domain(domain)[domain]
+    columns = tuple([c.replace(' ', '_').lower() for c in columns.keys()])
+
+    columns = features.columns.str.endswith(columns)
+    features = features[features.columns[columns]]
+    return features
+
+
+def keep_tsfel_some_columns(filename: str, domain: str) -> pd.DataFrame:
+    features = pd.read_csv(filename)
+    columns = tsfel.get_features_by_domain(domain)[domain]
+    columns = tuple([c.replace(' ', '_').lower() for c in columns.keys()])
+
+    columns = features.columns.isin(selection.METADATA_COLUMNS) | features.columns.str.endswith(columns)
+    features = features[features.columns[columns]]
+    return features
+
 
 
 def load_td_feat(axis, path='', all=False):
@@ -114,6 +140,7 @@ class Correlation(stats.base.Bivariate):
 
     def update(self, x, y):
         if y not in self.labels:
+            # TODO: Point biserial
             self.labels[y] = stats.PearsonCorr()
 
         for label, corr in self.labels.items():
@@ -230,7 +257,7 @@ def corr_classif(X, y):
             scores.append(0)   
         else:
             corr = np.array([
-                np.abs(pearsonr(x, y_dummies[category])[0])
+                np.abs(pointbiserialr(y_dummies[category], x)[0])
                 for category in np.unique(y)
             ])
             scores.append(corr.mean())

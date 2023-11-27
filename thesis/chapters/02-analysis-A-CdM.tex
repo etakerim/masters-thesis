@@ -4,19 +4,15 @@ All rotating machinery eventually fails because of the long-term strain on the i
 The defect needs to be repaired or replaced, preferably without significant production downtime, further damage to the other attached elements, or any endangerment of the responsible personnel. The maintenance strategies are chosen according to the machine's importance as a result of its failure effect evaluation on the system. The guide to set appropriate maintenance procedures as outlined in the IEC~60706-2 standard, and involves reliability-centered maintenance analysis~\cite{el-thalji_predictive_2019}.
 
 \subsection{Maintenance strategies}
-There are three different approaches to maintenance across the industry: \textbf{reactive, preventive, and predictive}~\cite{scheffer_practical_2004}. In general, the more sophisticated methods are beneficial in a high-stakes environment. The unexpected machine shutdown can have a negative economic impact on the enterprise, resulting in decreased product quality and demands for spare parts to be ready in the supply inventory at all times. In certain situations, it suffices to utilize a simpler maintenance program, but the predictive maintenance gains attraction in the Industry 4.0 to optimize assets' usage~\cite{cinar_machine_2020}.
-\bigbreak
+There are three different approaches to maintenance across the industry: \textbf{reactive, preventive, and predictive}~\cite{scheffer_practical_2004}. In general, the more sophisticated methods are beneficial in a high-stakes environment. The unexpected machine shutdown can have a negative economic impact on the enterprise, resulting in decreased product quality and demands for spare parts to be ready in the supply inventory at all times. In certain situations, it suffices to utilize a simpler maintenance program, but the predictive maintenance gains attraction in the Industry 4.0 to optimize usage of assets~\cite{cinar_machine_2020}.
 
-\textbf{Reactive maintenance} allows machinery to run until a complete failure. This is the most inappropriate way to maintain the production line, but it is straightforward enough. It requires a large stock of replacement parts on-site and breakage inflicts a `crisis management mode' upon the plant \cite{scheffer_practical_2004}. On-demand repairs are justified when short downtime is acceptable, full and swift replacement of a broken machine with a backup is possible, or there is a negligible threat to the surrounding environment on failure~\cite{ziaran_technicka_2013}.
-\bigbreak
+\textbf{Reactive maintenance} allows machinery to run until a complete failure. This is the most inappropriate way to maintain the production line, but it is straightforward enough. It requires a large stock of replacement parts on-site and breakage inflicts a ``crisis management mode'' upon the plant \cite{scheffer_practical_2004}. On-demand repairs are justified when short downtime is acceptable, full and swift replacement of a broken machine with a backup is possible, or there is a negligible threat to the surrounding environment on failure~\cite{ziaran_technicka_2013}.
 
 \textbf{Preventive maintenance} is performed before any issue is detected. Maintenance occurs at regular intervals derived from a predetermined period in the calendar or expected machine running time (MTTF - Mean Time To Failure). The schedule is crucial but can result in components being replaced in good condition creating waste. The parts can occasionally stay in operation too long, and the machine breaks as a result. Conservative planning is usually the norm to keep the machine always in a perfect state, and therefore more frequent interventions are required~\cite{mohanty_machinery_2015}.
-\bigbreak
 
 \textbf{Predictive maintenance} known as condition-based maintenance (CbM), improves the predictability of reactive maintenance and eliminates the waste in overall resource utilization of cautious prevention. The machine downtime is scheduled after the detection of unhealthy trends in fault monitoring with sensors and the identification of troublesome components.
 
 A measurable decrease in effectivity allows us to order necessary parts in advance and organize repairs of several machines at a convenient time. The misdetection leads to increased costs compared to previous methods and raises the expectation that faults are distinguishable among themselves~\cite{davies_handbook_2012}.
-\bigbreak
 
 \begin{figure}[ht]
 	\centering
@@ -27,16 +23,16 @@ A measurable decrease in effectivity allows us to order necessary parts in advan
 
 The \emph{P-F curve} is a widespread representation of equipment degradation over time based on historical records (Fig.~\ref{fig:p-f-curve}). Corrective action should be taken between the event of potential failure (P), when the fault detection is activated, and functional failure point (F) in the P-F interval~\cite{bousdekis_enterprise_2021}.  These division points are not exactly set but have statistical distribution to them.
 
-The \emph{Remaining Useful Life} (RUL) of the specific running machine in the given instance can be merely estimated analytically, with the survival probabilities of the individual components, based on the model of the `run-to-failure' histories, and usage parameters~\cite{okoh_overview_2014}. Predictive condition monitoring aims to extend lifespan to the maximum by predicting expected RUL.
+The \emph{Remaining Useful Life} (RUL) of the specific running machine in the given instance can be merely estimated analytically, with the survival probabilities of the individual components, based on the model of the ``run-to-failure'' histories, and usage parameters~\cite{okoh_overview_2014}. Predictive condition monitoring aims to extend lifespan to the maximum by predicting expected RUL.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.8\textwidth]{assets/bath-tub-curve.png}
-	\caption{Bath tub curve~\cite{mohanty_machinery_2015}}
-	\label{fig:bath-tub-curve}
+	\includegraphics[width=0.6\textwidth]{assets/bath-tub-curve.png}
+	\caption{Bathtub curve~\cite{mohanty_machinery_2015}}
+	\label{fig:bathtub-curve}
 \end{figure}
 
-A high failure rate is present not only at the worn-out stage when the parts are fatigued or corroded but also in the early stages soon after assembly. Manufacturing or material defects, inadequate installation, or improper start-up procedures, are all suspected causes. During the stable middle phase, malfunction can occur after the machine's excessive overload. The time plot to failure rate is known as the bathtub curve~(Fig.~\ref{fig:bath-tub-curve}).
+A high failure rate is present not only at the worn-out stage when the parts are fatigued or corroded but also in the early stages soon after assembly. Manufacturing or material defects, inadequate installation, or improper start-up procedures, are all suspected causes. During the stable middle phase, malfunction can occur after the machine's excessive overload. The time plot to failure rate is known as the bathtub curve~(Fig.~\ref{fig:bathtub-curve}).
 
 \subsection{Vibration fault types}
 Mechanical problems during machinery operation bring about vibrations in many instances. Therefore vibroacoustic diagnostics is considered as one of the most important methods in early component fault identification~\cite{ziaran_technicka_2013}.
@@ -113,7 +109,7 @@ Criteria introduced to judge vibration severity are absolute vibration magnitude
 
 The operational limits in the form of \emph{alarms} and \emph{trips} are usually established on the zone boundaries or close to them. Alarms are placed between zones B and C providing a warning about reaching the threshold significant for noticeable change. Trips in between zones C and D urge immediate action or machine shut down. Both limits should not exceed 1.25 times the upper boundary of lower zones and initially are set based on previous experience with the machine~\cite{noauthor_iso_2002}.
 
-\textbf{ISO 13373-1:2002} delves into further nuances of vibration monitoring and expands on procedures outlined in termos of the vocabulary in ISO 20186. According to the standard, the data collection operates in continuous or periodic observation modes which follow an event or interval. Both designs can be permanently mounted. In continuous collection it is recommended to have `multiplexing rate sufficiently rapid so there is no significant data or trends lost'~\cite{noauthor_iso_2002}. When channels are scanned successively with gaps between data points the system is known as `scanning'.
+\textbf{ISO 13373-1:2002} delves into further nuances of vibration monitoring and expands on procedures outlined in termos of the vocabulary in ISO 20186. According to the standard, the data collection operates in continuous or periodic observation modes which follow an event or interval. Both designs can be permanently mounted. In continuous collection it is recommended to have ``multiplexing rate sufficiently rapid so there is no significant data or trends lost''~\cite{noauthor_iso_2002}. When channels are scanned successively with gaps between data points the system is known as ``scanning''.
 
 The condition monitoring program is run according to a flowchart adapted from one designed in the standard specifically to best benefit the plant. Those steps can be summarized as follows~\cite{noauthor_iso_2002}:
 \begin{enumerate}
@@ -140,8 +136,8 @@ The transducer of choice for condition monitoring is the accelerometer which can
 	\label{fig:tranducer-response}
 \end{figure}
 
-Broadband measurement requires `frequency ranges of 0.2 times the lowest rotational frequency to the highest frequency of interest'~\cite{noauthor_iso_2002}, not exceeding 10 kHz, with RMS velocity 0.1 - 100~mm/s. Bearings and gears diagnosis may push the upper-frequency limit even higher. The tolerances of amplitude and frequency calibrations fall into two types with allowable tolerances of $\pm 5 \%$ or $\pm 10 \%$~(Fig.~\ref{fig:tranducer-response}).
+Broadband measurement requires ``frequency ranges of 0.2 times the lowest rotational frequency to the highest frequency of interest''~\cite{noauthor_iso_2002}, not exceeding 10 kHz, with RMS velocity 0.1 - 100~mm/s. Bearings and gears diagnosis may push the upper-frequency limit even higher. The tolerances of amplitude and frequency calibrations fall into two types with allowable tolerances of $\pm 5 \%$ or $\pm 10 \%$~(Fig.~\ref{fig:tranducer-response}).
 
-Equipment's `health' can be mischaracterized when there are significant differences in the machine's normal operating conditions. Baseline measurements in all acceptable conditions are to be acquired to reduce the error in vibration evaluation. According to the bathtub curve~(Fig.~\ref{fig:bath-tub-curve}) reference signatures should be obtained after the initial part wear-in period. The reference spectral mask of the baseline condition is designed if maximal acceptance amplitudes are different for each significant frequency band ~\cite{ziaran_technicka_2013}.
+Equipment's ``health'' can be mischaracterized when there are significant differences in the machine's normal operating conditions. Baseline measurements in all acceptable conditions are to be acquired to reduce the error in vibration evaluation. According to the bathtub curve~(Fig.~\ref{fig:bath-tub-curve}) reference signatures should be obtained after the initial part wear-in period. The reference spectral mask of the baseline condition is designed if maximal acceptance amplitudes are different for each significant frequency band ~\cite{ziaran_technicka_2013}.
 
 The vibration baseline is defined by broad-band magnitudes and phases of motion vectors, the waveform in the time and frequency domain, the rotational speed of the machine as well as its frequency response to different speeds during start-up and coast-down captured in the Bode plot and waterfall plot. Changes during the machine operation are then depicted in value trends. Trends can be shown of overall amplitudes or limited to frequency bands.

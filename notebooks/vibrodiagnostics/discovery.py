@@ -2,7 +2,7 @@ from zipfile import ZipFile
 import numpy as np
 import pandas as pd
 from itertools import pairwise
-from typing import List
+from typing import List, Tuple, Callable
 
 from numpy.lib.stride_tricks import sliding_window_view
 from scipy.stats import skew, kurtosis, entropy
@@ -12,12 +12,186 @@ from scipy.fft import rfft
 
 from scipy.signal import butter, iirfilter, freqz, lfilter, decimate
 import pywt
-import tsfel
+from tsfel import feature_extraction as ft
 
 import matplotlib.pylab as plt
 from vibrodiagnostics import mafaulda
 
 
+
+def split_dataframe(dataframe: pd.DataFrame, parts: int = None) -> List[pd.DataFrame]:
+    if parts is None:
+        return [dataframe]
+
+    step = len(dataframe) // parts
+    return [
+        dataframe.iloc[i:i + step].reset_index(drop=True)
+        for i in range(0, len(dataframe), step)
+        if len(dataframe.iloc[i:i + step]) == step
+    ]
+
+
+def detrending_filter(dataframe: pd.DataFrame) -> pd.DataFrame:
+    for df in dataframe:
+        df[mafaulda.COLUMNS] = df[mafaulda.COLUMNS].apply(lambda x: x - x.mean())
+    return dataframe
+
+
+def time_features_calc(df: pd.DataFrame, col: str) -> List[Tuple[str, pd.DataFrame]]:
+    x = df[col]
+    features = [
+        ('std', [ft.calc_std(x)]),
+        ('skewness', [ft.skewness(x)]),
+        ('kurtosis', [ft.kurtosis(x)]),
+        ('rms', [ft.rms(x)]),
+        ('pp', [ft.pk_pk_distance(x)]),
+        ('crest', [np.max(np.absolute(x)) / ft.rms(x)]),
+        ('margin', [np.max(np.absolute(x)) / (np.mean(np.sqrt(np.absolute(x))) ** 2)]),
+        ('impulse', [np.max(np.absolute(x)) / np.mean(np.absolute(x))]),
+        ('shape', [ft.rms(x) / np.mean(np.absolute(x))]),
+        ('max', [ft.calc_max(x)])
+    ]
+    return [(f'{col}_{f[0]}', f[1]) for f in features]
+
+def frequency_features_calc(df: pd.DataFrame, col: str, window: int) -> List[Tuple[str, pd.DataFrame]]:
+    f, pxx = spectral_transform(df, col, window)
+    
+    fluxes = temporal_variation(df, col, window)
+    envelope_spectrum = envelope_signal(f, pxx)
+    # loc_harmonics, _ = find_harmonics(f, pxx)
+
+    features = [
+        ('centroid', [np.average(f, weights=pxx)]),
+        ('std', [ft.calc_std(pxx)]),
+        ('skewness', [ft.skewness(pxx)]),
+        ('kurtosis', [ft.kurtosis(pxx)]),
+        ('roll_on', [spectral_roll_off_frequency(f, pxx, 0.05)]),
+        ('roll_off', [spectral_roll_off_frequency(f, pxx, 0.85)]),
+        ('flux', [np.mean(fluxes)]),
+        ('noisiness', [signal_to_noise(pxx)]),
+        ('energy', [energy(pxx)]),
+        ('entropy', [entropy(pxx / np.sum(pxx))]),
+        ('negentropy', [negentropy(envelope_spectrum)])
+    ]
+    return [(f'{col}_{f[0]}_{window}', f[1]) for f in features]
+
+
+################## MEASUREMENTS (CUSTOM DATASET) ###################################
+def me_features_time_domain(filename: str, loader: Callable, parts: int=None) -> pd.DataFrame:
+    print(f'Processing: {filename}')
+    name, ts, fs_hz, columns = loader(filename)
+    dataframe = detrending_filter(split_dataframe(ts, parts))
+    
+    result = []
+    for i, df in enumerate(dataframe):
+        fvector = [('name', [f'{name}.part.{i}'])]
+        for col in columns:
+            fvector.extend(time_features_calc(df, col))
+        result.append(pd.DataFrame(dict(fvector))) 
+
+    return pd.concat(result).reset_index(drop=True)
+
+
+def me_features_frequency_domain(filename: str, loader: Callable, parts: int=None) -> pd.DataFrame:
+    # Calculate FFT with Welch method in 4 different Hann window sizes
+    OVERLAP = 0.5
+    WINDOW_SIZES = (2**6, 2**8, 2**10, 2**12)
+
+    print(f'Processing: {filename}')
+    name, ts, fs_hz, columns = loader(filename)
+    dataframe = detrending_filter(split_dataframe(ts, parts))
+
+    result = []
+    for i, df in enumerate(dataframe):
+        fvector = [('name', [f'{name}.part.{i}'])]
+        for window in WINDOW_SIZES:
+            for col in columns:
+                fvector.extend(frequency_features_calc(df, col, window))
+        result.append(pd.DataFrame(dict(fvector))) 
+
+    return pd.concat(result).reset_index(drop=True)
+
+
+def me_tsfel_features_import(filename: str, loader: Callable, parts: int=None) -> pd.DataFrame:
+    print(f'Processing: {filename}')
+    name, ts, fs_hz, columns = loader(filename)
+    cfg_file = tsfel.get_features_by_domain()
+    df = detrending_filter(split_dataframe(ts, parts))
+        
+    result = []
+    for i, df in enumerate(dataframe):
+        df_result = tsfel.time_series_features_extractor(cfg_file, df, fs=fs_hz)
+        result.append(df_result)
+
+    return pd.concat(result).reset_index(drop=True)
+
+
+################## MAFAULDA ########################################
+def features_time_domain(zip_file: ZipFile, filename: str, parts: int=None) -> pd.DataFrame:
+    print(f'Processing: {filename}')
+
+    columns = mafaulda.COLUMNS
+    ts = mafaulda.csv_import(zip_file, filename)
+    fault, severity, seq = mafaulda.parse_filename(filename)
+    dataframe = detrending_filter(split_dataframe(ts, parts))
+
+    result = []
+    for i, df in enumerate(dataframe):
+        fvector = [
+            ('fault', [fault]),
+            ('severity', [severity]),
+            ('seq', [f'{seq}.part.{i}']),
+            ('rpm', [df['rpm'].mean()])
+        ]
+        for col in columns:
+            fvector.extend(time_features_calc(df, col))
+        result.append(pd.DataFrame(dict(fvector))) 
+
+    return pd.concat(result).reset_index(drop=True)
+
+
+def features_frequency_domain(zip_file: ZipFile, filename: str, parts: int=None) -> pd.DataFrame:
+    # Calculate FFT with Welch method in 5 different Hann window sizes
+    print(f'Processing: {filename}')
+    OVERLAP = 0.5
+    WINDOW_SIZES = (2**6, 2**8, 2**10, 2**12, 2**14)
+
+    columns = mafaulda.COLUMNS
+    ts = mafaulda.csv_import(zip_file, filename)
+    fault, severity, seq = mafaulda.parse_filename(filename)
+    dataframe = detrending_filter(split_dataframe(ts, parts))
+
+    result = []
+    for i, df in enumerate(dataframe):
+        fvector = [
+            ('fault', [fault]),
+            ('severity', [severity]),
+            ('seq', [f'{seq}.part.{i}']),
+            ('rpm', [df['rpm'].mean()])
+        ]
+        for window in WINDOW_SIZES:
+            for col in columns:
+                fvector.extend(frequency_features_calc(df, col, window))
+        result.append(pd.DataFrame(dict(fvector))) 
+
+    return pd.concat(result).reset_index(drop=True)
+
+
+def tsfel_features_import(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:
+    ts = mafaulda.csv_import(zip_file, filename)
+    cfg_file = tsfel.get_features_by_domain()
+    dataframe = detrending_filter(split_dataframe(ts, parts))
+        
+    result = []
+    for i, df in enumerate(dataframe):
+        df_result = tsfel.time_series_features_extractor(cfg_file, df[mafaulda.COLUMNS], fs=mafaulda.FS_HZ)
+        result.append(df_result)
+
+    return pd.concat(result).reset_index(drop=True)
+
+
+
+#################################################xxx
 
 def plot_label_occurences(y):
     observations = []
@@ -31,14 +205,6 @@ def plot_label_occurences(y):
 
     class_occurences = pd.DataFrame.from_records(observations).cumsum()
     class_occurences.plot(grid=True, figsize=(10, 3), xlabel='Observations', ylabel='Label occurences')
-
-
-def split_dataframe(dataframe: pd.DataFrame, parts: int) -> List[pd.DataFrame]:
-    step = len(dataframe) // parts
-    return [
-        dataframe.iloc[i:i + step].reset_index(drop=True)
-        for i in range(0, len(dataframe), step)
-    ]
 
 
 def features_list():
@@ -81,119 +247,6 @@ def tsfel_features_generate(dataset: ZipFile, filename: str, parts=None) -> pd.D
         results.append(fv)
 
     return pd.concat(results).reset_index(drop=True)
-
-
-def features_time_domain(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:
-    print(f'Processing: {filename}')
-
-    columns = mafaulda.COLUMNS
-    ts = mafaulda.csv_import(zip_file, filename)
-    fault, severity, seq = mafaulda.parse_filename(filename)
-
-    if parts is not None:
-        dataframe = split_dataframe(ts, parts)
-    else:
-        dataframe = [ts]
-
-    result = []
-    for i, df in enumerate(dataframe):
-        fvector = [
-            ('fault', [fault]),
-            ('severity', [severity]),
-            ('seq', [f'{seq}.part.{i}']),
-            ('rpm', [df['rpm'].mean()])
-        ]
-        for col in columns:
-            x = df[col]
-            features = [
-                ('mean', [np.mean(x)]),
-                ('std', [np.std(x)]),
-                ('skew', [skew(x)]),
-                ('kurt', [skew(x)]),
-                ('rms', [mafaulda.rms(x)]),
-                ('pp', [np.max(x) - np.min(x)]),
-                ('crest', [np.max(np.absolute(x)) / mafaulda.rms(x)]),
-                ('margin', [np.max(np.absolute(x)) / (np.mean(np.sqrt(np.absolute(x))) ** 2)]),
-                ('shape', [mafaulda.rms(x) / np.mean(np.absolute(x))]),
-                ('max', [np.max(x)])
-            ]
-            features = [(f'{col}_{f[0]}', f[1]) for f in features]
-            fvector.extend(features)
-
-        result.append(pd.DataFrame(dict(fvector))) 
-
-
-    return pd.concat(result).reset_index(drop=True)
-
-
-def features_frequency_domain(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:
-    # Calculate FFT with Welch method in 5 different Hann window sizes
-    print(f'Processing: {filename}')
-    OVERLAP = 0.5
-    WINDOW_SIZES = (2**6, 2**8, 2**10, 2**12, 2**14)
-
-    columns = mafaulda.COLUMNS
-    ts = mafaulda.csv_import(zip_file, filename)
-    fault, severity, seq = mafaulda.parse_filename(filename)
-
-    if parts is not None:
-        dataframe = split_dataframe(ts, parts)
-    else:
-        dataframe = [ts]
-
-    result = []
-    for i, df in enumerate(dataframe):
-        fvector = [
-            ('fault', [fault]),
-            ('severity', [severity]),
-            ('seq', [f'{seq}.part.{i}']),
-            ('rpm', [df['rpm'].mean()])
-        ]
-        for window in WINDOW_SIZES:
-            for col in columns:
-                f, pxx = spectral_transform(df, col, window)
-    
-                fluxes = temporal_variation(df, col, window)
-                envelope_spectrum = envelope_signal(f, pxx)
-                loc_harmonics, _ = find_harmonics(f, pxx)
-                # inharmonicity(loc_harmonics, f, pxx)
-                # hdev(envelope_spectrum, loc_harmonics, pxx)
-        
-                features = [
-                    ('centroid', [np.average(f, weights=pxx)]),
-                    ('std', [np.std(pxx)]),
-                    ('skew', [skew(pxx)]),
-                    ('kurt', [kurtosis(pxx)]),
-                    ('roll_off', [spectral_roll_off_frequency(f, pxx, 0.85)]),
-                    ('flux_mean', [np.mean(fluxes)]),
-                    ('flux_std', [np.std(fluxes)]),
-                    ('noisiness', [signal_to_noise(pxx)]),
-                    ('energy', [energy(pxx)]),
-                    ('entropy', [entropy(pxx / np.sum(pxx))]),
-                    ('negentropy', [negentropy(envelope_spectrum)])
-                ]
-                features = [(f'{col}_{f[0]}_{window}', f[1]) for f in features]
-                fvector.extend(features)
-        result.append(pd.DataFrame(dict(fvector))) 
-
-    return pd.concat(result).reset_index(drop=True)
-
-
-def tsfel_features_import(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:
-    ts = mafaulda.csv_import(zip_file, filename)
-    cfg_file = tsfel.get_features_by_domain()
-
-    if parts is not None:
-        dataframe = split_dataframe(ts, parts)
-    else:
-        dataframe = [ts]
-        
-    result = []
-    for i, df in enumerate(dataframe):
-        df_result = tsfel.time_series_features_extractor(cfg_file, df[mafaulda.COLUMNS], fs=mafaulda.FS_HZ)
-        result.append(df_result)
-
-    return pd.concat(result).reset_index(drop=True)
 
 
 def features_wavelet_domain(zip_file: ZipFile, filename: str) -> pd.DataFrame:
@@ -408,12 +461,6 @@ def negentropy(x: np.array) -> float:
     return -entropy((x ** 2) / np.mean(x ** 2))
 
 
-def hdev(envelope_spectrum: np.array, loc_harmonics: np.array, Pxx: np.array) -> float:
-    if len(envelope_spectrum) == 0 or len(envelope_spectrum) == 0:
-        return np.nan
-    return np.mean(envelope_spectrum[loc_harmonics] - Pxx[loc_harmonics])
-
-
 def signal_to_noise(x: np.array) -> float:
     # https://dsp.stackexchange.com/questions/76291/how-to-extract-noise-from-a-signal-in-order-to-get-both-noise-power-and-signal-p
     # https://www.geeksforgeeks.org/signal-to-noise-ratio-formula/
@@ -423,31 +470,9 @@ def signal_to_noise(x: np.array) -> float:
     return np.where(sd == 0, 0, m / sd)
 
 
-def harmonic_product_spectrum(f: np.array, Pxx: np.array, max_harmonic=5) -> float:
-    # Returns fundamental frequency = pitch
-    # http://musicweb.ucsd.edu/~trsmyth/analysis/Harmonic_Product_Spectrum.html
-    hps_spectrum = np.copy(Pxx)
-    # Downsampling in factor of 2 .. h
-    for harmonic in range(2, max_harmonic + 1):
-        hps_spectrum[:len(Pxx[::harmonic])] *= Pxx[::harmonic]
-
-    fundamental = np.argmax(hps_spectrum)
-    return fundamental, f[fundamental]
-
-
-def inharmonicity(loc_harmonics: np.array, f: np.array, Pxx: np.array) -> float:
-    f0_pos, f0 = harmonic_product_spectrum(f, Pxx)
-    if f0 == 0 or len(loc_harmonics) == 0 or np.sum(Pxx[loc_harmonics]) == 0:
-        return np.nan
-
-    harmonic_series = np.arange(f0, f0 * (len(loc_harmonics) + 1), f0)
-
-    return (2 / f0) * np.average(np.absolute(f[loc_harmonics] - harmonic_series), weights=Pxx[loc_harmonics])
-
-
 def spectral_roll_off_frequency(f: np.array, Pxx: np.array, percentage: float) -> float:
     # Roll-off: Cumulative sum of energy in spectral bins and find index in f array
-    # 85% of total energy below this frequency
+    # 95% of total energy below this frequency
     return f[np.argmax(np.cumsum(Pxx**2) >= percentage * energy(Pxx))]
 
 
@@ -465,29 +490,4 @@ def temporal_variation(dataset: pd.DataFrame, axis: str, window: int) -> list:
         1 - np.corrcoef(psd1, psd2) for psd1, psd2 in pairwise(spectra)
     ]
     return fluxes
-
-###############################################################################
-def plot_spectral_envelope(dataset, file, axis):
-    ts = mafaulda.csv_import(dataset, file)
-    f, Pxx = spectral_transform(ts, axis, 1024)
-    y_env = envelope_signal(f, Pxx)
-    # print(find_harmonics(f, Pxx))
-
-    fig, ax = plt.subplots(1, 1, figsize=(20, 5))
-    ax.plot(f, Pxx)
-    #ax.scatter(f[peaks], Pxx[peaks], color='red')
-    ax.plot(f, y_env)
-
-
-def plot_frequency_spectrum(dataset, file, axis, p, window=1024, dB=False, label=None):
-    ts = mafaulda.csv_import(dataset, file)
-    f, pxx = spectral_transform(ts, axis, window)
-    p.set_xlabel('Frequency [Hz]')
-    if dB:
-        p.set_ylabel('Amplitude [dB]')
-        pxx = 20 * np.log10(pxx / mafaulda.DB_REF)
-    else:
-        p.set_ylabel('Amplitude [m/s^2]')
-    p.plot(f, pxx, label=label)
-    p.grid(True)
 
