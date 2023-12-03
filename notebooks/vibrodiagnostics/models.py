@@ -140,10 +140,13 @@ def pipeline_v1(features, train, nfeat, func_select, multiclass=True, anomaly_ra
 
 def cross_cuts_3d(X_train, y_train):
     fig, ax = plt.subplots(1, 3, figsize=(15, 3))
+    labels = np.unique(y_train.to_numpy())
+    colors = sb.color_palette('tab10', len(labels))
+
     for i, axes in enumerate(((0, 1), (0, 2), (1, 2))):
         a, b = axes
 
-        for label, color in (('VM', 'purple'), ('N', 'green'), ('I', 'blue'), ('HM', 'orange')):
+        for label, color in zip(labels, colors):
             x = X_train.loc[
                 list(y_train[y_train == label].index), 
                 X_train.columns[a]

@@ -239,7 +239,6 @@ class MutualInformation(stats.base.Bivariate):
 
         return score
 
-
 #################################################################
 ##################### CORRELATION ###############################
 
