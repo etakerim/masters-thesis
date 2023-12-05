@@ -25,15 +25,14 @@ def split_dataframe(dataframe: pd.DataFrame, parts: int = None) -> List[pd.DataF
 
     step = len(dataframe) // parts
     return [
-        dataframe.iloc[i:i + step].reset_index(drop=True)
+        dataframe.iloc[i:i+step].reset_index(drop=True)
         for i in range(0, len(dataframe), step)
         if len(dataframe.iloc[i:i + step]) == step
     ]
 
-
-def detrending_filter(dataframe: pd.DataFrame) -> pd.DataFrame:
+def detrending_filter(dataframe: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
     for df in dataframe:
-        df[mafaulda.COLUMNS] = df[mafaulda.COLUMNS].apply(lambda x: x - x.mean())
+        df[columns] = df[columns].apply(lambda x: x - x.mean())
     return dataframe
 
 
@@ -80,7 +79,7 @@ def frequency_features_calc(df: pd.DataFrame, col: str, window: int) -> List[Tup
 def me_features_time_domain(filename: str, loader: Callable, parts: int=None) -> pd.DataFrame:
     print(f'Processing: {filename}')
     name, ts, fs_hz, columns = loader(filename)
-    dataframe = detrending_filter(split_dataframe(ts, parts))
+    dataframe = detrending_filter(split_dataframe(ts, parts), ['x', 'y', 'z'])
     
     result = []
     for i, df in enumerate(dataframe):
@@ -99,7 +98,7 @@ def me_features_frequency_domain(filename: str, loader: Callable, parts: int=Non
 
     print(f'Processing: {filename}')
     name, ts, fs_hz, columns = loader(filename)
-    dataframe = detrending_filter(split_dataframe(ts, parts))
+    dataframe = detrending_filter(split_dataframe(ts, parts), ['x', 'y', 'z'])
 
     result = []
     for i, df in enumerate(dataframe):
@@ -116,7 +115,7 @@ def me_tsfel_features_import(filename: str, loader: Callable, parts: int=None) -
     print(f'Processing: {filename}')
     name, ts, fs_hz, columns = loader(filename)
     cfg_file = tsfel.get_features_by_domain()
-    df = detrending_filter(split_dataframe(ts, parts))
+    df = detrending_filter(split_dataframe(ts, parts), ['x', 'y', 'z'])
         
     result = []
     for i, df in enumerate(dataframe):
@@ -133,7 +132,7 @@ def features_time_domain(zip_file: ZipFile, filename: str, parts: int=None) -> p
     columns = mafaulda.COLUMNS
     ts = mafaulda.csv_import(zip_file, filename)
     fault, severity, seq = mafaulda.parse_filename(filename)
-    dataframe = detrending_filter(split_dataframe(ts, parts))
+    dataframe = detrending_filter(split_dataframe(ts, parts), columns)
 
     result = []
     for i, df in enumerate(dataframe):
@@ -159,7 +158,7 @@ def features_frequency_domain(zip_file: ZipFile, filename: str, parts: int=None)
     columns = mafaulda.COLUMNS
     ts = mafaulda.csv_import(zip_file, filename)
     fault, severity, seq = mafaulda.parse_filename(filename)
-    dataframe = detrending_filter(split_dataframe(ts, parts))
+    dataframe = detrending_filter(split_dataframe(ts, parts), columns)
 
     result = []
     for i, df in enumerate(dataframe):
@@ -180,7 +179,7 @@ def features_frequency_domain(zip_file: ZipFile, filename: str, parts: int=None)
 def tsfel_features_import(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:
     ts = mafaulda.csv_import(zip_file, filename)
     cfg_file = tsfel.get_features_by_domain()
-    dataframe = detrending_filter(split_dataframe(ts, parts))
+    dataframe = detrending_filter(split_dataframe(ts, parts), columns)
         
     result = []
     for i, df in enumerate(dataframe):
