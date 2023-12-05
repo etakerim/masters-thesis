@@ -3,6 +3,7 @@ import pandas as pd
 from vibrodiagnostics.selection import  METADATA_COLUMNS_ALL
 import matplotlib.pyplot as plt
 import seaborn as sb
+from typing import Dict, Tuple
 
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
@@ -11,6 +12,8 @@ from sklearn.model_selection import train_test_split
 from scipy.stats import pearsonr
 from sklearn.feature_selection import mutual_info_classif, f_classif
 from sklearn.feature_selection import SelectPercentile, SelectKBest
+from imblearn.over_sampling import RandomOverSampler
+
 
 
 def fault_labeling(dataset, classes, anomaly_severity=0.7, debug=False):
@@ -255,3 +258,86 @@ def project_anomaly_map_plot(X, y_true, y_score, threshold=7):
         ax[i].set_ylabel(f'PC2')
         ax[i].grid()
         ax[i].legend()
+
+
+def features_subset_offline(
+        filename: str, 
+        classes: Dict[str, str],
+        axis: Tuple[str], 
+        label: str,
+        train_size: float, 
+        anomaly_severity: float,
+        balance: bool,
+        rpm_limit: bool
+    ):
+    features = pd.read_csv(filename).fillna(0)
+    features = features[features['fault'].isin(classes)]
+    if rpm_limit:
+        RPM = 2900
+        RPM_RANGE = 500
+        features = features[features['rpm'].between(RPM - RPM_RANGE, RPM + RPM_RANGE, inclusive='both')]
+    
+    features = fault_labeling(features, classes, anomaly_severity)
+
+    columns = features.columns.str.startswith(tuple(axis))
+    X = features[features.columns[columns]].fillna(0)
+    y = features[label].astype('category')
+
+    # Balance dataset
+    if balance:
+        oversample = RandomOverSampler(sampling_strategy='not majority', random_state=10)
+        X, y = oversample.fit_resample(X, y.to_numpy())
+        X.reset_index(drop=True, inplace=True)
+        y = pd.Series(y)
+    
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, train_size=train_size, stratify=y, random_state=10
+    )
+    return X_train, y_train, X_test, y_test
+
+
+def axis_to_magnitude(x: pd.DataFrame, axis: list, window_size: int):
+    if isinstance(window_size, int):
+        x = x.loc[:,x.columns.str.endswith(f'_{window_size}')]
+        x.columns = x.columns.str.extract(r'([\w\_]+)_(\w+)$')[0]
+
+    feature_names = x.columns.str.extract(r'([a-z]{2})_([\w\_\-]+)')[1].unique()
+
+    result = pd.DataFrame()
+    for name in feature_names:
+        vector_dims = [f'{dim}_{name}' for dim in axis]
+        result[name] = x[vector_dims].apply(np.linalg.norm, axis=1)
+
+    return result
+
+
+def load_feature_set(
+        filename: str, 
+        classes: Dict[str, str],
+        axis: Tuple[str], 
+        label: str,
+        train_size: float, 
+        anomaly_severity: float,
+        balance: bool,
+        rpm_limit: bool,
+        window_size: int, domain='temporal') -> tuple:
+    # if online:
+    # func = features_subset_online
+    # else:
+    func = features_subset_offline
+    x_train, y_train, x_test, y_test = func(
+        filename,
+        classes,
+        axis,
+        label,
+        train_size,
+        anomaly_severity,
+        balance,
+        rpm_limit
+    )
+    if domain != 'spectral':
+        window_size = None
+    x_train_mag = axis_to_magnitude(x_train, axis, window_size)
+    x_test_mag = axis_to_magnitude(x_test, axis, window_size)
+
+    return x_train_mag.fillna(0), y_train, x_test_mag.fillna(0), y_test
