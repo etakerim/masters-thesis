@@ -27,6 +27,11 @@ Jupyter notebook - Python
 
 
 \section{Research questions}
+Open ended Research questions:
+	- Which time and frequency features can be extracted from vibrational signals to provide an accurate record of machinery faults?
+	- What are the savings in transmission bandwidth when chosen signal features are used in comparison to raw sampled measurement or lossless compression techniques?
+	- How can the machinery faults be continuously identified based on collected events?
+
 Main goals:
 	- How does vibration data look like (spectral and time domain)?
 	- Create dataset of machinery vibrations
@@ -36,10 +41,40 @@ Main goals:
 	- Keep in mind: data ordering!
 
 \section{Data preparation}
+- Machinery:
+   - KALORIK BASIC Stand Fan TKGVT1037C  - height 125 cm, stable 60 cm cross base, 3 speed, 45 W, 45 cm fan diameter, 3 propelers
+   - AC unit VERTIV: Scroll Compressor: Copeland ZR16M3E-TWD-561 (2900 RPM @ 50 Hz; 9.7 kW (13 HP); 380/420V; 25 A) - 2 units
+   - Water pump: KSB Omega 300-560 B GB G F (2018, 1493 (1500) RPM @ 50 Hz; 500 kW elektromotor; power requirement: 380 kW) - 1 unit
+   
+- Sensors:
+	- Accelerometer: ADXL335 ($\pm$3g, Bandwidth: 0.55 kHz)
+	- Noise density: 150 - 300 $\mu g / \sqrt{Hz}$ rms
+	- Resolution: 12 bits
+	- Axis: 3 axis
+	- Sensitvity: 300 mV/g
+	- Sample time: 400 ns (2.5 kHz)
+	- Voltage range: up to 1.8 V
+	
+	- IIS3DWB (STEVAL-MKI208V1K) Digitálny (SPI), 1 / 3 axis, Resultution: 16 bits ADC, Range: 2 - 16g, Sensitvity: 0.061 mg/LSB pri 2g, Noise density:: 75 $\mu g / \sqrt{Hz}$, ODR: 26.7 kHz,Bandwidth: 5 - 6.3 kHz (-3 dB), FIFO: 3 kB (512 vzoriek)
+
+- EDA
+	- Time waveform
+	- Spectrogram
+	- Features: boxplot
+
+- Experiment subsets:
+	features = temporal, spectral
+	rpm_limit = False, True
+	hardware = shaft, bearings
+	target = fault, anomaly_60, anomaly_90
+	placement = A, B
+	online = False, True
+
+
 - Mafaulda dataset
 	- Choose 4 faults - normal (N), imbalance (I), vertical (VM) and horizonal misalignment (HM)
 	- Convert severity to 0 - 1 scale.
-		- Label samples above 0.5, 0.7, 0.9 as anomalous
+		- Label samples above 0., 0.9 as anomalous
 	- Choose rpm range 2900 $\pm$ 500 (around rotational speed of machinery with some spread, some features are correlated with rpm 
 	- Counts before split: 
 		- Split to 5 parts of 1 second intervals
@@ -62,8 +97,12 @@ Main goals:
 	- do PCA to explore see differences
 	- label as worse, better (classes are hard to provide)
 
+- \textbf{Measurements-SHC3.html}
+- \textbf{BVS-Measurements.html}
 
 \section{Feature relevance}
+- \textbf{FeatureSummary.html}
+
 - choose 3 features
 - supervised
 	- highly correlated features >= 0.9:
@@ -86,24 +125,6 @@ Main goals:
 		- Sperman rank correlation: corr, f\_stat, 0.98
 	- calculate feature rank
 		- Temporal (A) - Remove corr: pp, skewness, margin
-			shape 	1.442250
-			std 	1.587401
-			rms 	2.620741
-			max 	4.308869
-			pp 	5.428835
-			skewness 	5.646216
-			
-			std 	1.000000
-			rms 	2.000000
-			pp 	3.000000
-			max 	4.000000
-			skewness 	5.593445
-			
-			(B)			
-			skewness	1.817121
-			rms	1.817121
-			std	2.289428
-			kurtosis	4.308869
 		- Spectral (A) - multiple window sizes 
 			- (energy, roll off, std) 
 
@@ -111,6 +132,7 @@ Main goals:
 	- evolution of feature importace
 
 \section{Nearest neighbour classifier}
+- \textbf{kNN.html}
 - kNN (fault and anomaly)
 	- Offine (baseline)
 	- Online (evolution)
