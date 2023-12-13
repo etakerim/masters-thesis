@@ -36,6 +36,18 @@ def detrending_filter(dataframe: pd.DataFrame, columns: List[str]) -> pd.DataFra
     return dataframe
 
 
+def butter_bandpass_filter(data, cutoff=10000, fs=mafaulda.FS_HZ, order=5):
+    b, a = butter(order, cutoff, fs=fs, btype='lowpass')
+    y = lfilter(b, a, data.to_numpy())
+    return pd.Series(data=y, index=data.index)
+
+
+def lowpass_filter_extract(dataframe: pd.DataFrame, columns) -> pd.DataFrame:
+    for df in dataframe:
+        df[columns] = df[columns].apply(butter_bandpass_filter)
+    return dataframe
+
+
 def time_features_calc(df: pd.DataFrame, col: str) -> List[Tuple[str, pd.DataFrame]]:
     x = df[col]
     features = [
@@ -75,41 +87,18 @@ def frequency_features_calc(df: pd.DataFrame, col: str, window: int) -> List[Tup
     return [(f'{col}_{f[0]}_{window}', f[1]) for f in features]
 
 
-################## MEASUREMENTS (CUSTOM DATASET) ###################################
-def me_features_time_domain(filename: str, loader: Callable, parts: int=None) -> pd.DataFrame:
-    print(f'Processing: {filename}')
-    name, ts, fs_hz, columns = loader(filename)
-    dataframe = detrending_filter(split_dataframe(ts, parts), ['x', 'y', 'z'])
-    
+############### BACKUP ########################xxx
+def tsfel_features_import(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:
+    ts = mafaulda.csv_import(zip_file, filename)
+    cfg_file = tsfel.get_features_by_domain()
+    dataframe = detrending_filter(split_dataframe(ts, parts), columns)
+        
     result = []
     for i, df in enumerate(dataframe):
-        fvector = [('name', [f'{name}.part.{i}'])]
-        for col in columns:
-            fvector.extend(time_features_calc(df, col))
-        result.append(pd.DataFrame(dict(fvector))) 
+        df_result = tsfel.time_series_features_extractor(cfg_file, df[mafaulda.COLUMNS], fs=mafaulda.FS_HZ)
+        result.append(df_result)
 
     return pd.concat(result).reset_index(drop=True)
-
-
-def me_features_frequency_domain(filename: str, loader: Callable, parts: int=None) -> pd.DataFrame:
-    # Calculate FFT with Welch method in 4 different Hann window sizes
-    OVERLAP = 0.5
-    WINDOW_SIZES = (2**6, 2**8, 2**10, 2**12)
-
-    print(f'Processing: {filename}')
-    name, ts, fs_hz, columns = loader(filename)
-    dataframe = detrending_filter(split_dataframe(ts, parts), ['x', 'y', 'z'])
-
-    result = []
-    for i, df in enumerate(dataframe):
-        fvector = [('name', [f'{name}.part.{i}'])]
-        for window in WINDOW_SIZES:
-            for col in columns:
-                fvector.extend(frequency_features_calc(df, col, window))
-        result.append(pd.DataFrame(dict(fvector))) 
-
-    return pd.concat(result).reset_index(drop=True)
-
 
 def me_tsfel_features_import(filename: str, loader: Callable, parts: int=None) -> pd.DataFrame:
     print(f'Processing: {filename}')
@@ -123,71 +112,6 @@ def me_tsfel_features_import(filename: str, loader: Callable, parts: int=None) -
         result.append(df_result)
 
     return pd.concat(result).reset_index(drop=True)
-
-
-################## MAFAULDA ########################################
-def features_time_domain(zip_file: ZipFile, filename: str, parts: int=None) -> pd.DataFrame:
-    print(f'Processing: {filename}')
-
-    columns = mafaulda.COLUMNS
-    ts = mafaulda.csv_import(zip_file, filename)
-    fault, severity, seq = mafaulda.parse_filename(filename)
-    dataframe = detrending_filter(split_dataframe(ts, parts), columns)
-
-    result = []
-    for i, df in enumerate(dataframe):
-        fvector = [
-            ('fault', [fault]),
-            ('severity', [severity]),
-            ('seq', [f'{seq}.part.{i}']),
-            ('rpm', [df['rpm'].mean()])
-        ]
-        for col in columns:
-            fvector.extend(time_features_calc(df, col))
-        result.append(pd.DataFrame(dict(fvector))) 
-
-    return pd.concat(result).reset_index(drop=True)
-
-
-def features_frequency_domain(zip_file: ZipFile, filename: str, parts: int=None) -> pd.DataFrame:
-    # Calculate FFT with Welch method in 5 different Hann window sizes
-    print(f'Processing: {filename}')
-    OVERLAP = 0.5
-    WINDOW_SIZES = (2**6, 2**8, 2**10, 2**12, 2**14)
-
-    columns = mafaulda.COLUMNS
-    ts = mafaulda.csv_import(zip_file, filename)
-    fault, severity, seq = mafaulda.parse_filename(filename)
-    dataframe = detrending_filter(split_dataframe(ts, parts), columns)
-
-    result = []
-    for i, df in enumerate(dataframe):
-        fvector = [
-            ('fault', [fault]),
-            ('severity', [severity]),
-            ('seq', [f'{seq}.part.{i}']),
-            ('rpm', [df['rpm'].mean()])
-        ]
-        for window in WINDOW_SIZES:
-            for col in columns:
-                fvector.extend(frequency_features_calc(df, col, window))
-        result.append(pd.DataFrame(dict(fvector))) 
-
-    return pd.concat(result).reset_index(drop=True)
-
-
-def tsfel_features_import(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:
-    ts = mafaulda.csv_import(zip_file, filename)
-    cfg_file = tsfel.get_features_by_domain()
-    dataframe = detrending_filter(split_dataframe(ts, parts), columns)
-        
-    result = []
-    for i, df in enumerate(dataframe):
-        df_result = tsfel.time_series_features_extractor(cfg_file, df[mafaulda.COLUMNS], fs=mafaulda.FS_HZ)
-        result.append(df_result)
-
-    return pd.concat(result).reset_index(drop=True)
-
 
 
 #################################################xxx

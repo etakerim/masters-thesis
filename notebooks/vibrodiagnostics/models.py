@@ -19,8 +19,8 @@ from imblearn.over_sampling import RandomOverSampler
 def fault_labeling(dataset, classes, anomaly_severity=0.7, debug=False):
     # Faults
     df = dataset.copy()
+    df['fault'] = df['fault'].replace(classes)
     df['fault'] = df['fault'].astype('category')
-    df['fault'] = df['fault'].cat.rename_categories(classes)
     # Print classes of faults
     if debug is True:
         print('Faults:', list(df['fault'].cat.categories), end='\n\n')
