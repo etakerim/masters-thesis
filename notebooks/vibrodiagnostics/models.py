@@ -175,7 +175,6 @@ def cross_cuts_3d_anomalies(dataframe, anomalies):
     
     for i, axes in enumerate(((0, 1), (0, 2), (1, 2))):
         a, b = axes
-        ax[i].grid()
         x = df.loc[:, df.columns[a]]
         y = df.loc[:, df.columns[b]]
         ax[i].scatter(x, y, color='grey', s=1)
@@ -185,6 +184,11 @@ def cross_cuts_3d_anomalies(dataframe, anomalies):
             x = df.loc[points, df.columns[a]]
             y = df.loc[points, df.columns[b]]
             ax[i].scatter(x, y, color=color, s=1)
+    
+        ax[i].set_xlabel(df.columns[a])
+        ax[i].set_ylabel(df.columns[b])
+        ax[i].grid()
+        ax[i].legend()
 
 
 def scatter_classif(X, y_label, categories, colors, ax):
@@ -273,7 +277,7 @@ def features_subset_offline(
     features = pd.read_csv(filename).fillna(0)
     features = features[features['fault'].isin(classes)]
     if rpm_limit:
-        RPM = 2900
+        RPM = 2500
         RPM_RANGE = 500
         features = features[features['rpm'].between(RPM - RPM_RANGE, RPM + RPM_RANGE, inclusive='both')]
     

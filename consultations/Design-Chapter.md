@@ -24,7 +24,7 @@ Files:
         - Statistical tests
             - Normality test: Kolmogorov–Smirnov test: **Not normal distribution** ($p < 0.001$ on 1 second)
             - Stationarity visual test: Augmented Dickey–Fuller test: **Stationarity** ($p < 0.001$ on 1 second)
-        - Spectrum
+        - Visualizations (A, B separately - **we are intersted in closest bearing**)
             - **Graph** from `Time domain waveform zoom - faults side by side`
             - **Graph** from `compare\_limited\_specrograms` axis y
             - Cumulative energy spectral plot - 80% of all energy in most faults under 4 - 6 kHz (more than 6 kHz for misalignement and normal)
@@ -61,87 +61,51 @@ Files:
     - Spectrogram
         - Maximal frequency: 24.37 Hz ($\approx$ 1460 RPM)
 
-#### MaFaulDa feature extraction:
-- split each recording to 5 parts (1 second - 50000 samples)
-- Remove mean - DC component filter
-- Filter frequencies: cutoff = 10 kHz (Butterworth lowpass filter of 5 order) - peak 20 kHz (not possibe to capture)
-- fault, severity, seq, rpm (out of impulse tachometer = prominence=3, width=50, 60 / $\Delta t$), features: ax/ay/az_feature_name
-- spectral 5 window sizes: windows and welch averaging (2**14 = 16384 samples, 3 okná, 3.05 Hz resolution)
-- TBD: Additional features:
-    -**Find harmonics** (peaks with MMS and filter with threshold mean+2*std) and harmonic series
-    -**WPD energy**, kurtosis
 
-- Fault classes:
-    - 'normal': 'normal',
-    - 'imbalance': 'imbalance',
-    - 'horizontal-misalignment': 'misalignment',
-    - 'vertical-misalignment': 'misalignment',
-    - 'overhang-cage\_fault': 'cage fault',
-    - 'underhang-cage\_fault': 'cage fault',
-    - 'underhang-ball\_fault': 'ball fault',
-    - 'overhang-ball\_fault': 'ball fault',
-    - 'overhang-outer\_race': 'outer race fault',
-    - 'underhang-outer\_race': 'outer race fault'
-- **Counts of classes** (to one table with 4 columns) - 1951 files (x 5 for split records) - **Unbalanced dataset**
-    - RPM limited (2500 +/- 500) - 675 files (35% of the original dataset)
-        - misalignment, 173, 25.63
-        - outer race fault, 137, 20.30
-        - cage fault, 136, 20.15
-        - imbalance 118, 17.48
-        - ball fault 95, 14.07
-        - normal, 16, 2.37
-    - RPM unlimited
-        - misalignment, 498, 25.53%
-        - cage fault, 376, 19.27
-        - outer race fault, 372, 19.07
-        - imbalance, 333, 17.07
-        - ball fault, 323, 16.55
-        - normal, 49, 2.51
-- **Counts of anomaly** (to table) - **Unbalanced dataset**
-    - RPM limited
-        - anomaly, 0.6 = False 388 True 287
-        - anomaly, 0.9 = False 563 True 112
-    - RPM unlimited
-        - anomaly, 0.6 = False 1125 True 826
-        - anomaly, 0.9 = False 1638 True 313
-    
-- **Correlation of features with rpm**:
-    - Temporal: mostly **very low** (25% - 75% quantile: 0.07 - 0.20,
-    - Spectral: mostly **very low** for all 5 window sizes: 25% (0.08)  - 75% (0.23)
 
 #### Machinery and measurement
-- KALORIK BASIC Stand Fan TKGVT1037C  - height 125 cm, stable 60 cm cross base, 3 speed, 45 W, 45 cm fan diameter, 3 propelers
-- (Datacentre SHC3, Petržalka) AC unit VERTIV: Scroll Compressor: Copeland ZR16M3E-TWD-561 (2900 RPM @ 50 Hz; 9.7 kW (13 HP); 380/420V; 25 A) - 2 units
+
+Table and images
+
+- KALORIK BASIC **Stand Fan** TKGVT1037C
+    - height 125 cm, stable 60 cm cross base
+    - 3 speed, 45 cm fan diameter, 3 propelers
+    - 45 W (Class I)
+-  AC unit VERTIV: **Scroll Compressor**:
+    -  Copeland ZR16M3E-TWD-561
+    -  Datacentre SHC3, Petržalka
+    - 2900 RPM @ 50 Hz;
+    - 9.7 kW (13 HP);
+    - 380/420V; 25 A)
+    -  2 units - Class I
     - Faulty parts: unbalance of the rotor, fault of the scroll, mechanical assembly loose, bearing loose
-- (Pumping station Podunajské Biskupice) Water pump: KSB Omega 300-560 B GB G F (2018, 1493 (1500) RPM @ 50 Hz; 400 kW elektromotor; power requirement: 380 kW, Class III - ISO) - 1 unit
+- **Water pump**: KSB Omega 300-560 B GB G F
+    - (2018,
+    - 1493 (1500) RPM @ 50 Hz;
+    - 400 kW elektromotor;
+    - power requirement: 380 kW,
+    - Class II - ISO) - 1 unit
+    - Pumping station Podunajské Biskupice
     - Faulty parts: misalignment, bearings
-- Water pump Sigma Lutín - 1986
+- **Water pump** Sigma Lutín - 1986
 - Columns: t, x, y, z, label - worse, better, pump - good, warning, fault (based on ISO)
 
 #### Sensors:
-- - Digitálny (SPI), : ADXL335  
-    - Axis: 3 axis
-    - Analog
-    - Noise density: 150 - 300 $\mu g / \sqrt{Hz}$ rms
-    - Sensitvity: 300 mV/g
-    - Resolution: 12 bits
-    - Range: $\pm$ 3g,
-    - Sample time: 400 ns (2.5 kHz)
-    - Bandwidth: 0.55 kHz
-    - Voltage range: up to 1.8 V
-    - Microcontroller: Beaglebone Black  (TI Sitara AM3358)
 
-- **Accelerometer**: IIS3DWB (STEVAL-MKI208V1K)
-    - Axis: 1 / 3
-    - Digitálny (SPI), 
-    - Noise density: 75 $\mu g / \sqrt{Hz}$
-    - Sensitvity: 0.061 mg/LSB pri 2g
-    - Resoltution: 16 bits
-    - Range: 2 - 16g
-    - ODR: 26.7 kHz
-    - Bandwidth: 5 - 6.3 kHz (-3 dB)
-    - FIFO: 3 kB (512 vzoriek)
-    - Microcontroller:  OLIMEX ESP32-PoE-ISO Rev I (ESP32-WROOM-32)
+| Accelerometer                           | ADXL335          | IIS3DWB            |
+|-----------------------------------------|------------------|--------------------|
+| Vendor                                  | Analog Devices   | STMicroelectronics |
+| Bus                                     | Analog           | SPI                |
+| Axis                                    | 3                | 1 or 3             |
+| Range (g)                               | $\pm$ 3          | $\pm$ 2 to 16      |
+| Bandwidth (Hz)                          | 550              | 5 - 6.3            |
+| Sensitivity                             | 300 mV/g         | 0.061 mg/LSB       |
+| Noise density ($\mu g / \sqrt{Hz}$ rms) | 150 - 300        | 75                 |
+| Microcontroller                         | Beaglebone Black | ESP32-PoE-ISO      |
+| CPU SoC                                 | TI Sitara AM3358 | ESP32-WROOM-32     |
+| Output data rate (kHz)                  | 2.5              | 26.7               |
+| A/D resolution (bit)                    | 12               | 16                 |
+| FIFO                                    | -                | 3 kB (512 samples) |
  
   - **UML diagram**:
       - Block diagram for HW connections:
@@ -166,88 +130,289 @@ Files:
           6. Running Compute rank of product of running corr, f statistic, mutual infomation (normalization not neccessary, forgetting factor?)
           7. When rank is stable n iterations start sending only subset + features with immidiate close ranks (first 3 + ranks up to 40% of full rank)
 	- Component: whole infrastructure
+   
+#### MaFaulDa feature extraction:
+1. Label recording using filename path in zip: fault, severity, seq
+2. Split each recording to 5 parts (1 second - 50000 samples)
+3. Calculate rpm (out of impulse tachometer = prominence=3, width=50, 60 / $\Delta t$)
+4. Remove mean - DC component filter
+5. Filter frequencies: cutoff = 10 kHz (Butterworth lowpass filter of 5 order) - peak 20 kHz (not possibe to capture)
+6. extract temporal features in all axis for both bearings A, B: ax/ay/az_feature_name
+7. spectral 5 window sizes: windows and welch averaging (2**14 = 16384 samples, 3 okná, 3.05 Hz resolution)
+8. Label with 6 classes of faults, and 2 anomaly classes (based on arbitrary severity 0.6 and 0.9)
+- TBD: Additional features:
+    -**Find harmonics** (peaks with MMS and filter with threshold mean+2*std) and harmonic series
+    -**WPD energy**, kurtosis
 
-# TODO: complete with all subsets
+- Fault classes:
+    - 'normal': 'normal',
+    - 'imbalance': 'imbalance',
+    - 'horizontal-misalignment': 'misalignment',
+    - 'vertical-misalignment': 'misalignment',
+  A
+    - 'underhang-cage\_fault': 'cage fault',
+    - 'underhang-ball\_fault': 'ball fault',
+    - 'underhang-outer\_race': 'outer race fault'
+B
+    - 'overhang-cage\_fault': 'cage fault',
+    -  'overhang-ball\_fault': 'ball fault',
+    - 'overhang-outer\_race': 'outer race fault'
+ 
+**Counts of classes** (to table and Sum) - **Unbalanced dataset** - ClassCounts.ipynb
+    - RPM limited (2500 +/- 500)
+
+|            fault | A_rpm_nolimit | A_rpm_nolimit_percent | A_rpm_limit | A_rpm_limit_percent | B_rpm_nolimit | B_rpm_nolimit_percent | B_rpm_limit | B_rpm_limit_percent |
+|-----------------:|--------------:|----------------------:|------------:|--------------------:|--------------:|----------------------:|------------:|--------------------:|
+|   misalignment   | 498           | 34.631433             | 173         | 34.325397           | 498           | 35.750179             | 173         | 36.192469           |
+|     imbalance    | 333           | 23.157163             | 118         | 23.412698           | 333           | 23.905240             | 118         | 24.686192           |
+|    cage fault    | 188           | 13.073713             | 67          | 13.293651           | 188           | 13.496052             | 69          | 14.435146           |
+|    ball fault    | 186           | 12.934631             | 61          | 12.103175           | 137           | 9.834889              | 34          | 7.112971            |
+| outer race fault | 184           | 12.795549             | 69          | 13.690476           | 188           | 13.496052             | 68          | 14.225941           |
+|      normal      | 49            | 3.407510              | 16          | 3.174603            | 49            | 3.517588              | 16          | 3.347280            |
+
+**Counts of anomaly** (to table) - **Unbalanced dataset**
+0.6
+| A_rpm_nolimit | A_rpm_nolimit_percent | A_rpm_limit | A_rpm_limit_percent | B_rpm_nolimit | B_rpm_nolimit_percent | B_rpm_limit | B_rpm_limit_percent |           |
+|--------------:|----------------------:|------------:|--------------------:|--------------:|----------------------:|------------:|--------------------:|----------:|
+|         False |                   837 |   58.205841 |                 375 |     74.404762 |                   831 |    59.65542 |                 354 | 74.058577 |
+|          True |                   601 |   41.794159 |                 129 |     25.595238 |                   562 |    40.34458 |                 124 | 25.941423 |
+
+0.9
+| A_rpm_nolimit | A_rpm_nolimit_percent | A_rpm_limit | A_rpm_limit_percent | B_rpm_nolimit | B_rpm_nolimit_percent | B_rpm_limit | B_rpm_limit_percent |           |
+|--------------:|----------------------:|------------:|--------------------:|--------------:|----------------------:|------------:|--------------------:|----------:|
+|         False |                  1227 |   85.326843 |                 375 |     74.404762 |                  1197 |   85.929648 |                 354 | 74.058577 |
+|          True |                   211 |   14.673157 |                 129 |     25.595238 |                   196 |   14.070352 |                 124 | 25.941423 |
+
+- **Correlation of features with rpm**:
+    - Temporal: mostly **very low** (25% - 75% quantile: 0.07 - 0.20,
+    - Spectral: mostly **very low** for all 5 window sizes: 25% (0.08)  - 75% (0.23)
+
+
 
 ### Feature selection
 
-- MaFaulDa features subsets (12 = rpm limit no, 12 = rpm limit yes)
+- Compressor best:
+    - Temporal: margin/impulse/crest, kurtosis, rms
+    - Spectral: entropy, centroid, noisiness
+    
+- MaFaulDa features subsets (12 = online, 12 = batch experiments, **Use decision tree ilustation with shorten leaves**
+    - Placement: A, B   - filter only bearing fault for measured bearing, vm and hm to misalign,
     - Domain: temporal, spectral
-    - Classification: fault (multiclass), anomaly (binary - 60%, 90%)
+    - Online: no, yes
     - RPM limit: no, yes (2500 $\pm$ 500)
-  
-    - All 6 Fault classes: shaft(normal, imbalance, misalignment) + bearings (cage, ball, outer race)
-    - All Placements: A, B
-
+    - Classification: fault (multiclass), anomaly (binary - 60%), anomaly( binary - 90%)
+   
 - Validation:
 - **Batch**
     - Magnitude of 3D feature vector
     - Balancing dataset with oversampling minority classes
         - **TODO:Dataset sizes in all experiments (adj/non adjust)**
     - Hold-out validation - split to train and test set (80/20)
-- **Online**: Order by severity
+- **Online**: Order by increaing severity, shuffle samples within severity level
     - Severity:
         - Number fault severities by sequence
         - Keep only decimal numbers in severity
         - Number severity per group (0 - best, 1 - worst)
         - Transform severities to range (0, 1)
      
-- Feature correlations
+- Feature correlations (> 0.95):
+    - Temporal:
+        - std, rms: 1.0
+        - std, pp, rms, 0.96
+        - pp, max, 0.98
+        - crest, margin, implulse, 0.99
+    - Spectral:
+        - skewness, kurtosis, 0.98
      
 - Best features:
     - Compute metrics: Corr, F stat, MI
     - Compute Rank product and order descending
-    - **Majority voting**:
-        - Take first feature, remove correlation above 0.95 if correlated feature is already in set
-        - **subsets of 2, 3, 4, 5 members?**
-        - **Variance non scaled, scaled?**
-        - **Variance PCA?**
-        - Count in how many sets (**subsets of 3 members**) it is present - choose 3 best
-            - Global best (max. score: 24  = experiments):
-                - Temporal: std (20), shape (10), skewness (9)
-                - Spectral: entropy (14), roll_off (14), noisiness (14)
-            - rpm limit (yes/no) and hardware (shaft/bearings) (max score = 6):
-                - Temporal:
-                    - no, shaft: \{std (4), skewness (3), pp (3)\}
-                    - no, bearings: std (4), shape (3), kurtosis (3)
-                    - yes, shaft: std (4), skewness(2), pp (3)
-                    - yes, bearings: std (6), shape (4), margin (3)
-                - Spectral:
-                    - no, shaft: std, centroid, roll_off (4)
-                    - no, bearings: entropy (4), centroid (3), roll_off (3)
-                    - yes, shaft: flux, noisiness, entropy
-                    - yes, bearings: energy, entropy, roll off
-            - rpm limit (yes/no) and hardware (shaft/bearings) and target (fault, anomaly) (max score = 3):
-    - **Rank product**:
-        - Apply rank product to all final feature rankings
-            - Global best
-                - Temporal: std, rms, pp, shape
-                - Spectral: entropy, std, roll_off, noisiness
+      
+- **Majority voting**:
+    - Take first feature, remove correlation above 0.95 if correlated feature is already in set*
+      - Count in how many sets (**subsets of 3 members**) it is present - choose 3 best
+          - Global best (max. score: 24  = experiments):
+              - Batch (12)
+                  - Temporal: shape (9, 75%), std (6, 50%), margin (5, 42%), next 3
+                  - Spectral: entropy (8, 66%), centroid (6, 50%), std (6, 50%), next flux
+              - Online (12) - should be the same at the end
+                  - Temporal: shape (10, 83%), margin (9, 75%), std (6, 50%), next 3
+                  - Spectral: entropy (9, 75%), flux (7, 58%), centroid (6, 50%), std (6, 50%)
+          - Batch best predictors (A, no rpm limit)
+              - Fault:
+                  - Temporal: max, shape, std
+                  - Spectral: roll off, skewness, flux/entropy
+              - Anomaly:
+                  - Temporal: margin, shape, std/rms
+                  - Spectral: centroid, entropy, flux (or std)
+          - Batch best predictors (B, no rpm limit)
+              - Fault:
+                  - Temporal: crest, pp, skewness
+                  - Spectral: centroid, roll on, roll off/noisness
+              - Anomaly:
+                  - Temporal: kurtosis, rms, shape/skewness (shape, std/rms, crest/margin)
+                  - Spectral: entropy, std, noisiness/flux
+  
+| placement | online | rpm_limit |     target |                  temporal |                         spectral |
+|----------:|-------:|----------:|-----------:|--------------------------:|---------------------------------:|
+|         A |  False |     False | anomaly_60 |      [margin, shape, std] |        [centroid, entropy, flux] |
+|           |        |           | anomaly_90 |         [max, shape, std] |        [centroid, entropy, flux] |
+|           |        |           |      fault |         [max, shape, std] |       [flux, roll_off, skewness] |
+|           |        |      True | anomaly_60 |      [margin, shape, std] |         [centroid, entropy, std] |
+|           |        |           | anomaly_90 |      [margin, shape, std] |         [centroid, entropy, std] |
+|           |        |           |      fault |       [margin, pp, shape] |    [entropy, roll_off, skewness] |
+|           |   True |     False | anomaly_60 |      [margin, shape, std] |        [centroid, entropy, flux] |
+|           |        |           | anomaly_90 |      [margin, rms, shape] |        [centroid, entropy, flux] |
+|           |        |           |      fault |         [max, shape, std] | [centroid, negentropy, roll_off] |
+|           |        |      True | anomaly_60 |      [margin, shape, std] |             [entropy, flux, std] |
+|           |        |           | anomaly_90 |      [margin, shape, std] |             [entropy, flux, std] |
+|           |        |           |      fault |       [margin, pp, shape] |   [centroid, roll_off, skewness] |
+|         B |  False |     False | anomaly_60 | [kurtosis, rms, skewness] |             [entropy, flux, std] |
+|           |        |           | anomaly_90 |       [crest, shape, std] |        [entropy, noisiness, std] |
+|           |        |           |      fault |     [crest, pp, skewness] |    [centroid, roll_off, roll_on] |
+|           |        |      True | anomaly_60 |    [kurtosis, rms, shape] |           [energy, entropy, std] |
+|           |        |           | anomaly_90 |      [margin, rms, shape] |         [energy, noisiness, std] |
+|           |        |           |      fault |     [crest, pp, skewness] |   [centroid, noisiness, roll_on] |
+|           |   True |     False | anomaly_60 |   [kurtosis, margin, rms] |             [entropy, flux, std] |
+|           |        |           | anomaly_90 |         [max, shape, std] |        [entropy, noisiness, std] |
+|           |        |           |      fault |     [crest, kurtosis, pp] |        [centroid, flux, roll_on] |
+|           |        |      True | anomaly_60 | [kurtosis, margin, shape] |             [entropy, flux, std] |
+|           |        |           | anomaly_90 |      [margin, shape, std] |        [entropy, noisiness, std] |
+|           |        |           |      fault |       [margin, pp, shape] |     [centroid, entropy, roll_on] |
+           
+- **Rank product**:
+    - Apply rank product to all final feature rankings
+        - Global best
+            - Batch (12)
+                - Temporal: std, rms, shape, pp
+                - Spectral: entropy, std, centroid, flux
+            - Online (12)
+                - Temporal: std, rms, shape, pp
+                - Spectral: entropy, flux, std, centoid
+              
+             
+  | placement | online | rpm_limit |     target |                      temporal |                         spectral |
+|----------:|-------:|----------:|-----------:|------------------------------:|---------------------------------:|
+|         A |  False |     False | anomaly_60 |   [crest, kurtosis, skewness] |  [kurtosis, negentropy, roll_on] |
+|           |        |           | anomaly_90 |   [crest, kurtosis, skewness] |    [kurtosis, roll_on, skewness] |
+|           |        |           |      fault | [impulse, kurtosis, skewness] |      [centroid, energy, roll_on] |
+|           |        |      True | anomaly_60 |     [kurtosis, max, skewness] |  [negentropy, roll_off, roll_on] |
+|           |        |           | anomaly_90 |     [kurtosis, max, skewness] |    [kurtosis, roll_off, roll_on] |
+|           |        |           |      fault |   [crest, kurtosis, skewness] |     [energy, noisiness, roll_on] |
+|           |   True |     False | anomaly_60 |        [crest, kurtosis, max] |           [energy, roll_on, std] |
+|           |        |           | anomaly_90 |   [crest, kurtosis, skewness] |      [energy, roll_off, roll_on] |
+|           |        |           |      fault | [impulse, kurtosis, skewness] |           [energy, roll_on, std] |
+|           |        |      True | anomaly_60 |     [kurtosis, max, skewness] |      [energy, roll_off, roll_on] |
+|           |        |           | anomaly_90 |           [kurtosis, max, pp] |    [kurtosis, roll_off, roll_on] |
+|           |        |           |      fault |   [crest, kurtosis, skewness] |           [energy, roll_on, std] |
+|         B |  False |     False | anomaly_60 |          [impulse, pp, shape] |  [kurtosis, negentropy, roll_on] |
+|           |        |           | anomaly_90 |      [kurtosis, pp, skewness] |  [negentropy, roll_off, roll_on] |
+|           |        |           |      fault |      [impulse, margin, shape] | [kurtosis, negentropy, skewness] |
+|           |        |      True | anomaly_60 |           [max, pp, skewness] |  [kurtosis, negentropy, roll_on] |
+|           |        |           | anomaly_90 |      [kurtosis, pp, skewness] |    [kurtosis, roll_off, roll_on] |
+|           |        |           |      fault |     [kurtosis, margin, shape] | [kurtosis, negentropy, skewness] |
+|           |   True |     False | anomaly_60 |            [impulse, max, pp] |    [energy, negentropy, roll_on] |
+|           |        |           | anomaly_90 |   [impulse, margin, skewness] |  [negentropy, roll_off, roll_on] |
+|           |        |           |      fault |   [kurtosis, shape, skewness] |     [energy, kurtosis, skewness] |
+|           |        |      True | anomaly_60 |              [crest, max, pp] |  [centroid, negentropy, roll_on] |
+|           |        |           | anomaly_90 |      [kurtosis, pp, skewness] |    [centroid, roll_off, roll_on] |
+|           |        |           |      fault |   [kurtosis, shape, skewness] |   [energy, negentropy, roll_off] |
 
-- **TODO: Scores ranges to relative units** (Corr, F stat, MI)
+  - **PCA explained variance**:?
+      - All features in both domains explained by 3 PC components `plot\_explained\_variances`
+  - **Silhouette scores**:
+      - Ako sú rozlíšiteľné clustre cez najlepšie : `plot\_silhouette\_scores`
+
+
     
 ### kNN classification
-Models-Batch/kNN.html
 
-- Classifiaction with **all extracted features** - min-max scaled, magnitude (knn n=5, euclidian, ) - **target - shaft faults**:
-    - Most common misclasiffication between horizontal nad vertical mislignment (up to 8%)
-    - Temporal:
-          - Train accuracy: 95.91 %
-          - Test accuracy: 94.37 %
-    - Spectral (2^14):
-        - Train accuracy: 97.54 %
-        - Test accuracy: 95.80 %
-- Classification with globally best features (rank) only for fault
+#### Models-Batch/kNN.html
 
-- Permutation models (best accuarcies for given features, lowest error rate)
-    - nC3 = models - best accuracy with features
-        - 2 tables (temporal, spectral) x 7 rows 
-- Accuarcies with chosen sets of features
+- **Classification with all extracted features**** - **min-max scaled**, magnitude **(knn n=5, euclidian metric**)
+    - Precision and recall (with micro averaging) were same as accuracy
+    - Our aim is to set up baseline for comparison with reduced number of features and online learning
+    - row = {'rpm\_limit': False, 'target': 'fault', 'placement': 'A', 'online': False}
+    - B has worst precisions
+    - In all cases all spectral features have better prection metrics than all temporal features - high correlations and dependency
+    - **Anomaly (0.9)** - around 7 times more false positives (1st degree error) than false negatives (for both A and B)
+  
+|           |                                     | Temporal domain |               |                | Spectral domain |               |                |
+|-----------|-------------------------------------|-----------------|---------------|----------------|-----------------|---------------|----------------|
+|           |                                     | Train accuracy  | Test accuracy | Train macro F1 | Train accuracy  | Test accuracy | Train macro F1 |
+| A bearing | Fault (\sum 2998, 498 pre class)    | 94.13           | 90.93         | 0.91           | 99.17           | 98.36         | 0.98           |
+|           | Anomaly (\sum 2454, 1227 pre class) | 96.68           | 95.35         | 0.96           | 99.21           | 98.74         | 0.99           |
+| B bearing | Fault (\sum 2998, 498 pre class)    | 86.34           | 79.35         | 0.79           | 92.07           | 87.65         | 0.87           |
+|           | Anomaly (\sum 2394, 1197 pre class) | 91.48           | 86.68         | 0.87           | 94.28           | 91.56         | 0.92           |
 
-Models-Online/kNN.html
+
+- **Permutation models** (best accuarcies for given features, lowest error rate)
+    - nC3 = models - best accuracy with features = 120 temporal models (10 feat) and 165 spectral (11 feat) to determine best accuracies for 3 features
+        - 2 tables (temporal, spectral) x 7 rows
+    - **Best accuracies  (RPM unlimited)**
+|     target | placement |   domain |                             features | train_accuracy | test_accuracy |
+|-----------:|----------:|---------:|-------------------------------------:|---------------:|--------------:|
+| anomaly_60 |         A | temporal |         ['skewness', 'rms', 'shape'] |       0.900239 |      0.845281 |
+| anomaly_60 |         A | spectral |  ['centroid', 'roll_off', 'entropy'] |       0.940711 |      0.899642 |
+| anomaly_90 |         A | temporal |         ['std', 'skewness', 'shape'] |       0.955888 |      0.932763 |
+| anomaly_90 |         A | spectral | ['centroid', 'noisiness', 'entropy'] |       0.981764 |      0.970660 |
+|      fault |         A | temporal |         ['std', 'skewness', 'shape'] |       0.910559 |      0.859103 |
+|      fault |         A | spectral |  ['centroid', 'kurtosis', 'entropy'] |       0.974983 |      0.950469 |
+| anomaly_60 |         B | temporal |               ['rms', 'pp', 'shape'] |       0.806558 |      0.694344 |
+| anomaly_60 |         B | spectral |     ['centroid', 'std', 'noisiness'] |       0.861613 |      0.793622 |
+| anomaly_90 |         B | temporal |            ['std', 'kurtosis', 'pp'] |       0.908521 |      0.855054 |
+| anomaly_90 |         B | spectral |       ['centroid', 'std', 'roll_on'] |       0.949457 |      0.918546 |
+|      fault |         B | temporal |      ['std', 'skewness', 'kurtosis'] |       0.836931 |      0.765395 |
+|      fault |         B | spectral |      ['centroid', 'std', 'roll_off'] |       0.906710 |      0.858434 |
+
+- **Accuracies with chosen sets of features** (Tables)
+
+|     target | placement |   domain |                       features | train_accuracy | test_accuracy |
+|-----------:|----------:|---------:|-------------------------------:|---------------:|--------------:|
+| anomaly_60 |         A | temporal |           [std, margin, shape] |       0.867682 |      0.807049 |
+| anomaly_60 |         B | temporal |      [kurtosis, rms, skewness] |       0.802948 |      0.693742 |
+| anomaly_90 |         A | temporal |              [shape, std, rms] |       0.933272 |      0.891606 |
+| anomaly_90 |         B | temporal |            [std, shape, crest] |       0.896094 |      0.850459 |
+|      fault |         A | temporal |              [std, shape, max] |       0.904786 |      0.854418 |
+|      fault |         B | temporal |          [pp, crest, skewness] |       0.819361 |      0.737952 |
+| anomaly_60 |         A | spectral |      [centroid, flux, entropy] |       0.903973 |      0.839307 |
+| anomaly_60 |         B | spectral |           [std, flux, entropy] |       0.792268 |      0.693742 |
+| anomaly_90 |         A | spectral |      [centroid, flux, entropy] |       0.965363 |      0.947433 |
+| anomaly_90 |         B | spectral |      [std, noisiness, entropy] |       0.926483 |      0.884294 |
+|      fault |         A | spectral | [roll_off, centroid, skewness] |       0.950385 |      0.921017 |
+|      fault |         B | spectral |  [centroid, roll_on, roll_off] |       0.891399 |      0.839023 |
+
+- Possible models range of accuracies with given features (3 subplots by target: fault, anomaly60, anomaly_90)
+    - **Boxplot** (errorbars): `knn\_train\_accuracy\_range`
+        - Train accuracy of all kNN model obtained by combinations of 3 features (unlimited RPM)
+        - Green dot is best performance with all features (order according to train accuracy)
+    - **Boxplot** (errorbars): `knn\_train\_accuracy\_range`
+      
+    - In future **Investigate** how many features is optimal (gives better better performance) - **altering feature selection procedure/scores**
+        - without using PCA because we want to point to relavant indicators behind decision
+          
+- Relatioship between number of k neighbors and error rate of model (features in model are 3 from best subset)
+    - Best is least number of neighbors (3)
+    - Temporal
+        - **Plot** (Train)
+        - **Plot** (Test)
+     - Spectral
+        - **Plot** (Train)
+        - **Plot** (Test)
+
+- **Scatter plots**:
+    - **Fault Plot (2 examples in total)** - there is significant overlap in classes
+        -  temporal, spectral
+    - **Anomaly Plot (2 examples in total - highest accuracy)** - there is significant overlap in classes
+        - temporal, spectral
+
+#### Models-Online/kNN.html
 - Online (Progressive valuation):
+    - Plot: label ordering in train (in future create strategy for balancing of classes)
+        - Faults (Plot)
+        - Anomaly (Plot)
     - Gradual learning
-        - Fault (shaft) / anomaly
+        - Fault (shaft) / anomaly (2 plots) - comment on convergence
     - Window learning
         - Fault (shaft) / anomaly
         - Compare classification accuracies for window sizes in one graph: (1, 10, 50, 100, 250)
@@ -259,10 +424,11 @@ Models-Online/kNN.html
         - Faults
         - Anomaly
 
+# TODO: finish Clustering and write DP
 
 ### DBSCAN clustering
 
-Models-Batch/DBSCAN.html
+#### Models-Batch/DBSCAN.html
 - SIlhoutte scores
     - globally best clustering (maximazing silhouette score)?
     - for best feature subsets
@@ -270,5 +436,5 @@ Models-Batch/DBSCAN.html
  ### Design semi-supervised feature selection
 - Feature selection -> KNN -> Infer labels -> Feature selection
 
-- Models-Online/DenStream.html
-    - evolution of silhoutte score
+#### Models-Online/DenStream.html
+- evolution of silhoutte score

@@ -121,7 +121,7 @@ def plot_label_occurences(y):
     columns = list(y.astype('category').cat.categories)
     empty = dict(zip(columns, len(columns) * [0]))
 
-    for row in y.astype('category').cat.codes:
+    for row in y.astype('category'):
         sample = empty.copy()
         sample[row] = 1
         observations.append(sample)
