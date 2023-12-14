@@ -10,6 +10,11 @@
   2. Create dataset of machinery vibrations
   3. Reduce number of features (samples) send from edge device - to minimal amount
   4. Evaluate model performance on all features and different feature sets
+ 
+- Tasks:
+    - Gather dataset and evaluate methods in real conditions - needs HW
+    - Incorporate designed feature selection into online learning
+    - Better feature selection (ensamble method or one feature)
 
 
 ### Dataset preprocessing
@@ -231,27 +236,45 @@ B
 - **Majority voting**:
     - Take first feature, remove correlation above 0.95 if correlated feature is already in set*
       - Count in how many sets (**subsets of 3 members**) it is present - choose 3 best
-          - Global best (max. score: 24  = experiments):
+          - Global best = **Rank product** (max. score: 24  = experiments):
               - Batch (12)
                   - Temporal: shape (9, 75%), std (6, 50%), margin (5, 42%), next 3
                   - Spectral: entropy (8, 66%), centroid (6, 50%), std (6, 50%), next flux
               - Online (12) - should be the same at the end
                   - Temporal: shape (10, 83%), margin (9, 75%), std (6, 50%), next 3
                   - Spectral: entropy (9, 75%), flux (7, 58%), centroid (6, 50%), std (6, 50%)
-          - Batch best predictors (A, no rpm limit)
-              - Fault:
-                  - Temporal: max, shape, std
-                  - Spectral: roll off, skewness, flux/entropy
-              - Anomaly:
-                  - Temporal: margin, shape, std/rms
-                  - Spectral: centroid, entropy, flux (or std)
-          - Batch best predictors (B, no rpm limit)
-              - Fault:
-                  - Temporal: crest, pp, skewness
-                  - Spectral: centroid, roll on, roll off/noisness
-              - Anomaly:
-                  - Temporal: kurtosis, rms, shape/skewness (shape, std/rms, crest/margin)
-                  - Spectral: entropy, std, noisiness/flux
+          - Global best = **Correlation** (max. score: 24  = experiments):
+              - Batch (12)
+                  - Temporal: shape (8), std (6), margin (6)
+                  - Spectral: flux (9), entropy (5), std (5)
+              - Online (12) - should be the same at the end
+                  - Temporal: skewness (11), kurtosis (10), pp (4)
+                  - Spectral: roll_on (10), energy (8), roll_off (6)
+            - Global best = **F statistic** (max. score: 24  = experiments):
+              - Batch (12)
+                  - Temporal: shape (8), std (6), margin (6)
+                  - Spectral: flux (8), entropy (8), std (5)
+              - Online (12) - should be the same at the end
+                  - Temporal: skewness (11), kurtosis (10), pp (4)
+                  - Spectral: roll_on (10), energy (8), roll_off (7)
+            - Global best = **Mutual informtion** (max. score: 24  = experiments):
+              - Batch (12)
+                  - Temporal: temporal\_std 11 temporal\_shape 10 temporal\_kurtosis 4
+                  - Spectral: spectral\_std 10 spectral\_energy 10 spectral\_roll\_off 6
+              - Online (12) - should be the same at the end
+                  - Temporal: temporal\_kurtosis 9 temporal\_skewness 8 temporal\_crest 7
+                  - Spectral: spectral\_energy 12 spectral\_std 6 spectral\_roll\_on 6
+        - **Rank product**:
+            - Apply rank product to all final feature rankings
+                - Global best
+                    - Batch (12)
+                        - Temporal: std, rms, shape, pp
+                        - Spectral: entropy, std, centroid, flux
+                    - Online (12)
+                        - Temporal: std, rms, shape, pp
+                        - Spectral: entropy, flux, std, centoid
+                    
+Tables to appendix (Rank product, Corr, Rank product, MI)
   
 | placement | online | rpm_limit |     target |                  temporal |                         spectral |
 |----------:|-------:|----------:|-----------:|--------------------------:|---------------------------------:|
@@ -280,15 +303,6 @@ B
 |           |        |           | anomaly_90 |      [margin, shape, std] |        [entropy, noisiness, std] |
 |           |        |           |      fault |       [margin, pp, shape] |     [centroid, entropy, roll_on] |
            
-- **Rank product**:
-    - Apply rank product to all final feature rankings
-        - Global best
-            - Batch (12)
-                - Temporal: std, rms, shape, pp
-                - Spectral: entropy, std, centroid, flux
-            - Online (12)
-                - Temporal: std, rms, shape, pp
-                - Spectral: entropy, flux, std, centoid
               
              
   | placement | online | rpm_limit |     target |                      temporal |                         spectral |
@@ -366,7 +380,7 @@ B
 |      fault |         B | spectral |      ['centroid', 'std', 'roll_off'] |       0.906710 |      0.858434 |
 
 - **Accuracies with chosen sets of features** (Tables)
-
+1. Rank product
 |     target | placement |   domain |                       features | train_accuracy | test_accuracy |
 |-----------:|----------:|---------:|-------------------------------:|---------------:|--------------:|
 | anomaly_60 |         A | temporal |           [std, margin, shape] |       0.867682 |      0.807049 |
@@ -382,11 +396,35 @@ B
 |      fault |         A | spectral | [roll_off, centroid, skewness] |       0.950385 |      0.921017 |
 |      fault |         B | spectral |  [centroid, roll_on, roll_off] |       0.891399 |      0.839023 |
 
-- Possible models range of accuracies with given features (3 subplots by target: fault, anomaly60, anomaly_90)
+2. Correlation
+  ---||---
+3. F statistic
+---||---
+4. MI
+   ---||—
+   
+- * (2 Boxplots) Possible models range of accuracies with given features (3 subplots by target: fault, anomaly60, anomaly_90)
     - **Boxplot** (errorbars): `knn\_train\_accuracy\_range`
         - Train accuracy of all kNN model obtained by combinations of 3 features (unlimited RPM)
         - Green dot is best performance with all features (order according to train accuracy)
-    - **Boxplot** (errorbars): `knn\_train\_accuracy\_range`
+    - **Boxplot** (errorbars): `knn\_test\_accuracy\_range`
+      
+    -  (4 Bar charts) **Scores side by side (bar chart)**
+        - all features, pca of all features (n=3), best permuation of 3 feat, rank product (n=3), corr (n=3), fstat (n=3), mi (n=3)
+        - Summary
+            - Best combinations of 3 features is better than all 10 features because of overfitting
+            - PCA (n=3) is always better than any other method of feature selection
+            - Rank product is not always better but balances other methods to achieve more stable results. In some situations it it better than all three individually
+            - Subset of spectral features have better performance than temporal features, presumbly because of many correlated pairs of features
+            
+            - *Defining k can be a balancing act as different values can lead to overfitting or underfitting. Lower values of k can have high variance, but low bias, and larger values of k may lead to high bias and lower variance. The choice of k will largely depend on the input data as data with more outliers or noise will likely perform better with higher values of k* (https://www.ibm.com/topics/knn)
+
+        - **knn is lazy learner (no learning time)**
+        - RPM unlimited
+            - Train
+            - Test
+        -  - *RPM limited (Later)* - Train, Test
+
       
     - In future **Investigate** how many features is optimal (gives better better performance) - **altering feature selection procedure/scores**
         - without using PCA because we want to point to relavant indicators behind decision
@@ -407,6 +445,12 @@ B
         - temporal, spectral
 
 #### Models-Online/kNN.html
+- Temporal and Spectral (2 exports)
+    - config = {'rpm_limit': False, 'placement': 'A', 'domain': DOMAIN, 'target': 'fault'}
+    - config = {'rpm_limit': False, 'placement': 'A', 'domain': DOMAIN, 'target': 'anomaly'}
+    - When examples for all classes in labels exists - accuracies of model stabilizes quickly
+    - When new label is introduced accuracy drops momentarily
+    - Delay, Skiping labels -  degrades model performance
 - Online (Progressive valuation):
     - Plot: label ordering in train (in future create strategy for balancing of classes)
         - Faults (Plot)
@@ -420,11 +464,12 @@ B
     - Missing labels
         - Faults
         - Anomaly
-    - Scatter plot - True labels vs. Predicted labels
-        - Faults
+    - Scatter plot - True labels vs. Predicted labels (it is not the case that areas with one fault are homogenous and compact in PC dimensions)
+        - Faults 
         - Anomaly
+    - **One physical defect can have multiple manifestations - outer race fault and misalignment overlap**
 
-# TODO: finish Clustering and write DP
+# TODO: finish Clustering (do 22:00)
 
 ### DBSCAN clustering
 
@@ -433,8 +478,5 @@ B
     - globally best clustering (maximazing silhouette score)?
     - for best feature subsets
 
- ### Design semi-supervised feature selection
+ ### **Design semi-supervised feature selection**
 - Feature selection -> KNN -> Infer labels -> Feature selection
-
-#### Models-Online/DenStream.html
-- evolution of silhoutte score
