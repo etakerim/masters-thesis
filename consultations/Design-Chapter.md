@@ -1,20 +1,53 @@
-# Design in Masters Thesis
+# Design
 
-### Research questions
-- Questions:
-    - **Q1**: Which time and frequency features can be extracted from vibrational signals to provide an accurate record of machinery faults?
-    - **Q2**: What are the savings in transmission bandwidth when chosen signal features are used in comparison to raw sampled measurement or lossless compression techniques?
-    - **Q3**: How can the machinery faults be continuously identified based on collected events?
-- Goals:
-  1. How does vibration data looks like in temporal and spectral domain and what about extracted features
-  2. Create dataset of machinery vibrations
-  3. Reduce number of features (samples) send from edge device - to minimal amount
-  4. Evaluate model performance on all features and different feature sets
- 
-- Tasks:
-    - Gather dataset and evaluate methods in real conditions - needs HW
-    - Incorporate designed feature selection into online learning
-    - Better feature selection (ensamble method or one feature)
+The design phase sets out to elaborate on the scenarios for experiments with IoT device. In these experiments, we compare and combine approaches from industry standards and papers presented in the analysis section. Noted observations are taken into consideration in establishing the plan of measurements and in the construction of the sensor unit. Finally, the network infrastructure layout is provided where we propose optimizations in the functions of the components.
+
+## Research questions
+
+This thesis aims to provide answers to four broader formulated research questions. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The research questions are:
+1. Which temporal and spectral features can be extracted from vibration signals to provide the most accurate record of machinery faults?
+2. What is the reduction in transmission goodput when chosen signal features are used?
+3. What accuracies of prediction models can be achieved with various feature subsets? 
+4. How can machinery faults be continuously identified and predicted based upon collected events?
+
+In accomplishing the objectives of our research we propose several goals:
+- Statistically and visually describe vibration signals from the Machinery fault database (MauFaulDa).
+- Establish a list of conditions that should be later investigated in the experimental setting.
+- Prepare dataset to be used in conjunction with statistical learning models, namely by identifying labels and balancing classes.
+- Find the best subsets of features in temporal and spectral domain with previously analyzed feature extraction and selection methods.
+- Evaluate the performance of models described in the diagnostics section with a significant focus on the k-nearest neighbor algorithm.
+- Acquire measurements of vibrations from machines in the real environment to form a novel dataset of machinery behavior.
+- Develop hardware and implement its firmware to obtain such measurement in the quality demanded by vibrodiagnostics standards.
+However, we leave out from our efforts experiments on the data features from wavelets and on the peaks in the spectral domain. The reason is that we did not find a way to represent extracted features more succinctly as a one number. We also did not discover a strategy for choosing only the relevant frequency bins. The assembled description is kept to empower further research on that topic.
+
+The tasks are associated with risks impacting their successful completion. The possible risks are assessed and prioritized. The most notable risk encountered early on is that the machine in the real environment will not be available for vibration measurements. We successfully eliminated the risk by contacting and establishing collaboration with alternative partners. The additional risks are that the repeated measurements will not be consistent and fault modes could not be reliably differentiated and labeled in the dataset because each machine is unique in its structure. Related is the risk that not enough data is obtained from various classes.  Also, suggestions can made by exploring the MaFaulDa dataset which will not be applicable in the practice. All these risks have to be regularly reevaluated to achieve our goals.
+  
+### MaFaulDa exploration
+
+
+
+(do 22:00)
+- Waveform visualizations
+- Statistical tests
+- Preprocessing
+- Feature extraction
+- Labels for faults - A is outer bearing - keep only 6 class
+- Feature selection
+
+### MaFaulDa predictions
+
+
+### Machinery 
+
+### Accelerometer sensors
+
+### Preliminary measurements
+
+
+
+
+----
+# Design in Masters Thesis
 
 
 ### Dataset preprocessing
@@ -72,7 +105,7 @@ Files:
 
 Table and images
 
-- KALORIK BASIC **Stand Fan** TKGVT1037C
+- KALORIK **Stand Fan** TKG VT 1037 C
     - height 125 cm, stable 60 cm cross base
     - 3 speed, 45 cm fan diameter, 3 propelers
     - 45 W (Class I)
@@ -119,7 +152,7 @@ Table and images
               - Detached Switch (INT [34] replace button) and LED (GPIO [5]) to indicate recording
               - **Storage API (SDMMC)** SD card: (GPIO15 [HS2_CMD], GPIO14 [HS2_CLK], GPIO2 [HS2_DATA0])
                   - https://docs.espressif.com/projects/esp-idf/en/v5.1.2/esp32/api-reference/storage/fatfs.html#using-fatfs-with-vfs-and-sd-cards
-              - **Peripherals API (SPI Master Driver)** Accel: (3.3V, GND, MISO [16], MOSI [32], CLK [16], CS [13], INT1 [35], INT2 [36]) Sensor max. 10 MHz
+              - **Peripherals API (SPI Master Driver)** Accel: (3.3V, GND, MISO [16], MOSI [32], CLK [33], CS [13], INT1 [35], INT2 [36]) Sensor max. 10 MHz
                   - https://docs.espressif.com/projects/esp-idf/en/v5.1.2/esp32/api-reference/peripherals/spi_master.html
                   - Driver: https://github.com/STMicroelectronics/IIS3DWB-PID/
               - <!-- Most of ESP32's peripheral signals have a direct connection to their dedicated IO\_MUX pins. However, the signals can also be routed to any other available pins using the less direct GPIO matrix. If at least one signal is routed through the GPIO matrix, then all signals will be routed through it. SPI2: MISO (12), MOSI (13), CLK (14); SPI3: MISO (19), MOSI (23), CLK (18), CS (5) --> 
@@ -469,14 +502,6 @@ Tables to appendix (Rank product, Corr, Rank product, MI)
         - Anomaly
     - **One physical defect can have multiple manifestations - outer race fault and misalignment overlap**
 
-# TODO: finish Clustering (do 22:00)
-
-### DBSCAN clustering
-
-#### Models-Batch/DBSCAN.html
-- SIlhoutte scores
-    - globally best clustering (maximazing silhouette score)?
-    - for best feature subsets
 
  ### **Design semi-supervised feature selection**
 - Feature selection -> KNN -> Infer labels -> Feature selection

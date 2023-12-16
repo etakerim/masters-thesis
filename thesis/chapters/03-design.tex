@@ -1,10 +1,343 @@
 \chapter{Design} \label{section:design}
-In the spirit of an extensive overview of standardized procedures of industrial vibration acquisition and monitoring, the methods in feature selection, feature selection, and machine diagnostics from vibration signals, we propose a preliminary design of elements in the sensor network capable of discriminating machinery faults.
+The design phase sets out to elaborate on the scenarios for experiments with IoT device. In these experiments, we compare and combine approaches from industry standards and papers presented in the analysis section. Noted observations are taken into consideration in establishing the plan of measurements and in the construction of the sensor unit. Finally, the network infrastructure layout is provided where we propose optimizations in the functions of the components.
 
+\section{Research questions}
+This thesis aims to provide answers to four broader formulated research questions. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
+\begin{enumerate}
+    \itemsep0pt
+	\item Which temporal and spectral features can be extracted from vibration signals to provide the most accurate record of machinery faults?
+	\item What is the reduction in transmission goodput when chosen signal features are used?
+	\item What accuracies of prediction models can be achieved with various feature subsets? 
+	\item How can machinery faults be continuously identified and predicted based upon collected events?
+\end{enumerate}
+
+\noindent In accomplishing the objectives of our research we propose several \textbf{goals}:
+\begin{itemize}
+    \itemsep0pt
+	\item Statistically and visually describe vibration signals from the Machinery fault database (MauFaulDa).
+	\item Establish a list of conditions that should be later investigated in the experimental setting.
+	\item Prepare dataset to be used in conjunction with statistical learning models, namely by identifying labels and balancing classes.
+	\item Find the best subsets of features in temporal and spectral domain with previously analyzed feature extraction and selection methods.
+	\item Evaluate the performance of models described in the diagnostics section with a significant focus on the k-nearest neighbor algorithm.
+	\item Combine feature selection with online machine learning model.
+	\item Acquire measurements of vibrations from machines in the real environment to form a novel dataset of machinery behavior.
+	\item Develop hardware and implement its firmware to obtain such measurement in the quality demanded by vibrodiagnostics standards.
+\end{itemize}
+
+However, we leave out from our efforts experiments on the data features from wavelets and on the peaks in the spectral domain. The reason is that we did not find a way to represent extracted features more succinctly as a one number. We also did not discover a strategy for choosing only the relevant frequency bins. The assembled description is kept to empower further research on that topic.
+
+The tasks are associated with \textbf{risks} impacting their successful completion. The possible risks are assessed and prioritized. The most notable risk encountered early on is that the machine in the real environment will not be available for vibration measurements. We successfully eliminated the risk by contacting and establishing collaboration with alternative partners. The additional risks are that the repeated measurements will not be consistent and fault modes could not be reliably differentiated and labeled in the dataset because each machine is unique in its structure. Related is the risk that not enough data is obtained from various classes.  Also, suggestions can made by exploring the MaFaulDa dataset which will not be applicable in the practice. All these risks have to be regularly reevaluated to achieve our goals.
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.44\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/Mafaulda-A-time-waveform.png}
+        \caption{Temporal domain waveforms in all spatial directions with 300 ms duration}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.55\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/Mafaulda-A-spectrum-Y-axis.png}
+        \caption{Spectral domain in radial direction (y). FFT with Hann window of length $2^{14}$ ($\approx 328$ ms)}
+    \end{subfigure} 
+    \caption{Signals at 1 s timestamp from inner bearing in each fault category with the highest fault severity}
+\end{figure}
+
+
+\section{Dataset preparation}
+
+
+\section{Feature relevance}
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/kNN-temporal-confusion-matrix-fault.png}
+        \caption{Prediction for 6 fault classes in testing set with temporal domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/kNN-spectral-confusion-matrix-fault.png}
+        \caption{Prediction for 6 fault classes in testing set with spectral domain features}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/kNN-temporal-confusion-matrix-anomaly90.png}
+        \caption{Prediction of high severity anomalies in testing set with temporal domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/kNN-spectral-confusion-matrix-anomaly90.png}
+        \caption{Prediction of high severity anomalies in testing set with spectral domain features}
+    \end{subfigure}
+    \caption{Confusion matrix of batch kNN algorithm predictions in temporal and spectral domain for two predicted variables measured on inner bearing.}
+\end{figure}
+
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/kNN-3-features-combinations-train.png}
+        \caption{Testing set}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/kNN-3-features-combinations-test.png}
+        \caption{Training set}
+    \end{subfigure}
+    \caption{Range of prediction accuracy in all kNN models with subset of 3 features. Subplots show three different predicted variables.}
+\end{figure}
+
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/kNN-feature-selection-predictions-train}
+        \caption{Testing set}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/kNN-feature-selection-predictions-test}
+        \caption{Training set}
+    \end{subfigure} 
+    \caption{Batch kNN algorithm prediction accuracy with various feature sets.}
+\end{figure}
+
+% Number of neighbors (graphs)
+
+
+\section{Online kNN model}
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-fault-train.png}
+        \caption{Training set and fault as predicted variable}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-fault-test.png}
+        \caption{Testing set and fault as predicted variable}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-anomaly60-train.png}
+        \caption{Training set and medium anomaly severity as predicted variable}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-anomaly60-test.png}
+        \caption{Training set and medium anomaly severity as predicted variable}
+    \end{subfigure}
+    \caption{Label order in progressive valuation}
+\end{figure}
+
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-temporal-domain-fault.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-spectral-domain-fault.png}
+        \caption{}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-temporal-domain-anomaly60.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-spectral-domain-anomaly60.png}
+        \caption{}
+    \end{subfigure}
+    \caption{Gradual learning}
+\end{figure}
+
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-fault.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-fault.png}
+        \caption{}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-anomaly60.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-anomaly60.png}
+        \caption{}
+    \end{subfigure}
+    \caption{Gradual learning accuracy with delay}
+\end{figure}
+
+
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-temporal-domain-fault.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-spectral-domain-fault.png}
+        \caption{}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-temporal-domain-anomaly60.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-spectral-domain-anomaly60.png}
+        \caption{}
+    \end{subfigure}
+    \caption{Gradual learning with delay}
+\end{figure}
+
+
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-temporal-domain-fault.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-spectral-domain-fault.png}
+        \caption{}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-temporal-domain-anomaly60.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-spectral-domain-anomaly60.png}
+        \caption{}
+    \end{subfigure}
+    \caption{Gradual learning and skip labels}
+\end{figure}
+
+
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-fault.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-fault.png}
+        \caption{}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-anomaly60.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-anomaly60.png}
+        \caption{}
+    \end{subfigure}
+    \caption{Gradual learning accuracy with delay}
+\end{figure}
+
+
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-temporal.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-spectral.png}
+        \caption{}
+    \end{subfigure}
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-anomaly60-temporal.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-anomaly60-spectral.png}
+        \caption{}
+    \end{subfigure}
+    \caption{PCA 2 components to visualize results and mistakes of online learning on all features}
+\end{figure}
+)
+
+
+\section{Measuments on machinery}
+- Machinery
+% Enum list
+
+- Sensors
+
+\begin{table}[ht]
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Accelerometer}                           & \textbf{ADXL335} & \textbf{IIS3DWB}   \\ \hline
+\textbf{Vendor}                                  & Analog Devices   & STMicroelectronics \\ \hline
+\textbf{Bus}                                     & Analog           & SPI                \\ \hline
+\textbf{Axis}                                    & 3                & 1 or 3             \\ \hline
+\textbf{Range} (g)                               & $\pm$ 3          & $\pm$ 2 to 16      \\ \hline
+\textbf{Bandwidth} (kHz)                         & 0.55             & 5 - 6.3            \\ \hline
+\textbf{Sensitivity}                             & 300 mV/g         & 0.061 mg/LSB       \\ \hline
+\textbf{Noise density} ($\mu g / \sqrt{\mathrm{Hz}}$ rms) & 150 - 300        & 75                 \\ \hline
+\textbf{Microcontroller}                         & Beaglebone Black & ESP32-PoE-ISO      \\ \hline
+\textbf{CPU SoC}                                 & TI Sitara AM3358 & ESP32-WROOM-32     \\ \hline
+\textbf{Output data rate} (kHz)                  & 2.5              & 26.7               \\ \hline
+\textbf{ADC resolution} (bit)                    & 12               & 16                 \\ \hline
+\textbf{FIFO}                                    & -                & 3 kB (512 samples) \\ \hline
+\end{tabular}
+\caption{Accelerometers}
+\end{table}
+
+- Preliminary measurements
+% Waveforms
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{assets/design/hw-block-schematic.png}
+	\caption{Sensor unit hardware block diagram}
+\end{figure}
+
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.44\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-temporal.png}
+        \caption{Temporal domain waveforms in all spatial directions with 300 ms duration}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.55\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-spectral-X-axis.png}
+        \caption{Spectral domain in x accelerometer axis. FFT with Hann window of length $2^{10}$ ($\approx 409$ ms)}
+    \end{subfigure} 
+    \caption{Signals at 5 s timestamp}
+\end{figure}
+
+
+
+
+
+
+\newpage
 \section{Machine learning pipeline}
-
-Mafaulda dataset
-Jupyter notebook - Python
 \begin{enumerate}
     \itemsep0pt
     \item Detrending
@@ -21,81 +354,13 @@ Jupyter notebook - Python
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.9\textwidth]{assets/ml-lifecycle.png}
+\includegraphics[width=0.9\textwidth]{assets/analysis/ml-lifecycle.png}
 \caption{Machine learning lifecycle of feature discovery}
 \end{figure}
 
 
-\section{Research questions}
-Open ended Research questions:
-	- Which time and frequency features can be extracted from vibrational signals to provide an accurate record of machinery faults?
-	- What are the savings in transmission bandwidth when chosen signal features are used in comparison to raw sampled measurement or lossless compression techniques?
-	- How can the machinery faults be continuously identified based on collected events?
-
-Main goals:
-	- How does vibration data look like (spectral and time domain)?
-	- Create dataset of machinery vibrations
-	- Reduce number of features (samples) send from edge device - to minimal amount
-	- Adapt to features changing over time (RiverML can handle it, find proof)
-	- Evaluate model performance on all features and different feature sets
-	- Keep in mind: data ordering!
-
 \section{Data preparation}
-- Machinery:
-   - KALORIK BASIC Stand Fan TKGVT1037C  - height 125 cm, stable 60 cm cross base, 3 speed, 45 W, 45 cm fan diameter, 3 propelers
-   - AC unit VERTIV: Scroll Compressor: Copeland ZR16M3E-TWD-561 (2900 RPM @ 50 Hz; 9.7 kW (13 HP); 380/420V; 25 A) - 2 units
-   - Water pump: KSB Omega 300-560 B GB G F (2018, 1493 (1500) RPM @ 50 Hz; 500 kW elektromotor; power requirement: 380 kW) - 1 unit
-   
-- Sensors:
-	- Accelerometer: ADXL335 ($\pm$3g, Bandwidth: 0.55 kHz)
-	- Noise density: 150 - 300 $\mu g / \sqrt{Hz}$ rms
-	- Resolution: 12 bits
-	- Axis: 3 axis
-	- Sensitvity: 300 mV/g
-	- Sample time: 400 ns (2.5 kHz)
-	- Voltage range: up to 1.8 V
-	
-	- IIS3DWB (STEVAL-MKI208V1K) Digitálny (SPI), 1 / 3 axis, Resultution: 16 bits ADC, Range: 2 - 16g, Sensitvity: 0.061 mg/LSB pri 2g, Noise density:: 75 $\mu g / \sqrt{Hz}$, ODR: 26.7 kHz,Bandwidth: 5 - 6.3 kHz (-3 dB), FIFO: 3 kB (512 vzoriek)
 
-- EDA
-	- Time waveform
-	- Spectrogram
-	- Features: boxplot
-
-- Experiment subsets:
-	features = temporal, spectral
-	rpm_limit = False, True
-	hardware = shaft, bearings
-	target = fault, anomaly_60, anomaly_90
-	placement = A, B
-	online = False, True
-
-
-- Mafaulda dataset
-	- Choose 4 faults - normal (N), imbalance (I), vertical (VM) and horizonal misalignment (HM)
-	- Convert severity to 0 - 1 scale.
-		- Label samples above 0., 0.9 as anomalous
-	- Choose rpm range 2900 $\pm$ 500 (around rotational speed of machinery with some spread, some features are correlated with rpm 
-	- Counts before split: 
-		- Split to 5 parts of 1 second intervals
-	- Two measurement points A, B
-	- Detrending by removing mean
-	- Calculate features: temporal, spectral (in 5 window sizes): welch averaging, hann window
-	
-	- Batch: 
-		- Balancing dataset with oversampling minority classes	
-		- Hold-out validation - split to train and test set
-	- Online: Order by severity
-
-- Measurement of custom datasets 
-	- one 3-axis accelerometer on top of scroll compressor of air conditioning
-		- one in the base to capture noise
-	- water pump
-	
-	- columns: t, x, y, z: rpm
-	- 20 s recordings - split to 5 parts - extract features
-	- do PCA to explore see differences
-	- label as worse, better (classes are hard to provide)
 
 - \textbf{Measurements-SHC3.html}
 - \textbf{BVS-Measurements.html}
@@ -171,6 +436,6 @@ Future work: engineer new feature, deploy, tweek models, validate on real datase
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{assets/sensor-network.png}
+\includegraphics[width=0.7\textwidth]{assets/design/sensor-network.png}
 \caption{Sensor network components}
 \end{figure}

@@ -13,7 +13,7 @@ A steeper 3~dB attenuation band can be achieved by increasing the order of the f
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\textwidth]{assets/iir-1-dc-blocker-band.jpg}
+	\includegraphics[width=0.7\textwidth]{assets/analysis/iir-1-dc-blocker-band.jpg}
 	\caption{Transfer function of 1st order DC blocker filters ~\cite{tittelbach-helmrich_digital_2021}}
 	\label{fig:dc-blocker}
 \end{figure}
@@ -39,20 +39,22 @@ The convergence stability is affected by step size $\mu$ which is bounded from a
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.8\textwidth]{assets/adaptive-filter.png}
+	\includegraphics[width=0.8\textwidth]{assets/analysis/adaptive-filter.png}
 	\caption{Adaptive noise cancellation filter diagram}
 	\label{fig:adaptive-filter}
 \end{figure}
 \bigbreak
 
 \subsection{Time synchronous averaging}
-Time synchronous averaging (TSA) diminishes the impact of vibration sources unrelated to the rotational frequency and its harmonics. TSA averages time-domain waveform over $N$ points and aligns it to a synchronization pulse with period $T$ (Equation~\ref{equ:tsa-average}). This technique has been successfully applied to the gearbox and bearing fault diagnosis~\cite{davies_handbook_2012,nandi_condition_2019}
+Time synchronous averaging (TSA) diminishes the impact of vibration sources unrelated to the rotational frequency and its harmonics. TSA averages time-domain waveform over $N$ points and aligns it to a synchronization pulse with period $T$ (Equation~\ref{equ:tsa-average}). 
 
 \myequations{Time synchronous averaging}
 \begin{ceqn}\begin{align}
 x_{TSA} = \frac{1}{N} \sum_{n = 0}^{N - 1}{x(t + nT)}
 \label{equ:tsa-average}
 \end{align}\end{ceqn} 
+
+This technique has been successfully applied to the gearbox and bearing fault diagnosis~\cite{davies_handbook_2012,nandi_condition_2019}.
 
 \section{Feature extraction} \label{section:feature-extraction}
 After preprocessing raw numerical vectors are merely low-level descriptors of the underlying physical phenomena. At first, these incomprehensible sequences of numbers are reduced to summary attributes called features in the process of feature extraction or feature discovery. Features can be hand-crafted (as is our case), learned implicitly within the model representation, or explicitly from an optimization problem solution. 
@@ -203,22 +205,22 @@ The spectrograms to illustrate the difference in the ability of Fourier transfor
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/stft-spectrogram-sample.png}
+        \includegraphics[width=\textwidth]{assets/analysis/stft-spectrogram-sample.png}
         \caption{STFT \& Gaussian window}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/tet-spectrogram-sample.png}
+        \includegraphics[width=\textwidth]{assets/analysis/tet-spectrogram-sample.png}
         \caption{TET}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/wt-spectrogram-sample.png}
+        \includegraphics[width=\textwidth]{assets/analysis/wt-spectrogram-sample.png}
         \caption{CWT \& Morlet wavelet}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/sst-spectrogram-sample.png}
+        \includegraphics[width=\textwidth]{assets/analysis/sst-spectrogram-sample.png}
         \caption{SST}
     \end{subfigure}
     \caption{Comparison of time-frequency transform spectrograms~\cite{yu_concentrated_2020}}
@@ -244,13 +246,13 @@ Each wavelet packet coefficient $w_{j,n,k}$ captures subband frequency content a
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/DWT.png}
+        \includegraphics[width=\textwidth]{assets/analysis/DWT.png}
         \caption{Discrete wavelet transform}
         \label{fig:dwt-filter-bank}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/WPD.png}
+        \includegraphics[width=\textwidth]{assets/analysis/WPD.png}
         \caption{Wavelet packet decomposition}
         \label{fig:wpd-filter-bank}
     \end{subfigure}
@@ -270,7 +272,7 @@ The normalized frequency axis in range $\omega \in [0, \pi]$ is divided by split
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.9\textwidth]{assets/EWT.png}
+    \includegraphics[width=0.9\textwidth]{assets/analysis/EWT.png}
     \caption{Empirical wavelet segmentation of Fourier spectrum~\cite{gilles_empirical_2013}}
     \label{fig:ewt-spectrum-segmentation}
 \end{figure}
@@ -284,13 +286,13 @@ The segmentation boundaries detection can be accomplished also on the spectral e
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/MKCD-EWT.png}
+        \includegraphics[width=\textwidth]{assets/analysis/MKCD-EWT.png}
         \caption{MKCD-EWT~\cite{li_fault_2019}}
         \label{fig:mkcd-ewt-segmentation}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/PCHIP-EWT.png}
+        \includegraphics[width=\textwidth]{assets/analysis/PCHIP-EWT.png}
         \caption{PCHIP-EWT~\cite{zhuang_improved_2020}}
         \label{fig:pchip-ewt-segmentation}
     \end{subfigure}
