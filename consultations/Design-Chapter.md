@@ -22,16 +22,64 @@ However, we leave out from our efforts experiments on the data features from wav
 
 The tasks are associated with risks impacting their successful completion. The possible risks are assessed and prioritized. The most notable risk encountered early on is that the machine in the real environment will not be available for vibration measurements. We successfully eliminated the risk by contacting and establishing collaboration with alternative partners. The additional risks are that the repeated measurements will not be consistent and fault modes could not be reliably differentiated and labeled in the dataset because each machine is unique in its structure. Related is the risk that not enough data is obtained from various classes.  Also, suggestions can made by exploring the MaFaulDa dataset which will not be applicable in the practice. All these risks have to be regularly reevaluated to achieve our goals.
   
-### MaFaulDa exploration
+###  Dataset exploration
 
+#### TODO -----------------------
+robíme so skôr popísanou mafaulda ktorú musíme dostať do stavu vhodné na prieskum
+vybrali sme si tento dataset pretože je narozsiahlejší, čím umožňuje vybať podmnožiny zamernaé na špecifické situácie. Má s viacerými označenými typmi.
+najprv si vyberieme vzorové záznamy z každej porchy jeden a až neskôr extrahujeme atribúty z celej množiny
+zaujíma nás vizualizovať časový a frekvenčný priebeh
+a tiež štatistické vlastnosti rozdelenia v oboch doménach
 
+Ako sme popísali v analýze mafaulda dataset sa skladá z 1951 záznamov olabelovaných simulovanou poruchou stúpajúcej závažnosti.
+Záznam obsahuje časové rady so vzorkovacou frekvenciou 50 kHz z trojosových akcelerometrov (x, y, z) umiestnené na dvoch ložiskách. 
+Inner bearing closer to motor sa označuje aj ako underhang (A), outer bearing sa označuje aj ako overhang (B). 
 
-(do 22:00)
-- Waveform visualizations
-- Statistical tests
 - Preprocessing
-- Feature extraction
-- Labels for faults - A is outer bearing - keep only 6 class
+
+Z 10 labelov pre poruchy - z toho 1 baseline,  3 pre hriadeľ , 3 pre inner bearing a 3 pre outer bearing vytvoríme 6 tried pre neskoršiu klasifikáciu
+Pri chybách hrideľa nebudeme rozlišovať smer pri misalignment - zlúčime horizonal and vertical under one category. 
+Podľa pozície bearing vyfiltrujeme (choose) poruchy, ktoré sa ho týkajú. čiže ak sa vyskytuje určitá porucha napr. inner bearing nebudeme pri druhom bearing brať, že signál z neho postihuje táto porucha.
+To nám zanecháva 6 typov identifikovaných porúch - 1 baseline, 2 pre shaft (imbalance, misalignment) a 3 pre bearing (cage fault, ball fault, outer race fault). Uvažovali sme aj s rozdelením na poruchy shaft a fault, ale v realite sa nedajú oddeliť. Ale napr. typ poruchy ložiska sa môže prejaviť na hriadeli a naopak.
+V kroku výberu ložiska dosiahneme to, že odstránime niektoré záznamy, ktoré sa týkajú druhého ložiska a pri premenovaní typov porúch dochádza k ich zlúčeniu tak ako sme popísali a úpravou názvov idenfikátorov získaných z názov súborov
+
+Závažnosť poruchy pre rozličné typy porúch určíme tak, že masses attached a shifting the motor shaft zoradíme in ascedning order and order number will indicate severity. Aby sme mohli pracovať rovnako s poruchami pre ktoré bolo realizovaný rôzny počet podmienok we scale poradia do intervalu from lowest severity 0 to 1 highest severity.
+
+V datasete sú zaznamenané rôzne rýchlosti otáčok, ktoré majú vplyv tak silu prejavu poruchy. RPM najprv vypočítame zo stĺpca tachometera, kde je rýchlosť zaznamenaná ako pwm impulzy. Zistíme rozdiely medzi nasledujúci nábežným hranami a priemer intervalov po prevode na otáčky minúty bude predstavovať údaj o rotačnej rýchlosti (60 / delta t).
+
+Exemplár pre každú poruchy zvolíme podľa závažnosti poruchy a rýchlosti otáčok. Aby sme pri porovnávaní exemplárnych priebehov znížili efekt rozdielov rotačnej rýchlosti zvolíme takú ktorá je blízka priemeru zaznamených rýchlostí a vyššia najbližšia 2500 rpm (42 Hz). Aby sme videli najsilnejší prejav poruchy zvolíme najvyššiu severitu z každej poruchy okrem nomálneho stavu, kde je severita len jedna a síce najnižšia.
+
+Vibračný signál v troch smeroch upravíme najprv odstránením jednosmernej zložky odčítaním celkového priemeru. Potom použijeme ešte digital IIR Butterworth low pass filterom of 5th order with -3dB cutoff frequency 10 kHz. Všimli sme si špičky na 20 kHz, ktorá nemohla byť spoľahlivo zaznamená kvôli lineránej frequency response senzora do 10 kHz a zároveň je to outside of range any commerial mems accelerometer.
+
+Časové priebehy 300 ms segmentu (výrezu) signálu, ktorý začína v čase 1 sekunda pre každý exemplár poruchy sú znázornené v grafoch na obr. X. Z prava doľava sú v stĺpcoch jednotlivé smery radial, tagentail and axial. Amplitudes range from $\pm 3\;m /s^2$** in normal and misaligned data to  **$\pm 11\;m /s^2$** in case of severe bearing faults. In frekevenčné spektrum na obr. Y bolo vypočítané cez FFT with Hann window of length $2^{14}$, čo predstavuje približne 328 ms úsek a spektrálne rozlíšenie zhruba 3 Hz. Graf bol orezený v oboch osiach aby sa dali pozorovať najdôležitejšie črty. Preto ide rozsah frekvencií na vodorovnej osi iba do 3 kHz.
+
+- Statistical tests
+Na vzorových poruchách sme uskutočnili štatistické testy, ktoré majú prezradiť charkter vstupných signálov pre ďalšie kroky spracovania. Testami a vizuálne sme overovali normálnosť rozdelenia a statcionaritu dát na segmente o trvaní pol sekundy, ktorý downsample-neme faktorom 10, aby obsahoval 2500 pozorovaní amplitúdy.
+
+  Ako significance test for noramlity použijeme Shapiro-Wilk's test, ktorý in tempoal domain s p-value 0.05 zamieta vo väčšine prípadov hypotézu že data is drawn from normal distribution. In spectral domain up to 3 kHz the null hypotesis is in all cases rejected with p-value less than 0.001. Axis not exhibing the fault have noraml distribution while does where fault is strongly pronounced does not. Null hypotesis cannot be rejected when using lower severity level because the signal is closer to white (pink) noise. In quantile–quantile plot we observe jednoznačný tilt to the diagonal line.
+
+  Augmented Dickey-Fuller test rejects the null hypothesis of unit root with p-value less than 0.001 signifying stochastic process being stationary in nature. This is confirmed with shape of autocorrelation plots.
+
+
+
+
+- **Feature extraction**
+
+A) **Activity diagram** (Image)
+1. Label recording using filename path in zip: fault, severity, seq
+2. Split each recording to 5 parts (1 second - 50000 samples)
+3. Calculate rpm (out of impulse tachometer = prominence=3, width=50, 60 / $\Delta t$)
+4. Remove mean - DC component filter
+5. Filter frequencies: cutoff = 10 kHz (Butterworth lowpass filter of 5 order) - peak 20 kHz (not possibe to capture)
+6. Label with 6 classes of faults, and 2 anomaly classes (based on arbitrary severity 0.6 and 0.9)
+7. X - extract temporal features in all axis for both bearings A, B: ax/ay/az_feature_name
+8. X - window size: windows and welch averaging (2**14 = 16384 samples, 3 okná, 3.05 Hz resolution)
+B) **Counts of classes** (to table and Sum) - **Unbalanced dataset**  (2 Tables - `RPM unlimited | RPM limited`)
+C) **Correlation of features with rpm**:
+    - Temporal: mostly **very low** (25% - 75% quantile: 0.07 - 0.20,
+    - Spectral: mostly **very low** for all 5 window sizes: 25% (0.08)  - 75% (0.23)
+
+
 - Feature selection
 
 ### MaFaulDa predictions

@@ -2,12 +2,12 @@
 The design phase sets out to elaborate on the scenarios for experiments with IoT device. In these experiments, we compare and combine approaches from industry standards and papers presented in the analysis section. Noted observations are taken into consideration in establishing the plan of measurements and in the construction of the sensor unit. Finally, the network infrastructure layout is provided where we propose optimizations in the functions of the components.
 
 \section{Research questions}
-This thesis aims to provide answers to four broader formulated research questions. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
-\begin{enumerate}
+This thesis aims to provide answers to four research questions formulated in broader sense. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
+\begin{enumerate}[label=RQ\arabic*., font=\bfseries]
     \itemsep0pt
 	\item Which temporal and spectral features can be extracted from vibration signals to provide the most accurate record of machinery faults?
 	\item What is the reduction in transmission goodput when chosen signal features are used?
-	\item What accuracies of prediction models can be achieved with various feature subsets? 
+	\item What accuracies of prediction models can be achieved with various feature subsets?
 	\item How can machinery faults be continuously identified and predicted based upon collected events?
 \end{enumerate}
 
@@ -28,6 +28,17 @@ However, we leave out from our efforts experiments on the data features from wav
 
 The tasks are associated with \textbf{risks} impacting their successful completion. The possible risks are assessed and prioritized. The most notable risk encountered early on is that the machine in the real environment will not be available for vibration measurements. We successfully eliminated the risk by contacting and establishing collaboration with alternative partners. The additional risks are that the repeated measurements will not be consistent and fault modes could not be reliably differentiated and labeled in the dataset because each machine is unique in its structure. Related is the risk that not enough data is obtained from various classes.  Also, suggestions can made by exploring the MaFaulDa dataset which will not be applicable in the practice. All these risks have to be regularly reevaluated to achieve our goals.
 
+
+\section{Dataset exploration}
+
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{assets/design/activity-data-exploration.png}
+	\caption{Activity diagram of MaFaulDa dataset preprocessing}
+\end{figure}
+
+
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.44\textwidth}
@@ -37,13 +48,72 @@ The tasks are associated with \textbf{risks} impacting their successful completi
     \hfill
     \begin{subfigure}[b]{0.55\textwidth}
         \includegraphics[width=\textwidth]{assets/design/Mafaulda-A-spectrum-Y-axis.png}
-        \caption{Spectral domain in radial direction (y). FFT with Hann window of length $2^{14}$ ($\approx 328$ ms)}
+        \caption{Frequency spectrum in radial direction (y)}
     \end{subfigure} 
     \caption{Signals at 1 s timestamp from inner bearing in each fault category with the highest fault severity}
 \end{figure}
 
 
-\section{Dataset preparation}
+\begin{table}[ht]
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rrrrrllll}
+\cline{1-5}
+\multicolumn{1}{|l|}{\multirow{2}{*}{\textbf{Fault}}} & \multicolumn{2}{l|}{\textbf{All rotational speeds}}                                               & \multicolumn{2}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Selected rotational speeds \\ 2500 $\pm$ 500 rpm\end{tabular}}} &                               &                               &                               &                               \\ \cline{2-5}
+\multicolumn{1}{|l|}{}                                & \multicolumn{1}{l|}{\textbf{Inner bearing (A)}} & \multicolumn{1}{l|}{\textbf{Outer bearing (B)}} & \multicolumn{1}{l|}{\textbf{Inner bearing (A)}}            & \multicolumn{1}{l|}{\textbf{Outer bearing (B)}}           &                               &                               &                               &                               \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{normal}}                 & \multicolumn{1}{r|}{49 (3\%)}                   & \multicolumn{1}{r|}{49 (4\%)}                   & \multicolumn{1}{r|}{16 (3\%)}                              & \multicolumn{1}{r|}{16 (3\%)}                             &                               &                               &                               &                               \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{misalignment}}           & \multicolumn{1}{r|}{498 (35\%)}                 & \multicolumn{1}{r|}{498 (36\%)}                 & \multicolumn{1}{r|}{173 (34\%)}                            & \multicolumn{1}{r|}{173 (36\%)}                           &                               &                               &                               &                               \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{imbalance}}              & \multicolumn{1}{r|}{333 (23\%)}                 & \multicolumn{1}{r|}{333 (24\%)}                 & \multicolumn{1}{r|}{118 (23\%)}                            & \multicolumn{1}{r|}{118 (25\%)}                           &                               &                               &                               &                               \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{cage fault}}             & \multicolumn{1}{r|}{188 (13\%)}                 & \multicolumn{1}{r|}{188 (13\%)}                 & \multicolumn{1}{r|}{67 (13\%)}                             & \multicolumn{1}{r|}{69 (14\%)}                            &                               &                               &                               &                               \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{ball fault}}             & \multicolumn{1}{r|}{186 (13\%)}                 & \multicolumn{1}{r|}{137 (10\%)}                 & \multicolumn{1}{r|}{61 (12\%)}                             & \multicolumn{1}{r|}{34 (7\%)}                             &                               &                               &                               &                               \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{outer race fault}}       & \multicolumn{1}{r|}{184 (13\%)}                 & \multicolumn{1}{r|}{188 (13\%)}                 & \multicolumn{1}{r|}{69 (14\%)}                             & \multicolumn{1}{r|}{68 (14\%)}                            &                               &                               &                               &                               \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{Total}}                  & \multicolumn{1}{r|}{1438}                       & \multicolumn{1}{r|}{1393}                       & \multicolumn{1}{r|}{504}                                   & \multicolumn{1}{r|}{478}                                  & \multicolumn{1}{r}{\textbf{}} & \multicolumn{1}{r}{\textbf{}} & \multicolumn{1}{r}{\textbf{}} & \multicolumn{1}{r}{\textbf{}} \\ \cline{1-5}
+\textbf{}                                             &                                                 &                                                 &                                                            &                                                           & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          \\
+\textbf{}                                             &                                                 &                                                 &                                                            &                                                           & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          \\
+\textbf{}                                             &                                                 &                                                 &                                                            &                                                           & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          \\
+\textbf{}                                             &                                                 &                                                 &                                                            &                                                           & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          \\
+                                                      &                                                 &                                                 &                                                            &                                                           & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          \\
+                                                      &                                                 &                                                 &                                                            &                                                           & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}          & \multicolumn{1}{r}{}         
+\end{tabular}
+\end{table}
+
+
+
+\begin{table}[ht]
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rrrrrrrrr}
+\cline{1-5}
+\multicolumn{1}{|l|}{\multirow{2}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Anomaly\\ 60\% severity\end{tabular}}}} & \multicolumn{2}{l|}{\textbf{All rotational speeds}}                                               & \multicolumn{2}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Selected rotational speeds \\ 2500 $\pm$ 500 rpm\end{tabular}}} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\ \cline{2-5}
+\multicolumn{1}{|l|}{}                                                                                          & \multicolumn{1}{l|}{\textbf{Inner bearing (A)}} & \multicolumn{1}{l|}{\textbf{Outer bearing (B)}} & \multicolumn{1}{l|}{\textbf{Inner bearing (A)}}            & \multicolumn{1}{l|}{\textbf{Outer bearing (B)}}           & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{False}}                                                                            & \multicolumn{1}{r|}{837 (58\%)}                 & \multicolumn{1}{r|}{831 (60\%)}                 & \multicolumn{1}{r|}{375 (74\%)}                            & \multicolumn{1}{r|}{354 (74\%)}                           & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{True}}                                                                             & \multicolumn{1}{r|}{601 (42\%)}                 & \multicolumn{1}{r|}{562 (40\%)}                 & \multicolumn{1}{r|}{129 (26\%)}                            & \multicolumn{1}{r|}{124 (26\%)}                           & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{Total}}                                                                                 & \multicolumn{1}{r|}{1438}                       & \multicolumn{1}{r|}{1393}                       & \multicolumn{1}{r|}{504}                                   & \multicolumn{1}{r|}{478}                                  & \textbf{}            & \textbf{}            & \textbf{}            & \textbf{}            \\ \cline{1-5}
+\textbf{}                                                                                                       &                                                 &                                                 &                                                            &                                                           &                      &                      &                      &                      \\
+\textbf{}                                                                                                       & \textbf{}                                       & \textbf{}                                       & \textbf{}                                                  & \textbf{}                                                 & \textbf{}            & \textbf{}            & \textbf{}            & \textbf{}            \\
+\textbf{}                                                                                                       &                                                 &                                                 &                                                            &                                                           &                      &                      &                      &                      \\
+\textbf{}                                                                                                       &                                                 &                                                 &                                                            &                                                           &                      &                      &                      &                      \\
+                                                                                                                &                                                 &                                                 &                                                            &                                                           &                      &                      &                      &                      \\
+                                                                                                                &                                                 &                                                 &                                                            &                                                           &                      &                      &                      &                     
+\end{tabular}
+\end{table}
+
+
+\begin{table}[ht]
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rrrrrrrrr}
+\cline{1-5}
+\multicolumn{1}{|l|}{\multirow{2}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Anomaly\\ 90\% severity\end{tabular}}}} & \multicolumn{2}{l|}{\textbf{All rotational speeds}}                                               & \multicolumn{2}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Selected rotational speeds \\ 2500 $\pm$ 500 rpm\end{tabular}}} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\ \cline{2-5}
+\multicolumn{1}{|l|}{}                                                                                          & \multicolumn{1}{l|}{\textbf{Inner bearing (A)}} & \multicolumn{1}{l|}{\textbf{Outer bearing (B)}} & \multicolumn{1}{l|}{\textbf{Inner bearing (A)}}            & \multicolumn{1}{l|}{\textbf{Outer bearing (B)}}           & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{False}}                                                                            & \multicolumn{1}{r|}{837 (58\%)}                 & \multicolumn{1}{r|}{831 (60\%)}                 & \multicolumn{1}{r|}{375 (74\%)}                            & \multicolumn{1}{r|}{354 (74\%)}                           & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{True}}                                                                             & \multicolumn{1}{r|}{601 (42\%)}                 & \multicolumn{1}{r|}{562 (40\%)}                 & \multicolumn{1}{r|}{129 (26\%)}                            & \multicolumn{1}{r|}{124 (26\%)}                           & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{} \\ \cline{1-5}
+\multicolumn{1}{|r|}{\textbf{Total}}                                                                                 & \multicolumn{1}{r|}{1438}                       & \multicolumn{1}{r|}{1393}                       & \multicolumn{1}{r|}{504}                                   & \multicolumn{1}{r|}{478}                                  & \textbf{}            & \textbf{}            & \textbf{}            & \textbf{}            \\ \cline{1-5}
+\textbf{}                                                                                                       &                                                 &                                                 &                                                            &                                                           &                      &                      &                      &                      \\
+\textbf{}                                                                                                       & \textbf{}                                       & \textbf{}                                       & \textbf{}                                                  & \textbf{}                                                 & \textbf{}            & \textbf{}            & \textbf{}            & \textbf{}            \\
+\textbf{}                                                                                                       &                                                 &                                                 &                                                            &                                                           &                      &                      &                      &                      \\
+\textbf{}                                                                                                       &                                                 &                                                 &                                                            &                                                           &                      &                      &                      &                      \\
+                                                                                                                &                                                 &                                                 &                                                            &                                                           &                      &                      &                      &                      \\
+                                                                                                                &                                                 &                                                 &                                                            &                                                           &                      &                      &                      &                     
+\end{tabular}
+\end{table}
 
 
 \section{Feature relevance}
@@ -276,7 +346,6 @@ The tasks are associated with \textbf{risks} impacting their successful completi
     \end{subfigure}
     \caption{PCA 2 components to visualize results and mistakes of online learning on all features}
 \end{figure}
-)
 
 
 \section{Measuments on machinery}
