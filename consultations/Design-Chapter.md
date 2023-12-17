@@ -1,15 +1,7 @@
 # Design
 
-- Statistical tests
-Na vzorových poruchách sme uskutočnili štatistické testy, ktoré majú prezradiť charkter vstupných signálov pre ďalšie kroky spracovania. Testami a vizuálne sme overovali normálnosť rozdelenia a statcionaritu dát na segmente o trvaní pol sekundy, ktorý downsample-neme faktorom 10, aby obsahoval 2500 pozorovaní amplitúdy.
 
-  Ako significance test for noramlity použijeme Shapiro-Wilk's test, ktorý in tempoal domain s p-value 0.05 zamieta vo väčšine prípadov hypotézu že data is drawn from normal distribution. In spectral domain up to 3 kHz the null hypotesis is in all cases rejected with p-value less than 0.001. Axis not exhibing the fault have noraml distribution while does where fault is strongly pronounced does not. Null hypotesis cannot be rejected when using lower severity level because the signal is closer to white (pink) noise. In quantile–quantile plot we observe jednoznačný tilt to the diagonal line.
-
-  Augmented Dickey-Fuller test rejects the null hypothesis of unit root with p-value less than 0.001 signifying stochastic process being stationary in nature. This is confirmed with shape of autocorrelation plots.
-
-
-
-- **Feature extraction**
+### Feature extraction
 
 A) **Activity diagram** (Image)
 1. Label recording using filename path in zip: fault, severity, seq
@@ -24,30 +16,7 @@ B) **Counts of classes** (to table and Sum) - **Unbalanced dataset**  (2 Tables 
 C) **Correlation of features with rpm**:
     - Temporal: mostly **very low** (25% - 75% quantile: 0.07 - 0.20,
     - Spectral: mostly **very low** for all 5 window sizes: 25% (0.08)  - 75% (0.23)
-
-
-- Feature selection
-
-### MaFaulDa predictions
-
-
-### Machinery 
-
-### Accelerometer sensors
-
-### Preliminary measurements
-
-
-
-
-----
-# Design in Masters Thesis
-
-
-### Dataset preprocessing
-
-Files:
-- EDA-Measure.ipynb
+D) **Correlations among features**
 
 #### EDA
 - **Fan**
@@ -116,21 +85,6 @@ Table and images
 
 #### Sensors:
 
-| Accelerometer                           | ADXL335          | IIS3DWB            |
-|-----------------------------------------|------------------|--------------------|
-| Vendor                                  | Analog Devices   | STMicroelectronics |
-| Bus                                     | Analog           | SPI                |
-| Axis                                    | 3                | 1 or 3             |
-| Range (g)                               | $\pm$ 3          | $\pm$ 2 to 16      |
-| Bandwidth (Hz)                          | 550              | 5 - 6.3            |
-| Sensitivity                             | 300 mV/g         | 0.061 mg/LSB       |
-| Noise density ($\mu g / \sqrt{Hz}$ rms) | 150 - 300        | 75                 |
-| Microcontroller                         | Beaglebone Black | ESP32-PoE-ISO      |
-| CPU SoC                                 | TI Sitara AM3358 | ESP32-WROOM-32     |
-| Output data rate (kHz)                  | 2.5              | 26.7               |
-| A/D resolution (bit)                    | 12               | 16                 |
-| FIFO                                    | -                | 3 kB (512 samples) |
- 
   - **UML diagram**:
       - Block diagram for HW connections:
           - Accel (SPI, INT1,2) -> ESP -> (SDIO) SD card
@@ -155,61 +109,7 @@ Table and images
           7. When rank is stable n iterations start sending only subset + features with immidiate close ranks (first 3 + ranks up to 40% of full rank)
 	- Component: whole infrastructure
    
-#### MaFaulDa feature extraction:
-1. Label recording using filename path in zip: fault, severity, seq
-2. Split each recording to 5 parts (1 second - 50000 samples)
-3. Calculate rpm (out of impulse tachometer = prominence=3, width=50, 60 / $\Delta t$)
-4. Remove mean - DC component filter
-5. Filter frequencies: cutoff = 10 kHz (Butterworth lowpass filter of 5 order) - peak 20 kHz (not possibe to capture)
-6. extract temporal features in all axis for both bearings A, B: ax/ay/az_feature_name
-7. spectral 5 window sizes: windows and welch averaging (2**14 = 16384 samples, 3 okná, 3.05 Hz resolution)
-8. Label with 6 classes of faults, and 2 anomaly classes (based on arbitrary severity 0.6 and 0.9)
-- TBD: Additional features:
-    -**Find harmonics** (peaks with MMS and filter with threshold mean+2*std) and harmonic series
-    -**WPD energy**, kurtosis
 
-- Fault classes:
-    - 'normal': 'normal',
-    - 'imbalance': 'imbalance',
-    - 'horizontal-misalignment': 'misalignment',
-    - 'vertical-misalignment': 'misalignment',
-  A
-    - 'underhang-cage\_fault': 'cage fault',
-    - 'underhang-ball\_fault': 'ball fault',
-    - 'underhang-outer\_race': 'outer race fault'
-B
-    - 'overhang-cage\_fault': 'cage fault',
-    -  'overhang-ball\_fault': 'ball fault',
-    - 'overhang-outer\_race': 'outer race fault'
- 
-**Counts of classes** (to table and Sum) - **Unbalanced dataset** - ClassCounts.ipynb
-    - RPM limited (2500 +/- 500)
-
-|            fault | A_rpm_nolimit | A_rpm_nolimit_percent | A_rpm_limit | A_rpm_limit_percent | B_rpm_nolimit | B_rpm_nolimit_percent | B_rpm_limit | B_rpm_limit_percent |
-|-----------------:|--------------:|----------------------:|------------:|--------------------:|--------------:|----------------------:|------------:|--------------------:|
-|   misalignment   | 498           | 34.631433             | 173         | 34.325397           | 498           | 35.750179             | 173         | 36.192469           |
-|     imbalance    | 333           | 23.157163             | 118         | 23.412698           | 333           | 23.905240             | 118         | 24.686192           |
-|    cage fault    | 188           | 13.073713             | 67          | 13.293651           | 188           | 13.496052             | 69          | 14.435146           |
-|    ball fault    | 186           | 12.934631             | 61          | 12.103175           | 137           | 9.834889              | 34          | 7.112971            |
-| outer race fault | 184           | 12.795549             | 69          | 13.690476           | 188           | 13.496052             | 68          | 14.225941           |
-|      normal      | 49            | 3.407510              | 16          | 3.174603            | 49            | 3.517588              | 16          | 3.347280            |
-
-**Counts of anomaly** (to table) - **Unbalanced dataset**
-0.6
-| A_rpm_nolimit | A_rpm_nolimit_percent | A_rpm_limit | A_rpm_limit_percent | B_rpm_nolimit | B_rpm_nolimit_percent | B_rpm_limit | B_rpm_limit_percent |           |
-|--------------:|----------------------:|------------:|--------------------:|--------------:|----------------------:|------------:|--------------------:|----------:|
-|         False |                   837 |   58.205841 |                 375 |     74.404762 |                   831 |    59.65542 |                 354 | 74.058577 |
-|          True |                   601 |   41.794159 |                 129 |     25.595238 |                   562 |    40.34458 |                 124 | 25.941423 |
-
-0.9
-| A_rpm_nolimit | A_rpm_nolimit_percent | A_rpm_limit | A_rpm_limit_percent | B_rpm_nolimit | B_rpm_nolimit_percent | B_rpm_limit | B_rpm_limit_percent |           |
-|--------------:|----------------------:|------------:|--------------------:|--------------:|----------------------:|------------:|--------------------:|----------:|
-|         False |                  1227 |   85.326843 |                 375 |     74.404762 |                  1197 |   85.929648 |                 354 | 74.058577 |
-|          True |                   211 |   14.673157 |                 129 |     25.595238 |                   196 |   14.070352 |                 124 | 25.941423 |
-
-- **Correlation of features with rpm**:
-    - Temporal: mostly **very low** (25% - 75% quantile: 0.07 - 0.20,
-    - Spectral: mostly **very low** for all 5 window sizes: 25% (0.08)  - 75% (0.23)
 
 
 
@@ -238,15 +138,6 @@ B
         - Keep only decimal numbers in severity
         - Number severity per group (0 - best, 1 - worst)
         - Transform severities to range (0, 1)
-     
-- Feature correlations (> 0.95):
-    - Temporal:
-        - std, rms: 1.0
-        - std, pp, rms, 0.96
-        - pp, max, 0.98
-        - crest, margin, implulse, 0.99
-    - Spectral:
-        - skewness, kurtosis, 0.98
      
 - Best features:
     - Compute metrics: Corr, F stat, MI
