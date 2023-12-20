@@ -48,7 +48,7 @@ MaFaulda contains 1951 records labeled with inducted faults of increasing severi
 These vibration sensors are placed in two positions. The first placement is around the inner underhang bearing named \emph{A} which is closer to the motor. The second location is around the outer overhang bearing denoted as \emph{B} position.
 
 \subsection{Fault annotations}
-The dataset has annotations altogether for 10 classes of faults of which there is 1 class for fault-free baseline operation, 3 classes for shaft defects, 3 classes for inner bearing defects, and 3 for outer bearing defects. Some categories are redundant or irrelevant for a given sensor position. 
+The MaFaulDa has annotations altogether for 10 classes of faults of which there is 1 class for fault-free baseline operation, 3 classes for shaft defects, 3 classes for inner bearing defects, and 3 for outer bearing defects. Some categories are redundant or irrelevant for a given sensor position. 
 
 Therefore rotor shaft misalignements in vertical and horizontal directions are merged into one joint group. Depending on the chosen bearing position only records having relevant labels are considered. 
 
@@ -101,38 +101,32 @@ The statistical tests and visual checks are conducted to assess \textbf{normalit
 (${p < 0.001}$). The same is confirmed with the \textbf{autocorrelation} function shape. It denotes that the stochastic process is stationary as oscillation is bounded.
 
 \section{Feature relevance}
-
+Attributes described in section \ref{section:feature-extraction} are independently summarized from each sensor position and direction. Then similarity score of features is ascertained in relation to a predicted variable. The subset of the strongest predictors is chosen based on the order of their perceived importance.
 
 \subsection{Feature extraction}
-% tsfel, scipy
+Each file in the MaFaulDa contains 6 accelerometer channels. In the feature extraction process sequence of samples is split into 5 parts or 1-second intervals and is passed through the same DC removal filter and low pass filter as in previous experiments. The rotational speed is determined from speedometer pulses belonging to the given chunk. 
 
-%A) **Activity diagram** (Image)
-%1. Label recording using filename path in zip: fault, severity, seq
-%2. Split each recording to 5 parts (1 second - 50000 samples)
-%3. Calculate rpm (out of impulse tachometer = prominence=3, width=50, 60 / $\Delta t$)
-%4. Remove mean - DC component filter
-%5. Filter frequencies: cutoff = 10 kHz (Butterworth lowpass filter of 5 order) - peak 20 kHz (not possibe to capture)
-%6. Label with 6 classes of faults, and 2 anomaly classes (based on arbitrary severity 0.6 and 0.9)
-%7. X - extract temporal features in all axis for both bearings A, B: ax/ay/az_feature_name
-%8. X - window size: windows and welch averaging (2**14 = 16384 samples, 3 okná, 3.05 Hz resolution)
+Signal chunks are converted afterward into \textbf{10 temporal and 11 spectral features}. Welch's method for spectrum density estimation averaging over $2^{14}$ long FFT segments after Hann windowing is the source for spectral features. The reference implementation of feature calculation is crafted according to mathematical formulas atop of Python packages \emph{SciPy}\footnote{SciPy: \url{https://scipy.org/}} and \emph{Time Series Feature Extraction Library} (TSFEL)\footnote{TSFEL: \url{https://tsfel.readthedocs.io/}}  
 
-%B) **Counts of classes** (to table and Sum) - **Unbalanced dataset**  (2 Tables - `RPM unlimited | RPM limited`)
+The Euclidian norm of feature in the triaxial vector eliminates reliance on the direction of measurement. Value ranges are depicted in Figure \ref{fig:design:feature-range}. 
 
-%C) **Correlation of features with rpm**:
-%    - Temporal: mostly **very low** (25% - 75% quantile: 0.07 - 0.20,
-%    - Spectral: mostly **very low** for all 5 window sizes: 25% (0.08)  - 75% (0.23)
 
-%C) **Correlation among features**:
-%- Feature correlations (> 0.95):
-%    - Temporal:
-%        - std, rms: 1.0
-%        - std, pp, rms, 0.96
-%        - pp, max, 0.98
-%        - crest, margin, implulse, 0.99
-%    - Spectral:
-%        - skewness, kurtosis, 0.98
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/feature-range-temporal.png}
+        \caption{Temporal features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/feature-range-spectral.png}
+        \caption{Spectral features}
+    \end{subfigure}
+    \caption{Feature value ranges in inner bearing position (A)}
+    \label{fig:design:feature-range}
+\end{figure}
 
-%TODO - activity diagram, implementation and value counts
+Fault labels and their severities come from the directory structure within the dataset. The binary target variable indicating whether to initiate a warning is named to be an anomaly. Anomalies are labeled according to relative fault severity level. We decided to investigate two fault severities having levels above 0.6 and 0.9. The quantity of observation by fault and anomaly severity is shown in Table \ref{tab:observation-counts}. The dataset is substantially unbalanced.
 
 \begin{table}[ht]
 \centering
@@ -147,28 +141,79 @@ The statistical tests and visual checks are conducted to assess \textbf{normalit
 \multicolumn{1}{|r|}{\textbf{ball fault}}             & \multicolumn{1}{r|}{186 (13\%)}                 & \multicolumn{1}{r|}{137 (10\%)}                  \\ \cline{1-3}
 \multicolumn{1}{|r|}{\textbf{outer race fault}}       & \multicolumn{1}{r|}{184 (13\%)}                 & \multicolumn{1}{r|}{188 (13\%)}                  \\ \cline{1-3}
 
-\multicolumn{1}{|l|}{\textbf{Anomaly 60\%}}                                                                                          & \multicolumn{1}{l|}{\textbf{Inner bearing (A)}} & \multicolumn{1}{l|}{\textbf{Outer bearing (B)}} \\ \cline{1-3}
+\multicolumn{1}{|l|}{\textbf{Anomaly (> 0.6)}}                                                                                          & \multicolumn{1}{l|}{\textbf{Inner bearing (A)}} & \multicolumn{1}{l|}{\textbf{Outer bearing (B)}} \\ \cline{1-3}
 \multicolumn{1}{|r|}{\textbf{False}}                                                                            & \multicolumn{1}{r|}{837 (58\%)}                 & \multicolumn{1}{r|}{831 (60\%)}          \\ \cline{1-3}
 \multicolumn{1}{|r|}{\textbf{True}}                                                                             & \multicolumn{1}{r|}{601 (42\%)}                 & \multicolumn{1}{r|}{562 (40\%)}          \\ \cline{1-3}
 
-\multicolumn{1}{|l|}{\textbf{Anomaly 90\%}}                                                                                          & \multicolumn{1}{l|}{\textbf{Inner bearing (A)}} & \multicolumn{1}{l|}{\textbf{Outer bearing (B)}} \\ \cline{1-3}
+\multicolumn{1}{|l|}{\textbf{Anomaly (> 0.9)}}                                                                                          & \multicolumn{1}{l|}{\textbf{Inner bearing (A)}} & \multicolumn{1}{l|}{\textbf{Outer bearing (B)}} \\ \cline{1-3}
 \multicolumn{1}{|r|}{\textbf{False}}                                                                            & \multicolumn{1}{r|}{1227 (85\%)}                 & \multicolumn{1}{r|}{1197 (86\%)}         \\ \cline{1-3}
 \multicolumn{1}{|r|}{\textbf{True}}                                                                             & \multicolumn{1}{r|}{211 (15\%)}                 & \multicolumn{1}{r|}{196 (14\%)}         \\ \cline{1-3}
 \multicolumn{1}{|r|}{\textbf{Total}}                                                                            & \multicolumn{1}{r|}{\textbf{1438} (100\%)}                       & \multicolumn{1}{r|}{\textbf{1393} (100\%)}               \\ \cline{1-3}
 \end{tabular}
-\caption{Class count in all rotational speeds}
+\caption{Label count for whole MaFaulDa dataset with recordings split to 5 chunks}
+\label{tab:observation-counts}
 \end{table}
 
-\subsection{Data volume savings}
-%TODO - reduction in data goodput (without metadata): data kept ratio = (nfeat * dim) / (ch * fs * t)
-% - (21 * 3) / (3 * 25000 * 1)  (realistic fs because of low pass, we could dowsample by the factor 2) (inverse ratio is data reduction factor =  11904 times less)
-% - 7 times less features: (3*3) / (25000*1*3) (83333 times less than original)
+Pearson's correlation of features to rpm is very low in the whole dataset. In the temporal domain, the correlation coefficient is within an interval of -0.08 to 0.26. In the spectral domain, the correlation to rpm for all FFT window sizes from $2^8$ up to $2^{14}$ is mostly very low from -0.14 up to 0.26, except for centroid being around 0.35.
 
-% parameters for measurements
-% 1. number of measurement places (bearings) -- number of machines * places
-% 2. sampling frequency (fs) = const
-% 3. interval between measuremnts (s) 
-% 4. duration of measuremnt (s)
+The correlation among features can reduce prediction power if a pair is elected where $|\mathrm{corr}| > 0.95$. The feature is not added to the subset when the threshold is exceeded. High correlations are more substantial in the temporal domain that are present in these pairs (ordered from the most correlated): \{std, rms\}, \{pp, max\}, \{crest, margin\}, \{impulse, std\}, \{impulse, rms\}. In the spectral domain set \{skewness, kurtosis\} has a strong correlation.
+
+It is assumed that data points spread in each dimension of the feature space could distinguish groups well. The variables that the best explain after min-max scaling total dataset variance in the temporal domain are shape (29\%), RMS, std, max, and pp (each around 15\%). In the spectral domain, variance is the best explained by roll-off (28\%), entropy, skewness, centroid, and kurtosis (each around 12\%).
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{assets/design/pca-explained-variance.png}
+    \caption{Number of principal components to cumulative explained variance percentage in the inner bearing position}
+    \label{fig:design:pca-explained-variance} 
+\end{figure}
+
+The variables are also more inter-correlated in the temporal domain shown by principal components analysis. For 95\% of the explained variance of PCA 3 components (98.69\%) are needed in the temporal domain whereas 4 in the spectral domain (95.26\%). Figure \ref{fig:design:pca-explained-variance} visualizes cumulative explained variance with an increasing number of principal components.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/pca-loading-plot-temporal.png}
+        \caption{Temporal features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/pca-loading-plot-spectral.png}
+        \caption{Spectral features}
+    \end{subfigure}
+    \caption{PCA loading plots for min-max scaled features from the inner bearing position}
+    \label{fig:design:pca-loading-plot} 
+\end{figure}
+
+PCA loading plots (Fig. \ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the temporal domain focuses on amplitude range (max, rms, pp, std). The second PC mainly describes the impulsiveness of the waveform (shape, impulse, crest, margin). 
+
+However, the distinction between groups is not so apparent for spectral features. Overall chaos in spectra can be attributed to PC1 (flux, entropy, negentropy, noisiness) and the shape of frequency distribution to PC2 (roll-on, roll-off, centroid).
+
+
+\subsection{Data volume savings}
+%TODO
+Apparent advantages of feature discovery is data saving. We could do it effetively with PCA but the linear combination is meaningless in reasoning abount which predictors - trend indicators - are decision makers. Data compression must occur on edge device to enable utilize wireless low-power wide area networks (LPWPANs).
+Protocol stack may differ therefore we focus on goodput without node configuration metadata and keepalive messages. 
+
+Formula to express compression factor depends on several domain specific parameters:
+\begin{itemize}
+\itemsep0pt
+\item number of machines monitored
+\item number of measuremnt places and channels (bearings) - $p_{ch}$ is same in source as output features - devided by dim saved
+\item sampling frequency (in Hz) - const. minimum according to faults that warant detection
+\item interval between measurements (in s) - $T$
+\item duration of valid measurement (in s) - $d$ there can be listening periods which reduc baterry capacity.
+\item number of features extracted ($n_{ft}$)
+\end{itemize}
+
+Compression ratio ($\mathcal{C}$) for feature space is:
+\begin{ceqn}\begin{align}
+\mathcal{C} = \frac{n_{ft}}{f_s \cdot d}
+\end{align}\end{ceqn}
+
+Compression factor for mafaulda machine simulator
+% - (21 * 3) / (3 * 25000 * 1)  (realistic fs because of low pass, we could dowsample by the factor 2) (inverse ratio is data reduction factor =  11904 times less)
+% - 3 times less features: (6*3) / (25000*1*3) (83333 times less than original)
+
+
  
 % Requiremnts classic per bearing (per year): 5s * 20khz * 3dim (365 * 24 = every hour) = (sample is 4/8B just multiplication factor) =  300 kS per measuremnts * 8760 measuremnts = 2.628 GSamples per year per placement
 % Frequncy spectra with 1 Hz res = 1*10kHz*3= 30kS = 262.8 MSamples
@@ -177,9 +222,45 @@ The statistical tests and visual checks are conducted to assess \textbf{normalit
 % According to standars is rms velocity enough => indicator of fault (but not of the type)
 
 
+\subsection{Feature selection}
+%TODO
+% Methods to find best 3 features
+% How many is appropriate?
+
+% COnditions for experminetal setup
+
+%- MaFaulDa features subsets (12 = online, 12 = batch experiments, **Use decision tree ilustation with shorten leaves**
+%    - Placement: A, B   - filter only bearing fault for measured bearing, vm and hm to misalign,
+%    - Domain: temporal, spectral
+%    - Online: no, yes
+%    - RPM limit: no, yes (2500 $\pm$ 500)
+%    - Classification: fault (multiclass), anomaly (binary - 60%), anomaly( binary - 90%)
+%   
+%- Validation:
+%- **Batch**
+%    - Magnitude of 3D feature vector
+%    - Balancing dataset with oversampling minority classes
+%        - **TODO:Dataset sizes in all experiments (adj/non adjust)**
+%    - Hold-out validation - split to train and test set (80/20)
+%- **Online**: Order by increaing severity, shuffle samples within severity level
+%    - Severity:
+%        - Number fault severities by sequence
+%        - Keep only decimal numbers in severity
+%        - Number severity per group (0 - best, 1 - worst)
+%        - Transform severities to range (0, 1)
+%     
+%- Best features:
+%    - Compute metrics: Corr, F stat, MI
+%    - Compute Rank product and order descending
+
+% Approval voting
+
+% Ranking
+
+
 \section{Nearest neighbour classifier}
 
-\subsection{Batch model}
+\subsection{Batch models}
 
 
 \begin{figure}[ht]
@@ -224,12 +305,12 @@ The statistical tests and visual checks are conducted to assess \textbf{normalit
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/kNN-feature-selection-predictions-train}
+        \includegraphics[width=\textwidth]{assets/design/kNN-feature-selection-predictions-train.png}
         \caption{Testing set}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/kNN-feature-selection-predictions-test}
+        \includegraphics[width=\textwidth]{assets/design/kNN-feature-selection-predictions-test.png}
         \caption{Training set}
     \end{subfigure} 
     \caption{Batch kNN algorithm prediction accuracy with various feature sets.}
@@ -238,7 +319,7 @@ The statistical tests and visual checks are conducted to assess \textbf{normalit
 % Number of neighbors (graphs)
 
 
-\subsection{Online kNN model}
+\subsection{Online models}
 
 \begin{figure}[ht]
     \centering

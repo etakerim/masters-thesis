@@ -15,6 +15,7 @@ imbalanced-learn
 tqdm
 seaborn
 matplotlib
+adjustText
 ipywidgets
 tabulate
 nbconvert[webpdf]

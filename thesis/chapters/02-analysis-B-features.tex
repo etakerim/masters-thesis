@@ -116,7 +116,7 @@ In the spectral domain, we can obtain usual statistical properties of the distri
 
 In geometric terms, the spectral centroid represents the barycenter of the frequency magnitude plot. Spectral roll-off gives a notion about the spectral distribution because it identifies the frequency $f_c$ below which 95\% of the signal energy is contained. Complementary, the roll-on frequency is chosen so that 5\% of the signal energy is below this value. According to the definition, spectral flux is normalized cross-correlation between two successive amplitude spectra, a value of one means spectra are the most dissimilar.
 
-``Negentropy measures the inclination of a system to increase its level of organization''~\cite{avoci_spectral_2020}. The larger \emph{spectral negentropy} (Equation~\ref{equ:spectral-negentropy}) suggests more fault-induced impulses. $E(k, f, \Delta f)$ denotes the squared envelope spectrum (SES) which is an envelope in the Fourier domain: $\mathcal{F}\{ |y(k, f, \Delta f)|^2 \}$.
+``Negentropy measures the inclination of a system to increase its level of organization''~\cite{avoci_spectral_2020}. The larger \emph{spectral negentropy} suggests more fault-induced impulses. $E(k, f, \Delta f)$ denotes the squared envelope spectrum (SES) which is an envelope in the Fourier domain: $\mathcal{F}\{ |y(k, f, \Delta f)|^2 \}$.
 
 If a single principal frequency exists, it can be determined with maximum likelihood estimation. Such frequency would explain the signal spectrum the best~\cite{peeters_large_2004}.  The frequency spectrum is a discrete set of amplitudes where peaks have to be reliably identified to create representative attributes.
 
@@ -410,6 +410,3 @@ Probabilities $P(x)$, $P(y)$, $P(x, y)$ are estimated in the contingency table f
 \end{itemize}
 
 Multiple subsets of predictors produced by each evaluation metric can train several variants of a classification model. Sets of attributes can be combined into an ensemble by \emph{electoral system}. One such example is \textbf{majority voting} which chooses the best feature out of the group. \textbf{Rank product} unifies several feature orderings by computing the geometric mean of feature rank in every experiment realization~\cite{breitling_rank_2004}.
-
-
-
