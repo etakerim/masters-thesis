@@ -1,5 +1,6 @@
 # Design
 
+https://power-mi.com/content/vibration-analysis-electric-induction-motors
 
 ### Feature selection
 

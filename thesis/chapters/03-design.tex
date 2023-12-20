@@ -1,5 +1,5 @@
 \chapter{Design} \label{section:design}
-The design phase sets out to elaborate on the scenarios for experiments with IoT device. In these experiments, we compare and combine approaches from industry standards and papers presented in the analysis section. Noted observations are taken into consideration in establishing the plan of measurements and in the construction of the sensor unit. Finally, the network infrastructure layout is provided where we propose optimizations in the functions of the components.
+The design phase sets out to elaborate on the scenarios for experiments with IoT device. In these experiments, we compare and combine approaches from industry standards and papers presented in the analysis section. Conclusions are taken into consideration in establishing the plan of measurements and in the construction of the sensor unit.
 
 \section{Research questions}
 This thesis aims to provide answers to four research questions formulated in broader sense. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
@@ -24,11 +24,19 @@ This thesis aims to provide answers to four research questions formulated in bro
 	\item Develop hardware and implement its firmware to obtain such measurement in the quality demanded by vibrodiagnostics standards.
 \end{todolist}
 
-However, we leave out from our efforts experiments on the data features calculated from wavelets and peaks in the spectral domain. The reason is that we did not find a way to represent extracted features more succinctly as a single number. We also did not discover a strategy for choosing only the relevant frequency bins. The assembled description is retained to lead further research on that topic. \\
+However, we leave out from our efforts experiments on the data features calculated from wavelets and peaks in the spectral domain. The reason is that we did not find a way to represent extracted features more succinctly as a single number. We also did not discover a strategy for choosing only the relevant frequency bins. The assembled description is retained to lead further research on that topic.
 
-The tasks are associated with certain \textbf{risks} impacting their successful completion. The possible risks are assessed and prioritized. The most notable risk encountered is that the machine in the real environment will not be available for vibration measurements. We successfully eliminated the risk by contacting and establishing collaboration with alternative partners. 
-
-The additional risks are that the repeated measurements will not be consistent and fault modes could not be reliably differentiated and labeled in the dataset because each machine is unique in its structure. Related is the risk that not enough data is obtained from various classes and suggestions made by exploring the MaFaulDa dataset not be applicable in practice. All these risks have to be tracked and regularly reevaluated to achieve our goals.
+The goals are impacted by certain \textbf{risks} that are assessed and tracked:
+\begin{enumerate}[label=R-\arabic*., font=\bfseries]
+\itemsep0pt
+\item Machines in the real environment will not be available for vibration measurements. \\ \emph{Mitigation}: Contact and establish collaboration with alternative partners. 
+\item Repeated measurements will not be consistent, and a lack of data is obtained from different classes.
+\\ \emph{Mitigation}: Prepare a plan for measurements and photo document sensor placements. 
+\item Fault modes could not be reliably differentiated and labeled in the dataset.
+\\ \emph{Mitigation}: Consult domain experts and machines' maintenance staff.
+\item Suggestions made by exploring the MaFaulDa dataset will not be applicable in practice. \\
+\emph{Mitigation}: When applicable, apply the same procedures as in MaFaulDa to measured data.
+\end{enumerate}
 
 
 \section{Dataset exploration}
@@ -93,7 +101,7 @@ The frequency spectrum in Figure \ref{fig:design:fault-spectral-waveform} is obt
 
 
 \subsection{Statistical tests}
-The statistical tests and visual checks are conducted to assess \textbf{normality and stationary} of time series. Half a second of amplitude samples are used from every sensor channel. These 25 thousand observations are downsampled tenfold to $2500$ points. 
+The statistical tests and visual checks are conducted to assess \textbf{normality and stationary} of time series. Half a second of amplitude samples are used from every sensor channel. These 25 thousand observations are downsampled tenfold to $2500$. 
 
 \textbf{Shapiro-Wilk's test} rejects the null hypothesis (${p < 0.05}$) that data is drawn from normal distribution under most circumstances. The signal has normal distribution when it resembles pink noise lacking a regular pattern or weak exhibition of fault symptoms. \textbf{Quantile–quantile plots} confirm non-normal distribution because of the striking samples tilt to the diagonal line.
 
@@ -104,9 +112,9 @@ The statistical tests and visual checks are conducted to assess \textbf{normalit
 Attributes described in section \ref{section:feature-extraction} are independently summarized from each sensor position and direction. Then similarity score of features is ascertained in relation to a predicted variable. The subset of the strongest predictors is chosen based on the order of their perceived importance.
 
 \subsection{Feature extraction}
-Each file in the MaFaulDa contains 6 accelerometer channels. In the feature extraction process sequence of samples is split into 5 parts or 1-second intervals and is passed through the same DC removal filter and low pass filter as in previous experiments. The rotational speed is determined from speedometer pulses belonging to the given chunk. 
+Each file in the MaFaulDa contains six accelerometer channels. In the feature extraction process, the sequence of samples is split into five parts or 1-second intervals. The portions are passed through the same DC removal and low pass filters as previously. The rotational speed is derived from speedometer pulses within the chunk.
 
-Signal chunks are converted afterward into \textbf{10 temporal and 11 spectral features}. Welch's method for spectrum density estimation averaging over $2^{14}$ long FFT segments after Hann windowing is the source for spectral features. The reference implementation of feature calculation is crafted according to mathematical formulas atop of Python packages \emph{SciPy}\footnote{SciPy: \url{https://scipy.org/}} and \emph{Time Series Feature Extraction Library} (TSFEL)\footnote{TSFEL: \url{https://tsfel.readthedocs.io/}}  
+Signal chunks are converted afterward into \textbf{10 temporal and 11 spectral features}. Welch's method for spectrum density estimation averaging over $2^{14}$ long FFT segments after Hann windowing is the source for spectral features. The reference implementation of feature calculation is crafted according to mathematical formulas atop of Python packages \emph{SciPy}\footnote{SciPy: \url{https://scipy.org/}} and \emph{Time Series Feature Extraction Library} (TSFEL)\footnote{TSFEL: \url{https://tsfel.readthedocs.io/}}.
 
 The Euclidian norm of feature in the triaxial vector eliminates reliance on the direction of measurement. Value ranges are depicted in Figure \ref{fig:design:feature-range}. 
 
@@ -158,7 +166,7 @@ Pearson's correlation of features to rpm is very low in the whole dataset. In th
 
 The correlation among features can reduce prediction power if a pair is elected where $|\mathrm{corr}| > 0.95$. The feature is not added to the subset when the threshold is exceeded. High correlations are more substantial in the temporal domain that are present in these pairs (ordered from the most correlated): \{std, rms\}, \{pp, max\}, \{crest, margin\}, \{impulse, std\}, \{impulse, rms\}. In the spectral domain set \{skewness, kurtosis\} has a strong correlation.
 
-It is assumed that data points spread in each dimension of the feature space could distinguish groups well. The variables that the best explain after min-max scaling total dataset variance in the temporal domain are shape (29\%), RMS, std, max, and pp (each around 15\%). In the spectral domain, variance is the best explained by roll-off (28\%), entropy, skewness, centroid, and kurtosis (each around 12\%).
+It is assumed that data points spread in each dimension of the feature space could distinguish groups well. The variables that the best explain after min-max scaling total dataset variance in the temporal domain are shape (29\%), rms, std, max, and p-p (each around 15\%). In the spectral domain, variance is the best explained by roll-off (28\%), entropy, skewness, centroid, and kurtosis (each around 12\%).
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{assets/design/pca-explained-variance.png}
@@ -166,7 +174,7 @@ It is assumed that data points spread in each dimension of the feature space cou
     \label{fig:design:pca-explained-variance} 
 \end{figure}
 
-The variables are also more inter-correlated in the temporal domain shown by principal components analysis. For 95\% of the explained variance of PCA 3 components (98.69\%) are needed in the temporal domain whereas 4 in the spectral domain (95.26\%). Figure \ref{fig:design:pca-explained-variance} visualizes cumulative explained variance with an increasing number of principal components.
+The variables are also more inter-correlated in the temporal domain shown by principal components analysis. For 95\% of the explained variance of PCA 3 components (98.69\%) are needed in the temporal domain whereas 4 in the spectral domain (95.26\%). Figure \ref{fig:design:pca-explained-variance} visualizes cumulative explained variance with an increasing number of principal components. 
 
 \begin{figure}[h!]
     \centering
@@ -183,86 +191,75 @@ The variables are also more inter-correlated in the temporal domain shown by pri
     \label{fig:design:pca-loading-plot} 
 \end{figure}
 
-PCA loading plots (Fig. \ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the temporal domain focuses on amplitude range (max, rms, pp, std). The second PC mainly describes the impulsiveness of the waveform (shape, impulse, crest, margin). 
+PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. Loading plots of PCA (Fig. \ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the temporal domain focuses more on amplitude range: \emph{max, rms, pp, std}. The second PC mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, margin}. 
 
-However, the distinction between groups is not so apparent for spectral features. Overall chaos in spectra can be attributed to PC1 (flux, entropy, negentropy, noisiness) and the shape of frequency distribution to PC2 (roll-on, roll-off, centroid).
+However, the groups are not as clear cut for spectral features. Overall chaos in spectra can be attributed to PC1: \emph{flux, entropy, negentropy, noisiness}, and the shape of frequency distribution to PC2: \emph{roll-on, roll-off, centroid}.
 
 
 \subsection{Data volume savings}
-%TODO
-Apparent advantages of feature discovery is data saving. We could do it effetively with PCA but the linear combination is meaningless in reasoning abount which predictors - trend indicators - are decision makers. Data compression must occur on edge device to enable utilize wireless low-power wide area networks (LPWPANs).
-Protocol stack may differ therefore we focus on goodput without node configuration metadata and keepalive messages. 
+The apparent advantage of feature discovery is reducing the amount of data downstream. Data compression must occur on edge devices to enable the utilization of wireless low-power wide area networks (LPWAN). The protocol stack may differ, so goodput is compared without node configuration metadata and keepalive messages. 
 
-Formula to express compression factor depends on several domain specific parameters:
+Machinery monitoring system relies on determining several parameters:
 \begin{itemize}
 \itemsep0pt
-\item number of machines monitored
-\item number of measuremnt places and channels (bearings) - $p_{ch}$ is same in source as output features - devided by dim saved
-\item sampling frequency (in Hz) - const. minimum according to faults that warant detection
-\item interval between measurements (in s) - $T$
-\item duration of valid measurement (in s) - $d$ there can be listening periods which reduc baterry capacity.
-\item number of features extracted ($n_{ft}$)
+\item \textbf{Number of source channels} ($S$): is comprised of the number of monitored machines, measurement locations for sensors, and active sensor axes.
+\item \textbf{Sampling frequency} ($f_s$): is set based on the linear response of the accelerometer, the types of faults intended for detection, and how soon they should be noticed after they arise. The higher required sensitivity means a higher sampling rate derived according to the Nyquist theorem. At a minimum, it should be 15 kHz to 20 kHz.
+\item \textbf{Interval between successive measurements} ($T$): specifies the minimal response time to sudden failure. The more critical the machine is, interval should be shorter. The bigger the machine parts, the slower the defect evolves.
+\item \textbf{Duration of valid recording} ($D$): is the captured snapshot of machine unaltering behavior associated with a timestamp. Duration should cover at least 3 windows for spectral estimation. The spectral resolution of 1 Hz amounts to 3 seconds of signal under such assumptions.
+\item \textbf{Number of extracted features} ($F$): are ideally key trend indicators pointing to symptoms of common malfuctions. We aim for total of 6 features.
 \end{itemize}
 
-Compression ratio ($\mathcal{C}$) for feature space is:
-\begin{ceqn}\begin{align}
-\mathcal{C} = \frac{n_{ft}}{f_s \cdot d}
+Equation \ref{equ:compression-ratio-features} expresses the lossy compression ratio ($\mathcal{C}$) formula if trend indicators are stored instead of full recording. The number of raw channels ($S_{\mathrm{in}}$) can differ from those extracted in features ($S_{\mathrm{out}}$). Parameter $D = 0.5$ when we use frequency bins with 1 Hz resolution.
+
+\myequations{Lossy compression ratio with features}
+\begin{ceqn}\begin{align} \label{equ:compression-ratio-features}
+\mathcal{C} = \frac{F \cdot S_{\mathrm{out}}}{D \cdot f_s \cdot S_{\mathrm{in}}}
 \end{align}\end{ceqn}
 
-Compression factor for mafaulda machine simulator
-% - (21 * 3) / (3 * 25000 * 1)  (realistic fs because of low pass, we could dowsample by the factor 2) (inverse ratio is data reduction factor =  11904 times less)
-% - 3 times less features: (6*3) / (25000*1*3) (83333 times less than original)
+\textbf{Compression ratio} for MaFaulDa dataset compared to all 21 extracted features in 3 dimensions is $4.2 \times 10^{-4}$. In case 6 features are kept, the compression is $4.2 \times 10^{-5}$, hundredth-thousandths of the original data.
 
+As an example to approximate required network goodput and storage in practice, we consider continuous vibration \textbf{monitoring for municipal water pumping station}. The station has 3 pumps and matching 3 electric induction motors. 
 
- 
-% Requiremnts classic per bearing (per year): 5s * 20khz * 3dim (365 * 24 = every hour) = (sample is 4/8B just multiplication factor) =  300 kS per measuremnts * 8760 measuremnts = 2.628 GSamples per year per placement
-% Frequncy spectra with 1 Hz res = 1*10kHz*3= 30kS = 262.8 MSamples
-% All features = 9S  => 78.84 KSamples / year (per year as much as per 3 spectra measurements)
+A pump and motor pair have 4 bearings together for drive end and non-drive end positions. Each position has a sensor mounted in 3 directions that makes a total of \emph{36 source channels}. The sampling frequency on each position is set to \emph{20 kHz}. The recordings have \emph{duration of 5 seconds} and are triggered regularly every 1 hour (\emph{8760 times per year}).
 
-% According to standars is rms velocity enough => indicator of fault (but not of the type)
-
+In a year the system gathers 31.54 Gs (gigasamples) which is 58.74 GiB with 16-bit ADC resolution. Reasonably precise spectral estimation with 10 thousand bins needs 3.15 Gs per year. On the other hand, 6 features out of each channel keep only 1.89 Ms per year for a lossy compression ratio of $6 \times 10^{-5}$.
 
 \subsection{Feature selection}
-%TODO
-% Methods to find best 3 features
-% How many is appropriate?
+The objective of feature selection is to find a subset of the most relevant predictors in each domain. As a starting point, the set consists of 3 non-correlated attributes under diverse conditions. Ultimately a number of chosen features is to be tweaked to increase prediction accuracy. Four criteria are combined to put together 24 scenarios that filter rows from MaFaulDa:
+\begin{itemize}
+\itemsep0pt
+\item \textbf{online}: boolean selector that influences whether metrics are calculated in batch or incremental fashion,
+\item \textbf{placement}: chooses between bearing ``A'' and bearing ``B'',
+\item \textbf{target variable}: selects column out of ``fault'', ``anomaly60'', ``anomaly90'' against which similarity is judged,
+\item \textbf{rotational speed limit}: chosses whether only observations occuring within predermined range $2500 \pm 500$ rpm are filtered.
+\end{itemize}
 
-% COnditions for experminetal setup
+In feature evaluation for fault prediction, we use hold-out validation in batch models and progressive valuation in online models. Classes in observations for batch models are rebalanced to the majority class with a random oversampling strategy. The training and testing set split ratio is 80 to 20. Classes for incremental learning are ordered by relative severity level and shuffled within levels. 
 
-%- MaFaulDa features subsets (12 = online, 12 = batch experiments, **Use decision tree ilustation with shorten leaves**
-%    - Placement: A, B   - filter only bearing fault for measured bearing, vm and hm to misalign,
-%    - Domain: temporal, spectral
-%    - Online: no, yes
-%    - RPM limit: no, yes (2500 $\pm$ 500)
-%    - Classification: fault (multiclass), anomaly (binary - 60%), anomaly( binary - 90%)
-%   
-%- Validation:
-%- **Batch**
-%    - Magnitude of 3D feature vector
-%    - Balancing dataset with oversampling minority classes
-%        - **TODO:Dataset sizes in all experiments (adj/non adjust)**
-%    - Hold-out validation - split to train and test set (80/20)
-%- **Online**: Order by increaing severity, shuffle samples within severity level
-%    - Severity:
-%        - Number fault severities by sequence
-%        - Keep only decimal numbers in severity
-%        - Number severity per group (0 - best, 1 - worst)
-%        - Transform severities to range (0, 1)
-%     
-%- Best features:
-%    - Compute metrics: Corr, F stat, MI
-%    - Compute Rank product and order descending
+The best group of attributes is elected based on a training set with multiple methods. We compute the mean of absolute value from point-biserial correlation, F statistic, and mutual information to the predicted variable. The features are then ordered in descending order of the received score. These individual ranks are combined by rank product to create an ensemble out of the metrics. Reference implementation of feature selection metrics uses Python packages Scikit Learn\footnote{SciKit Learn: \url{https://scikit-learn.org/}} in batch learning and RiverML\footnote{RiverML: \url{https://riverml.xyz/}} for online learning.
 
-% Approval voting
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/approval-voting-temporal.png}
+        \caption{Temporal domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/approval-voting-spectral.png}
+        \caption{Spectral domain features}
+    \end{subfigure}
+    \caption{Approval rating of the best triplet of features to target variable ``fault'' scored by rank product of correlation, F statistic, and mutual information.}
+    \label{fig:design:approval-rating-features}
+\end{figure}
 
-% Ranking
+The choice of features is very sensitive to experimental conditions. Tendencies are demonstrated by counting how many triplets the indicator appears in across all possible situations. The results of approval voting are shown in Figure~\ref{fig:design:approval-rating-features}. The most occurring attributes in the temporal domain are peak-to-peak, shape, and crest, and in the spectral domain, those are centroid, roll-off, and roll-on.
 
 
 \section{Nearest neighbour classifier}
+%TODO
 
 \subsection{Batch models}
-
-
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
@@ -492,7 +489,7 @@ Compression factor for mafaulda machine simulator
     \caption{PCA 2 components to visualize results and mistakes of online learning on all features}
 \end{figure}
 
-
+\newpage
 \section{Vibration measurement plan}
 
 \subsection{Machinery}
@@ -530,6 +527,7 @@ Compression factor for mafaulda machine simulator
 
 \begin{table}[ht]
 \renewcommand{\arraystretch}{1.2}
+\centering
 \begin{tabular}{|l|l|l|}
 \hline
 \textbf{Accelerometer}                           & \textbf{ADXL335} & \textbf{IIS3DWB}   \\ \hline
@@ -571,56 +569,3 @@ Compression factor for mafaulda machine simulator
     \caption{Signals at 5 s timestamp}
 \end{figure}
 
-
-
-
-
-
-\newpage
-\section{Machine learning pipeline}
-\begin{enumerate}
-    \itemsep0pt
-    \item Detrending
-    \item (Optional) Adaptive noise cancellation of the background interference
-    \item Vector of all features
-    \begin{itemize}
-        \itemsep0pt
-        \item Time domain: statistical measures (Tab.~\ref{tab:td-features})
-        \item Frequency domain: PSD estimation with FFT and Welch averaging with the resolution of 1 Hz combined with Hann window (Tab.~\ref{tab:fd-features})
-    \end{itemize}
-    \item Feature selection on evaluation datasets and experimental measurements from the factory to prune away irrelevant features with pearson correlation, Fisher score, and mutal information.
-    \item Model evaluation and comparison of novelty detection methods and precision of classification with different sets of predictors. The range of optimal parameters will be found for the DenStream ($\mu$, $\epsilon$, $beta$, $\lambda$), Half-Space Trees (window size, ensemble size), and kNN (distance metric, $k$ neighbours). Evaluation metrics associated with confusion matrices will be used like accuracy, precision, true positive rate, and false positive rate.
-\end{enumerate}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.9\textwidth]{assets/analysis/ml-lifecycle.png}
-\caption{Machine learning lifecycle of feature discovery}
-\end{figure}
-
-
-\section{Infrastructure deployment}
-Future work: engineer new feature, deploy, tweek models, validate on real dataset
-
- \begin{itemize}
- \itemsep0pt
-\item \textbf{Input:} Samples from three-axis MEMS accelerometers, RPM tachometer, Noise background
-\item \textbf{Output:} machine health status / type of fault
-\item \textbf{Output on demand}: Control chart of trend features
-\end{itemize}
-
-\begin{enumerate}
-\itemsep0pt
-\item \textbf{Accelerometer} - MEMS accelerometers will be placed on at least two distinct measurement points in two perpendicular axes and one sensor in the machine base for denoising purposes. Rotational speed has to be captured at the same time too. The sampling frequency shall be around 2 kHz if unbalance and looseness is to be identified, and 10 kHz if bearing faults are also of interest. The range of overall rms vibrations is not expected to exceed 30 mm/s according to the vibration severity chart.
-\item \textbf{Acquisition interval} - sensor units will be triggered in regular intervals (every 15 - 60 minutes) to collect vibration recordings from the band saw (or another machine of choice). The machine has to be under the same load conditions every time is recording is active. 
-\item \textbf{Features} - most relevant features are computed and compared to recent measurements. If there is a statistically significant change the whole summary is sent, otherwise keep-alive notification is sent. 
-\item \textbf{Wireless network} - earlier design decision has been made to establish wireless connections. Therefore, the sensor unit will send data over Wifi (IEEE 802.11), or Thread with IEEE 802.15.4 over 2.4 GHz or 868 MHz frequency bands. The application protocol shall be Constrained Application Protocol (CoAP). The messages will be encoded by Concise Binary Object Representation (CBOR) or MessagePack which provides the best compression ratio and is widely supported.
-\item \textbf{Time series database} - stores history of trend values. Raw vibration measurements can be requested by the operator at any time but are available and delayed according to transfer speeds and other network constraints. The promissing database technologies is TimescaleDB.
-\item \textbf{Diagnosis panel} - continuously updates the anomaly detection and classification models with the introduction of annotations to notify the operator about observed faults and imminent failure of the machine. The dashboard is provided to display the current status of multiple machines.
-\end{enumerate}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.7\textwidth]{assets/design/sensor-network.png}
-\caption{Sensor network components}
-\end{figure}
