@@ -141,10 +141,10 @@ def pipeline_v1(features, train, nfeat, func_select, multiclass=True, anomaly_ra
     )
 
 
-def cross_cuts_3d(X_train, y_train):
-    fig, ax = plt.subplots(1, 3, figsize=(15, 3))
+def cross_cuts_3d(X_train, y_train, ylim=None):
+    fig, ax = plt.subplots(1, 3, figsize=(20, 5))
     labels = np.unique(y_train.to_numpy())
-    colors = sb.color_palette('tab10', len(labels))
+    colors = sb.color_palette('hls', len(labels))
 
     for i, axes in enumerate(((0, 1), (0, 2), (1, 2))):
         a, b = axes
@@ -159,7 +159,9 @@ def cross_cuts_3d(X_train, y_train):
                 X_train.columns[b]
             ]
             ax[i].scatter(x, y, s=1, color=color, label=label)
-        
+            if ylim is not None:
+                ax[i].set_ylim(ylim)
+            
         ax[i].set_xlabel(X_train.columns[a])
         ax[i].set_ylabel(X_train.columns[b])
         ax[i].grid()
