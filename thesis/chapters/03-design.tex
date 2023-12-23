@@ -213,16 +213,16 @@ Equation \ref{equ:compression-ratio-features} expresses the lossy compression ra
 
 \myequations{Lossy compression ratio with features}
 \begin{ceqn}\begin{align} \label{equ:compression-ratio-features}
-\mathcal{C} = \frac{F \cdot S_{\mathrm{out}}}{D \cdot f_s \cdot S_{\mathrm{in}}}
+\mathcal{C} = \frac{D \cdot f_s \cdot S_{\mathrm{in}}}{F \cdot S_{\mathrm{out}}}
 \end{align}\end{ceqn}
 
-\textbf{Compression ratio} for MaFaulDa dataset compared to all 21 extracted features in 3 dimensions is $4.2 \times 10^{-4}$. In case 6 features are kept, the compression is $4.2 \times 10^{-5}$, hundredth-thousandths of the original data.
+\textbf{Compression ratio} for MaFaulDa dataset compared to all 21 extracted features in 3 dimensions is 2381:1. In case 6 features are kept, the compression is 25000:1, which is a saving of the original data amount of 99.996\%.
 
 As an example to approximate required network goodput and storage in practice, we consider continuous vibration \textbf{monitoring for municipal water pumping station}. The station has 3 pumps and matching 3 electric induction motors. 
 
 A pump and motor pair have 4 bearings together for drive end and non-drive end positions. Each position has a sensor mounted in 3 directions that makes a total of \emph{36 source channels}. The sampling frequency on each position is set to \emph{20 kHz}. The recordings have \emph{duration of 5 seconds} and are triggered regularly every 1 hour (\emph{8760 times per year}).
 
-In a year the system gathers 31.54 Gs (gigasamples) which is 58.74 GiB with 16-bit ADC resolution. Reasonably precise spectral estimation with 10 thousand bins needs 3.15 Gs per year. On the other hand, 6 features out of each channel keep only 1.89 Ms per year for a lossy compression ratio of $6 \times 10^{-5}$. Low data volumes potentially enable feature selection and models to be offloaded directly to edge devices. The entire machine's history can be kept in a small flash memory module.
+In a year the system gathers 31.54 Gs (gigasamples) which is 58.74 GiB with 16-bit ADC resolution. Reasonably precise spectral estimation with 10 thousand bins needs 3.15 Gs per year. On the other hand, 6 features out of each channel keep only 1.89 Ms per year for a lossy compression ratio of 16667:1. Low data volumes potentially enable feature selection and models to be offloaded directly to edge devices. The entire machine's history can be kept in a small flash memory module.
 
 \subsection{Feature selection}
 The objective of feature selection is to find a subset of the most relevant predictors in each domain. As a starting point, the set consists of 3 non-correlated attributes under diverse conditions. Ultimately a number of chosen features is to be tweaked to increase prediction accuracy. Four criteria are combined to put together 24 scenarios that filter rows from MaFaulDa:
@@ -287,9 +287,9 @@ First, the model learns all extracted features, so no feature selection occurs. 
     \label{fig:design:knn-confusion-matrix}
 \end{figure}
 
-Two models are created for the target variable in classification with all 10 temporal and 11 spectral features. The subset of records includes all rotational speeds on bearing position A. Either six fault labels or anomaly above 0.9 severity level are guessed by the model with the same hold-out validation split as before. The number of k neighbors is 5, the distance metric is the Euclidian norm, and the algorithm for proximity queries is a k-d tree. 
+Two models are created for the target variable in classification with all 10 temporal and 11 spectral features. The subset of records includes all rotational speeds on bearing position A. Either six fault labels or anomaly above 0.9 severity level are guessed by the model with the same hold-out validation split as before. 
 
-Confusion matrices for fault predicion and high severity anomaly are shown in Figure \ref{fig:design:knn-confusion-matrix}. The most inaccuracies in the temporal domain are between misalignment and bearing race faults. In the spectral domain, the model confuses imbalance and bearing faults. It is to be expected since mass to unbalance the shaft is hanged to simulate bearing defects. 
+Confusion matrices for fault predicion and high severity anomaly are shown in Figure \ref{fig:design:knn-confusion-matrix}. In this example, the number of k neighbors is 5, the distance metric is the Euclidian norm, and the algorithm for proximity queries is a k-d tree. The most inaccuracies in the temporal domain are between misalignment and bearing race faults. In the spectral domain, the model confuses imbalance and bearing faults. It is to be expected since mass to unbalance the shaft is hanged to simulate bearing defects. 
 
 In anomaly prediction, the error of the first degree is 7 times more prevalent than the error of the second degree. False positives are preferable since we do not want the machine to fail prematurely and not know about it. In all cases, spectral features maintain better prediction metrics than all temporal features because of less interdependency among features. Bearing B exhibits overall worse classification performance because of more noise in the original signal.
 
@@ -355,7 +355,6 @@ Features picked combinatorically for predictions are listed in Table \ref{tab:de
 
 The features picked using the rank product method are shown in Table \ref{tab:design:best-3-features-knn}. Their prediction accuracies in kNN models are subpar to optimal sets. However, the advantage is that the feature election process is not so computationally taxing. On bearing A, validation set accuracies for fault diagnostics are 85\% and 92\%, for each of the domains. Because of the low k hyperparameter value, models are overtrained either way.
 
-
 \begin{table}[ht!]
 \centering
 \renewcommand{\arraystretch}{1.2}
@@ -377,9 +376,9 @@ The features picked using the rank product method are shown in Table \ref{tab:de
 \label{tab:design:best-3-features-knn}
 \end{table}
 
-Lowering the number of attributes allows for visualization of labels in planar scatter plots. The data points in 3-dimensional cross sections are colored by true fault classes of all severities in Figure \ref{fig:design:feature-space-scatter}. We observe the inability to separate faults by linear boundaries in given feature spaces and the noncompactness of clusters. 
+Lowering the number of attributes allows visualization of labels in planar scatter plots. The data points in 3-dimensional cross sections are colored by true fault classes of all severities in Figure \ref{fig:design:feature-space-scatter}. We observe the inability to separate faults by linear boundaries in given feature spaces and the noncompactness of clusters. 
 
-Overlapping clusters are evidenced by relatively low silhouette scores around zero. Therefore, we cannot increase the k hyperparameter as much because otherwise, categories merge. Relabeling according to severity should be undertaken. Low severity faults should be reassigned to a class with no fault.
+Cluster overlaps of various defect types are also confirmed by silhouette scores around zero. Therefore, the k hyperparameter cannot be increased much, as it would cause the merge of mutually confused categories. Low-severity faults should be relabeled as a class without fault to watch out just for alert conditions.
 
 \begin{figure}[ht]
     \centering
@@ -392,21 +391,11 @@ Overlapping clusters are evidenced by relatively low silhouette scores around ze
         \includegraphics[width=\textwidth]{assets/design/best-features-scatter-fault-A-spectral.png}
         \caption{Spectral domain features}
     \end{subfigure} 
-    \caption{Cross sections of 3-dimensional feature spaces for best attributes chosen by rank product method}
+    \caption{Cross sections of 3-dimensional feature spaces with ground truth labels for best attributes. Features are chosen by rank product method.}
     \label{fig:design:feature-space-scatter}
 \end{figure}
 
-
-\clearpage
-\newpage
-
-%TODO
-% Model performance on feature selection techniques is compared on 3 features to set of all features and best ever combinations of triplets. Three principal components computed out of all features in each domain are also used in comparison. (significant overlap) We suspect the PCA property of maximizing variances in each dimention support separating groups in classification. 
-
-% Results of experiments in the scenarios is aggregated in Figure X. Best combinations of 3 features is always better than all 10 features because of overfitting. PCA is always better than any other method of feature selection. Rank product is not universally  better but balances other methods to achieve more stable results. 
-
-% In majority of situations it it better than all three individually. Subset of spectral features have better performance than temporal features, presumbly because of many correlated pairs of features. In would be interesting to investigate how many features is optimal by giving yet better performance and altering feature election process.
-
+Model performance of kNN algorithm preceeded by variety of feature selection methods is compared in Figure \ref{fig:design:knn-accuracy-batch}. Best combination of three features achieves always better than when the model is trained on all features. This has to do with curse of dimensionality phenomenon. 
 
 \begin{figure}[ht]
     \centering
@@ -420,186 +409,101 @@ Overlapping clusters are evidenced by relatively low silhouette scores around ze
         \caption{Training set}
     \end{subfigure} 
     \caption{Batch kNN algorithm prediction accuracy with various feature sets.}
-\end{figure}
+    \label{fig:design:knn-accuracy-batch}
+\end{figure} 
 
-\clearpage
-\newpage
+We suspected that the PCA property of maximizing variances in each of the few dimensions would support more separation of clustered groups and would be beneficial in classification. The bar chart supports this assumption. PCA always produces greater model accuracies than any other method of feature selection. The rank product of the three scoring techniques is not better every time, but it balances out aggregated methods to achieve more stable results across testing sets. 
 
-
+In every instance, a subset of spectral features is responsible for better accuracy than a subset of temporal features. Presumably, it is so because of many correlated pairs of attributes in the temporal domain. Further tests should be made to determine optimal feature subsets and the impact of altering the feature election process.
 
 
 \subsection{Online models}
-%- Temporal and Spectral (2 exports)
-%    - config = {'rpm_limit': False, 'placement': 'A', 'domain': DOMAIN, 'target': 'fault'}
-%    - config = {'rpm_limit': False, 'placement': 'A', 'domain': DOMAIN, 'target': 'anomaly'}
-%    - When examples for all classes in labels exists - accuracies of model stabilizes quickly
-%    - When new label is introduced accuracy drops momentarily
-%    - Delay, Skiping labels -  degrades model performance
-%- Online (Progressive valuation):
-%    - Plot: label ordering in train (in future create strategy for balancing of classes)
-%        - Faults (Plot)
-%        - Anomaly (Plot)
-%    - Gradual learning
-%        - Fault (shaft) / anomaly (2 plots) - comment on convergence
-%    - Window learning
-%        - Fault (shaft) / anomaly
-%        - Compare classification accuracies for window sizes in one graph: (1, 10, 50, 100, 250)
-%        - Scenarios: fault, anomaly
-%    - Missing labels
-%        - Faults
-%        - Anomaly
-%    - Scatter plot - True labels vs. Predicted labels (it is not the case that areas with one fault are homogenous and compact in PC dimensions)
-%        - Faults 
-%        - Anomaly
-%    - **One physical defect can have multiple manifestations - outer race fault and misalignment overlap**
+%TODO
+
+% Order of classes, whole feature set, all rpm, placement on bearing A
+	% Severity is rising sequentially, each group is shuffled randomly, validation set is kept away for hold-valiadtion.
+	% (Progressive valuation with 20\% of dataset kept away for additional hold-out validation):
+	
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-fault-train.png}
-        \caption{Training set and fault as predicted variable}
+        \caption{Training set and defect types ``fault'' as predicted variable}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-fault-test.png}
-        \caption{Testing set and fault as predicted variable}
-    \end{subfigure}
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-anomaly60-train.png}
-        \caption{Training set and medium anomaly severity as predicted variable}
+        \caption{Training set and anomaly with severity above 0.6 ``anomaly60'' as predicted variable}
     \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-anomaly60-test.png}
-        \caption{Training set and medium anomaly severity as predicted variable}
-    \end{subfigure}
-    \caption{Label order in progressive valuation}
+    \caption{Label sequencing for progressive evaluation}
 \end{figure}
 
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-temporal-domain-fault.png}
-        \caption{}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-spectral-domain-fault.png}
-        \caption{}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-temporal-domain-anomaly60.png}
-        \caption{}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-spectral-domain-anomaly60.png}
-        \caption{}
-    \end{subfigure}
-    \caption{Gradual learning}
-\end{figure}
 
-
+% Gradual learning with delay - label provided after it has been predicted by the model
+	% The amount to wait before revealing the target associated with each observation to the model.
+	
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-fault.png}
-        \caption{}
+        \caption{Temporal domain features, predicted variable is fault}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-fault.png}
-        \caption{}
+        \caption{Spectral domain features, predicted variable is fault}
     \end{subfigure}
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-anomaly60.png}
-        \caption{}
+        \caption{Temporal domain features, predicted variable is anomaly above severity 0.6}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-anomaly60.png}
-        \caption{}
+        \caption{Spectral domain features, predicted variable is anomaly above severity 0.6}
     \end{subfigure}
-    \caption{Gradual learning accuracy with delay}
+    \caption{Incremental learning on all extracted features with delayed reveal of labels in rolling window}
 \end{figure}
+	
+	
 
-
+% Window learning- all labels for fixed previous period are provided at once.
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-temporal-domain-fault.png}
-        \caption{}
+        \caption{Temporal domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-spectral-domain-fault.png}
-        \caption{}
+        \caption{Spectral domain features}
     \end{subfigure}
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-temporal-domain-anomaly60.png}
-        \caption{}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-spectral-domain-anomaly60.png}
-        \caption{}
-    \end{subfigure}
-    \caption{Gradual learning with delay}
+    \caption{Incremental learning for variable ``fault'' with delayed reveal of labels at regular intervals.}
 \end{figure}
 
+
+% Missing labels - some labels are skipped before another one is anotated
 
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-temporal-domain-fault.png}
-        \caption{}
+        \caption{Temporal domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-spectral-domain-fault.png}
-        \caption{}
+        \caption{Spectral domain features}
     \end{subfigure}
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-temporal-domain-anomaly60.png}
-        \caption{}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-spectral-domain-anomaly60.png}
-        \caption{}
-    \end{subfigure}
-    \caption{Gradual learning and skip labels}
+    \caption{Incremental learning with skipping of labels and delay of 10 observations}
 \end{figure}
 
-
-
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-fault.png}
-        \caption{}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-fault.png}
-        \caption{}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-anomaly60.png}
-        \caption{}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-anomaly60.png}
-        \caption{}
-    \end{subfigure}
-    \caption{Gradual learning accuracy with delay}
-\end{figure}
-
-
+% Scatter plot of fault classification - min-max scale shifts. From left true labels, predicted labels, mistakes made by model in red  
 
 \begin{figure}[ht]
     \centering
@@ -610,15 +514,6 @@ Overlapping clusters are evidenced by relatively low silhouette scores around ze
     \hfill
     \begin{subfigure}[b]{\textwidth}
         \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-spectral.png}
-        \caption{}
-    \end{subfigure}
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-anomaly60-temporal.png}
-        \caption{}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-anomaly60-spectral.png}
         \caption{}
     \end{subfigure}
     \caption{PCA 2 components to visualize results and mistakes of online learning on all features}
