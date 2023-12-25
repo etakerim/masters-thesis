@@ -257,10 +257,10 @@ The choice of features is very sensitive to experimental conditions. Tendencies 
 
 
 \section{K-nearest neighbor classifier}
-We utilize the k-nearest neighbor algorithm to check machinery diagnostics abilities with reduced feature sets. kNN classifier being a lazy learner means it can be adapted easily from offline to online context. Training labels establish nearest-neighbor decision boundaries for attribute values. Voronoi diagrams can display these regions and explain the model in that way. Batch learning in kNN serves here as a target performance whose attainment is desirable with online learning.
+We utilize the k-nearest neighbor algorithm to check machinery diagnostics abilities with reduced feature sets. kNN classifier being a lazy learner means it can be adapted easily from offline to online context. Training labels are min-max scaled and establish nearest-neighbor decision boundaries for attribute values. Voronoi diagrams can display these regions and explain the model in that way. Batch learning in kNN serves here as a target performance whose attainment is desirable with online learning.
 
 \subsection{Batch models}
-Three types of kNN model experiments run with hold-out validation. 
+Three types of kNN model experiments run with hold-out validation in batch setting. 
 First, the model learns all extracted features, so no feature selection occurs. Then, the brute-force method searches for a combination of three features with the highest training accuracy. In the end, the model performance for three attributes chosen by feature selection techniques is compared to principal components.
 
 \begin{figure}[ht]
@@ -301,7 +301,7 @@ In anomaly prediction, the error of the first degree is 7 times more prevalent t
 \hline
 \multirow{2}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Bearing\\ position\end{tabular}}} & \multirow{2}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Target\\ variable\end{tabular}}} & \multirow{2}{*}{\textbf{Observations}}                                             & \multicolumn{3}{l|}{\textbf{Temporal domain}}                                                                                                                                                                                                                                    & \multicolumn{3}{l|}{\textbf{Spectral domain}}                                                                                                                                                                                                                                    \\ \cline{4-9} 
                                                                                      &                                                                                     &                                                                                   & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Testing\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ F1 score\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Testing\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ F1 score\end{tabular}}} \\ \hline
-\multirow{2}{*}{A}                                                                   & Fault                                                                               & \begin{tabular}[c]{@{}l@{}}$\sum 2998$\\ 498 pre class\end{tabular}  & \multicolumn{1}{r|}{0.9413}                                                               & \multicolumn{1}{r|}{0.9093}                                                              & 0.91                                                                                      & \multicolumn{1}{r|}{0.9917}                                                               & \multicolumn{1}{r|}{0.9836}                                                              & 0.98                                                                                      \\ \cline{2-9} 
+\multirow{2}{*}{A}                                                                   & Fault                                                                               & \begin{tabular}[c]{@{}l@{}}$\sum 2998$\\ 498 per class\end{tabular}  & \multicolumn{1}{r|}{0.9413}                                                               & \multicolumn{1}{r|}{0.9093}                                                              & 0.91                                                                                      & \multicolumn{1}{r|}{0.9917}                                                               & \multicolumn{1}{r|}{0.9836}                                                              & 0.98                                                                                      \\ \cline{2-9} 
                                                                                      & \begin{tabular}[c]{@{}l@{}}Anomaly\\ (0.9)\end{tabular}                               & \begin{tabular}[c]{@{}l@{}}$\sum 2454$\\ 1227 per class\end{tabular} & \multicolumn{1}{r|}{0.9668}                                                               & \multicolumn{1}{r|}{0.9535}                                                              & 0.96                                                                                      & \multicolumn{1}{r|}{0.9921}                                                               & \multicolumn{1}{r|}{0.9874}                                                              & 0.99                                                                                      \\ \hline
 \multirow{2}{*}{B}                                                                   & Fault                                                                               & \begin{tabular}[c]{@{}l@{}}$\sum 2998$\\ 498 per class\end{tabular}  & \multicolumn{1}{r|}{0.8634}                                                               & \multicolumn{1}{r|}{0.7935}                                                              & 0.79                                                                                      & \multicolumn{1}{r|}{0.9207}                                                               & \multicolumn{1}{r|}{0.8765}                                                              & 0.87                                                                                      \\ \cline{2-9} 
                                                                                      & \begin{tabular}[c]{@{}l@{}}Anomaly \\ (0.9)\end{tabular}                              & \begin{tabular}[c]{@{}l@{}}$\sum 2394$\\ 1197 pre class\end{tabular} & \multicolumn{1}{r|}{0.9148}                                                               & \multicolumn{1}{r|}{0.8668}                                                              & 0.87                                                                                      & \multicolumn{1}{r|}{0.9428}                                                               & \multicolumn{1}{r|}{0.9156}                                                              & 0.92                                                                                      \\ \hline
@@ -418,58 +418,67 @@ In every instance, a subset of spectral features is responsible for better accur
 
 
 \subsection{Online models}
-%TODO
+Online learning imitates hardened conditions for machinery diagnostics that appear in deployment. Delayed provision or omission of actual labels undoubtedly degrades the reliability of the classification. The question is how quickly the accuracy approaches the optimal one from the nearest neighbors trained in batch and what the effect of routine difficulties in the ongoing labeling process is.
 
-% Order of classes, whole feature set, all rpm, placement on bearing A
-	% Severity is rising sequentially, each group is shuffled randomly, validation set is kept away for hold-valiadtion.
-	% (Progressive valuation with 20\% of dataset kept away for additional hold-out validation):
-	
+The kNN models in incremental learning experiments learn on the same base training dataset for bearing position A and with all extracted features as in batch context. In this manner, we can compare the training accuracies in the last sample for both models. kNN is set to 5 nearest neighbors and proximity metric of Euclidian distance. Online learning metrics are evaluated in progressive valuation on a dataset that is left unbalanced.
+
+The \textbf{stream of events is sorted} by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}) which ensures steady increments in label counts throughout the whole duration of the simulation (Fig.~\ref{fig:design:online-event-order}). This constructed event sequence is a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine. 
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-fault-train.png}
-        \caption{Training set and defect types ``fault'' as predicted variable}
+        \caption{Event ordering of faults}
+        \label{fig:design:online-event-order}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-anomaly60-train.png}
-        \caption{Training set and anomaly with severity above 0.6 ``anomaly60'' as predicted variable}
+        \includegraphics[width=\textwidth]{assets/design/Online-severity-levels.png}
+        \caption{Fault severity levels ordering}
+        \label{fig:design:online-count-severity-level}
     \end{subfigure}
     \caption{Label sequencing for progressive evaluation}
 \end{figure}
 
+Major breaking points in the stream are after 1171 observations out of 5751, where all 203 normal conditions are consumed in the training process. Counters of other faults show that model prediction are skewed towards more represented classes of imbalance and misalignement. The uneven evolution of category counts in a stream impacts the development of accuracy in the remaining experiments. The training accuracies of comparable batch models are 94.13\% \emph{(temporal features)} and 99.17\% \emph{(spectral features)}.
+	
+During gradual learning, the correct label is supplied after a fixed period passes after its prediction. This \textbf{sliding window} simulation examines accuracy every 100 iterations. Wait times before revealing the actual class associated with the sample are 1, 50, 100, or 250 steps (Fig.~\ref{ffig:design:online-fault-delay-sliding}). 
 
 
-% Gradual learning with delay - label provided after it has been predicted by the model
-	% The amount to wait before revealing the target associated with each observation to the model.
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-temporal.png}
+        \caption{Principal components from temporal domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-spectral.png}
+        \caption{Principal components from spectral domain features}
+    \end{subfigure}
+    \caption{Classification labels in incremental learning \emph{(from left)}: true labels, predicted labels, mistakes in predictions.}
+    \label{fig:design:scatter-plot-online}
+\end{figure}
+
+Accuracies after sequentially seeing all samples are 82.92\% \emph{(temporal)} and 89.11\% \emph{(spectral)} when labels are shown instantly. Scatter plots in Figure~\ref{fig:design:scatter-plot-online} visualize mistakes in predictions projected onto two principal components. Labeling delay of 250 observations causes accuracies to drop to 70.51\% \emph{(temporal)} and 78.81\% \emph{(spectral)}. Accuracy better than 50\% is achieved 200 steps sooner in the spectral domain than in the temporal domain.
 	
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-fault.png}
-        \caption{Temporal domain features, predicted variable is fault}
+        \caption{Temporal domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-fault.png}
-        \caption{Spectral domain features, predicted variable is fault}
+        \caption{Spectral domain features}
     \end{subfigure}
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-anomaly60.png}
-        \caption{Temporal domain features, predicted variable is anomaly above severity 0.6}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-anomaly60.png}
-        \caption{Spectral domain features, predicted variable is anomaly above severity 0.6}
-    \end{subfigure}
-    \caption{Incremental learning on all extracted features with delayed reveal of labels in rolling window}
+    \caption{Incremental learning on all extracted feature with delayed reveal of labels in sliding windows.}
+    \label{fig:design:online-fault-delay-sliding}
 \end{figure}
 	
 	
-
-% Window learning- all labels for fixed previous period are provided at once.
+The \textbf{tumbling window} simulates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once. At the final sample, the accuracies are 83.41\% \emph{(temporal)} and 90.14\% \emph{(spectral)} with immediate feedback, and 77.95\% \emph{(temporal)} and 85.90\% \emph{(spectral)} with window length of 250 samples (Fig.~\ref{fig:design:online-fault-delay-tumbling}). 
 
 \begin{figure}[ht]
     \centering
@@ -482,12 +491,13 @@ In every instance, a subset of spectral features is responsible for better accur
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-spectral-domain-fault.png}
         \caption{Spectral domain features}
     \end{subfigure}
-    \caption{Incremental learning for variable ``fault'' with delayed reveal of labels at regular intervals.}
+    \caption{Incremental learning on all extracted feature with delayed reveal of labels at regular intervals in tumbing windows.}
+    \label{fig:design:online-fault-delay-tumbling}
 \end{figure}
 
+A \textbf{tumbling window} is more accurate according to progressive valuation because the labeling delay decreases towards the window's end. Initial 0\% accuracy is caused by a warming-up period in data collection during the span of the first few windows true labels are unknown. After just a handful of windows in the beginning, accuracy jumps above 60\% and stabilizes after 1000 observation.
 
-% Missing labels - some labels are skipped before another one is anotated
-
+Another common problem in online learning is \textbf{missing annotations} due to the size of the dataset. In the simulation of missing labels, the equal-length gaps are skipped before another observation is annotated. This approach of choosing samples to annotate without considering their representativeness results in severe harm to predictions. 
 
 \begin{figure}[ht]
     \centering
@@ -500,27 +510,12 @@ In every instance, a subset of spectral features is responsible for better accur
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-spectral-domain-fault.png}
         \caption{Spectral domain features}
     \end{subfigure}
-    \caption{Incremental learning with skipping of labels and delay of 10 observations}
+    \caption{Incremental learning with missing true labels and sliding window delay of 10 observations}
+    \label{fig:design:online-label-skip}
 \end{figure}
 
-% Scatter plot of fault classification - min-max scale shifts. From left true labels, predicted labels, mistakes made by model in red  
+Labeling just every \nth{5} sample (25\% of the total dataset) with a sliding window delay of 10 samples reduces accuracy for the model out of temporal features by 8.77\% to 74.07\%, and by 7.33\% for spectral features to accuracy of 82.01\% (Fig.~\ref{fig:design:online-label-skip}). Even if only 1\% of the dataset is annotated (every \nth{100} sample), the model out of spectral features retained an accuracy of 65.17\%. The same cannot be said about the model from temporal features with very poor accuracy of 53.68\%. More missing labels require recording more observations before the equivalent accuracy is reached.
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-temporal.png}
-        \caption{}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-spectral.png}
-        \caption{}
-    \end{subfigure}
-    \caption{PCA 2 components to visualize results and mistakes of online learning on all features}
-\end{figure}
-
-\clearpage
-\newpage
 
 \section{Vibration measurement plan}
 

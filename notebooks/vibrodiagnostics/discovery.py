@@ -57,7 +57,7 @@ def time_features_calc(df: pd.DataFrame, col: str) -> List[Tuple[str, pd.DataFra
         ('rms', [ft.rms(x)]),
         ('pp', [ft.pk_pk_distance(x)]),
         ('crest', [np.max(np.absolute(x)) / ft.rms(x)]),
-        ('margin', [np.max(np.absolute(x)) / (np.mean(np.sqrt(np.absolute(x))) ** 2)]),
+        ('margin', [np.max(nplot_label_occurencesp.absolute(x)) / (np.mean(np.sqrt(np.absolute(x))) ** 2)]),
         ('impulse', [np.max(np.absolute(x)) / np.mean(np.absolute(x))]),
         ('shape', [ft.rms(x) / np.mean(np.absolute(x))]),
         ('max', [ft.calc_max(x)])
@@ -127,7 +127,8 @@ def plot_label_occurences(y):
         observations.append(sample)
 
     class_occurences = pd.DataFrame.from_records(observations).cumsum()
-    class_occurences.plot(grid=True, figsize=(10, 3), xlabel='Observations', ylabel='Label occurences')
+    ax = class_occurences.plot(grid=True, figsize=(10, 5), xlabel='Observations', ylabel='Label occurences')
+    return ax, class_occurences
 
 
 def features_list():
