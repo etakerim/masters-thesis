@@ -513,44 +513,83 @@ Another common problem in online learning is \textbf{missing annotations} due to
     \caption{Incremental learning with missing true labels and sliding window delay of 10 observations}
     \label{fig:design:online-label-skip}
 \end{figure}
-
+ 
 Labeling just every \nth{5} sample (25\% of the total dataset) with a sliding window delay of 10 samples reduces accuracy for the model out of temporal features by 8.77\% to 74.07\%, and by 7.33\% for spectral features to accuracy of 82.01\% (Fig.~\ref{fig:design:online-label-skip}). Even if only 1\% of the dataset is annotated (every \nth{100} sample), the model out of spectral features retained an accuracy of 65.17\%. The same cannot be said about the model from temporal features with very poor accuracy of 53.68\%. More missing labels require recording more observations before the equivalent accuracy is reached.
 
-
 \section{Vibration measurement plan}
+%TODO
+Identify machines, measurement positions, vibration sensor requirements and parameters with schedule for long-term measurement. It has to take into account with machinery operations.
 
 \subsection{Machinery}
-% Enum list
+We have three kinds of rotating machines at disposal for measurements which are standing fan, scroll compressor, and water pump:
+\begin{itemize}
+\itemsep0pt
+\item \textbf{Standing fan}: model \emph{Kalorik TKG VT 1037 C} (Fig.~\ref{fig:machine:fan}) 1 piece with 1 measurement axial position on the plastic casing back of the electromotor  as testing environment for firmware. It has 45W of power (ISO 20186 class \rom{1}) and 45 cm fan diameter consiting of 3 propelers. 3 speeds are approximated with tolerance of $\pm$ 0.61 Hz (37 rpm) by measuring fundamental frequency to speed 1 is 18.5 Hz (1100 rpm), speed 2 is 20.4 Hz (1200 rpm), speed 3 is 22 Hz (1300 rpm). Acceleration observed is $\pm$ 5 $\mathrm{m/s}^2$ in radial and tangential directions, and $\pm$ 1 $\mathrm{m/s}^2$ in axial direction.
+
+\item \textbf{Scroll compressor}: model \emph{Copeland ZR16M3E-TWD-561} (Fig.~\ref{fig:machine:compressor}) 2 pieces in two independent air condition units Vertiv for data center. Compressor has 9.7 kW of power (ISO20186 class \rom{1}). It rotates with 2900 rpm (48.3 Hz). Faulty parts can result in unbalance of the rotor, fault of the scroll, mechanical assembly loose, or losse bearing. It has two possible measuremnt locations from sides on bearing just above the base and above the scroll. Accelerations picked up by sensor are $\pm$ 3 $\mathrm{m/s}^2$ tops.
+
+\item \textbf{Water pump}: 3 municipal single-stage axially split volute casing pump and attached electric induction motor with squirrel cage rotor. Newer primary pump with vendor cloud monitoring solution is \emph{KSB Omega 300-560 B GB G F} (Fig.~\ref{fig:machine:pump-ksb}) commisioned in 2019, with rotational speed around 1500 rpm (precisly 1493 rpm or 24.9 Hz). Motor has 400 kW of power (ISO20186 class \rom{2}). Outer bearing on pump experiences acceleration of  Secondary pumps are  two pieces produced by Sigma (Fig.~\ref{fig:machine:pump-sigma}) in 1986 with motor powers of $\pm$ 5 $\mathrm{m/s}^2$ ,  . Each pump and motor has 2 bearing therefore 4 measuement positions in total.
+\end{itemize}
+
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
     		\centering
-        \includegraphics[width=0.5\textwidth]{assets/design/machine-fan.jpg}
+        \includegraphics[width=0.4\textwidth]{assets/design/machine-fan.jpg}
         \caption{Stand fan Kalorik}
+        \label{fig:machine:fan}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
     		\centering
-        \includegraphics[width=0.5\textwidth]{assets/design/machine-compressor.jpg}
+        \includegraphics[width=0.4\textwidth]{assets/design/machine-compressor.jpg}
         \caption{Scroll compressor Copeland}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.49\textwidth}
-    		\centering
-        \includegraphics[width=\textwidth]{assets/design/machine-ksb-pump.jpg}
-        \caption{Water pump KSB Omega}
+        \label{fig:machine:compressor}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
     		\centering
-        \includegraphics[width=\textwidth]{assets/design/machine-sigma-pump.jpg}
-        \caption{Water pump Sigma}
+        \includegraphics[width=0.8\textwidth]{assets/design/machine-ksb-pump.jpg}
+        \caption{Water pump KSB Omega}
+        \label{fig:machine:pump-ksb}
     \end{subfigure}
-    \caption{Machine}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+    		\centering
+        \includegraphics[width=0.8\textwidth]{assets/design/machine-sigma-pump.jpg}
+        \caption{Water pump Sigma}
+        \label{fig:machine:pump-sigma}
+    \end{subfigure}
+    \caption{Machines dedicated for vibration measurements}
+\end{figure}
+
+%TODO bi-weekly measurements. Describe preliminary measurements and orbital
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.44\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-temporal.png}
+        \caption{Temporal domain waveforms in all spatial directions with 300 ms duration}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.55\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-spectral-X-axis.png}
+        \caption{Spectral domain in x accelerometer axis. FFT with Hann window of length $2^{10}$ ($\approx 409$ ms)}
+    \end{subfigure} 
+    \caption{Signals at 5 s timestamp}
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{assets/design/compressor-orbitals-1x.png}
+	\caption{Orbital analysis of compressor's 1x harmonic}
 \end{figure}
 
 
 \subsection{Sensors}
+In prelimary exploratory vibration measurements of machines we used ADXL335 accelerometer connected to BeagleBone Black microcontroller. Hardware characteristics are depicted in Table~\ref{tab:design:hw-sensors}. The bandwidth, sensitivity and  sampling frequency in the first attempt solution we find to be not adequate (satisfactory).
 
 \begin{table}[ht]
 \renewcommand{\arraystretch}{1.2}
@@ -572,34 +611,24 @@ Labeling just every \nth{5} sample (25\% of the total dataset) with a sliding wi
 \textbf{FIFO}                                    & -                & 3 kB (512 samples) \\ \hline
 \end{tabular}
 \caption{Accelerometers}
+\label{tab:design:hw-sensors}
 \end{table}
 
+The ST IIS3DWB is appropriately low priced accelerometer approching industrial standards for vibration monitoring. We need high speed interface to store all recorded samples to be used in later analysis and optimization. Therefore as a microcontroller development kit we choose ESP32-PoE-ISO that has SD card slot connected via SD/MMC bus. SPI bus can be connected to any GPIO pin and is routed via GPIO matrix at lower but enough speed, sensor can handle SPI speed of 10 MHz at maximum. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\textwidth]{assets/design/hw-block-schematic.png}
+	\includegraphics[width=0.9\textwidth]{assets/design/hw-block-schematic.png}
 	\caption{Sensor unit hardware block diagram}
+	\label{fig:design:block-diagram-hw}
 \end{figure}
 
-\subsection{Preliminary measurements}
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.44\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-temporal.png}
-        \caption{Temporal domain waveforms in all spatial directions with 300 ms duration}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.55\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-spectral-X-axis.png}
-        \caption{Spectral domain in x accelerometer axis. FFT with Hann window of length $2^{10}$ ($\approx 409$ ms)}
-    \end{subfigure} 
-    \caption{Signals at 5 s timestamp}
-\end{figure}
+The drivers for neccessary low level interfaces and FatFS filesystem are already implemented in ESP-IDF software development kit\footnote{ESP-IDF SDK: \url{https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html}}. The acceleromter driver is also made available by vendor and can be integrated with just two function calls to bus read and write operations\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}.
 
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.6\textwidth]{assets/design/compressor-orbitals-1x.png}
-	\caption{Orbital analysis of compressor's 1x harmonic}
-\end{figure}
+
+
+
+
+
 

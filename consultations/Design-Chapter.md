@@ -9,32 +9,7 @@ https://power-mi.com/content/vibration-analysis-electric-induction-motors
 
 #### Machinery and measurement
 
-Table and images
 
-- KALORIK **Stand Fan** TKG VT 1037 C
-    - height 125 cm, stable 60 cm cross base
-    - 3 speed, 45 cm fan diameter, 3 propelers
-    - 45 W (Class I)
--  AC unit VERTIV: **Scroll Compressor**:
-    -  Copeland ZR16M3E-TWD-561
-    -  Datacentre SHC3, Petržalka
-    - 2900 RPM @ 50 Hz;
-    - 9.7 kW (13 HP);
-    - 380/420V; 25 A)
-    -  2 units - Class I
-    - Faulty parts: unbalance of the rotor, fault of the scroll, mechanical assembly loose, bearing loose
-- **Water pump**: KSB Omega 300-560 B GB G F  - Single-stage axially split volute casing pump
-    - (2018,
-    - 1493 (1500) RPM @ 50 Hz;
-    - 400 kW elektromotor;
-    - power requirement: 380 kW,
-    - Class II - ISO) - 1 unit
-    - Pumping station Podunajské Biskupice
-    - Faulty parts: misalignment, bearings
-    - Placements:
-        - Shaft A, outer bearing housing number 1, triaxial accelerometer, positioned 90° counterclokwise from zero, 
-- **Water pump** Sigma Lutín - 1986
-- Columns: t, x, y, z, label - worse, better, pump - good, warning, fault (based on ISO)
 
 #### Sensors:
 
@@ -61,40 +36,7 @@ Table and images
           6. Running Compute rank of product of running corr, f statistic, mutual infomation (normalization not neccessary, forgetting factor?)
           7. When rank is stable n iterations start sending only subset + features with immidiate close ranks (first 3 + ranks up to 40% of full rank)
 	- Component: whole infrastructure
-   
-   #### EDA
-- **Fan**
-    - Mounting: front, back (x,y - radial, z - axial)
-    - Time waveform
-        - Amplitudes (max): **$\pm 5\;m /s^2$** (x, y = sides),  **$\pm 1\;m /s^2$** (z = forwards/backwards)
-        - Statistical tests 
-            - Normality test: Kolmogorov–Smirnov test: **Not normal distribution** ($p < 0.001$ on 1 second)
-            - Normality visual test: Quantile-quantile plot on chosen recording
-            - Stationarity test: Augmented Dickey–Fuller test: **Stationarity** ($p < 0.001$ on 1 second)
-            - Stationarity visual test: Autocorrelation plot
-    - Spectrogram ($f_s$ = 2.5 kHz, w = 4096)
-        - Maximal frequency:
-            - Speed: 1 = 18.46 Hz $\pm$ 0.61 Hz  ($\approx$ 1100 RPM) 0.5 - 1.5 m/s^2
-            - Speed: 2 = 20.35 Hz $\pm$ 0.61 Hz ($\approx$ 1200 RPM)
-            - Speed: 3 = 21.99 Hz $\pm$ 0.61 Hz ($\approx$ 1300 RPM)
-- **Compressor**
-    - Mounting: top (x,y - radial, z - axial), side (x,z - radial, y - axial)
-    -  Amplitudes (max): **$\pm 3\;m /s^2$** (all axis)
-    - AC unit: no.3 (worse - 4rd harmonic twice the amplitude 0.2 to 0.4, 1st harmonic 0.8 in both), no.5 (better)
-    - Time waveform
-            - Normality test: Kolmogorov–Smirnov test: **Not normal distribution** ($p < 0.001$ on 1 second)
-            - Stationarity test: Augmented Dickey–Fuller test: **Stationarity** ($p < 0.001$ on 1 second)
-    - Spectrogram
-        - Maximal frequency: 47.74 Hz ($\approx$ 2800 RPM)
-- **Pump bearing**
-    - Mounting: inner (x,z- radial, y - axial), outer (x,z- radial, y - axial) 2 pumps
-    -  Amplitudes (max): **$\pm 5\;m /s^2$** (x, y = sides),  **$\pm 1\;m /s^2$** (z = forwards/backwards)
-    -  1st Harmonic: 0.10 (rich spectrum to 200 Hz and than around 600 Hz)
-    - Time waveform
-            - Normality test: Kolmogorov–Smirnov test: **Not normal distribution** ($p < 0.001$ on 1 second)
-            - Stationarity test: Augmented Dickey–Fuller test: **Stationarity** ($p < 0.001$ on 1 second)
-    - Spectrogram
-        - Maximal frequency: 24.37 Hz ($\approx$ 1460 RPM)
+   -
 
  ### **Design semi-supervised feature selection**
 - Feature selection -> KNN -> Infer labels -> Feature selection
