@@ -289,7 +289,7 @@ First, the model learns all extracted features, so no feature selection occurs. 
 
 Two models are created for the target variable in classification with all 10 temporal and 11 spectral features. The subset of records includes all rotational speeds on bearing position A. Either six fault labels or anomaly above 0.9 severity level are guessed by the model with the same hold-out validation split as before. 
 
-Confusion matrices for fault predicion and high severity anomaly are shown in Figure \ref{fig:design:knn-confusion-matrix}. In this example, the number of k neighbors is 5, the distance metric is the Euclidian norm, and the algorithm for proximity queries is a k-d tree. The most inaccuracies in the temporal domain are between misalignment and bearing race faults. In the spectral domain, the model confuses imbalance and bearing faults. It is to be expected since mass to unbalance the shaft is hanged to simulate bearing defects. 
+Confusion matrices for fault prediction and high severity anomaly are shown in Figure \ref{fig:design:knn-confusion-matrix}. In this example, the number of k neighbors is 5, the distance metric is the Euclidian norm, and the algorithm for proximity queries is a k-d tree. The most inaccuracies in the temporal domain are between misalignment and bearing race faults. In the spectral domain, the model confuses imbalance and bearing faults because mass to unbalance is hung onto the shaft to cause bearing defects. 
 
 In anomaly prediction, the error of the first degree is 7 times more prevalent than the error of the second degree. False positives are preferable since we do not want the machine to fail prematurely and not know about it. In all cases, spectral features maintain better prediction metrics than all temporal features because of less interdependency among features. Bearing B exhibits overall worse classification performance because of more noise in the original signal.
 
@@ -442,7 +442,7 @@ The \textbf{stream of events is sorted} by rising severity levels (Fig.~\ref{fig
 
 Major breaking points in the stream are after 1171 observations out of 5751, where all 203 normal conditions are consumed in the training process. Counters of other faults show that model prediction are skewed towards more represented classes of imbalance and misalignement. The uneven evolution of category counts in a stream impacts the development of accuracy in the remaining experiments. The training accuracies of comparable batch models are 94.13\% \emph{(temporal features)} and 99.17\% \emph{(spectral features)}.
 	
-During gradual learning, the correct label is supplied after a fixed period passes after its prediction. This \textbf{sliding window} simulation examines accuracy every 100 iterations. Wait times before revealing the actual class associated with the sample are 1, 50, 100, or 250 steps (Fig.~\ref{ffig:design:online-fault-delay-sliding}). 
+During gradual learning, the correct label is supplied after a fixed period passes after its prediction. This \textbf{sliding window} simulation examines accuracy every 100 iterations. Wait times before revealing the actual class associated with the sample are 1, 50, 100, or 250 steps (Fig.~\ref{fig:design:online-fault-delay-sliding}). 
 
 
 \begin{figure}[ht]
@@ -516,80 +516,58 @@ Another common problem in online learning is \textbf{missing annotations} due to
  
 Labeling just every \nth{5} sample (25\% of the total dataset) with a sliding window delay of 10 samples reduces accuracy for the model out of temporal features by 8.77\% to 74.07\%, and by 7.33\% for spectral features to accuracy of 82.01\% (Fig.~\ref{fig:design:online-label-skip}). Even if only 1\% of the dataset is annotated (every \nth{100} sample), the model out of spectral features retained an accuracy of 65.17\%. The same cannot be said about the model from temporal features with very poor accuracy of 53.68\%. More missing labels require recording more observations before the equivalent accuracy is reached.
 
-\section{Vibration measurement plan}
-%TODO
-Identify machines, measurement positions, vibration sensor requirements and parameters with schedule for long-term measurement. It has to take into account with machinery operations.
+\section{Dataset collection in industrial environment}
+The methodology applied so far for the dataset recorded in a laboratory is to be tested on vibration signals from the industrial environment. Established guidelines for introducing a monitoring system have been described in the section on technical standards (Section~\ref{section:technical-standards}). We employ a slightly customized validation procedure that involves the selection of machines to be monitored, identifying positions for measurements according to technical specifications, taking preliminary readings, and developing a device capable of capturing the usual failure modes. The collection of the novel dataset is accompanied by an agreed upon schedule.
 
 \subsection{Machinery}
-We have three kinds of rotating machines at disposal for measurements which are standing fan, scroll compressor, and water pump:
-\begin{itemize}
-\itemsep0pt
-\item \textbf{Standing fan}: model \emph{Kalorik TKG VT 1037 C} (Fig.~\ref{fig:machine:fan}) 1 piece with 1 measurement axial position on the plastic casing back of the electromotor  as testing environment for firmware. It has 45W of power (ISO 20186 class \rom{1}) and 45 cm fan diameter consiting of 3 propelers. 3 speeds are approximated with tolerance of $\pm$ 0.61 Hz (37 rpm) by measuring fundamental frequency to speed 1 is 18.5 Hz (1100 rpm), speed 2 is 20.4 Hz (1200 rpm), speed 3 is 22 Hz (1300 rpm). Acceleration observed is $\pm$ 5 $\mathrm{m/s}^2$ in radial and tangential directions, and $\pm$ 1 $\mathrm{m/s}^2$ in axial direction.
-
-\item \textbf{Scroll compressor}: model \emph{Copeland ZR16M3E-TWD-561} (Fig.~\ref{fig:machine:compressor}) 2 pieces in two independent air condition units Vertiv for data center. Compressor has 9.7 kW of power (ISO20186 class \rom{1}). It rotates with 2900 rpm (48.3 Hz). Faulty parts can result in unbalance of the rotor, fault of the scroll, mechanical assembly loose, or losse bearing. It has two possible measuremnt locations from sides on bearing just above the base and above the scroll. Accelerations picked up by sensor are $\pm$ 3 $\mathrm{m/s}^2$ tops.
-
-\item \textbf{Water pump}: 3 municipal single-stage axially split volute casing pump and attached electric induction motor with squirrel cage rotor. Newer primary pump with vendor cloud monitoring solution is \emph{KSB Omega 300-560 B GB G F} (Fig.~\ref{fig:machine:pump-ksb}) commisioned in 2019, with rotational speed around 1500 rpm (precisly 1493 rpm or 24.9 Hz). Motor has 400 kW of power (ISO20186 class \rom{2}). Outer bearing on pump experiences acceleration of  Secondary pumps are  two pieces produced by Sigma (Fig.~\ref{fig:machine:pump-sigma}) in 1986 with motor powers of $\pm$ 5 $\mathrm{m/s}^2$ ,  . Each pump and motor has 2 bearing therefore 4 measuement positions in total.
-\end{itemize}
-
+Three kinds of rotating machines are at disposal for vibration measurements. Those are a standing fan, scroll compressor, and water pump.
 
 \begin{figure}[ht]
     \centering
-    \begin{subfigure}[b]{0.49\textwidth}
+    \begin{subfigure}[b]{0.17\textwidth}
     		\centering
-        \includegraphics[width=0.4\textwidth]{assets/design/machine-fan.jpg}
-        \caption{Stand fan Kalorik}
+        \includegraphics[width=\textwidth]{assets/design/machine-fan.jpg}
+        \caption{\footnotesize Fan}
         \label{fig:machine:fan}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
+    \begin{subfigure}[b]{0.17\textwidth}
     		\centering
-        \includegraphics[width=0.4\textwidth]{assets/design/machine-compressor.jpg}
-        \caption{Scroll compressor Copeland}
+        \includegraphics[width=\textwidth]{assets/design/machine-compressor.jpg}
+        \caption{\footnotesize Compressor}
         \label{fig:machine:compressor}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
+    \begin{subfigure}[b]{0.31\textwidth}
     		\centering
-        \includegraphics[width=0.8\textwidth]{assets/design/machine-ksb-pump.jpg}
-        \caption{Water pump KSB Omega}
+        \includegraphics[width=\textwidth]{assets/design/machine-ksb-pump.jpg}
+        \caption{\footnotesize Water pump KSB}
         \label{fig:machine:pump-ksb}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
+    \begin{subfigure}[b]{0.31\textwidth}
     		\centering
-        \includegraphics[width=0.8\textwidth]{assets/design/machine-sigma-pump.jpg}
-        \caption{Water pump Sigma}
+        \includegraphics[width=\textwidth]{assets/design/machine-sigma-pump.jpg}
+        \caption{\footnotesize Water pump Sigma}
         \label{fig:machine:pump-sigma}
     \end{subfigure}
     \caption{Machines dedicated for vibration measurements}
 \end{figure}
 
-%TODO bi-weekly measurements. Describe preliminary measurements and orbital
+\textbf{Standing fan} is model \emph{Kalorik~TKG~VT1037} (Fig.~\ref{fig:machine:fan}) and one unit is available to us. It serves as a test bed during the sensor unit development. The sensor is placed on the plastic casing at the back of the drive motor. The fan has a 45~cm diameter with 3~propellers and a power of 45~W (class~\rom{1}). It has a switch for 3 rotational speeds, which are approximately 18.5~Hz (1100~rpm), 20.4~Hz (1200~rpm), and 22~Hz (1300~rpm). Acceleration observed is $\pm 5\;\mathrm{m/s}^2$ in radial and tangential directions, and $\pm 1\;\mathrm{m/s}^2$ in axial direction.
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.44\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-temporal.png}
-        \caption{Temporal domain waveforms in all spatial directions with 300 ms duration}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.55\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-spectral-X-axis.png}
-        \caption{Spectral domain in x accelerometer axis. FFT with Hann window of length $2^{10}$ ($\approx 409$ ms)}
-    \end{subfigure} 
-    \caption{Signals at 5 s timestamp}
-\end{figure}
+\textbf{Scroll compressor} is model \emph{Copeland~ZR16} (Fig.~\ref{fig:machine:compressor}) and altogether two units are available in two independent air conditioning units for the data center. The compressor has 9.7~kW of power (class~\rom{1}) and rotates at 2900 rpm (48.3 Hz). Two possible measurement locations are located on the sides on top of the bearings, just above the base and above the scroll. Accelerations picked up by the sensor are $\pm 3\;\mathrm{m/s}^2$ tops.
 
+\textbf{Water pumps} are available as 3 units in municipal drinking water pumping station. The apparatus consists of a single-stage axially split volute casing pump and an attached electric induction motor with a squirrel cage rotor. 
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{assets/design/compressor-orbitals-1x.png}
-	\caption{Orbital analysis of compressor's 1x harmonic}
-\end{figure}
+The newer primary pump with cloud monitoring solution is one unit of \emph{KSB Omega~300-560} (Fig.~\ref{fig:machine:pump-ksb}). The pump was commissioned in 2019 and it rotates at a speed of circa 1500 rpm (precisely 1493 rpm or 24.9 Hz). The electric motor in the vicinity has 400~kW of power (class~\rom{2}). Outer bearing on pump vibrates with acceleration of $\pm 5 \;\mathrm{m/s}^2$. 
 
+Secondary pumps are two units produced by \emph{Sigma} (Fig.~\ref{fig:machine:pump-sigma}) in 1986 with motor powers of 250~kW and 100~kW. Each pump and motor has 2 bearings therefore there are 4 measurement positions in total.
+
+\textbf{Complete schedule} for planned vibration data gathering on the designated machines and measurement procedure is described in Appendix \ref{appendix:data-collection}.
 
 \subsection{Sensors}
-In prelimary exploratory vibration measurements of machines we used ADXL335 accelerometer connected to BeagleBone Black microcontroller. Hardware characteristics are depicted in Table~\ref{tab:design:hw-sensors}. The bandwidth, sensitivity and  sampling frequency in the first attempt solution we find to be not adequate (satisfactory).
+In preliminary exploratory vibration measurements of machines, the ADXL335 accelerometer is connected to BeagleBone Black microcontroller. The bandwidth, sensitivity, and sampling frequency of the makeshift solution are not appear to be adequate. Hardware parameters of previous and proposed sensor units are in Table~\ref{tab:design:hw-sensors}.
 
 \begin{table}[ht]
 \renewcommand{\arraystretch}{1.2}
@@ -614,7 +592,8 @@ In prelimary exploratory vibration measurements of machines we used ADXL335 acce
 \label{tab:design:hw-sensors}
 \end{table}
 
-The ST IIS3DWB is appropriately low priced accelerometer approching industrial standards for vibration monitoring. We need high speed interface to store all recorded samples to be used in later analysis and optimization. Therefore as a microcontroller development kit we choose ESP32-PoE-ISO that has SD card slot connected via SD/MMC bus. SPI bus can be connected to any GPIO pin and is routed via GPIO matrix at lower but enough speed, sensor can handle SPI speed of 10 MHz at maximum. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
+The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches industrial standards for vibration monitoring. An interface capable of higher speeds is needed to store all acceleration samples. Therefore, ESP32-PoE-ISO is chosen as a microcontroller development kit because it has an SD card slot connected via SD/MMC bus. The accelerometer uses an SPI bus with a maximum speed of 10 MHz that can be connected to any physical GPIO pins. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
+
 
 \begin{figure}[h]
 	\centering
@@ -623,12 +602,47 @@ The ST IIS3DWB is appropriately low priced accelerometer approching industrial s
 	\label{fig:design:block-diagram-hw}
 \end{figure}
 
-The drivers for neccessary low level interfaces and FatFS filesystem are already implemented in ESP-IDF software development kit\footnote{ESP-IDF SDK: \url{https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html}}. The acceleromter driver is also made available by vendor and can be integrated with just two function calls to bus read and write operations\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}.
+The drivers for necessary low-level interfaces and FAT32 filesystem are  implemented already in ESP-IDF software development kit\footnote{ESP-IDF SDK: \url{https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html}}. The accelerometer driver is also made available by the vendor and can be integrated with just two function calls for bus read and write operations\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}.
 
+\subsection{Preliminary measurements}
+% Describe preliminary measurements, waveform (1) orbital (2), velocity (3)
 
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-temporal.png}
+        \caption{Acceleration in $\mathrm{m/s}^2$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-velocity.png}
+        \caption{Approximate velocity in $\mathrm{mm/s}$}
+    \end{subfigure} 
+    \caption{Temporal domain waveforms in all spatial directions with 300 ms duration at 1 s timestamp}
+\end{figure}
 
+% Velocity: integrated with composite trapezoidal rule and subtracted mean of envelope found by cubic interpolation of peaks.
 
+% bandpass Butterworth filter of \nth{5} order with cuttoff frequencies f_{max} \pm 5 Hz.
 
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/compressor-orbitals-1x.png}
+	\caption{Orbital analysis of compressor's 1x harmonic}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.54\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-spectral-X-axis.png}
+        \caption{Spectral domain in x axis. FFT with Hann window of length $2^{10}$ ($\approx 409$ ms)}
+    \end{subfigure} 
+    \caption{Orbital and spectral methods of vibration signal analysis}
+\end{figure}
 
+% Historical logs of pump from KSB cloud
 
-
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{assets/design/ksb-cloud.jpg}
+     \caption{KSB cloud pump monitoring after ramp up with displayed warning and alert levels}
+\end{figure}
