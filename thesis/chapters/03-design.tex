@@ -473,7 +473,7 @@ Accuracies after sequentially seeing all samples are 82.92\% \emph{(temporal)} a
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-fault.png}
         \caption{Spectral domain features}
     \end{subfigure}
-    \caption{Incremental learning on all extracted feature with delayed reveal of labels in sliding windows.}
+    \caption{Incremental learning on all extracted feature with delayed reveal of labels in sliding windows}
     \label{fig:design:online-fault-delay-sliding}
 \end{figure}
 	
@@ -491,7 +491,7 @@ The \textbf{tumbling window} simulates regular expert visits annotating observat
         \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-spectral-domain-fault.png}
         \caption{Spectral domain features}
     \end{subfigure}
-    \caption{Incremental learning on all extracted feature with delayed reveal of labels at regular intervals in tumbing windows.}
+    \caption{Incremental learning on all extracted feature with delayed reveal of labels at regular intervals in tumbing windows}
     \label{fig:design:online-fault-delay-tumbling}
 \end{figure}
 
@@ -564,10 +564,16 @@ The newer primary pump with cloud monitoring solution is one unit of \emph{KSB O
 
 Secondary pumps are two units produced by \emph{Sigma} (Fig.~\ref{fig:machine:pump-sigma}) in 1986 with motor powers of 250~kW and 100~kW. Each pump and motor has 2 bearings therefore there are 4 measurement positions in total.
 
-\textbf{Complete schedule} for planned vibration data gathering on the designated machines and measurement procedure is described in Appendix \ref{appendix:data-collection}.
+\textbf{Complete schedule} for planned vibration data gathering on the designated machines and measurement procedure is described in Appendix \ref{appendix:data-collection}. In addition, we might be able to export the entire historical logs of the water pump from \textbf{KSB cloud} to enlarge the dataset.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{assets/design/ksb-cloud.jpg}
+     \caption{KSB cloud pump monitoring after ramp-up with displayed warning and alert levels}
+\end{figure}
 
 \subsection{Sensors}
-In preliminary exploratory vibration measurements of machines, the ADXL335 accelerometer is connected to BeagleBone Black microcontroller. The bandwidth, sensitivity, and sampling frequency of the makeshift solution are not appear to be adequate. Hardware parameters of previous and proposed sensor units are in Table~\ref{tab:design:hw-sensors}.
+In preliminary exploratory vibration measurements of machines, the ADXL335 accelerometer is connected to BeagleBone Black microcontroller. The bandwidth, sensitivity, and sampling frequency of the makeshift solution are not appear to be adequate (Table~\ref{tab:design:hw-sensors}).
 
 \begin{table}[ht]
 \renewcommand{\arraystretch}{1.2}
@@ -588,7 +594,7 @@ In preliminary exploratory vibration measurements of machines, the ADXL335 accel
 \textbf{ADC resolution} (bit)                    & 12               & 16                 \\ \hline
 \textbf{FIFO}                                    & -                & 3 kB (512 samples) \\ \hline
 \end{tabular}
-\caption{Accelerometers}
+\caption{Hardware parameters of previous and proposed sensor units}
 \label{tab:design:hw-sensors}
 \end{table}
 
@@ -602,47 +608,46 @@ The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches i
 	\label{fig:design:block-diagram-hw}
 \end{figure}
 
-The drivers for necessary low-level interfaces and FAT32 filesystem are  implemented already in ESP-IDF software development kit\footnote{ESP-IDF SDK: \url{https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html}}. The accelerometer driver is also made available by the vendor and can be integrated with just two function calls for bus read and write operations\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}.
+The drivers for necessary low-level interfaces and FAT32 filesystem are  implemented already in ESP-IDF software development kit\footnote{ESP-IDF SDK: \url{https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html}}. The accelerometer driver is also made available by the vendor and demands customization of bus read and write operations\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}.
 
 \subsection{Preliminary measurements}
-% Describe preliminary measurements, waveform (1) orbital (2), velocity (3)
+During the initial on-site inspections of machinery, we carried out preliminary measurements of vibration signals. Raw waveforms of acceleration for the fan, two different compressors, and outer bearing on a pump in three axes are plotted in Figure~\ref{fig:design:preliminary-acceleration}. The acceleration rarely exceeds 1~g. 
+
+In frequency spectra in Figure~\ref{fig:design:preliminary-spectrum} behavior of machines can be clearly discerned, below the resonance frequency of the accelerometer (550 Hz). The compressor suspected to be faulty has stronger \nth{4} harmonic and above than the other one.
+
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-temporal.png}
         \caption{Acceleration in $\mathrm{m/s}^2$}
+        \label{fig:design:preliminary-acceleration}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-velocity.png}
         \caption{Approximate velocity in $\mathrm{mm/s}$}
+        \label{fig:design:preliminary-velocity}
     \end{subfigure} 
     \caption{Temporal domain waveforms in all spatial directions with 300 ms duration at 1 s timestamp}
-\end{figure}
+\end{figure} 
 
-% Velocity: integrated with composite trapezoidal rule and subtracted mean of envelope found by cubic interpolation of peaks.
+Figure~\ref{fig:design:preliminary-velocity} documents the effort to obtain vibration velocity (as per ISO~20186) by integration with the composite trapezoidal rule. The significant drift after integration is eliminated by subtracting the mean of the envelope constructed using cubic interpolation of peaks. Envelopes must be tweaked further to achieve more accurate values.
 
-% bandpass Butterworth filter of \nth{5} order with cuttoff frequencies f_{max} \pm 5 Hz.
+The orbital plot of the first harmonic frequency $f_{max}$ in Figure~\ref{fig:design:orbital-analysis} allows us to check the sensor deviation out of the axis of rotation. The Butterworth filter of \nth{5} order with cutoff frequencies $f_{max} \pm 5\;\mathrm{Hz}$ is applied in its filtering.
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{assets/design/compressor-orbitals-1x.png}
-	\caption{Orbital analysis of compressor's 1x harmonic}
+		\caption{Orbital analysis of compressor's \nth{1} harmonic frequency}
+		\label{fig:design:orbital-analysis}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.54\textwidth}
         \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-spectral-X-axis.png}
-        \caption{Spectral domain in x axis. FFT with Hann window of length $2^{10}$ ($\approx 409$ ms)}
+        \caption{FFT with Hann window of length $2^{10}$ ($\approx 409\;\mathrm{ms}$)}
+        \label{fig:design:preliminary-spectrum}
     \end{subfigure} 
     \caption{Orbital and spectral methods of vibration signal analysis}
-\end{figure}
-
-% Historical logs of pump from KSB cloud
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=\textwidth]{assets/design/ksb-cloud.jpg}
-     \caption{KSB cloud pump monitoring after ramp up with displayed warning and alert levels}
 \end{figure}
