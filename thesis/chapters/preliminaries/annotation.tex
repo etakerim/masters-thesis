@@ -8,19 +8,17 @@
 &\text{Degree course:} && \text{\StudyProgrammeEN} \\
 &\text{Author:} && \text{\AuthorEN} \\
 &\text{\ThesisEN:} && \text{\TitleEN} \\
-&\text{Supervisor:} && \text{\SupervisorEN} \\
+&\text{Thesis supervisor:} && \text{\SupervisorEN} \\
 &\text{Departmental advisor:} && \text{\DepartmentalAdvisorEN} \\
 &\text{Consultant:} && \text{\ConsultantEN} \\
 &\text{\DateEN}
 \end{align*}}
 
-% Introduction
+The progress report in Master's thesis project \rom{2} deals with condition monitoring and predictive maintenance of rotating machinery by employing feature discovery and statistical classification. 
 
-% Annoatation
-% Summary / description (Aim, methodology, scope, eveidence)
-% Evaluation and analysis of the study (assumptions, strong enough)
-% Reflection on usefulness (how usefull)
+Trend indicators are derived from vibration signals to form summarizing numerical attributes. The similarity of features to a dependent variable describing fault types is assessed with supervised feature selection metrics individually and in the ensemble. The accuracy of fault detection using the k-nearest neighbor is evaluated on the best feature subsets to conserve data rates of the monitoring solution. The incremental learning model is compared to its batch counterpart when truthful labels are delayed or missing. 
 
+Based on the MaFaulDa dataset, classification metrics are evaluated in several scenarios, and lossy compression ratios are expressed. The measurement plan and sensor device are designed to enable collection of novel datasets of machinery behavior for compressors and pumps. The contribution of this work lies in identifying the viability of using a few quantities to describe not just the presence of the machine defect but also its cause.
 \emptypage 
 
 \thispagestyle{empty}
@@ -39,4 +37,9 @@
 &\text{\Date}
 \end{align*}}
 
+Priebežná správa o riešení DP2 sa zaoberá monitorovaním stavu rotačných strojov a ich prediktívnou údržbou prostredníctvom techník výberu atribútov a štatistickej klasifikácie.
+
+Z vibračných signálov sú odvodené trendové indikátory a tak vytvárajú sumarizujúce číselné atribúty. Podobnosť atribútov so závislou premennou popisujúcou typy porúch sa posudzuje metrikami výberu atribútov v učení s učiteľom. Metriky sú hodnotené individuálne a súborovo. Presnosť detekcie porúch s algoritmom k-najbližších susedov sa vyhodnocuje na podskupinách najlepších atribútov, aby sa znížili požiadavky na objem prenosu dát v monitorovacom riešení. Model prírastkového učenia sa porovnáva s jeho dávkovým náprotivkom, v situáciach kedy je expertné označenie prevádzkového stavu oneskorené alebo chýbajúce.
+
+Na základe súboru údajov MaFaulDa sú klasifikačné metriky vyhodnocované podľa viacerých scenárov a tiež sú vyjdrené stratové kompresné pomery. Plán merania a senzorové zariadenie sú navrhnuté na zber nového súboru údajov o správaní sa strojov ako sú kompresory a čerpadlá. Prínos tejto práce spočíva v identifikácii možnosti použitia iba pár veličín na opis nielen prítomnosti poruchy, ale aj jej príčiny.
 \emptypage
