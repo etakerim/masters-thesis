@@ -3,7 +3,7 @@ The methodology applied so far for the dataset recorded in a laboratory is to be
 
 We employ a slightly customized validation procedure that involves the selection of machines to be monitored, identifying positions for measurements according to technical specifications, taking preliminary readings, and developing a device capable of capturing the usual failure modes. The collection of the novel dataset is accompanied by an agreed upon schedule.
 
-\section{Monitored machinery}
+\section{Machinery for monitoring}
 Three kinds of rotating machines are at disposal for vibration measurements. Those are a standing fan, scroll compressor, and water pump.
 
 \begin{figure}[ht]
@@ -40,21 +40,33 @@ Three kinds of rotating machines are at disposal for vibration measurements. Tho
 
 \textbf{Standing fan} is model \emph{Kalorik~TKG~VT1037} (Fig.~\ref{fig:machine:fan}) and one unit is available to us. It serves as a test bed during the sensor unit development. The sensor is placed on the plastic casing at the back of the drive motor. The fan has a 45~cm diameter with 3~propellers and a power of 45~W (class~\rom{1}). It has a switch for 3 rotational speeds, which are approximately 18.5~Hz (1100~rpm), 20.4~Hz (1200~rpm), and 22~Hz (1300~rpm). Acceleration observed is $\pm 5\;\mathrm{m/s}^2$ in radial and tangential directions, and $\pm 1\;\mathrm{m/s}^2$ in axial direction.
 
-\textbf{Scroll compressor} is model \emph{Copeland~ZR16} (Fig.~\ref{fig:machine:compressor}) and altogether two units are available in two independent air conditioning units for the data center. The compressor has 9.7~kW of power (class~\rom{1}) and rotates at 2900 rpm (48.3 Hz). Two possible measurement locations are located on the sides on top of the bearings, just above the base and above the scroll. Accelerations picked up by the sensor are $\pm 3\;\mathrm{m/s}^2$ tops.
+\textbf{Scroll compressor} is model \emph{Copeland~ZR16} (Fig.~\ref{fig:machine:compressor}). Altogether two units are available in two independent air conditioning units for the data center. The compressor has 9.7~kW of power (class~\rom{1}) and rotates at 2900 rpm (48.3 Hz). Two possible measurement locations are located on the sides on top of the bearings, just above the base and above the scroll. Accelerations picked up by the sensor are $\pm 3\;\mathrm{m/s}^2$ tops.
 
-\textbf{Water pumps} are available as 3 units in municipal drinking water pumping station. The apparatus consists of a single-stage axially split volute casing pump and an attached electric induction motor with a squirrel cage rotor. 
+\textbf{Water pumps} are available as 3 units in municipal drinking water pumping station. The apparatus consists of a single-stage axially split volute casing pump and an attached electric induction motor. 
 
-The newer primary pump with cloud monitoring solution is one unit of \emph{KSB Omega~300-560} (Fig.~\ref{fig:machine:pump-ksb}). The pump was commissioned in 2019 and it rotates at a speed of circa 1500 rpm (precisely 1493 rpm or 24.9 Hz). The electric motor in the vicinity has 400~kW of power (class~\rom{2}). Outer bearing on pump vibrates with acceleration of $\pm 5 \;\mathrm{m/s}^2$. 
+The newer primary pumps with bundled wireless cloud monitoring system are two units of \emph{KSB Omega~300-560} (Fig.~\ref{fig:machine:pump-ksb}). The pumps were commissioned in 2018, and they rotate at 1493 rpm (24.9 Hz). The electric motor provides 400~kW of power (class~\rom{3}). Outer bearing on pump vibrates with acceleration of $\pm 5 \;\mathrm{m/s}^2$. 
 
-Secondary pumps are two units produced by \emph{Sigma} (Fig.~\ref{fig:machine:pump-sigma}) in 1986 with motor powers of 250~kW and 100~kW. Each pump and motor has 2 bearings therefore there are 4 measurement positions in total.
+The secondary pump is one unit named \emph{Sigma~300-OVD-600} (Fig.~\ref{fig:machine:pump-sigma}) installed in 1986. It rotates at 1485 rpm (24.75 Hz), and its electric motor has power of 450~kW. Each pump and motor have 2 bearings. Therefore, there are 4 measurement positions in total.
 
-\textbf{Complete schedule} for planned vibration data gathering on the designated machines and measurement procedure is described in Appendix \ref{appendix:data-collection}. In addition, we might be able to export the entire historical logs of the water pump from \textbf{KSB cloud} to enlarge the dataset.
-
-\begin{figure}[ht]
+\begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{assets/design/ksb-cloud.jpg}
-     \caption{KSB cloud pump monitoring after ramp-up with displayed warning and alert levels}
+    \begin{subfigure}[b]{0.49\textwidth}
+    		\centering
+        \includegraphics[width=\textwidth]{assets/design/ksb-guard-rms.png}
+        \caption{Vibration rms velocity dashboard}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+    		\centering
+        \includegraphics[width=\textwidth]{assets/design/ksb-guard-spectrum.png}
+        \caption{Vibration spectral analysis dashboard}
+    \end{subfigure}
+     \caption{KSB Guard cloud monitoring for pumps}
+     \label{fig:design:ksb-guard}
 \end{figure}
+
+\textbf{Complete schedule} for planned vibration data gathering on the designated machines and measurement procedure is described in Appendix~\ref{appendix:technical-docs}. In addition, we are able to export the entire historical record in hourly intervals. Logs from \textbf{KSB Guard} cloud monitoring tool contain vibration rms velocities and frequency spectra for two monitored KSB water pumps  (Figure~\ref{fig:design:ksb-guard}).
+
 
 \section{Sensor hardware and drivers}
 In preliminary exploratory vibration measurements of machines, the ADXL335 accelerometer is connected to BeagleBone Black microcontroller. The bandwidth, sensitivity, and sampling frequency of the makeshift solution are not appear to be adequate (Table~\ref{tab:design:hw-sensors}).
@@ -84,7 +96,6 @@ In preliminary exploratory vibration measurements of machines, the ADXL335 accel
 
 The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches industrial standards for vibration monitoring. An interface capable of higher speeds is needed to store all acceleration samples. Therefore, ESP32-PoE-ISO is chosen as a microcontroller development kit because it has an SD card slot connected via SD/MMC bus. The accelerometer uses an SPI bus with a maximum speed of 10 MHz that can be connected to any physical GPIO pins. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
 
-
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.9\textwidth]{assets/design/hw-block-schematic.png}
@@ -92,7 +103,7 @@ The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches i
 	\label{fig:design:block-diagram-hw}
 \end{figure}
 
-The drivers for necessary low-level interfaces and FAT32 filesystem are  implemented already in ESP-IDF SDK\footnote{ESP-IDF SDK: \url{https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html}}. The accelerometer driver is also made available by the vendor\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}.
+The drivers for necessary low-level interfaces and FAT32 filesystem are  implemented already in ESP-IDF SDK\footnote{ESP-IDF SDK: \url{https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html}}. The accelerometer driver is also made available by the vendor\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}. Activity diagrams of required firmware functionality are in Appendix~\ref{appendix:technical-docs}.
 
 \section{Preliminary measurements}
 During the initial on-site inspections of machinery, we carried out preliminary measurements of vibration signals. Raw waveforms of acceleration for the fan, two different compressors, and outer bearing on a pump in three axes are plotted in Figure~\ref{fig:design:preliminary-acceleration}. The acceleration rarely exceeds 1~g. 
@@ -122,13 +133,13 @@ Figure~\ref{fig:design:preliminary-velocity} documents the effort to obtain vibr
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{assets/design/compressor-orbitals-1x.png}
-		\caption{Orbital analysis of compressor's \nth{1} harmonic frequency}
+		\caption{Orbital analysis of compressor's \nth{1}~harmonic frequency}
 		\label{fig:design:orbital-analysis}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.54\textwidth}
         \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-spectral-X-axis.png}
-        \caption{FFT with Hann window of length $2^{10}$ ($\approx 409\;\mathrm{ms}$)}
+        \caption{FFT with Hann window of length $2^{10}$ ($\approx$~409~ms)}
         \label{fig:design:preliminary-spectrum}
     \end{subfigure} 
     \caption{Orbital and spectral methods of vibration signal analysis}

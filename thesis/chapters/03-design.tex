@@ -2,7 +2,7 @@
 The design phase sets out to elaborate on the scenarios for experiments with IoT device. In these experiments, we compare and combine approaches from industry standards and papers presented in the analysis section. Conclusions are taken into consideration in establishing the plan of measurements and in the construction of the sensor unit.
 
 \section{Research questions}
-This thesis aims to provide answers to four research questions formulated in broader sense. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
+This thesis aims to provide answers to four research questions. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
 \begin{enumerate}[label=RQ\arabic*., font=\bfseries]
     \itemsep0pt
 	\item Which temporal and spectral features can be extracted from vibration signals to provide the most accurate record of machinery faults?
@@ -40,7 +40,7 @@ The goals are impacted by certain \textbf{risks} that are assessed and tracked:
 
 
 \section{Dataset exploration}
-In establishing the validity of methods to be deployed on the sensor node we explore the MaFaulDa dataset. It is the largest known machinery fault collection, so it is possible to create multiple subsets based on requested conditions. 
+In establishing the viability of methods to be deployed in the sensor node, we explore the MaFaulDa dataset. It is the largest known machinery fault collection, so it is possible to create multiple subsets based on requested conditions. 
 
 One representative recording is first selected in each available fault category. The sample is visualized and statistically described in both temporal and spectral domains. A whole step-by-step procedure is outlined in the activity diagram (Fig.~\ref{fig:design:mafaulda-preprocessing}).
 
@@ -72,7 +72,6 @@ The strength of the recorded response by the underlying defect is also dependent
 \end{align}\end{ceqn}
 
 \textbf{One specimen waveform} is picked from each fault class to illustrate their superficial differences. Recordings are filtered to get the highest severity levels and around a mean rotation speed of 2500 rpm (42 Hz)  to see the patterns most pronounced. The baseline class sample is chosen according to fixed rotor speed.
-
 
 \subsection{Signal filters}
 The DC component in the three-dimensional vibration signal is removed by subtracting the global mean. Immediately follows a digital IIR Butterworth \textbf{low pass filter} of \nth{5} order with cutoff frequency 10 kHz at -3 dB. 
@@ -116,7 +115,7 @@ Each file in the MaFaulDa contains six accelerometer channels. In the feature ex
 
 Signal chunks are converted afterward into \textbf{10 temporal and 11 spectral features}. Welch's method for spectrum density estimation averaging over $2^{14}$ long FFT segments after Hann windowing is the source for spectral features. The reference implementation of feature calculation is crafted according to mathematical formulas atop of Python packages \emph{SciPy}\footnote{SciPy: \url{https://scipy.org/}} and \emph{Time Series Feature Extraction Library} (TSFEL)\footnote{TSFEL: \url{https://tsfel.readthedocs.io/}}.
 
-The Euclidian norm of feature in the triaxial vector eliminates reliance on the direction of measurement. Value ranges are depicted in Figure \ref{fig:design:feature-range}. 
+The Euclidean norm of feature in the triaxial vector eliminates reliance on the direction of measurement. Value ranges are depicted in Figure~\ref{fig:design:feature-range}. 
 
 
 \begin{figure}[ht]
@@ -230,7 +229,7 @@ The objective of feature selection is to find a subset of the most relevant pred
 \itemsep0pt
 \item \textbf{online}: boolean selector that influences whether metrics are calculated in batch or incremental fashion,
 \item \textbf{placement}: chooses between bearing ``A'' and bearing ``B'',
-\item \textbf{target variable}: selects column out of ``fault'', ``anomaly60'', ``anomaly90'' against which similarity is judged,
+\item \textbf{predicted variable}: selects column out of ``fault'', ``anomaly60'', ``anomaly90'' against which similarity is judged,
 \item \textbf{rotational speed limit}: chosses whether only observations occuring within predermined range $2500 \pm 500$ rpm are filtered.
 \end{itemize}
 
@@ -257,39 +256,39 @@ The choice of features is very sensitive to experimental conditions. Tendencies 
 
 
 \section{K-nearest neighbor classifier}
-We utilize the k-nearest neighbor algorithm to check machinery diagnostics abilities with reduced feature sets. kNN classifier being a lazy learner means it can be adapted easily from offline to online context. Training labels are min-max scaled and establish nearest-neighbor decision boundaries for attribute values. Voronoi diagrams can display these regions and explain the model in that way. Batch learning in kNN serves here as a target performance whose attainment is desirable with online learning.
+We utilize the k-nearest neighbor algorithm to check machinery diagnostics abilities with reduced feature sets. kNN classifier being a lazy learner means it can be adapted easily from offline to online context. Training labels are min-max scaled and establish nearest-neighbor decision boundaries for attribute values. Voronoi diagrams can display these regions and explain the model in that way. Batch learning in KNN serves here as a target performance whose attainment is desirable with online learning.
 
 \subsection{Batch models}
-Three types of kNN model experiments run with hold-out validation in batch setting. 
+Three types of KNN model experiments run with hold-out validation in batch setting. 
 First, the model learns all extracted features, so no feature selection occurs. Then, the brute-force method searches for a combination of three features with the highest training accuracy. In the end, the model performance for three attributes chosen by feature selection techniques is compared to principal components.
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/kNN-temporal-confusion-matrix-fault.png}
+        \includegraphics[width=\textwidth]{assets/design/KNN-temporal-confusion-matrix-fault.png}
         \caption{Prediction for 6 fault classes in testing set with temporal domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/kNN-spectral-confusion-matrix-fault.png}
+        \includegraphics[width=\textwidth]{assets/design/KNN-spectral-confusion-matrix-fault.png}
         \caption{Prediction for 6 fault classes in testing set with spectral domain features}
     \end{subfigure}
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/kNN-temporal-confusion-matrix-anomaly90.png}
+        \includegraphics[width=\textwidth]{assets/design/KNN-temporal-confusion-matrix-anomaly90.png}
         \caption{Prediction of high severity anomalies in testing set with temporal domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/kNN-spectral-confusion-matrix-anomaly90.png}
+        \includegraphics[width=\textwidth]{assets/design/KNN-spectral-confusion-matrix-anomaly90.png}
         \caption{Prediction of high severity anomalies in testing set with spectral domain features}
     \end{subfigure}
-    \caption{Confusion matrix of kNN predictions on bearing position A}
-    \label{fig:design:knn-confusion-matrix}
+    \caption{Confusion matrix of KNN predictions on bearing position A}
+    \label{fig:design:KNN-confusion-matrix}
 \end{figure}
 
 Two models are created for the target variable in classification with all 10 temporal and 11 spectral features. The subset of records includes all rotational speeds on bearing position A. Either six fault labels or anomaly above 0.9 severity level are guessed by the model with the same hold-out validation split as before. 
 
-Confusion matrices for fault prediction and high severity anomaly are shown in Figure \ref{fig:design:knn-confusion-matrix}. In this example, the number of k neighbors is 5, the distance metric is the Euclidian norm, and the algorithm for proximity queries is a k-d tree. The most inaccuracies in the temporal domain are between misalignment and bearing race faults. In the spectral domain, the model confuses imbalance and bearing faults because mass to unbalance is hung onto the shaft to cause bearing defects. 
+Confusion matrices for fault prediction and high severity anomaly are shown in Figure \ref{fig:design:KNN-confusion-matrix}. In this example, the number of k neighbors is 5, the distance metric is the Euclidian norm, and the algorithm for proximity queries is a k-d tree. The most inaccuracies in the temporal domain are between misalignment and bearing race faults. In the spectral domain, the model confuses imbalance and bearing faults because mass to unbalance is hung onto the shaft to cause bearing defects. 
 
 In anomaly prediction, the error of the first degree is 7 times more prevalent than the error of the second degree. False positives are preferable since we do not want the machine to fail prematurely and not know about it. In all cases, spectral features maintain better prediction metrics than all temporal features because of less interdependency among features. Bearing B exhibits overall worse classification performance because of more noise in the original signal.
 
@@ -307,30 +306,30 @@ In anomaly prediction, the error of the first degree is 7 times more prevalent t
                                                                                      & \begin{tabular}[c]{@{}l@{}}Anomaly \\ (0.9)\end{tabular}                              & \begin{tabular}[c]{@{}l@{}}$\sum 2394$\\ 1197 pre class\end{tabular} & \multicolumn{1}{r|}{0.9148}                                                               & \multicolumn{1}{r|}{0.8668}                                                              & 0.87                                                                                      & \multicolumn{1}{r|}{0.9428}                                                               & \multicolumn{1}{r|}{0.9156}                                                              & 0.92                                                                                      \\ \hline
 \end{tabular}
 \end{adjustbox}
-\caption{kNN model performance trained on all extracted features}
+\caption{KNN model performance trained on all extracted features}
 \label{tab:design:all-extracted-features}
 \end{table}
 
 Accuracies and F1 scores in both bearing positions with all extracted features are shown in Table \ref{tab:design:all-extracted-features}. Models are overtrained, especially for temporal features, because of the substantial difference between accuracy on training and validation sets. Binary classification of anomaly is unsurprisingly more precise in general than multiclass case. Defect-type detection with all features reaches accuracy on the testing set above 98\% for bearing A, and above 87\% for bearing B.
 
-Next, we exhaustively list all combinations of three features and look at the range of model performances generated. There are $\binom{n}{3}$ combinations of attribute triplets that entail 120 separate kNN models for temporal domain features and 165 for the spectral domain. The feature set with the best evaluation scores serves as a benchmark for attributes picked by selection techniques. Accuracies of kNN algorithm for different target variables are in Figure \ref{fig:design:feature-combinations-knn}. 
+Next, we exhaustively list all combinations of three features and look at the range of model performances generated. There are $\binom{n}{3}$ combinations of attribute triplets that entail 120 separate KNN models for temporal domain features and 165 for the spectral domain. The feature set with the best evaluation scores serves as a benchmark for attributes picked by selection techniques. Accuracies of KNN algorithm for different target variables are in Figure \ref{fig:design:feature-combinations-KNN}. 
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/kNN-3-features-combinations-train.png}
+        \includegraphics[width=\textwidth]{assets/design/KNN-3-features-combinations-train.png}
         \caption{Testing set}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/kNN-3-features-combinations-test.png}
+        \includegraphics[width=\textwidth]{assets/design/KNN-3-features-combinations-test.png}
         \caption{Training set}
     \end{subfigure}
-    \caption{Range of prediction accuracy in all kNN models with subset of 3 features. Subplots show three different predicted variables.}
-    \label{fig:design:feature-combinations-knn}
+    \caption{Range of prediction accuracy in all KNN models with subset of 3 features. Subplots show three different predicted variables.}
+    \label{fig:design:feature-combinations-KNN}
 \end{figure}
 
-Features picked combinatorically for predictions are listed in Table \ref{tab:design:feature-combinations-knn}. Worst accuracies occur for temporal features in multiclass classification 86\% and 77\% depending on bearing position, as compared to 98\% and 91\% accuracy for spectral features. An improvement would come with increasing the number of features, using a different base feature set with greater discriminatory power, or using a more sophisticated model.
+Features picked combinatorically for predictions are listed in Table \ref{tab:design:feature-combinations-KNN}. Worst accuracies occur for temporal features in multiclass classification 86\% and 77\% depending on bearing position, as compared to 98\% and 91\% accuracy for spectral features. An improvement would come with increasing the number of features, using a different base feature set with greater discriminatory power, or using a more sophisticated model.
 
 \begin{table}[ht!]
 \centering
@@ -350,14 +349,13 @@ Features picked combinatorically for predictions are listed in Table \ref{tab:de
 \end{tabular}
 \end{adjustbox}
 \caption{Features with the highest accuracies on the training set found combinatorically}
-\label{tab:design:feature-combinations-knn}
+\label{tab:design:feature-combinations-KNN}
 \end{table}
 
-The features picked using the rank product method are shown in Table \ref{tab:design:best-3-features-knn}. Their prediction accuracies in kNN models are subpar to optimal sets. However, the advantage is that the feature election process is not so computationally taxing. On bearing A, validation set accuracies for fault diagnostics are 85\% and 92\%, for each of the domains. Because of the low k hyperparameter value, models are overtrained either way.
+The features picked using the rank product method are shown in Table \ref{tab:design:best-3-features-KNN}. Their prediction accuracies in KNN models are subpar to optimal sets. However, the advantage is that the feature election process is not so computationally taxing. On bearing A, validation set accuracies for fault diagnostics are 85\% and 92\%, for each of the domains. Because of the low k hyperparameter value, models are overtrained either way.
 
 \begin{table}[ht!]
 \centering
-\renewcommand{\arraystretch}{1.2}
 \begin{adjustbox}{width=\textwidth}
 \begin{tabular}{|r|r|r|l|r|r|}
 \hline
@@ -372,8 +370,8 @@ The features picked using the rank product method are shown in Table \ref{tab:de
                    &                                               & spectral        & \{centroid, roll-on, roll-off\} & 0.8914                                       & 0.8390                                      \\ \hline
 \end{tabular}
 \end{adjustbox}
-\caption{Three chosen features with rank product of correlation, F statistic, mutual information and their associated kNN accuracies.}
-\label{tab:design:best-3-features-knn}
+\caption{Three chosen features with rank product of correlation, F statistic, mutual information and their associated KNN accuracies.}
+\label{tab:design:best-3-features-KNN}
 \end{table}
 
 Lowering the number of attributes allows visualization of labels in planar scatter plots. The data points in 3-dimensional cross sections are colored by true fault classes of all severities in Figure \ref{fig:design:feature-space-scatter}. We observe the inability to separate faults by linear boundaries in given feature spaces and the noncompactness of clusters. 
@@ -395,21 +393,21 @@ Cluster overlaps of various defect types are also confirmed by silhouette scores
     \label{fig:design:feature-space-scatter}
 \end{figure}
 
-Model performance of kNN algorithm preceeded by variety of feature selection methods is compared in Figure \ref{fig:design:knn-accuracy-batch}. Best combination of three features achieves always better than when the model is trained on all features. This has to do with curse of dimensionality phenomenon. 
+Model performance of KNN algorithm preceeded by variety of feature selection methods is compared in Figure \ref{fig:design:KNN-accuracy-batch}. Best combination of three features achieves always better than when the model is trained on all features. This has to do with curse of dimensionality phenomenon. 
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/kNN-feature-selection-predictions-train.png}
+        \includegraphics[width=\textwidth]{assets/design/KNN-feature-selection-predictions-train.png}
         \caption{Testing set}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/kNN-feature-selection-predictions-test.png}
+        \includegraphics[width=\textwidth]{assets/design/KNN-feature-selection-predictions-test.png}
         \caption{Training set}
     \end{subfigure} 
-    \caption{Batch kNN algorithm prediction accuracy with various feature sets.}
-    \label{fig:design:knn-accuracy-batch}
+    \caption{Batch KNN algorithm prediction accuracy with various feature sets.}
+    \label{fig:design:KNN-accuracy-batch}
 \end{figure} 
 
 We suspected that the PCA property of maximizing variances in each of the few dimensions would support more separation of clustered groups and would be beneficial in classification. The bar chart supports this assumption. PCA always produces greater model accuracies than any other method of feature selection. The rank product of the three scoring techniques is not better every time, but it balances out aggregated methods to achieve more stable results across testing sets. 
@@ -420,7 +418,7 @@ In every instance, a subset of spectral features is responsible for better accur
 \subsection{Online models}
 Online learning imitates hardened conditions for machinery diagnostics that appear in deployment. Delayed provision or omission of actual labels undoubtedly degrades the reliability of the classification. The question is how quickly the accuracy approaches the optimal one from the nearest neighbors trained in batch and what the effect of routine difficulties in the ongoing labeling process is.
 
-The kNN models in incremental learning experiments learn on the same base training dataset for bearing position A and with all extracted features as in batch context. In this manner, we can compare the training accuracies in the last sample for both models. kNN is set to 5 nearest neighbors and proximity metric of Euclidian distance. Online learning metrics are evaluated in progressive valuation on a dataset that is left unbalanced.
+The KNN models in incremental learning experiments learn on the same base training dataset for bearing position A and with all extracted features as in batch context. In this manner, we can compare the training accuracies in the last sample for both models. KNN is set to 5 nearest neighbors and proximity metric of Euclidian distance. Online learning metrics are evaluated in progressive valuation on a dataset that is left unbalanced.
 
 The \textbf{stream of events is sorted} by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}) which ensures steady increments in label counts throughout the whole duration of the simulation (Fig.~\ref{fig:design:online-event-order}). This constructed event sequence is a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine. 
 
