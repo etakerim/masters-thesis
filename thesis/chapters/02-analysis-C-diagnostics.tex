@@ -41,14 +41,14 @@ Accurate multi-class classification of machine fault causes according to the cha
 Performance of classification is estimated by several metrics on the validation set obtained using hold-out or cross-validation techniques. Frequently used quantities for classifier model evaluation include accuracy, precision, recall, f1 score, area under ROC curve, and counts of hits and misses in confusion matrix.
 \bigbreak
 
-\textbf{K-nearest neighbors} (kNN) assigns the data point to the class where the majority of $k$ closest instances belong (Fig.~\ref{fig:knn}). It means it can work in the semi-supervised environment because it can infer labels just from knowing a few annotations. The major drawback of kNN is a preference for the majority class in imbalanced class sizes datasets~\cite{shi_improving_2020}. The issue is mitigated with class weights or resampling classes by oversampling or undersampling. kNN algorithm requires features to be normalized to assign the same importance to each predictor.
+\textbf{K-nearest neighbors} (kNN) assigns the data point to the class where the majority of $k$ closest instances belong (Fig.~\ref{fig:KNN}). It means it can work in the semi-supervised environment because it can infer labels just from knowing a few annotations. The major drawback of KNN is a preference for the majority class in imbalanced class sizes datasets~\cite{shi_improving_2020}. The issue is mitigated with class weights or resampling classes by oversampling or undersampling. KNN algorithm requires features to be normalized to assign the same importance to each predictor.
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/analysis/kNN.png}
-        \caption{kNN with k = 5}
-        \label{fig:knn}
+        \includegraphics[width=\textwidth]{assets/analysis/KNN.png}
+        \caption{KNN with k = 5}
+        \label{fig:KNN}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
@@ -59,7 +59,7 @@ Performance of classification is estimated by several metrics on the validation 
     \caption{Nearest neighbors classification algorithm~\cite{chen_skyline_2009}}
 \end{figure}
 
-The sense of distance between feature vectors $\mathbf{x}$, $\mathbf{y}$ have to be defined, so several metrics are available like \emph{Euclidian distance}, \emph{Mahalanobis distance}, \emph{Manhatann distance} etc. (Tab.~\ref{tab:knn-distance})~\cite{sheng_review_2020, abu_alfeilat_effects_2019}. The optimal $k$ parameter is set in supervised learning according to the breaking point in the elbow curve that plots choices of $k$ against the error rate. The demanding neighborhood queries are sped up using spatial index in spatial databases that utilizes search tree such as kd-tree, R-tree, or M-tree. 
+The sense of distance between feature vectors $\mathbf{x}$, $\mathbf{y}$ have to be defined, so several metrics are available like \emph{Euclidian distance}, \emph{Mahalanobis distance}, \emph{Manhatann distance} etc. (Tab.~\ref{tab:KNN-distance})~\cite{sheng_review_2020, abu_alfeilat_effects_2019}. The optimal $k$ parameter is set in supervised learning according to the breaking point in the elbow curve that plots choices of $k$ against the error rate. The demanding neighborhood queries are sped up using spatial index in spatial databases that utilizes search tree such as kd-tree, R-tree, or M-tree. 
 
 \begin{table}[ht]
 \centering
@@ -71,13 +71,13 @@ Manhatann distance	 & $ |x_i - y_i| $													   \\ \hline
 Euclidian distance    & $ \sqrt{\sum_{i = 1}^{n}(x_i - y_i)^2} $                               \\ \hline
 Mahalanobis distance  & $ (\mathbf{x} - \mathbf{y})^T C^{-1} (\mathbf{x} - \mathbf{y}) $       \\ \hline
 \end{tabular}
-\caption{Distance metrics for kNN}
-\label{tab:knn-distance}
+\caption{Distance metrics for KNN}
+\label{tab:KNN-distance}
 \end{table}
 
-Nearest-neighbour classifier has been successfully applied in machinery fault diagnostics. On the CWRU bearing dataset, the kNN with the accuracy of 96.2\% slightly outperformed SVM (95\%) on the combination of time and frequency-domain features, time-domain features - kNN 91.2\%, SVM 88.8\%, and frequency domain features - kNN (98.8\%), SVM (96.2\%)~\cite{jamil_feature-based_2021}. 
+Nearest-neighbour classifier has been successfully applied in machinery fault diagnostics. On the CWRU bearing dataset, the KNN with the accuracy of 96.2\% slightly outperformed SVM (95\%) on the combination of time and frequency-domain features, time-domain features - KNN 91.2\%, SVM 88.8\%, and frequency domain features - KNN (98.8\%), SVM (96.2\%)~\cite{jamil_feature-based_2021}. 
 
-Comparison of kNN and KLDA on a feature set consisting of average, kurtosis, skewness, and standard deviation vectors in each domain has been conducted, achieving a data reduction rate of 95\%. Best accuracies were reached for PSD features with 99.13\% with KLDA and 96.64\% with KNN classifiers and Mahalanobis metric. The sampling frequency was set at 40 kHz~\cite{altaf_new_2022}. Despite kNN lagging in accuracy, we have to keep in mind annotations for faults were complete and machine learning was not tested in a streaming context.
+Comparison of KNN and KLDA on a feature set consisting of average, kurtosis, skewness, and standard deviation vectors in each domain has been conducted, achieving a data reduction rate of 95\%. Best accuracies were reached for PSD features with 99.13\% with KLDA and 96.64\% with KNN classifiers and Mahalanobis metric. The sampling frequency was set at 40 kHz~\cite{altaf_new_2022}. Despite KNN lagging in accuracy, we have to keep in mind annotations for faults were complete and machine learning was not tested in a streaming context.
 
 \subsection{Incremental learning}
 Online or incremental machine learning operates on the streaming data updating the model parameters with each new incoming event or in mini-batches. This approach finds its use in big data processing when the whole dataset is not available in advance or cannot be processed at once because of memory limitations. 
