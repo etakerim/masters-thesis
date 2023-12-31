@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.6450226"
-     inkscape:cx="449.5379"
-     inkscape:cy="456.52868"
+     inkscape:zoom="1.2653994"
+     inkscape:cx="551.20935"
+     inkscape:cy="412.51796"
      inkscape:window-width="1920"
      inkscape:window-height="1008"
      inkscape:window-x="0"
@@ -34,12 +34,50 @@
      inkscape:current-layer="layer1" />
   <defs
      id="defs1">
+    <marker
+       style="overflow:visible"
+       id="marker12"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="0.5"
+       markerHeight="0.5"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path12" />
+    </marker>
     <rect
        x="341.48593"
        y="424.35736"
        width="38.782455"
        height="22.515568"
        id="rect2" />
+    <marker
+       style="overflow:visible"
+       id="marker12-7"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Triangle arrow"
+       markerWidth="0.5"
+       markerHeight="0.5"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path12-8" />
+    </marker>
   </defs>
   <g
      inkscape:label="Vrstva 1"
@@ -51,7 +89,10 @@
        width="45.17889"
        height="79.884499"
        x="91.771133"
-       y="59.925072" />
+       y="59.925072"
+       inkscape:export-filename="hw-block-schematic.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <rect
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none"
        id="rect1-0"
@@ -60,19 +101,20 @@
        x="167.50362"
        y="83.978111" />
     <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none"
-       id="rect1-0-8"
-       width="17.025534"
-       height="9.2856779"
-       x="148.63322"
-       y="75.219681" />
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none"
+       id="rect1-0-8-6"
+       width="1.4393672"
+       height="3.4820414"
+       x="151.93593"
+       y="98.830513" />
     <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none"
-       id="rect1-0-8-9"
-       width="17.201254"
-       height="9.6479034"
-       x="148.75471"
-       y="88.582733" />
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none"
+       id="rect1-0-8-6-6"
+       width="1.4393672"
+       height="3.4820414"
+       x="-83.694061"
+       y="141.04965"
+       transform="rotate(-90.12596)" />
     <text
        xml:space="preserve"
        style="font-size:4.93889px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
@@ -91,26 +133,37 @@
          id="tspan6">microcontroller</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:4.93889px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="153.11815"
-       y="81.579773"
-       id="text1-2"><tspan
-         sodipodi:role="line"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="153.11815"
-         y="81.579773"
-         id="tspan6-4">LED</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:4.93889px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="150.69159"
-       y="94.984787"
+       style="font-size:3.88056px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
+       x="153.92621"
+       y="101.65621"
        id="text1-2-3"><tspan
          sodipodi:role="line"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="150.69159"
-         y="94.984787"
-         id="tspan6-4-6">Switch</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
+         x="153.92621"
+         y="101.65621"
+         id="tspan6-4-7">10k</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.88056px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
+       x="140.35753"
+       y="86.467285"
+       id="text1-2-3-3"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
+         x="140.35753"
+         y="86.467285"
+         id="tspan6-4-7-1">220</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.88056px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
+       x="142.5629"
+       y="94.573036"
+       id="text1-2-3-2"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
+         x="142.5629"
+         y="94.573036"
+         id="tspan6-4-7-8">SPST</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
@@ -180,25 +233,25 @@
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="127.75906"
-       y="104.99066"
+       x="127.89104"
+       y="111.68822"
        id="text1-5-8-9-4"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="127.75906"
-         y="104.99066">GND</tspan></text>
+         x="127.89104"
+         y="111.68822">GND</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="128.18938"
-       y="98.317993"
+       x="127.42094"
+       y="90.670822"
        id="text1-5-8-9-4-6"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-4"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="128.18938"
-         y="98.317993">GND</tspan></text>
+         x="127.42094"
+         y="90.670822">GND</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
@@ -213,36 +266,36 @@
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="168.84428"
-       y="105.05513"
+       x="168.68388"
+       y="111.83881"
        id="text1-5-8-9-4-8"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="168.84428"
-         y="105.05513">GND</tspan></text>
+         x="168.68388"
+         y="111.83881">GND</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="127.11938"
-       y="111.51538"
+       x="128.34924"
+       y="105.99216"
        id="text1-5-8-9-4-4"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="127.11938"
-         y="111.51538">3.3V</tspan></text>
+         x="128.34924"
+         y="105.99216">3.3V</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="168.89206"
-       y="111.38348"
+       x="168.98367"
+       y="105.52415"
        id="text1-5-8-9-4-4-3"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-6"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="168.89206"
-         y="111.38348">3.3V</tspan></text>
+         x="168.98367"
+         y="105.52415">3.3V</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.93889px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
@@ -289,9 +342,9 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:'Roboto Light';-inkscape-font-specification:'Roboto Light, ';white-space:pre;shape-inside:url(#rect2);display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"><tspan
          x="341.48633"
          y="438.35742"
-         id="tspan8"><tspan
+         id="tspan7"><tspan
            style="stroke:none"
-           id="tspan2">ABC</tspan></tspan></text>
+           id="tspan3">ABC</tspan></tspan></text>
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
        d="m 136.88006,131.22936 30.55176,0.0462"
@@ -319,261 +372,326 @@
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 137.20374,96.40301 11.74392,-0.02938"
-       id="path5-1-7-0-4-2"
-       sodipodi:nodetypes="cc" />
-    <path
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 136.93928,82.466779 11.74392,-0.02938"
-       id="path5-1-7-0-4-2-3"
-       sodipodi:nodetypes="cc" />
-    <path
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 137.11523,77.920747 11.74392,-0.02938"
+       d="m 137.11523,75.804079 11.74392,-0.02938"
        id="path5-1-7-0-4-2-3-9"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 136.99511,91.475171 11.74392,-0.02938"
+       d="m 137.08971,89.423002 15.54095,-0.06184 -0.002,1.652451"
        id="path5-1-7-0-4-2-5"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="ccc" />
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 61.122519,103.91938 h 30.66672"
+       d="m 137.19307,97.224385 15.54095,-0.06184 -0.0258,-1.759703"
+       id="path5-1-7-0-4-2-5-7"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
+       d="m 61.122519,107.30512 h 30.66672"
        id="path5-1-7-0-4-1"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 61.065314,109.72029 h 30.66672"
+       d="m 61.065314,113.10603 h 30.66672"
        id="path5-1-7-0-4-1-1"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 61.132109,115.50338 h 30.66672"
+       d="m 61.132109,118.88912 h 30.66672"
        id="path5-1-7-0-4-1-1-0"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 61.145754,121.79695 h 30.66672"
+       d="m 61.145754,125.18269 h 30.66672"
        id="path5-1-7-0-4-1-1-0-2"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 61.101681,128.04289 h 30.66672"
+       d="m 61.101681,131.42863 h 30.66672"
        id="path5-1-7-0-4-1-1-0-2-2"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 61.022444,133.9902 h 30.66672"
-       id="path5-1-7-0-4-1-1-0-2-2-2"
-       sodipodi:nodetypes="cc" />
-    <path
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 61.179772,97.773439 h 30.66672"
+       d="m 61.179772,101.15918 h 30.66672"
        id="path5-1-7-0-4-1-1-0-2-2-2-2"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
-       d="m 61.251124,91.391701 h 30.66672"
+       d="m 61.251124,94.777443 h 30.66672"
        id="path5-1-7-0-4-1-1-0-2-2-2-2-8"
        sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="52.680302"
-       y="92.609253"
+       y="95.994995"
        id="text1-5-8-9-4-1"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-0"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="52.680302"
-         y="92.609253">GND</tspan></text>
+         y="95.994995">GND</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="93.465996"
-       y="92.95694"
+       y="96.342682"
        id="text1-5-8-9-4-1-3"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-0-9"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="93.465996"
-         y="92.95694">GND</tspan></text>
+         y="96.342682">GND</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="52.587975"
-       y="99.357773"
+       y="102.74352"
        id="text1-5-8-9-4-4-9"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="52.587975"
-         y="99.357773">3.3V</tspan></text>
+         y="102.74352">3.3V</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="51.382175"
-       y="105.18855"
+       y="108.5743"
        id="text1-5-8-9-4-4-9-0"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-4"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="51.382175"
-         y="105.18855">MISO</tspan></text>
+         y="108.5743">MISO</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="51.019749"
-       y="110.89252"
+       y="114.27826"
        id="text1-5-8-9-4-4-9-0-7"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-4-5"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="51.019749"
-         y="110.89252">MOSI</tspan></text>
+         y="114.27826">MOSI</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="53.465752"
-       y="117.04544"
+       y="120.43118"
        id="text1-5-8-9-4-4-9-0-7-7"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-4-5-2"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="53.465752"
-         y="117.04544">CLK</tspan></text>
+         y="120.43118">CLK</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="55.211731"
-       y="123.26424"
+       y="126.64998"
        id="text1-5-8-9-4-4-9-0-7-7-9"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-4-5-2-6"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="55.211731"
-         y="123.26424">CS</tspan></text>
+         y="126.64998">CS</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="52.128403"
-       y="129.24069"
+       y="132.62643"
        id="text1-5-8-9-4-4-9-0-7-7-9-6"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-4-5-2-6-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="52.128403"
-         y="129.24069">INT1</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="51.983253"
-       y="134.95863"
-       id="text1-5-8-9-4-4-9-0-7-7-9-6-5"><tspan
-         sodipodi:role="line"
-         id="tspan1-9-8-6-6-7-3-4-5-2-6-1-9"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="51.983253"
-         y="134.95863">INT2</tspan></text>
+         y="132.62643">INT1</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="93.591072"
-       y="98.932976"
+       y="102.31872"
        id="text1-5-8-9-4-4-9-5"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-6"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="93.591072"
-         y="98.932976">3.3V</tspan></text>
+         y="102.31872">3.3V</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="93.416275"
-       y="105.07219"
+       y="108.45793"
        id="text1-5-8-9-4-4-9-5-9"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-6-1"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="93.416275"
-         y="105.07219">GPIO16</tspan></text>
+         y="108.45793">GPIO13</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="123.08879"
-       y="92.908844"
+       x="122.66335"
+       y="97.97245"
        id="text1-5-8-9-4-4-9-5-9-86"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-6-1-8"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="123.08879"
-         y="92.908844">GPIO34</tspan></text>
+         x="122.66335"
+         y="97.97245">GPIO34</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="125.22426"
-       y="79.193802"
+       y="77.077133"
        id="text1-5-8-9-4-4-9-5-9-86-3"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-6-1-8-3"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="125.22426"
-         y="79.193802">GPIO5</tspan></text>
+         y="77.077133">GPIO5</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="93.313095"
-       y="111.0378"
+       y="114.42355"
        id="text1-5-8-9-4-4-9-5-9-8"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-6-1-7"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="93.313095"
-         y="111.0378">GPIO32</tspan></text>
+         y="114.42355">GPIO16</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="93.116776"
-       y="116.64989"
+       y="120.03563"
        id="text1-5-8-9-4-4-9-5-9-8-0"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-6-1-7-4"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="93.116776"
-         y="116.64989">GPIO33</tspan></text>
+         y="120.03563">GPIO4</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="93.266815"
-       y="122.9084"
+       y="126.29414"
        id="text1-5-8-9-4-4-9-5-9-8-0-1"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-6-1-7-4-0"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="93.266815"
-         y="122.9084">GPIO13</tspan></text>
+         y="126.29414">GPIO36</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
        x="93.098061"
-       y="128.85355"
+       y="132.23929"
        id="text1-5-8-9-4-4-9-5-9-8-0-1-2"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-6-1-7-4-0-0"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="93.098061"
-         y="128.85355">GPIO35</tspan></text>
+         y="132.23929">GPIO5</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="93.089867"
-       y="134.76752"
-       id="text1-5-8-9-4-4-9-5-9-8-0-1-2-9"><tspan
+       x="80.733826"
+       y="93.379341"
+       id="text1-5-8-9-4-4-9-5-9-8-0-1-2-5"><tspan
          sodipodi:role="line"
-         id="tspan1-9-8-6-6-7-3-6-1-7-4-0-0-0"
+         id="tspan1-9-8-6-6-7-3-6-1-7-4-0-0-3"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="93.089867"
-         y="134.76752">GPIO36</tspan></text>
+         x="80.733826"
+         y="93.379341">UEXT:</tspan></text>
+    <path
+       style="fill:#ff0000;stroke:#000000;stroke-width:0.529167"
+       id="path1"
+       d="m 133.68795,164.90602 a 2.5101991,2.0749557 0 0 1 -9e-5,0.017 z"
+       sodipodi:type="arc"
+       sodipodi:arc-type="chord"
+       sodipodi:open="true"
+       sodipodi:start="0"
+       sodipodi:end="0.0082189023"
+       sodipodi:ry="2.0749557"
+       sodipodi:rx="2.5101991"
+       sodipodi:cy="164.90602"
+       sodipodi:cx="131.17775" />
+    <circle
+       style="fill:none;stroke:#000000;stroke-width:0.150692;stroke-dasharray:none"
+       id="path2"
+       cx="152.61946"
+       cy="91.534325"
+       r="0.63854325" />
+    <circle
+       style="fill:none;stroke:#000000;stroke-width:0.150692;stroke-dasharray:none"
+       id="path2-5"
+       cx="152.67921"
+       cy="94.720009"
+       r="0.63854325" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.52916667;stroke-dasharray:none"
+       d="m 152.95725,91.998286 1.61436,2.825511"
+       id="path3" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none"
+       d="m 152.71514,97.321821 -0.004,1.426679"
+       id="path3-6"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none"
+       d="m 152.69431,102.29998 -0.004,1.42668"
+       id="path3-6-9"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:type="star"
+       style="fill:none;stroke:#000000;stroke-width:0.911719;stroke-dasharray:none"
+       id="path4"
+       inkscape:flatsided="false"
+       sodipodi:sides="3"
+       sodipodi:cx="149.11951"
+       sodipodi:cy="77.999931"
+       sodipodi:r1="3.3880117"
+       sodipodi:r2="1.6940058"
+       sodipodi:arg1="0.25619122"
+       sodipodi:arg2="1.3033888"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 152.39694,78.858446 -2.82982,0.775285 -2.82983,0.775284 0.7435,-2.838341 0.7435,-2.838342 2.08632,2.063058 z"
+       inkscape:transform-center-x="-0.093080126"
+       inkscape:transform-center-y="0.71009671"
+       transform="matrix(0.30633294,-0.30927177,0.30051007,0.3151805,79.435084,100.21079)" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.396875;stroke-dasharray:none"
+       d="m 148.4857,82.558773 0.0342,-2.314509 v 0 0"
+       id="path7" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.396875;stroke-dasharray:none"
+       d="m 148.56474,77.843785 0.0342,-2.314509 v 0 0"
+       id="path7-5" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.396875;stroke-dasharray:none"
+       d="m 147.04524,80.278916 2.84891,0.04051"
+       id="path8" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.396875;stroke-dasharray:none"
+       d="m 137.11203,82.563633 h 4.0504"
+       id="path9" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.396875;stroke-dasharray:none"
+       d="m 144.71469,82.621833 3.97021,-0.01532"
+       id="path10"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458333;stroke-dasharray:none;marker-end:url(#marker12)"
+       d="m 150.15374,78.732358 1.65217,0.842983"
+       id="path11" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;marker-end:url(#marker12-7)"
+       d="m 149.95081,79.649259 1.65217,0.842983"
+       id="path11-5" />
   </g>
 </svg>
