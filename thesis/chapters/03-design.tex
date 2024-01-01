@@ -7,40 +7,41 @@ This thesis aims to provide answers to four research questions. The focus is pri
     \itemsep0pt
 	\item Which temporal and spectral features can be extracted from vibration signals to provide the most accurate record of machinery faults?
 	\item What is the reduction in transmission goodput when chosen signal features are used?
-	\item What accuracies of prediction models can be achieved with various feature subsets?
+	\item What accuracy of prediction models can be achieved with various feature subsets?
 	\item How can machinery faults be continuously identified and predicted based upon collected events?
 \end{enumerate}
 
 \noindent In accomplishing the objectives of our research we propose several \textbf{goals}:
 \begin{todolist}
     \itemsep0pt
-	\item Statistically and visually describe vibration signals from the Machinery fault database (MauFaulDa).
-	\item Establish a list of conditions that should be later investigated in the experimental setting.
-	\item Prepare dataset to be used in conjunction with machine learning models, namely by identifying labels and balancing classes.
-	\item Find the best subsets of features in temporal and spectral domain with previously analyzed feature extraction and selection methods.
-	\item Evaluate the performance of models described in the diagnostics section with a significant focus on the k-nearest neighbor algorithm.
-	\item Combine feature selection with online machine learning model.
-	\item Acquire measurements of vibrations from machines in the real environment to form a novel dataset of machinery behavior.
-	\item Develop hardware and implement its firmware to obtain such measurement in the quality demanded by vibrodiagnostics standards.
+    \item Statistically and visually describe vibration signals from the Machinery fault database (MauFaulDa).
+    \item Establish a list of conditions that should be later investigated in the experimental setting.
+    \item Prepare dataset to be used in conjunction with machine learning models, namely by identifying labels and balancing classes.
+    \item Find the best subsets of features in the temporal and spectral domain with previously analyzed feature extraction and selection methods.
+    \item Evaluate the performance of models described in the diagnostics section with a significant focus on the k-nearest neighbor algorithm.
+    \item Combine feature selection with an online machine learning model.
+    \item Acquire measurements of vibrations from machines in the real environment to form a novel dataset of machinery behavior.
+    \item Develop hardware and implement its firmware to obtain such measurements of the quality demanded by vibrodiagnostics standards.
 \end{todolist}
 
 However, we leave out from our efforts experiments on the data features calculated from wavelets and peaks in the spectral domain. The reason is that we did not find a way to represent extracted features more succinctly as a single number. We also did not discover a strategy for choosing only the relevant frequency bins. The assembled description is retained to lead further research on that topic.
 
 The goals are impacted by certain \textbf{risks} that are assessed and tracked:
+
 \begin{enumerate}[label=R-\arabic*., font=\bfseries]
 \itemsep0pt
 \item Machines in the real environment will not be available for vibration measurements. \\ \emph{Mitigation}: Contact and establish collaboration with alternative partners. 
 \item Repeated measurements will not be consistent, and a lack of data is obtained from different classes.
 \\ \emph{Mitigation}: Prepare a plan for measurements and photo document sensor placements. 
-\item Fault modes could not be reliably differentiated and labeled in the dataset.
-\\ \emph{Mitigation}: Consult domain experts and machines' maintenance staff.
+\item Fault modes can not be reliably differentiated and labeled in the dataset.
+\\ \emph{Mitigation}: Consult domain experts and machine maintenance staff.
 \item Suggestions made by exploring the MaFaulDa dataset will not be applicable in practice. \\
 \emph{Mitigation}: When applicable, apply the same procedures as in MaFaulDa to measured data.
 \end{enumerate}
 
 
 \section{Dataset exploration}
-In establishing the viability of methods to be deployed in the sensor node, we explore the MaFaulDa dataset. It is the largest known machinery fault collection, so it is possible to create multiple subsets based on requested conditions. 
+In establishing the viability of methods to be deployed on the sensor node, we explore the MaFaulDa dataset. It is the largest known machinery fault collection, so it is possible to create multiple subsets based on required conditions. 
 
 One representative recording is first selected in each available fault category. The sample is visualized and statistically described in both temporal and spectral domains. A whole step-by-step procedure is outlined in the activity diagram (Fig.~\ref{fig:design:mafaulda-preprocessing}).
 
@@ -56,27 +57,27 @@ MaFaulda contains 1951 records labeled with inducted faults of increasing severi
 These vibration sensors are placed in two positions. The first placement is around the inner underhang bearing named \emph{A} which is closer to the motor. The second location is around the outer overhang bearing denoted as \emph{B} position.
 
 \subsection{Fault annotations}
-The MaFaulDa has annotations altogether for 10 classes of faults of which there is 1 class for fault-free baseline operation, 3 classes for shaft defects, 3 classes for inner bearing defects, and 3 for outer bearing defects. Some categories are redundant or irrelevant for a given sensor position. 
+The MaFaulDa has annotations altogether for 10 classes of faults, of which there is 1 class for fault-free baseline operation, 3 classes for shaft defects, 3 classes for inner bearing defects, and 3 for outer bearing defects. Some categories are redundant or irrelevant for a given sensor position. 
 
-Therefore rotor shaft misalignements in vertical and horizontal directions are merged into one joint group. Depending on the chosen bearing position only records having relevant labels are considered. 
+Therefore, rotor shaft misalignement in vertical and horizontal directions are merged into one joint group. Depending on the chosen bearing position, only records having relevant labels are considered. 
 
-This means that fault classification solely concerns bearing in the direct contact and shaft mechanically passing through it. The bearings affect each other, but the effect on the opposite side should appear via a common interconnection shaft. 
+This means that fault classification solely concerns bearing in direct contact and shaft mechanically passing through it. The bearings affect each other, but the effect on the opposite side should appear via a common interconnection shaft. 
 
-In the end, that leaves \textbf{6 types of labels}: baseline, two shaft faults are imbalance and misalignment, and three bearing faults are cage fault, ball fault, and outer race fault. In the step of choosing the accelerometer location records pointing to the other bearing as a source of the malfunction are discarded. Then the next action renames the labels to be better recognizable and unite the same phenomena.
+In the end, that leaves \textbf{6 types of labels}: baseline, two shaft faults are imbalance and misalignment, and three bearing faults are cage fault, ball fault, and outer race fault. In the step of choosing the accelerometer location, records pointing to the other bearing as a source of the malfunction are discarded. Then the next action renames the labels to be better recognizable and unite the same phenomena.
 
-Groups of identified machine defects are additionally characterized by altered masses attached or motor shaft displacement shifts. The set amount is sorted in ascending order separating \textbf{multiple event severities}. However, the count of severity levels is not identical in every group. Levels are hence scaled into the range between zero and one using a min-max scaler. Scaling is applied to classes separately.
+Groups of identified machine defects are additionally characterized by altered masses attached or motor shaft displacement shifts. The set amount is sorted in ascending order, separating \textbf{multiple event severities}. However, the count of severity levels is not identical in every group. Levels are hence scaled into the range between zero and one using a min-max scaler. Scaling is applied to classes separately.
 
-The strength of the recorded response by the underlying defect is also dependent on the shaft \textbf{rotational speed}. Speed in rpm is calculated from pulsed speedometer output. It is the average distance between two successive rising edges: 
+The strength of the recorded response to the underlying defect is also dependent on the shaft \textbf{rotational speed}. Speed in rpm units is calculated from pulsed speedometer output. It is the average distance between two successive rising edges: 
 \begin{ceqn}\begin{align}
 \mathrm{rpm} = 60 \;/\; \overline{\Delta t}
 \end{align}\end{ceqn}
 
-\textbf{One specimen waveform} is picked from each fault class to illustrate their superficial differences. Recordings are filtered to get the highest severity levels and around a mean rotation speed of 2500 rpm (42 Hz)  to see the patterns most pronounced. The baseline class sample is chosen according to fixed rotor speed.
+\textbf{One specimen waveform} is picked from each fault class to illustrate their superficial differences. Recordings are filtered to get the highest severity levels and around a mean rotation speed of 2500 rpm (42 Hz) to see the patterns most pronounced. The baseline class sample is chosen according to fixed rotor speed.
 
 \subsection{Signal filters}
 The DC component in the three-dimensional vibration signal is removed by subtracting the global mean. Immediately follows a digital IIR Butterworth \textbf{low pass filter} of \nth{5} order with cutoff frequency 10 kHz at -3 dB. 
 
-Before the low pass filter usage, the peak at 20 kHz with sideband was present as an unwanted artifact. It could not have been reliably recorded due to the linear frequency response of the sensor up to 10 kHz. At the same time, such frequency is outside the range of any feasible MEMS accelerometer.
+Before the low pass filter usage, the peak at 20 kHz with a sideband was present as an unwanted artifact. It could not have been reliably recorded due to the linear frequency response of the sensor up to 10 kHz. At the same time, such a frequency is outside the range of any feasible MEMS accelerometer.
 
 \begin{figure}[ht]
     \centering
@@ -102,10 +103,9 @@ The frequency spectrum in Figure \ref{fig:design:fault-spectral-waveform} is obt
 \subsection{Statistical tests}
 The statistical tests and visual checks are conducted to assess \textbf{normality and stationary} of time series. Half a second of amplitude samples are used from every sensor channel. These 25 thousand observations are downsampled tenfold to $2500$. 
 
-\textbf{Shapiro-Wilk's test} rejects the null hypothesis (${p < 0.05}$) that data is drawn from normal distribution under most circumstances. The signal has normal distribution when it resembles pink noise lacking a regular pattern or weak exhibition of fault symptoms. \textbf{Quantile–quantile plots} confirm non-normal distribution because of the striking samples tilt to the diagonal line.
+\textbf{Shapiro-Wilk's test} rejects the null hypothesis (${p < 0.05}$) that data is drawn from a normal distribution under most circumstances. The signal has normal distribution when it resembles pink noise lacking a regular pattern or weak exhibition of fault symptoms. \textbf{Quantile–quantile plots} confirm non-normal distribution because of the striking samples tilt to the diagonal line.
 
-\textbf{Augmented Dickey-Fuller test} rejects the null hypothesis of unit root 
-(${p < 0.001}$). The same is confirmed with the \textbf{autocorrelation} function shape. It denotes that the stochastic process is stationary as oscillation is bounded.
+\textbf{Augmented Dickey-Fuller test} rejects the null hypothesis of unit root (${p < 0.001}$). The same is confirmed with the \textbf{autocorrelation} function shape. It denotes that the stochastic process is stationary as the oscillation is bounded.
 
 \section{Feature relevance}
 Attributes described in section \ref{section:feature-extraction} are independently summarized from each sensor position and direction. Then similarity score of features is ascertained in relation to a predicted variable. The subset of the strongest predictors is chosen based on the order of their perceived importance.
@@ -133,7 +133,7 @@ The Euclidean norm of feature in the triaxial vector eliminates reliance on the 
     \label{fig:design:feature-range}
 \end{figure}
 
-Fault labels and their severities come from the directory structure within the dataset. The binary target variable indicating whether to initiate a warning is named to be an anomaly. Anomalies are labeled according to relative fault severity level. We decided to investigate two fault severities having levels above 0.6 and 0.9. The quantity of observation by fault and anomaly severity is shown in Table \ref{tab:observation-counts}. The dataset is substantially unbalanced.
+Fault labels and their severities come from the directory structure within the dataset. The binary target variable indicating whether to initiate a warning is called an anomaly. Anomalies are labeled according to relative fault severity level. We decided to investigate two fault severities having levels above 0.6 and 0.9. The quantity of observation by fault and anomaly severity is shown in Table \ref{tab:observation-counts}. The dataset is substantially unbalanced.
 
 \begin{table}[ht]
 \centering
@@ -161,11 +161,12 @@ Fault labels and their severities come from the directory structure within the d
 \label{tab:observation-counts}
 \end{table}
 
-Pearson's correlation of features to rpm is very low in the whole dataset. In the temporal domain, the correlation coefficient is within an interval of -0.08 to 0.26. In the spectral domain, the correlation to rpm for all FFT window sizes from $2^8$ up to $2^{14}$ is mostly very low from -0.14 up to 0.26, except for centroid being around 0.35.
+Pearson's correlation of features to rpm is very low in the whole dataset. In the temporal domain, the correlation coefficient is within an interval of -0.08 to 0.26. In the spectral domain, the correlation to rpm for all FFT window sizes from $2^8$ up to $2^{14}$ is mostly very low from -0.14 up to 0.26, except for the centroid being around 0.35.
 
 The correlation among features can reduce prediction power if a pair is elected where $|\mathrm{corr}| > 0.95$. The feature is not added to the subset when the threshold is exceeded. High correlations are more substantial in the temporal domain that are present in these pairs (ordered from the most correlated): \{std, rms\}, \{pp, max\}, \{crest, margin\}, \{impulse, std\}, \{impulse, rms\}. In the spectral domain set \{skewness, kurtosis\} has a strong correlation.
 
-It is assumed that data points spread in each dimension of the feature space could distinguish groups well. The variables that the best explain after min-max scaling total dataset variance in the temporal domain are shape (29\%), rms, std, max, and p-p (each around 15\%). In the spectral domain, variance is the best explained by roll-off (28\%), entropy, skewness, centroid, and kurtosis (each around 12\%).
+It is assumed that data points spread throughout each dimension of the feature space could distinguish groups well. The variables that are the best explained after min-max scaling total dataset variance in the temporal domain are shape (29\%), rms, std, max, and p-p (each around 15\%). In the spectral domain, variance is best explained by roll-off (28\%), entropy, skewness, centroid, and kurtosis (each around 12\%).
+
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{assets/design/pca-explained-variance.png}
@@ -173,7 +174,7 @@ It is assumed that data points spread in each dimension of the feature space cou
     \label{fig:design:pca-explained-variance} 
 \end{figure}
 
-The variables are also more inter-correlated in the temporal domain shown by principal components analysis. For 95\% of the explained variance of PCA 3 components (98.69\%) are needed in the temporal domain whereas 4 in the spectral domain (95.26\%). Figure \ref{fig:design:pca-explained-variance} visualizes cumulative explained variance with an increasing number of principal components. 
+The variables are also more inter-correlated in the temporal domain shown by principal component analysis. For 95\% of the explained variance of PCA 3 components (98.69\%) are needed in the temporal domain whereas 4 in the spectral domain (95.26\%). Figure \ref{fig:design:pca-explained-variance} visualizes cumulative explained variance with an increasing number of principal components. 
 
 \begin{figure}[h!]
     \centering
@@ -190,22 +191,22 @@ The variables are also more inter-correlated in the temporal domain shown by pri
     \label{fig:design:pca-loading-plot} 
 \end{figure}
 
-PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. Loading plots of PCA (Fig. \ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the temporal domain focuses more on amplitude range: \emph{max, rms, pp, std}. The second PC mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, margin}. 
+PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. Loading plots of PCA (Fig. \ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the temporal domain focuses more on the amplitude range: \emph{max, rms, pp, std}. The second PC mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, margin}.
 
-However, the groups are not as clear cut for spectral features. Overall chaos in spectra can be attributed to PC1: \emph{flux, entropy, negentropy, noisiness}, and the shape of frequency distribution to PC2: \emph{roll-on, roll-off, centroid}.
+However, the groups are not as clear-cut for spectral features. Overall chaos in spectra can be attributed to PC1: \emph{flux, entropy, negentropy, noisiness}, and the shape of frequency distribution to PC2: \emph{roll-on, roll-off, centroid}.
 
 
 \subsection{Data volume savings}
 The apparent advantage of feature discovery is reducing the amount of data downstream. Data compression must occur on edge devices to enable the utilization of wireless low-power wide area networks (LPWAN). The protocol stack may differ, so goodput is compared without node configuration metadata and keepalive messages. 
 
-Machinery monitoring system relies on determining several parameters:
+The machinery monitoring system relies on determining several parameters:
 \begin{itemize}
 \itemsep0pt
-\item \textbf{Number of source channels} ($S$): is comprised of the number of monitored machines, measurement locations for sensors, and active sensor axes.
+\item \textbf{Number of source channels} ($S$): comprises the number of monitored machines, measurement locations for sensors, and active sensor axes.
 \item \textbf{Sampling frequency} ($f_s$): is set based on the linear response of the accelerometer, the types of faults intended for detection, and how soon they should be noticed after they arise. The higher required sensitivity means a higher sampling rate derived according to the Nyquist theorem. At a minimum, it should be 15 kHz to 20 kHz.
-\item \textbf{Interval between successive measurements} ($T$): specifies the minimal response time to sudden failure. The more critical the machine is, interval should be shorter. The bigger the machine parts, the slower the defect evolves.
-\item \textbf{Duration of valid recording} ($D$): is the captured snapshot of machine unaltering behavior associated with a timestamp. Duration should cover at least 3 windows for spectral estimation. The spectral resolution of 1 Hz amounts to 3 seconds of signal under such assumptions.
-\item \textbf{Number of extracted features} ($F$): are ideally key trend indicators pointing to symptoms of common malfuctions. We aim for total of 6 features.
+\item \textbf{Interval between successive measurements} ($T$): specifies the minimal response time to sudden failure. The more critical the machine is, the interval should be shorter. The bigger the machine parts, the slower the defect evolves.
+\item \textbf{Duration of valid recording} ($D$): is the captured snapshot of machine unaltered behavior associated with a timestamp. Duration should cover at least 3 windows for spectral estimation. The spectral resolution of 1 Hz amounts to 3 seconds of signal under such assumptions.
+\item \textbf{Number of extracted features} ($F$): are ideally key trend indicators pointing to symptoms of common malfunctions. We aim for a total of 6 features.
 \end{itemize}
 
 Equation \ref{equ:compression-ratio-features} expresses the lossy compression ratio ($\mathcal{C}$) formula if trend indicators are stored instead of full recording. The number of raw channels ($S_{\mathrm{in}}$) can differ from those extracted in features ($S_{\mathrm{out}}$). Parameter $D = 0.5$ when we use frequency bins with 1 Hz resolution.
@@ -215,27 +216,28 @@ Equation \ref{equ:compression-ratio-features} expresses the lossy compression ra
 \mathcal{C} = \frac{D \cdot f_s \cdot S_{\mathrm{in}}}{F \cdot S_{\mathrm{out}}}
 \end{align}\end{ceqn}
 
-\textbf{Compression ratio} for MaFaulDa dataset compared to all 21 extracted features in 3 dimensions is 2381:1. In case 6 features are kept, the compression is 25000:1, which is a saving of the original data amount of 99.996\%.
+\textbf{Compression ratio} for MaFaulDa dataset compared to all 21 extracted features in 3 dimensions is 2381:1. If 6 features are kept, the compression is 25000:1, which is a saving of the original data by 99.996\%.
 
-As an example to approximate required network goodput and storage in practice, we consider continuous vibration \textbf{monitoring for municipal water pumping station}. The station has 3 pumps and matching 3 electric induction motors. 
+As an example to approximate required network goodput and storage in practice, we consider continuous vibration \textbf{monitoring for municipal water pumping station}. The station has 3 pumps and 3 electric motors. 
 
-A pump and motor pair have 4 bearings together for drive end and non-drive end positions. Each position has a sensor mounted in 3 directions that makes a total of \emph{36 source channels}. The sampling frequency on each position is set to \emph{20 kHz}. The recordings have \emph{duration of 5 seconds} and are triggered regularly every 1 hour (\emph{8760 times per year}).
+A pump and motor pair have 4 bearings together for drive end and non-drive end positions. Each position has a sensor mounted in 3 directions that makes a total of \emph{36 source channels}. The sampling frequency at each position is set to \emph{20 kHz}. The recordings have \emph{duration of 5 seconds} and are triggered regularly every 1 hour (\emph{8760 times per year}).
 
-In a year the system gathers 31.54 Gs (gigasamples) which is 58.74 GiB with 16-bit ADC resolution. Reasonably precise spectral estimation with 10 thousand bins needs 3.15 Gs per year. On the other hand, 6 features out of each channel keep only 1.89 Ms per year for a lossy compression ratio of 16667:1. Low data volumes potentially enable feature selection and models to be offloaded directly to edge devices. The entire machine's history can be kept in a small flash memory module.
+In a year, the system gathers 31.54 Gs (gigasamples) which is 58.74 GiB with a 16-bit ADC resolution. Reasonably precise spectral estimation with 10 thousand bins needs 3.15 Gs per year. On the other hand, 6 features out of each channel keep only 1.89 Ms per year for a lossy compression ratio of 16667:1. Low data volumes potentially enable feature selection and models to be offloaded directly to edge devices. The entire machine's history can be kept in a small flash memory module.
 
 \subsection{Feature selection}
-The objective of feature selection is to find a subset of the most relevant predictors in each domain. As a starting point, the set consists of 3 non-correlated attributes under diverse conditions. Ultimately a number of chosen features is to be tweaked to increase prediction accuracy. Four criteria are combined to put together 24 scenarios that filter rows from MaFaulDa:
+The objective of feature selection is to find a subset of the most relevant predictors in each domain. As a starting point, the set consists of 3 non-correlated attributes under diverse conditions. Ultimately, a number of chosen features are to be tweaked to increase prediction accuracy. Four criteria are combined to put together 24 scenarios that filter rows from MaFaulDa:
+
 \begin{itemize}
 \itemsep0pt
-\item \textbf{online}: boolean selector that influences whether metrics are calculated in batch or incremental fashion,
+\item \textbf{online}: a boolean selector that influences whether metrics are calculated in batch or incremental fashion,
 \item \textbf{placement}: chooses between bearing ``A'' and bearing ``B'',
-\item \textbf{predicted variable}: selects column out of ``fault'', ``anomaly60'', ``anomaly90'' against which similarity is judged,
+\item \textbf{predicted variable}: select a column out of ``fault'', ``anomaly60'', ``anomaly90'' against which similarity is judged,
 \item \textbf{rotational speed limit}: chosses whether only observations occuring within predermined range $2500 \pm 500$ rpm are filtered.
 \end{itemize}
 
 In feature evaluation for fault prediction, we use hold-out validation in batch models and progressive valuation in online models. Classes in observations for batch models are rebalanced to the majority class with a random oversampling strategy. The training and testing set split ratio is 80 to 20. Classes for incremental learning are ordered by relative severity level and shuffled within levels. 
 
-The best group of attributes is elected based on a training set with multiple methods. We compute the mean of absolute value from point-biserial correlation, F statistic, and mutual information to the predicted variable. The features are then ordered in descending order of the received score. These individual ranks are combined by rank product to create an ensemble out of the metrics. Reference implementation of feature selection metrics uses Python packages Scikit Learn\footnote{SciKit Learn: \url{https://scikit-learn.org/}} in batch learning and RiverML\footnote{RiverML: \url{https://riverml.xyz/}} for online learning.
+The best group of attributes is elected based on a training set with multiple methods. We compute the mean of the absolute value from point-biserial correlation, F statistic, and mutual information to the predicted variable. The features are then ordered in descending order by the received score. These individual ranks are combined by rank product to create an ensemble out of the metrics. Reference implementation of feature selection metrics uses Python packages Scikit Learn\footnote{SciKit Learn: \url{https://scikit-learn.org/}} in batch learning and RiverML\footnote{RiverML: \url{https://riverml.xyz/}} for online learning.
 
 \begin{figure}[h!]
     \centering
@@ -256,11 +258,10 @@ The choice of features is very sensitive to experimental conditions. Tendencies 
 
 
 \section{K-nearest neighbor classifier}
-We utilize the k-nearest neighbor algorithm to check machinery diagnostics abilities with reduced feature sets. kNN classifier being a lazy learner means it can be adapted easily from offline to online context. Training labels are min-max scaled and establish nearest-neighbor decision boundaries for attribute values. Voronoi diagrams can display these regions and explain the model in that way. Batch learning in KNN serves here as a target performance whose attainment is desirable with online learning.
+We utilize the k-nearest neighbor algorithm to check machinery diagnostics abilities with reduced feature sets. The KNN classifier being a lazy learner means it can be adapted easily from offline to online context. Training labels are min-max scaled and establish nearest-neighbor decision boundaries for attribute values. Voronoi diagrams can display these regions and explain the model in that way. Batch learning in KNN serves here as a target performance whose attainment is desirable with online learning.
 
 \subsection{Batch models}
-Three types of KNN model experiments run with hold-out validation in batch setting. 
-First, the model learns all extracted features, so no feature selection occurs. Then, the brute-force method searches for a combination of three features with the highest training accuracy. In the end, the model performance for three attributes chosen by feature selection techniques is compared to principal components.
+Three types of KNN model experiments run with hold-out validation in a batch setting. First, the model learns all extracted features, so no feature selection occurs. Then, the brute-force method searches for a combination of three features with the highest training accuracy. In the end, the model performance for three attributes chosen by feature selection techniques is compared to principal components.
 
 \begin{figure}[ht]
     \centering
@@ -286,11 +287,11 @@ First, the model learns all extracted features, so no feature selection occurs. 
     \label{fig:design:KNN-confusion-matrix}
 \end{figure}
 
-Two models are created for the target variable in classification with all 10 temporal and 11 spectral features. The subset of records includes all rotational speeds on bearing position A. Either six fault labels or anomaly above 0.9 severity level are guessed by the model with the same hold-out validation split as before. 
+Two models are created for the target variable in classification with all 10 temporal and 11 spectral features. The subset of records includes all rotational speeds on bearing position A. Either six fault labels or anomalies above 0.9 severity level are guessed by the model with the same hold-out validation split as before. 
 
 Confusion matrices for fault prediction and high severity anomaly are shown in Figure \ref{fig:design:KNN-confusion-matrix}. In this example, the number of k neighbors is 5, the distance metric is the Euclidian norm, and the algorithm for proximity queries is a k-d tree. The most inaccuracies in the temporal domain are between misalignment and bearing race faults. In the spectral domain, the model confuses imbalance and bearing faults because mass to unbalance is hung onto the shaft to cause bearing defects. 
 
-In anomaly prediction, the error of the first degree is 7 times more prevalent than the error of the second degree. False positives are preferable since we do not want the machine to fail prematurely and not know about it. In all cases, spectral features maintain better prediction metrics than all temporal features because of less interdependency among features. Bearing B exhibits overall worse classification performance because of more noise in the original signal.
+In anomaly prediction, the error of the first degree is 7 times more prevalent than the error of the second degree. False positives are preferable, since we do not want the machine to fail prematurely and not know about it. In all cases, spectral features maintain better prediction metrics than all temporal features because of less interdependency among features. Bearing B exhibits overall worse classification performance because of more noise in the original signal.
 
 \begin{table}[h]
 \centering
@@ -310,9 +311,9 @@ In anomaly prediction, the error of the first degree is 7 times more prevalent t
 \label{tab:design:all-extracted-features}
 \end{table}
 
-Accuracies and F1 scores in both bearing positions with all extracted features are shown in Table \ref{tab:design:all-extracted-features}. Models are overtrained, especially for temporal features, because of the substantial difference between accuracy on training and validation sets. Binary classification of anomaly is unsurprisingly more precise in general than multiclass case. Defect-type detection with all features reaches accuracy on the testing set above 98\% for bearing A, and above 87\% for bearing B.
+Accuracies and F1 scores in both bearing positions with all extracted features are shown in Table \ref{tab:design:all-extracted-features}. Models are overtrained, especially for temporal features, because of the substantial difference between accuracy on training and validation sets. Binary classification of anomalies is unsurprisingly more precise in general than the multi-class case. Defect-type detection with all features reaches accuracy on the testing set above 98\% for bearing A, and above 87\% for bearing B.
 
-Next, we exhaustively list all combinations of three features and look at the range of model performances generated. There are $\binom{n}{3}$ combinations of attribute triplets that entail 120 separate KNN models for temporal domain features and 165 for the spectral domain. The feature set with the best evaluation scores serves as a benchmark for attributes picked by selection techniques. Accuracies of KNN algorithm for different target variables are in Figure \ref{fig:design:feature-combinations-KNN}. 
+Next, we exhaustively list all combinations of three features and look at the range of model performances generated. There are $\binom{n}{3}$ combinations of attribute triplets that entail 120 separate KNN models for temporal domain features and 165 for the spectral domain. The feature set with the best evaluation scores serves as a benchmark for attributes picked by selection techniques. The accuracy of the KNN algorithm for different target variables is in Figure \ref{fig:design:feature-combinations-KNN}. 
 
 \begin{figure}[ht]
     \centering
@@ -329,7 +330,7 @@ Next, we exhaustively list all combinations of three features and look at the ra
     \label{fig:design:feature-combinations-KNN}
 \end{figure}
 
-Features picked combinatorically for predictions are listed in Table \ref{tab:design:feature-combinations-KNN}. Worst accuracies occur for temporal features in multiclass classification 86\% and 77\% depending on bearing position, as compared to 98\% and 91\% accuracy for spectral features. An improvement would come with increasing the number of features, using a different base feature set with greater discriminatory power, or using a more sophisticated model.
+Features picked combinatorically for predictions are listed in Table \ref{tab:design:feature-combinations-KNN}. The worst accuracy occurs for temporal features in multi-class classification, 86\% and 77\% depending on bearing position, as compared to 98\% and 91\% accuracy for spectral features. An improvement would come with increasing the number of features, using a different base feature set with greater discriminatory power, or using a more sophisticated model.
 
 \begin{table}[ht!]
 \centering
@@ -375,7 +376,7 @@ The features picked using the rank product method are shown in Table \ref{tab:de
 \label{tab:design:best-3-features-KNN}
 \end{table}
 
-Lowering the number of attributes allows visualization of labels in planar scatter plots. The data points in 3-dimensional cross sections are colored by true fault classes of all severities in Figure \ref{fig:design:feature-space-scatter}. We observe the inability to separate faults by linear boundaries in given feature spaces and the noncompactness of clusters. 
+Lowering the number of attributes allows visualization of labels in planar scatter plots. The data points in 3-dimensional cross-sections are colored by true fault classes of all severities in Figure \ref{fig:design:feature-space-scatter}. We observe the inability to separate faults by linear boundaries in given feature spaces and the noncompactness of clusters. 
 
 Cluster overlaps of various defect types are also confirmed by silhouette scores around zero. Therefore, the k hyperparameter cannot be increased much, as it would cause the merge of mutually confused categories. Low-severity faults should be relabeled as a class without fault to watch out just for alert conditions.
 
@@ -394,7 +395,7 @@ Cluster overlaps of various defect types are also confirmed by silhouette scores
     \label{fig:design:feature-space-scatter}
 \end{figure}
 
-Model performance of KNN algorithm preceeded by variety of feature selection methods is compared in Figure \ref{fig:design:KNN-accuracy-batch}. Best combination of three features achieves always better than when the model is trained on all features. This has to do with curse of dimensionality phenomenon. 
+Model performance of the KNN algorithm preceeded by a variety of feature selection methods is compared in Figure \ref{fig:design:KNN-accuracy-batch}. The best combination of 3 features always achieves better than when the model is trained on all features. This has to do with curse of dimensionality phenomenon. 
 
 \begin{figure}[ht]
     \centering
@@ -411,7 +412,7 @@ Model performance of KNN algorithm preceeded by variety of feature selection met
     \label{fig:design:KNN-accuracy-batch}
 \end{figure} 
 
-We suspected that the PCA property of maximizing variances in each of the few dimensions would support more separation of clustered groups and would be beneficial in classification. The bar chart supports this assumption. PCA always produces greater model accuracies than any other method of feature selection. The rank product of the three scoring techniques is not better every time, but it balances out aggregated methods to achieve more stable results across testing sets. 
+We suspected that the PCA property of maximizing variances in each of the few dimensions would support more separation of clustered groups and would be beneficial in classification. The bar chart supports this assumption. PCA always produces greater model accuracy than any other method of feature selection. The rank product of the three scoring techniques is not better every time, but it balances out aggregated methods to achieve more stable results across testing sets. 
 
 In every instance, a subset of spectral features is responsible for better accuracy than a subset of temporal features. Presumably, it is so because of many correlated pairs of attributes in the temporal domain. Further tests should be made to determine optimal feature subsets and the impact of altering the feature election process.
 
@@ -419,9 +420,9 @@ In every instance, a subset of spectral features is responsible for better accur
 \subsection{Online models}
 Online learning imitates hardened conditions for machinery diagnostics that appear in deployment. Delayed provision or omission of actual labels undoubtedly degrades the reliability of the classification. The question is how quickly the accuracy approaches the optimal one from the nearest neighbors trained in batch and what the effect of routine difficulties in the ongoing labeling process is.
 
-The KNN models in incremental learning experiments learn on the same base training dataset for bearing position A and with all extracted features as in batch context. In this manner, we can compare the training accuracies in the last sample for both models. KNN is set to 5 nearest neighbors and proximity metric of Euclidian distance. Online learning metrics are evaluated in progressive valuation on a dataset that is left unbalanced.
+The KNN models in incremental learning experiments learn on the same base training dataset for bearing position A and with all extracted features as in a batch context. In this manner, we can compare the training accuracies in the last sample for both models. KNN is set to 5 nearest neighbors and a proximity metric of Euclidian distance. Online learning metrics are evaluated by progressive valuation on a dataset that is left unbalanced.
 
-The \textbf{stream of events is sorted} by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}) which ensures steady increments in label counts throughout the whole duration of the simulation (Fig.~\ref{fig:design:online-event-order}). This constructed event sequence is a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine. 
+The \textbf{stream of events is sorted} by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}) which ensures steady increments in label counts throughout the whole duration of the simulation (Fig.~\ref{fig:design:online-event-order}). This constructed event sequence is a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine.
 
 \begin{figure}[ht]
     \centering
@@ -439,7 +440,7 @@ The \textbf{stream of events is sorted} by rising severity levels (Fig.~\ref{fig
     \caption{Label sequencing for progressive evaluation}
 \end{figure}
 
-Major breaking points in the stream are after 1171 observations out of 5751, where all 203 normal conditions are consumed in the training process. Counters of other faults show that model prediction are skewed towards more represented classes of imbalance and misalignement. The uneven evolution of category counts in a stream impacts the development of accuracy in the remaining experiments. The training accuracies of comparable batch models are 94.13\% \emph{(temporal features)} and 99.17\% \emph{(spectral features)}.
+Major breaking points in the stream are after 1171 observations out of 5751, where all 203 normal conditions are consumed in the training process. Counters of other faults show that model predictions are skewed towards more represented classes of imbalance and misalignement. The uneven evolution of category counts in a stream impacts the development of accuracy in the remaining experiments. The training accuracies of comparable batch models are 94.13\% \emph{(temporal features)} and 99.17\% \emph{(spectral features)}.
 	
 During gradual learning, the correct label is supplied after a fixed period passes after its prediction. This \textbf{sliding window} simulation examines accuracy every 100 iterations. Wait times before revealing the actual class associated with the sample are 1, 50, 100, or 250 steps (Fig.~\ref{fig:design:online-fault-delay-sliding}). 
 
@@ -459,7 +460,7 @@ During gradual learning, the correct label is supplied after a fixed period pass
     \label{fig:design:scatter-plot-online}
 \end{figure}
 
-Accuracies after sequentially seeing all samples are 82.92\% \emph{(temporal)} and 89.11\% \emph{(spectral)} when labels are shown instantly. Scatter plots in Figure~\ref{fig:design:scatter-plot-online} visualize mistakes in predictions projected onto two principal components. Labeling delay of 250 observations causes accuracies to drop to 70.51\% \emph{(temporal)} and 78.81\% \emph{(spectral)}. Accuracy better than 50\% is achieved 200 steps sooner in the spectral domain than in the temporal domain.
+Accuracies after sequentially seeing all samples are 82.92\% \emph{(temporal)} and 89.11\% \emph{(spectral)} when labels are shown instantly. Scatter plots in Figure~\ref{fig:design:scatter-plot-online} visualize mistakes in predictions projected onto two principal components. Labeling delay of 250 observations causes accuracy to drop to 70.51\% \emph{(temporal)} and 78.81\% \emph{(spectral)}. Accuracy better than 50\% is achieved 200 steps sooner in the spectral domain than in the temporal domain.
 	
 \begin{figure}[ht]
     \centering
@@ -477,7 +478,7 @@ Accuracies after sequentially seeing all samples are 82.92\% \emph{(temporal)} a
 \end{figure}
 	
 	
-The \textbf{tumbling window} simulates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once. At the final sample, the accuracies are 83.41\% \emph{(temporal)} and 90.14\% \emph{(spectral)} with immediate feedback, and 77.95\% \emph{(temporal)} and 85.90\% \emph{(spectral)} with window length of 250 samples (Fig.~\ref{fig:design:online-fault-delay-tumbling}). 
+The \textbf{tumbling window} simulates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once. In the final sample, the accuracies are 83.41\% \emph{(temporal)} and 90.14\% \emph{(spectral)} with immediate feedback, and 77.95\% \emph{(temporal)} and 85.90\% \emph{(spectral)} with window length of 250 samples (Fig.~\ref{fig:design:online-fault-delay-tumbling}). 
 
 \begin{figure}[ht]
     \centering
@@ -494,9 +495,9 @@ The \textbf{tumbling window} simulates regular expert visits annotating observat
     \label{fig:design:online-fault-delay-tumbling}
 \end{figure}
 
-A \textbf{tumbling window} is more accurate according to progressive valuation because the labeling delay decreases towards the window's end. Initial 0\% accuracy is caused by a warming-up period in data collection during the span of the first few windows true labels are unknown. After just a handful of windows in the beginning, accuracy jumps above 60\% and stabilizes after 1000 observation.
+A \textbf{tumbling window} is more accurate according to progressive valuation because the labeling delay decreases towards the window's end. Initial 0\% accuracy is caused by a warming-up period in data collection during the span of the first few windows. The true labels are unknown. After just a handful of windows in the beginning, accuracy jumps above 60\% and stabilizes after 1000 observations.
 
-Another common problem in online learning is \textbf{missing annotations} due to the size of the dataset. In the simulation of missing labels, the equal-length gaps are skipped before another observation is annotated. This approach of choosing samples to annotate without considering their representativeness results in severe harm to predictions. 
+Another common problem with online learning is \textbf{missing annotations} due to the size of the dataset. In the simulation of missing labels, the equal-length gaps are skipped before another observation is annotated. This approach of choosing samples to annotate without considering their representativeness results in severe harm to predictions. 
 
 \begin{figure}[ht]
     \centering

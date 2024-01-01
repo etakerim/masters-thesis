@@ -18,13 +18,13 @@ The vibration measurements will occur monthly for pumps and biweekly for compres
 \multirow{3}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Compressor\\ AC \#5\end{tabular}}} & SFTA001AT000TN                          &         &        &       &        &     &         \\ \cline{2-8} 
                                                                                       & SFTA002AT000TN                          &         &        &       &        &     &         \\ \cline{2-8} 
                                                                                       & Steel base (noise)                      &         &        &       &        &     &         \\ \hline
-\multirow{6}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Pump KSB\\ position \#1\end{tabular}}} & MTRA001AT000TN                          & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \cline{2-8} 
+\multirow{6}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Pump KSB\\ position \#1\end{tabular}}} & MTRA001AT090TN                          & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \cline{2-8} 
                                                                                       & MTRA002AT000TN                          & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \cline{2-8} 
                                                                                       & PMPA003AT000TN                          & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \cline{2-8} 
                                                                                       & PMPA004AT000TN                          & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \cline{2-8} 
                                                                                       & Motor base (noise)                      & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \cline{2-8} 
                                                                                       & Pump base (noise)                       & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \hline
-\multirow{6}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Pump KSB\\ position \#7\end{tabular}}} & MTRA001AT000TN                          & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \cline{2-8} 
+\multirow{6}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Pump KSB\\ position \#7\end{tabular}}} & MTRA001AT090TN                          & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \cline{2-8} 
                                                                                       & MTRA002AT000TN                          & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \cline{2-8} 
                                                                                       & PMPA003AT000TN                          & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \cline{2-8} 
                                                                                       & PMPA004AT000TN                          & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 & \multicolumn{2}{p{1.2cm}|}{}                 \\ \cline{2-8} 
@@ -40,10 +40,9 @@ The vibration measurements will occur monthly for pumps and biweekly for compres
 \end{table}
 Each measurement will involve 3 trials for each position. The sensor is mounted to the machine with adhesive on double-sided carpet tape (placement notation follows MIMOSA convention from ISO~13373-1). After every trial, the sensor will be detached and attached again. 
 
-The plan was consulted and approved by the machinery owners: VNET~a.s. and Bratislavská vodárenská spoločnosť,~a.s. Triaxial recording has a duration 60~s (at $f_s$ = 26.7 kHz) and a 16-bit resolution. Total space requirements for 108 recordings are 990 MiB.
+The plan was consulted and approved by the machinery owners: VNET~a.s. and Bratislavská vodárenská spoločnosť,~a.s. Triaxial recording has a duration 60~s (at $f_s$ = 26.7 kHz) and a 16-bit resolution. The total space requirements for 108 recordings are 990 MiB.
 
 \section{Firmware activities}
-
 Activity diagrams describe three basic actions of firmware for logging accelerometer samples:
 
 \begin{itemize}

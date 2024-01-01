@@ -1,10 +1,10 @@
 \section{Evaluation datasets} \label{section:evaluation-datasets}
 The experimentally designed features' relevancy is first proven in comparison to comprehensive benchmark datasets. There are a few standardized datasets used in the related work, e.g. \cite{ribeiro_rotating_2017}.
 
-\emph{MaFaulDa} dataset combines vibration and acoustic measurements of the shaft in deviating positions and bearings abnormalities. \emph{CWRU dataset} focuses solely on faults in ball bearings. Another less known dataset concerns shaft unbalance, but compared to the previous two, it demonstrates behavior during revolution speed up.  
+\emph{MaFaulDa} dataset combines vibration and acoustic measurements of the shaft in deviating positions and bearing abnormalities. \emph{CWRU dataset} focuses solely on faults in ball bearings. Another less known dataset concerns shaft unbalance, but compared to the previous two, it demonstrates behavior during speed up.  
 
 \subsection{Machinery Fault Database}
-MaFaulDa\footnote{\url{https://www02.smt.ufrj.br/~offshore/mfs/page_01.html}} is a collection of 1951 multivariate time series for 4 different operational conditions on rotor kit Alignment Balance Vibration Trainer (ABVT)~(Fig.~\ref{fig:mafaulda-simulator}). Each series has 5~seconds in duration and is captured at 50 kHz. Vibration signals were obtained with piezoelectric accelerometers with a linear response up to 10~kHz, amplitude range to $\pm$490 $m/s^2$, and resolution step of 10.2~mV per $m/s^2$. 
+MaFaulDa\footnote{\url{https://www02.smt.ufrj.br/~offshore/mfs/page_01.html}} is a collection of 1951 multivariate time series for 4 different operational conditions on rotor kit Alignment Balance Vibration Trainer (ABVT)~(Fig.~\ref{fig:mafaulda-simulator}). Each series has 5~seconds in duration and is captured at 50 kHz. Vibration signals were obtained with piezoelectric accelerometers with a linear response up to 10~kHz, amplitude range to $\pm$490 $\mathrm{m/s}^2$, and resolution step of 10.2~mV per $\mathrm{m/s}^2$. 
 
 \begin{figure}[h]
 \centering
@@ -21,7 +21,7 @@ MaFaulDa\footnote{\url{https://www02.smt.ufrj.br/~offshore/mfs/page_01.html}} is
 \label{fig:mafaulda-simulator}
 \end{figure}
 
-Observations were conducted in three cardinal axes simultaneously with 2 sets of accelerometers each one associated with one bearing (inner and outer bearings)~(Fig.~\ref{fig:mafaulda-simulator}). Additionally, a magnetic speedometer produced a pulse on shaft turn. The cardioid condenser microphone recorded sound emissions with a frequency range 20~Hz - 20~kHz. Sensors were fed into a four-channel dynamic signal acquisition module. 
+Observations were conducted on three cardinal axes simultaneously with 2 sets of accelerometers, each one associated with one bearing (inner and outer bearings)~(Fig.~\ref{fig:mafaulda-simulator}). Additionally, a magnetic speedometer produced a pulse on shaft turn. The cardioid condenser microphone recorded sound emissions at a frequency range 20~Hz - 20~kHz. Sensors were fed into a four-channel dynamic signal acquisition module. 
 
 Columns in the dataset are organized as depicted in table~\ref{tab:mafaulda-columns}. Machine rotational speeds were kept constant during a particular measurement, but covered a range from 737 to 3686~rpm with steps of approximately 60 rpm (equiv. 10~Hz - 60~Hz)~\cite{pestana-viana_influence_2016}. The maximal rotational frequency achieved with a high unbalance load is 3300 rpm.
 
@@ -41,13 +41,19 @@ Columns in the dataset are organized as depicted in table~\ref{tab:mafaulda-colu
 \end{table}
 
 This database contains normal operating conditions, faults out of unbalance, horizontal and vertical shaft misalignment, and three types of faulty bearings in inner and outer positions: outer track, inner track, rolling elements~\cite{pestana-viana_influence_2016}.
+
 \begin{itemize}
 \itemsep0pt
-\item \textbf{Normal} conditions are baseline without the adverse effect of fault in 49 different rotation speeds. 
-\item \textbf{Unbalance} shaft time series uses 8 unbalancing weights from 6 to 35 grams and varying 45 - 49 speeds for each weight adding to 333 mass unbalance loads. 
-\item \textbf{Vertical misalignment} set is comprised of 50 signals each (or 51 in one instance) obtained under displacements: 0.51, 0.63, 1.40, 1.90, 1.27, 1.78 mm.
+
+\item \textbf{Normal} conditions are baseline without the adverse effect of fault at 49 different rotation speeds. 
+
+\item \textbf{Unbalance} shaft time series uses 8 unbalancing weights from 6 to 35 grams and varying 45 - 49 speeds for each weight, adding to 333 mass unbalance loads. 
+
+\item \textbf{Vertical misalignment} set comprises 50 signals each (or 51 in one instance) obtained under displacements: 0.51, 0.63, 1.40, 1.90, 1.27, 1.78 mm.
+
 \item \textbf{Horizontal misalignment} signals were recorded under displacements: 0.50, 1.00, 1.50, 2.00 mm, each with 49 different speeds (or 50 in one instance)~\cite{pestana-viana_influence_2016}.
-\item \textbf{Bearing faults} are unnoticeable without unbalance. Therefore, weights of 6, 20, and 35 grams were attached to induce a detectable effect. Each unbalance mass was combined with cage, outer race, and ball faults at multiple rotation speeds, usually at 50 different speeds.
+
+\item \textbf{Bearing faults} are unnoticeable without unbalance. Therefore, weights of 6, 20, and 35 grams were attached to induce a detectable effect. Each mass was combined with cage, outer race, and ball faults at multiple rotation speeds, usually at 50 different speeds.
 \end{itemize}
 
 
@@ -85,7 +91,7 @@ Single point defects were created with diameters of 0.007, 0.014, 0.021, 0.028, 
 \label{tab:cwru-columns}
 \end{table}
 
-The sampling frequency during baseline set, drive end, and fan end bearing capture is 12 kHz, exclusively for drive end bearings samples were taken at 48 kHz. The duration of the time series is varied from 5 to 40 seconds. Drive end and fan end bearings signals are measured in each experiment. Accelerometer was sometimes mounted on the supporting base plate.
+The sampling frequency during baseline set, drive end, and fan end bearing capture is 12 kHz. For drive end bearings, samples were taken at 48 kHz. The duration of the time series varies from 5 to 40 seconds. Drive end and fan end bearing signals are measured in each experiment. Accelerometer was sometimes mounted on the supporting baseplate.
 
 \subsection{Unbalance of the rotating shaft}
 Unbalance Detection of a Rotating Shaft\footnote{\url{https://www.kaggle.com/datasets/jishnukoliyadan/vibration-analysis-on-rotating-shaft}} is a Kaggle dataset that simulates 4 different unbalance strengths. 
@@ -96,7 +102,7 @@ Unbalance Detection of a Rotating Shaft\footnote{\url{https://www.kaggle.com/dat
 \label{fig:rotating-shaft}
 \end{figure}
 
-The setup is shown in Fig.~\ref{fig:rotating-shaft}. Mass of 3.28 grams (or 6.61 grams during severe unbalance test) is attached to unbalance holder successively in 5 sets (numbered 0 - 4) on the radii 0, 14, 18.5, 23, 23 mm. The rotation speed of the motor is perpetually rising between 630 and 2330 rpm in development datasets (marked with suffix D) and speeds from 1060 to 1900 rpm in the evaluation datasets (suffix E). The vibrations were recorded at a sampling rate of 4 kHz~\cite{mey_machine_2020}.
+The setup is shown in Fig.~\ref{fig:rotating-shaft}. A mass of 3.28 grams (or 6.61 grams during the severe unbalance test) is attached to the unbalance holder in 5 sets (numbered 0 - 4) on the radii 0, 14, 18.5, 23, 23 mm. The rotation speed of the motor is perpetually rising between 630 and 2330 rpm in development datasets (marked with suffix D) and speeds from 1060 to 1900 rpm in the evaluation datasets (suffix E). The vibrations were recorded at a sampling rate of 4~kHz~\cite{mey_machine_2020}.
 
 \begin{table}[h]
 \centering
@@ -113,4 +119,4 @@ The setup is shown in Fig.~\ref{fig:rotating-shaft}. Mass of 3.28 grams (or 6.61
 \caption{``Unbalance on the rotating shaft'' dataset description of columns}
 \end{table}
 
-The accelerometers used are piezoelectric and have a frequency range of up to 10 kHz, dynamic range of $\pm$490 $m/s^2$, and resolution step of 10.2~mV per $m/s^2$. These sensor parameters are the same as in the case of MaFaulDa. In total, three different uniaxial accelerometers are mounted on the motor housing.
+The accelerometers used are piezoelectric and have a frequency range of up to 10 kHz, dynamic range of $\pm$490 $m/s^2$, and resolution step of 10.2~mV per $\mathrm{m/s}^2$. These sensor parameters are the same as in the case of MaFaulDa. In total, three different uniaxial accelerometers are mounted on the motor housing.
