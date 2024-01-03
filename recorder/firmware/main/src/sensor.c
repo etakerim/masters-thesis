@@ -98,7 +98,7 @@ void sensor_int_threshold_enable(stmdev_ctx_t *dev, gpio_isr_t isr_handler)
     gpio_config_t interrupt_pin = {
         .intr_type = GPIO_INTR_POSEDGE,
         .mode = GPIO_MODE_INPUT,
-        .pin_bit_mask = (1 << SENSOR_INT1),
+        .pin_bit_mask = (1ULL << SENSOR_INT1),
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
         .pull_up_en = GPIO_PULLUP_DISABLE
     };
@@ -114,7 +114,6 @@ void sensor_int_threshold_disable(void)
 
 void sensor_read(stmdev_ctx_t *dev, FILE *output)
 {
-    static char row[MAX_FILENAME];
     static iis3dwb_fifo_out_raw_t fifo_data[FIFO_WATERMARK];
 
     iis3dwb_fifo_status_t fifo_status;
@@ -132,20 +131,17 @@ void sensor_read(stmdev_ctx_t *dev, FILE *output)
                 int16_t *y = (int16_t *)&sample->data[2];
                 int16_t *z = (int16_t *)&sample->data[4];
             
-                snprintf(row, MAX_FILENAME, "%d\t%4.2f\t%4.2f\t%4.2f\r\n",
+                fprintf(output, "%d\t%4.2f\t%4.2f\t%4.2f\r\n",
                         k,
                         iis3dwb_from_fs2g_to_mg(*x),
                         iis3dwb_from_fs2g_to_mg(*y),
                         iis3dwb_from_fs2g_to_mg(*z));
-
                 // [mg] units
-                fputs(row, output);
                 break;
             case IIS3DWB_TIMESTAMP_TAG:
                 int32_t *ts = (int32_t *)&sample->data[0];
-                snprintf(row, MAX_FILENAME, "%d\t%ld\r\n", k, *ts);
+                fprintf(output, "%d\t%ld\r\n", k, *ts);
                 // [ms] units
-                fputs(row, output);
                 break;
             default:
                 break;

@@ -41,7 +41,7 @@ Accurate multi-class classification of machine fault causes according to the cha
 Performance of classification is estimated by several metrics on the validation set obtained using hold-out or cross-validation techniques. Frequently used quantities for classifier model evaluation include accuracy, precision, recall, f1 score, area under the ROC curve, and counts of hits and misses in a confusion matrix.
 \bigbreak
 
-\textbf{K-nearest neighbors} (kNN) assigns the data point to the class where the majority of $k$ closest instances belong (Fig.~\ref{fig:KNN}). It means it can work in a semi-supervised environment because it can infer labels just from knowing a few annotations. The major drawback of KNN is a preference for the majority class in imbalanced class-size datasets~\cite{shi_improving_2020}. The issue is mitigated with class weights or resampling classes by oversampling or undersampling. The KNN algorithm requires features to be normalized to assign the same importance to each predictor.
+\textbf{K-nearest neighbors} (KNN) assigns the data point to the class where the majority of $k$ closest instances belong (Fig.~\ref{fig:KNN}). It means it can work in a semi-supervised environment because it can infer labels just from knowing a few annotations. The major drawback of KNN is a preference for the majority class in imbalanced class-size datasets~\cite{shi_improving_2020}. The issue is mitigated with class weights or resampling classes by oversampling or undersampling. The KNN algorithm requires features to be normalized to assign the same importance to each predictor.
 
 \begin{figure}[ht]
     \centering

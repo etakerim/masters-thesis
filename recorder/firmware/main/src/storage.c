@@ -8,16 +8,18 @@
 #include "driver/sdmmc_host.h"
 #include "pinout.h"
 
+static const char *TAG = "sd";
+
 
 sdmmc_card_t *storage_enable(const char *mount_point)
 {
     esp_vfs_fat_sdmmc_mount_config_t mount = {
-        .format_if_mount_failed = true,     // Set to false
+        .format_if_mount_failed = true,    // Set to false
         .max_files = 5,                     // Maximum number of opened files
         .allocation_unit_size = 16 * 1024   // Useful only for format
     };
 
-    sdmmc_slot_config_t slot = SDMMC_SLOT_CONFIG_DEFAULT();  // TODO: SDMMC_HOST_SLOT_1
+    sdmmc_slot_config_t slot = SDMMC_SLOT_CONFIG_DEFAULT();
     slot.width = 1;
 
     sdmmc_card_t *card;
@@ -26,17 +28,15 @@ sdmmc_card_t *storage_enable(const char *mount_point)
 
     if (ret != ESP_OK) {
         if (ret == ESP_FAIL) {
-            // Failed to mount filesystem
+            ESP_LOGE(TAG, "Failed to mount filesystem");
         } else {
-            // Failed to initialize the card
+            ESP_LOGE(TAG, "Failed to initialize the card");
         }
         return NULL;
     }
 
-    // Card has been initialized, print its properties
-    // sdmmc_card_print_info(stdout, card);
-    // Format FATFS
-    // ret = esp_vfs_fat_sdcard_format(mount_point, card);
+    // DEBUG: Card has been initialized, print its properties
+    sdmmc_card_print_info(stdout, card);
 
     return card;
 }
@@ -48,11 +48,11 @@ void storage_disable(sdmmc_card_t *card, const char *mount_point)
 
 static unsigned long get_new_recording_name(const char *path) 
 {
-    uint32_t seq = 1;
+    uint32_t seq = 0;
     char filename[MAX_FILENAME];
 
-    DIR *folder = opendir(path);
-    if (folder == NULL)
+    DIR *folder = opendir(path);        // Needs trailing slash
+    if (folder == NULL) 
         return seq;
     
     struct dirent *entry;
@@ -71,19 +71,11 @@ static unsigned long get_new_recording_name(const char *path)
     }
         
     closedir(folder);
-    return seq;
+    return seq + 1;
 }
 
-FILE *create_recording(const char *path)
+void get_recording_filename(char *filename, const char *path)
 {
-    struct stat st;
-    if (stat(path, &st) < 0) {
-        mkdir(path, 0755);
-    }
-
     unsigned long file_seq = get_new_recording_name(path);
-    const char filename[MAX_FILENAME];
-
-    snprintf(filename, MAX_FILENAME, "%s/%ld.csv", path, file_seq);
-    return fopen(path, "w");
+    snprintf(filename, MAX_FILENAME, "%s%ld.csv", path, file_seq);
 }

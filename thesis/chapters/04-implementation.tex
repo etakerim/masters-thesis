@@ -46,7 +46,7 @@ Three kinds of rotating machines are at disposal for vibration measurements. Tho
 
 The newer primary pumps with bundled wireless cloud monitoring system are two units of \emph{KSB Omega~300-560} (Fig.~\ref{fig:machine:pump-ksb}). The pumps were commissioned in 2018, and they rotate at 1493 rpm (24.9 Hz). The electric motor provides 400~kW of power (class~\rom{3}). The outer bearing on the pump vibrates with an acceleration of $\pm 5 \;\mathrm{m/s}^2$. 
 
-The secondary pump is one unit named \emph{Sigma~300-OVD-600} (Fig.~\ref{fig:machine:pump-sigma}) installed in 1986. It rotates at 1485 rpm (24.75 Hz), and its electric motor has power of 450~kW. Each pump and motor have 2 bearings. Therefore, there are 4 measurement positions in total.
+The secondary pump is one unit named \emph{Sigma~300-OVD-600} (Fig.~\ref{fig:machine:pump-sigma}) installed in 1986. It rotates at 1485 rpm (24.75 Hz), and its electric motor has power of 450~kW (class~\rom{3}). Each pump and motor have 2 bearings. Therefore, there are 4 measurement positions in total.
 
 \begin{figure}[h]
     \centering
@@ -81,8 +81,8 @@ In preliminary exploratory vibration measurements of machines, the ADXL335 accel
 \textbf{Bus}                                     & Analog           & SPI                \\ \hline
 \textbf{Axis}                                    & 3                & 1 or 3             \\ \hline
 \textbf{Range} (g)                               & $\pm$ 3          & $\pm$ 2 to 16      \\ \hline
-\textbf{Bandwidth} (kHz)                         & 0.55             & 5 - 6.3            \\ \hline
-\textbf{Sensitivity}                             & 300 mV/g         & 0.061 mg/LSB       \\ \hline
+\textbf{Bandwidth} (kHz)                         & 0.55 - 1.6       & 5 - 6.3            \\ \hline
+\textbf{Sensitivity} (mg/LSB)                    & 2.930            & 0.061       \\ \hline
 \textbf{Noise density} ($\mu g / \sqrt{\mathrm{Hz}}$ rms) & 150 - 300        & 75                 \\ \hline
 \textbf{Microcontroller}                         & Beaglebone Black & ESP32-PoE-ISO      \\ \hline
 \textbf{CPU SoC}                                 & TI Sitara AM3358 & ESP32-WROOM-32     \\ \hline
@@ -94,7 +94,7 @@ In preliminary exploratory vibration measurements of machines, the ADXL335 accel
 \label{tab:design:hw-sensors}
 \end{table}
 
-The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches industrial standards for vibration monitoring. An interface capable of higher speeds is needed to store all acceleration samples. Therefore, ESP32-PoE-ISO is chosen as a microcontroller development kit because it has an SD card slot connected via SD/MMC bus. The accelerometer uses an SPI bus with a maximum speed of 10 MHz that can be connected to any physical GPIO pin. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
+The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches industrial standards for vibration monitoring. ESP32-PoE-ISO is chosen as a microcontroller development kit because it has an SD card slot connected via SD/MMC bus. It enables us to store all samples from FIFO. The accelerometer uses an SPI bus with a maximum speed of 10 MHz that can be connected to any physical GPIO pin. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
 
 \begin{figure}[h]
 	\centering
@@ -106,7 +106,7 @@ The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches i
 The drivers for necessary low-level interfaces and FAT32 filesystem are  implemented already in ESP-IDF SDK\footnote{ESP-IDF SDK: \url{https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html}}. The accelerometer driver is also made available by the vendor\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}. Activity diagrams of required firmware functionality are in Appendix~\ref{appendix:technical-docs}.
 
 \section{Preliminary measurements}
-During the initial on-site inspections of machinery, we carried out preliminary measurements of vibration signals. Raw waveforms of acceleration for the fan, two different compressors, and the outer bearing on a pump in three axes are plotted in Figure~\ref{fig:design:preliminary-acceleration}. The acceleration rarely exceeds 1~g. 
+During the initial on-site inspections of machinery, we carried out preliminary measurements of vibration signals. Raw waveforms of acceleration for the fan, two different compressors, and the outer bearing on a pump and motor in three axes are plotted in Figure~\ref{fig:design:preliminary-acceleration}. The acceleration rarely exceeds 1~g. 
 
 In frequency spectra in Figure~\ref{fig:design:preliminary-spectrum} behavior of machines can be clearly discerned below the resonance frequency of the accelerometer (550 Hz). The compressor suspected to be faulty has a stronger \nth{4} harmonic and above than the other one.
 
@@ -127,7 +127,7 @@ In frequency spectra in Figure~\ref{fig:design:preliminary-spectrum} behavior of
     \caption{Temporal domain waveforms in all spatial directions with 300 ms duration at 1 s timestamp}
 \end{figure} 
 
-Figure~\ref{fig:design:preliminary-velocity} documents the effort to obtain vibration velocity (as per ISO~20186) by integration with the composite trapezoidal rule. The significant drift after integration is eliminated by subtracting the mean of the envelope constructed using cubic interpolation of peaks. Envelopes must be tweaked further to achieve more accurate values.
+Figure~\ref{fig:design:preliminary-velocity} documents the effort to obtain vibration velocity (as per ISO~20186) by integration with the composite trapezoidal rule. The significant drift after integration is eliminated by subtracting the mean of the envelope constructed using cubic interpolation of peaks. Envelopes must be tweaked further to achieve more accurate values. The orbital plot of the first harmonic frequency $f_{max} \pm 5\;\mathrm{Hz}$ in Figure~\ref{fig:design:orbital-analysis} allows us to check the sensor deviation out of the axis of rotation.
 
 \begin{figure}[h]
     \centering
@@ -145,4 +145,4 @@ Figure~\ref{fig:design:preliminary-velocity} documents the effort to obtain vibr
     \caption{Orbital and spectral methods of vibration signal analysis}
 \end{figure}
 
-The orbital plot of the first harmonic frequency $f_{max} \pm 5\;\mathrm{Hz}$ in Figure~\ref{fig:design:orbital-analysis} allows us to check the sensor deviation out of the axis of rotation.
+

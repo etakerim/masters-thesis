@@ -4,11 +4,11 @@
 void switch_enable(bool on, gpio_isr_t isr_handler)
 {
     gpio_config_t pin = {
-        .intr_type = on ? GPIO_INTR_NEGEDGE: GPIO_INTR_POSEDGE,
+        .pin_bit_mask = (1ULL << RECORD_SWITCH_PIN),
         .mode = GPIO_MODE_INPUT,
-        .pin_bit_mask = (1 << RECORD_SWITCH_PIN),
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
-        .pull_up_en = GPIO_PULLUP_DISABLE
+        .pull_up_en = GPIO_PULLUP_DISABLE,
+        .intr_type = on ? GPIO_INTR_NEGEDGE: GPIO_INTR_POSEDGE
     };
     gpio_config(&pin);
     gpio_isr_handler_add(RECORD_SWITCH_PIN, isr_handler, NULL);
@@ -24,7 +24,7 @@ void led_enable(void)
 {
     gpio_config_t pin = {
         .mode = GPIO_MODE_OUTPUT,
-        .pin_bit_mask = (1 << RECORD_LED_PIN)
+        .pin_bit_mask = (1ULL << RECORD_LED_PIN)
     };
     gpio_config(&pin);
 }
