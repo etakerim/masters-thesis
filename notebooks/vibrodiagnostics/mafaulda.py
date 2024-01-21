@@ -72,8 +72,8 @@ def preprocess(ts: pd.DataFrame):
     return (
         ts
         .assign(t = lambda x: x.index * (1 / FS_HZ))
-        # .assign(mag_a = lambda x: np.hypot(x.ax, x.ay, x.ay))
-        # .assign(mag_b = lambda x: np.hypot(x.bx, x.by, x.by))
+        # .assign(mag_a = lambda x: np.hypot(x.ax, x.ay, x.az))
+        # .assign(mag_b = lambda x: np.hypot(x.bx, x.by, x.bz))
         .reset_index()
         .assign(t = lambda x: x.index * (1 / FS_HZ))
         .set_index('t')
