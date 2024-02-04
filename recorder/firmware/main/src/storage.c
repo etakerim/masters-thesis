@@ -24,6 +24,7 @@ sdmmc_card_t *storage_enable(const char *mount_point)
 
     sdmmc_card_t *card;
     sdmmc_host_t host = SDMMC_HOST_DEFAULT();
+    //host.flags = SDMMC_HOST_FLAG_1BIT;
     esp_err_t ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot, &mount, &card);
 
     if (ret != ESP_OK) {

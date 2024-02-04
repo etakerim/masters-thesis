@@ -45,6 +45,6 @@ void led_light(bool on);
 
 void sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev);
 void sensor_disable(spi_device_handle_t spi_dev);
-void sensor_int_threshold_enable(stmdev_ctx_t *dev, gpio_isr_t isr_handler);
-void sensor_int_threshold_disable(void);
+void sensor_events_enable(stmdev_ctx_t *dev, gpio_isr_t isr_handler);
+void sensor_events_disable();
 void sensor_read(stmdev_ctx_t *dev, FILE *output);

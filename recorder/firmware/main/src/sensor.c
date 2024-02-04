@@ -40,6 +40,7 @@ static esp_err_t spi_enable(spi_device_handle_t *spi_dev)
         .max_transfer_sz = 1024
     };
     err = spi_bus_initialize(SPI_BUS, &spi_bus, SPI_DMA_CH_AUTO);
+    ESP_ERROR_CHECK(err);
     spi_device_interface_config_t spi_iface = {
         .clock_speed_hz=SPI_BUS_FREQUENCY,
         .flags=SPI_DEVICE_HALFDUPLEX,
@@ -49,6 +50,7 @@ static esp_err_t spi_enable(spi_device_handle_t *spi_dev)
         .queue_size=3
     };
     err = spi_bus_add_device(SPI_BUS, &spi_iface, spi_dev);
+    ESP_ERROR_CHECK(err);
 
     return err;
 }
@@ -86,6 +88,14 @@ void sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev)
     iis3dwb_xl_data_rate_set(dev, IIS3DWB_XL_ODR_26k7Hz);
     iis3dwb_fifo_timestamp_batch_set(dev, IIS3DWB_DEC_8);
     iis3dwb_timestamp_set(dev, PROPERTY_ENABLE);
+
+    // INT1 on FIFO threshold
+    iis3dwb_pin_int1_route_t int1 = {.fifo_th = 1};
+    iis3dwb_pin_int1_route_set(dev, &int1);
+
+    // INT2 on ODR  - Chapter 7.2 of docs (ODR on INT2)
+    iis3dwb_pin_int2_route_t int2 = {.fifo_bdr = 1};
+    iis3dwb_pin_int2_route_set(dev, &int2);
 }
 
 void sensor_disable(spi_device_handle_t spi_dev)
@@ -94,12 +104,9 @@ void sensor_disable(spi_device_handle_t spi_dev)
     spi_bus_free(SPI_BUS);
 }
 
-void sensor_int_threshold_enable(stmdev_ctx_t *dev, gpio_isr_t isr_handler)
+void sensor_events_enable(stmdev_ctx_t *dev, gpio_isr_t isr_handler)
 {
-    iis3dwb_pin_int1_route_t int1 = {};
-    int1.fifo_th = 1;
-    iis3dwb_pin_int1_route_set(dev, &int1);
-
+    // INT1 handler on MCU
     gpio_config_t interrupt_pin = {
         .intr_type = GPIO_INTR_POSEDGE,
         .mode = GPIO_MODE_INPUT,
@@ -111,7 +118,7 @@ void sensor_int_threshold_enable(stmdev_ctx_t *dev, gpio_isr_t isr_handler)
     gpio_isr_handler_add(SENSOR_INT1, isr_handler, NULL);
 }
 
-void sensor_int_threshold_disable(void)
+void sensor_events_disable(void)
 {
     gpio_isr_handler_remove(SENSOR_INT1);
 }
@@ -124,7 +131,7 @@ void sensor_read(stmdev_ctx_t *dev, FILE *output)
     iis3dwb_fifo_status_t fifo_status;
     iis3dwb_fifo_status_get(dev, &fifo_status);
     uint16_t num = fifo_status.fifo_level;
-    ESP_LOGI("read", "FIFO: %d", num);
+    // ESP_LOGI("read", "FIFO: %d", num);
 
     iis3dwb_fifo_out_multi_raw_get(dev, fifo_data, num);
 
@@ -138,16 +145,16 @@ void sensor_read(stmdev_ctx_t *dev, FILE *output)
                 int16_t *z = (int16_t *)&sample->data[4];
             
                 // Resolution: 2g
-                /*fprintf(output, "%d\t%4.2f\t%4.2f\t%4.2f\r\n",
+                fprintf(output, "%d\t%4.2f\t%4.2f\t%4.2f\r\n",
                         k,
                         iis3dwb_from_fs2g_to_mg(*x),
                         iis3dwb_from_fs2g_to_mg(*y),
-                        iis3dwb_from_fs2g_to_mg(*z));*/
+                        iis3dwb_from_fs2g_to_mg(*z));
                 // [mg] units
                 break;
             case IIS3DWB_TIMESTAMP_TAG:
                 int32_t *ts = (int32_t *)&sample->data[0];
-                //fprintf(output, "%d\t%ld\r\n", k, *ts);
+                fprintf(output, "%d\t%ld\r\n", k, *ts);
                 // [ms] units
                 break;
             default:
