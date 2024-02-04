@@ -5,6 +5,7 @@
 #include "iis3dwb.h"
 #include "hal/gpio_types.h"
 #include "driver/sdmmc_host.h"
+#include "driver/spi_master.h"
 #include "esp_err.h"
 #include "esp_log.h"
 
@@ -19,7 +20,7 @@
 #define CARD_D0_PIN             2
 
 #define RECORD_SWITCH_PIN       34
-#define RECORD_LED_PIN          5
+#define RECORD_LED_PIN          3
 
 // UEXT connector
 #define SENSOR_MISO             13
@@ -42,7 +43,8 @@ void switch_disable(void);
 void led_enable(void);
 void led_light(bool on);
 
-void sensor_enable(stmdev_ctx_t *dev);
+void sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev);
+void sensor_disable(spi_device_handle_t spi_dev);
 void sensor_int_threshold_enable(stmdev_ctx_t *dev, gpio_isr_t isr_handler);
 void sensor_int_threshold_disable(void);
 void sensor_read(stmdev_ctx_t *dev, FILE *output);

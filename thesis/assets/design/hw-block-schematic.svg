@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.2653994"
-     inkscape:cx="551.20937"
-     inkscape:cy="412.51798"
+     inkscape:zoom="1.4304145"
+     inkscape:cx="434.48944"
+     inkscape:cy="390.09671"
      inkscape:window-width="1920"
      inkscape:window-height="1008"
      inkscape:window-x="0"
@@ -153,17 +153,6 @@
          x="140.35753"
          y="86.467285"
          id="tspan6-4-7-1">220</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:3.88056px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="142.5629"
-       y="94.573036"
-       id="text1-2-3-2"><tspan
-         sodipodi:role="line"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="142.5629"
-         y="94.573036"
-         id="tspan6-4-7-8">SPST</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
@@ -342,9 +331,9 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:'Roboto Light';-inkscape-font-specification:'Roboto Light, ';white-space:pre;shape-inside:url(#rect2);display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-dasharray:none;stroke-opacity:1"><tspan
          x="341.48633"
          y="438.35742"
-         id="tspan8"><tspan
+         id="tspan7"><tspan
            style="stroke:none"
-           id="tspan2">ABC</tspan></tspan></text>
+           id="tspan3">ABC</tspan></tspan></text>
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
        d="m 136.88006,131.22936 30.55176,0.0462"
@@ -456,36 +445,36 @@
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="51.382175"
-       y="108.5743"
+       x="41.341946"
+       y="108.59576"
        id="text1-5-8-9-4-4-9-0"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-4"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="51.382175"
-         y="108.5743">MISO</tspan></text>
+         x="41.341946"
+         y="108.59576">MISO(SDO)</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="51.019749"
-       y="114.27826"
+       x="40.920364"
+       y="114.1492"
        id="text1-5-8-9-4-4-9-0-7"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-4-5"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="51.019749"
-         y="114.27826">MOSI</tspan></text>
+         x="40.920364"
+         y="114.1492">MOSI (SDA)</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
-       x="53.465752"
-       y="120.43118"
+       x="43.448921"
+       y="120.44859"
        id="text1-5-8-9-4-4-9-0-7-7"><tspan
          sodipodi:role="line"
          id="tspan1-9-8-6-6-7-3-4-5-2"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
-         x="53.465752"
-         y="120.43118">CLK</tspan></text>
+         x="43.448921"
+         y="120.44859">CLK (SCL)</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
@@ -551,7 +540,7 @@
          id="tspan1-9-8-6-6-7-3-6-1-8-3"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none;stroke-opacity:1"
          x="125.22426"
-         y="77.077133">GPIO5</tspan></text>
+         y="77.077133">GPIO3</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:4.23333px;font-family:'Bookman Old Style';-inkscape-font-specification:'Bookman Old Style';fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-dasharray:none"
@@ -633,8 +622,8 @@
        cy="94.720009"
        r="0.63854325" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.52916667;stroke-dasharray:none"
-       d="m 152.95725,91.998286 1.61436,2.825511"
+       style="fill:none;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none"
+       d="m 154.15137,91.615217 0.0502,3.253789"
        id="path3" />
     <path
        style="fill:none;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none"
@@ -692,6 +681,9 @@
     <path
        style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;marker-end:url(#marker12-7)"
        d="m 149.95081,79.649259 1.65217,0.842983"
-       id="path11-5" />
+       id="path11-5"
+       inkscape:export-filename="hw-block-schematic.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
   </g>
 </svg>

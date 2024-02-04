@@ -19,12 +19,9 @@ static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *buffer, 
 
 static int32_t platform_read(void *handle, uint8_t reg, uint8_t *buffer, uint16_t len)
 {
-    uint8_t tx_buffer[1] = {reg | 0x80};
-
     spi_transaction_t t = {
-        .length = 8 * sizeof(tx_buffer),
+        .addr = reg | 0x80,
         .rxlength = 8 * len,
-        .tx_buffer = tx_buffer,
         .rx_buffer = buffer
     };
     spi_device_handle_t spi = *(spi_device_handle_t *)handle;
@@ -42,11 +39,11 @@ static esp_err_t spi_enable(spi_device_handle_t *spi_dev)
         .sclk_io_num = SENSOR_CLK,
         .max_transfer_sz = 1024
     };
-    err = spi_bus_initialize(SPI_BUS, &spi_bus, SPI_DMA_DISABLED);
+    err = spi_bus_initialize(SPI_BUS, &spi_bus, SPI_DMA_CH_AUTO);
     spi_device_interface_config_t spi_iface = {
         .clock_speed_hz=SPI_BUS_FREQUENCY,
         .flags=SPI_DEVICE_HALFDUPLEX,
-        .address_bits=7,
+        .address_bits=8,
         .mode=0,
         .spics_io_num=SENSOR_CS,
         .queue_size=3
@@ -56,19 +53,19 @@ static esp_err_t spi_enable(spi_device_handle_t *spi_dev)
     return err;
 }
 
-void sensor_enable(stmdev_ctx_t *dev)
+void sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev)
 {
-    spi_device_handle_t spi_dev;
-    spi_enable(&spi_dev);
+    spi_enable(spi_dev);
 
     dev->write_reg = platform_write;
     dev->read_reg = platform_read;
-    dev->handle = &spi_dev;
+    dev->handle = spi_dev;
 
     uint8_t who_am_i;
     iis3dwb_device_id_get(dev, &who_am_i);
-    if (who_am_i != IIS3DWB_ID)
-        while (1);
+    if (who_am_i != IIS3DWB_ID) {
+        while (1);      // TODO: Blink error
+    }
 
     iis3dwb_reset_set(dev, PROPERTY_ENABLE);
 
@@ -79,7 +76,9 @@ void sensor_enable(stmdev_ctx_t *dev)
 
     iis3dwb_block_data_update_set(dev, PROPERTY_ENABLE);
 
+    // Resolution: 2g
     iis3dwb_xl_full_scale_set(dev, IIS3DWB_2g);
+
     iis3dwb_fifo_watermark_set(dev, FIFO_WATERMARK);
     iis3dwb_fifo_xl_batch_set(dev, IIS3DWB_XL_BATCHED_AT_26k7Hz);
     iis3dwb_fifo_mode_set(dev, IIS3DWB_STREAM_MODE);
@@ -87,6 +86,12 @@ void sensor_enable(stmdev_ctx_t *dev)
     iis3dwb_xl_data_rate_set(dev, IIS3DWB_XL_ODR_26k7Hz);
     iis3dwb_fifo_timestamp_batch_set(dev, IIS3DWB_DEC_8);
     iis3dwb_timestamp_set(dev, PROPERTY_ENABLE);
+}
+
+void sensor_disable(spi_device_handle_t spi_dev)
+{
+    spi_bus_remove_device(spi_dev);
+    spi_bus_free(SPI_BUS);
 }
 
 void sensor_int_threshold_enable(stmdev_ctx_t *dev, gpio_isr_t isr_handler)
@@ -119,6 +124,7 @@ void sensor_read(stmdev_ctx_t *dev, FILE *output)
     iis3dwb_fifo_status_t fifo_status;
     iis3dwb_fifo_status_get(dev, &fifo_status);
     uint16_t num = fifo_status.fifo_level;
+    ESP_LOGI("read", "FIFO: %d", num);
 
     iis3dwb_fifo_out_multi_raw_get(dev, fifo_data, num);
 
@@ -131,16 +137,17 @@ void sensor_read(stmdev_ctx_t *dev, FILE *output)
                 int16_t *y = (int16_t *)&sample->data[2];
                 int16_t *z = (int16_t *)&sample->data[4];
             
-                fprintf(output, "%d\t%4.2f\t%4.2f\t%4.2f\r\n",
+                // Resolution: 2g
+                /*fprintf(output, "%d\t%4.2f\t%4.2f\t%4.2f\r\n",
                         k,
                         iis3dwb_from_fs2g_to_mg(*x),
                         iis3dwb_from_fs2g_to_mg(*y),
-                        iis3dwb_from_fs2g_to_mg(*z));
+                        iis3dwb_from_fs2g_to_mg(*z));*/
                 // [mg] units
                 break;
             case IIS3DWB_TIMESTAMP_TAG:
                 int32_t *ts = (int32_t *)&sample->data[0];
-                fprintf(output, "%d\t%ld\r\n", k, *ts);
+                //fprintf(output, "%d\t%ld\r\n", k, *ts);
                 // [ms] units
                 break;
             default:
