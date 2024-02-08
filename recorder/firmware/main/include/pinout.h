@@ -31,7 +31,7 @@
 #define SPI_BUS_FREQUENCY       SPI_MASTER_FREQ_8M
 #define FIFO_LENGTH             512
 #define FIFO_WATERMARK          FIFO_LENGTH / 2
-#define QUEUE_LENGTH            3 * FIFO_LENGTH
+#define QUEUE_LENGTH            4 * FIFO_LENGTH
 
 // TIMER = 8 ms (1 sample = 1000 / 26667 = 0.0374 ms)
 // Half full FIFO (256 samples = 9.6 ms)

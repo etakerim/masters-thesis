@@ -72,6 +72,7 @@ void push_trigger(void *args)
                 // Run recorder
                 sensor_timestamp = 0;
                 sensor_enable(&spi, &sensor);
+                vTaskDelay(10 / portTICK_PERIOD_MS);
                 esp_timer_start_periodic(sampler_timer, SAMPLE_RATE);
 
                 led_light(true);
@@ -85,8 +86,10 @@ void push_trigger(void *args)
                 // Stop recording
                 switch_disable();
                 // Stop recorder
-                sensor_disable(spi);
                 esp_timer_stop(sampler_timer);
+                // wait for transactions to end
+                vTaskDelay(10 / portTICK_PERIOD_MS);
+                sensor_disable(spi);
 
                 // Close file
                 if (xSemaphoreTake(file_mutex, portMAX_DELAY) == pdTRUE) {
@@ -117,10 +120,7 @@ void read_accelerometer(void *args)
             iis3dwb_fifo_status_t fifo_status;
             iis3dwb_fifo_status_get(&sensor, &fifo_status);
             uint16_t num = fifo_status.fifo_level;
-
-            // if (num >= 511) {
-            //     ESP_LOGI("m", "%u", num); FIFO overrun
-            // }
+            // (num == FIFO_LENGTH)
 
             iis3dwb_fifo_out_multi_raw_get(&sensor, fifo_data, num);
 
@@ -134,10 +134,8 @@ void read_accelerometer(void *args)
                         acc.y = conv(*(int16_t *)&sample->data[2]);
                         acc.z = conv(*(int16_t *)&sample->data[4]);
                         acc.t = sensor_timestamp;
-                        BaseType_t err = xQueueSend(samples, &acc, WAIT_TICKS);   // Do not wait
-                        // if (err == errQUEUE_FULL) {
-                        //     ESP_LOGI("m", "?"); Buffer overrun
-                        // }
+                        xQueueSend(samples, &acc, WAIT_TICKS);
+                        // (BaseType_t err == errQUEUE_FULL)
                         break;
                     case IIS3DWB_TIMESTAMP_TAG:
                         sensor_timestamp = *(int32_t *)&sample->data[0];
