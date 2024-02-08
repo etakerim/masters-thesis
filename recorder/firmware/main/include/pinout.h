@@ -13,24 +13,39 @@
 #define MAX_FILENAME            256
 #define MOUNT_POINT             "/sd"
 #define LOG_FOLDER              MOUNT_POINT"/"
-//MOUNT_POINT"/accelerometer"
+#define WAIT_TICKS              0
 
 #define CARD_CLK_PIN            14
 #define CARD_CMD_PIN            15
 #define CARD_D0_PIN             2
 
 #define RECORD_SWITCH_PIN       34
-#define RECORD_LED_PIN          3
+#define RECORD_LED_PIN          32
 
 // UEXT connector
 #define SENSOR_MISO             13
 #define SENSOR_MOSI             16
 #define SENSOR_CLK              4
 #define SENSOR_CS               5
-#define SENSOR_INT1             36
+#define SENSOR_INT1             33
 #define SPI_BUS_FREQUENCY       SPI_MASTER_FREQ_8M
-#define FIFO_WATERMARK          256
+#define FIFO_LENGTH             512
+#define FIFO_WATERMARK          FIFO_LENGTH / 2
+#define QUEUE_LENGTH            3 * FIFO_LENGTH
+
+// TIMER = 8 ms (1 sample = 1000 / 26667 = 0.0374 ms)
+// Half full FIFO (256 samples = 9.6 ms)
+#define SAMPLE_RATE             8000
 #define SPI_BUS                 SPI3_HOST
+
+typedef struct {
+    float x;
+    float y;
+    float z;
+    int32_t t;
+} Acceleration;
+
+typedef float_t (*AccResolutionConvert)(int16_t);
 
 
 sdmmc_card_t *storage_enable(const char *mount_point);
@@ -43,8 +58,7 @@ void switch_disable(void);
 void led_enable(void);
 void led_light(bool on);
 
-void sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev);
+int sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev);
 void sensor_disable(spi_device_handle_t spi_dev);
-void sensor_events_enable(stmdev_ctx_t *dev, gpio_isr_t isr_handler);
-void sensor_events_disable();
-void sensor_read(stmdev_ctx_t *dev, FILE *output);
+void sensor_events_enable(stmdev_ctx_t *dev);
+void sensor_events_disable(stmdev_ctx_t *dev);

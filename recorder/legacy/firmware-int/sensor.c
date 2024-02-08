@@ -29,7 +29,7 @@ static int32_t platform_read(void *handle, uint8_t reg, uint8_t *buffer, uint16_
     return 0;
 }
 
-static esp_err_t spi_enable(spi_device_handle_t *spi_dev)
+static esp_err_t spi_enable(spi_device_handle_t *spi_dev) 
 {
     esp_err_t err;
 
