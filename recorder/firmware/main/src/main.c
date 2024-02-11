@@ -74,6 +74,7 @@ void push_trigger(void *args)
                 sensor_enable(&spi, &sensor);
                 vTaskDelay(10 / portTICK_PERIOD_MS);
                 esp_timer_start_periodic(sampler_timer, SAMPLE_RATE);
+                //esp_timer_start_once(sampler_timer, SAMPLE_RATE);
 
                 led_light(true);
                 // Debounce delay for switch
@@ -113,29 +114,28 @@ void push_trigger(void *args)
 void read_accelerometer(void *args)
 {
     static iis3dwb_fifo_out_raw_t fifo_data[FIFO_LENGTH];
-    AccResolutionConvert conv = &iis3dwb_from_fs2g_to_mg;
+    static Acceleration acc;
 
     while (true) {
         if (ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE) {
             iis3dwb_fifo_status_t fifo_status;
             iis3dwb_fifo_status_get(&sensor, &fifo_status);
-            uint16_t num = fifo_status.fifo_level;
-            // (num == FIFO_LENGTH)
+            acc.len = fifo_status.fifo_level;
 
-            iis3dwb_fifo_out_multi_raw_get(&sensor, fifo_data, num);
+            if (acc.len >= FIFO_LENGTH - 1) {
+                led_light(false);
+            }
+            iis3dwb_fifo_out_multi_raw_get(&sensor, fifo_data, acc.len);
 
-            for (uint16_t k = 0; k < num; k++) {
+            for (uint16_t k = 0; k < acc.len; k++) {
                 iis3dwb_fifo_out_raw_t *sample = &fifo_data[k];
-                Acceleration acc;
 
                 switch (sample->tag >> 3) {
                     case IIS3DWB_XL_TAG:
-                        acc.x = conv(*(int16_t *)&sample->data[0]);
-                        acc.y = conv(*(int16_t *)&sample->data[2]);
-                        acc.z = conv(*(int16_t *)&sample->data[4]);
-                        acc.t = sensor_timestamp;
-                        xQueueSend(samples, &acc, WAIT_TICKS);
-                        // (BaseType_t err == errQUEUE_FULL)
+                        acc.x[k] = *(int16_t *)&sample->data[0];
+                        acc.y[k] = *(int16_t *)&sample->data[2];
+                        acc.z[k] = *(int16_t *)&sample->data[4];
+                        acc.t[k] = sensor_timestamp;
                         break;
                     case IIS3DWB_TIMESTAMP_TAG:
                         sensor_timestamp = *(int32_t *)&sample->data[0];
@@ -144,24 +144,44 @@ void read_accelerometer(void *args)
                         break;
                 }
             }
+            if (xQueueSend(samples, &acc, NO_WAIT) != pdPASS) {
+                led_light(false);
+            }
         }
     }
 }
 
 
+
+
 void write_card(void *args)
 {
-    // Resolution: 2g, [mg] units
-    Acceleration acc;
+    static Acceleration acc;
+    static int32_t buffer[4 * FIFO_LENGTH];
+
+    //TickType_t initial_time = 0, end_time = 0;
+
 
     while (true) {
         if (xQueueReceive(samples, &acc, portMAX_DELAY) == pdTRUE) {
-            if (xSemaphoreTake(file_mutex, WAIT_TICKS) == pdTRUE) {
+            //initial_time = xTaskGetTickCount();
+            for (uint16_t k = 0; k < acc.len; k++) {
+                buffer[4*k + 0] = acc.t[k];
+                buffer[4*k + 1] = acc.x[k];
+                buffer[4*k + 2] = acc.y[k];
+                buffer[4*k + 3] = acc.z[k];
+                // TODO: write to text buffer??
+            }
+
+            if (xSemaphoreTake(file_mutex, NO_WAIT) == pdTRUE) {
                 if (file != NULL) {
-                    fprintf(file, "%ld\t%4.2f\t%4.2f\t%4.2f\n", acc.t, acc.x, acc.y, acc.z);
+                    fwrite(&buffer, sizeof(int16_t), acc.len, file);
+                    fflush(file);
                 }
                 xSemaphoreGive(file_mutex);
             }
+            //end_time = xTaskGetTickCount();
+            //ESP_LOGW("m", "%lu", end_time - initial_time);
         }
     }
 }
@@ -172,16 +192,16 @@ void app_main(void)
     file_mutex = xSemaphoreCreateMutex();
     samples = xQueueCreate(QUEUE_LENGTH, sizeof(Acceleration));
     gpio_install_isr_service(0);
+    led_enable();
 
     card = storage_enable(MOUNT_POINT);
     if (card == NULL) {
         panic(500);
     }
 
-    led_enable();
     switch_enable(true, isr_switch);
 
-    xTaskCreate(push_trigger, "trigger", 4096, NULL, 2, &trigger_task);
-    xTaskCreate(read_accelerometer, "read", 4096, NULL, 1, &sampler_task);
-    xTaskCreate(write_card, "write", 8192, NULL, 1, NULL);
+    xTaskCreatePinnedToCore(push_trigger, "trigger", 4096, NULL, 4, &trigger_task, 1);
+    xTaskCreatePinnedToCore(write_card, "write", 8192, NULL, 2, NULL, 1);
+    xTaskCreatePinnedToCore(read_accelerometer, "read", 4096, NULL, 1, &sampler_task, 0);
 }

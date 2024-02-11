@@ -8,8 +8,6 @@
 #include "driver/sdmmc_host.h"
 #include "pinout.h"
 
-static const char *TAG = "sd";
-
 
 sdmmc_card_t *storage_enable(const char *mount_point)
 {
@@ -28,11 +26,6 @@ sdmmc_card_t *storage_enable(const char *mount_point)
     esp_err_t ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot, &mount, &card);
 
     if (ret != ESP_OK) {
-        if (ret == ESP_FAIL) {
-            ESP_LOGE(TAG, "Failed to mount filesystem");
-        } else {
-            ESP_LOGE(TAG, "Failed to initialize the card");
-        }
         return NULL;
     }
 
@@ -78,5 +71,5 @@ static unsigned long get_new_recording_name(const char *path)
 void get_recording_filename(char *filename, const char *path)
 {
     unsigned long file_seq = get_new_recording_name(path);
-    snprintf(filename, MAX_FILENAME, "%s%ld.csv", path, file_seq);
+    snprintf(filename, MAX_FILENAME, "%s%ld.bin", path, file_seq);
 }

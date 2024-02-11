@@ -13,7 +13,7 @@
 #define MAX_FILENAME            256
 #define MOUNT_POINT             "/sd"
 #define LOG_FOLDER              MOUNT_POINT"/"
-#define WAIT_TICKS              0
+#define NO_WAIT                 10 / portTICK_PERIOD_MS
 
 #define CARD_CLK_PIN            14
 #define CARD_CMD_PIN            15
@@ -31,26 +31,33 @@
 #define SPI_BUS_FREQUENCY       SPI_MASTER_FREQ_8M
 #define FIFO_LENGTH             512
 #define FIFO_WATERMARK          FIFO_LENGTH / 2
-#define QUEUE_LENGTH            4 * FIFO_LENGTH
+#define SENSOR_SPI_LENGTH       4 * FIFO_LENGTH
+#define QUEUE_LENGTH            16
 
-// TIMER = 8 ms (1 sample = 1000 / 26667 = 0.0374 ms)
+// up to 16g and 2 decimal places (-16xxx.xx)
+#define INT_CONV_BUF_LEN        20
+
+
+// TIMER = 9 ms (1 sample = 1000 / 26667 = 0.0374 ms)
 // Half full FIFO (256 samples = 9.6 ms)
-#define SAMPLE_RATE             8000
+#define SAMPLE_RATE             9000
 #define SPI_BUS                 SPI3_HOST
 
 typedef struct {
-    float x;
-    float y;
-    float z;
-    int32_t t;
+    int16_t x[FIFO_LENGTH];
+    int16_t y[FIFO_LENGTH];
+    int16_t z[FIFO_LENGTH];
+    int32_t t[FIFO_LENGTH];
+    uint16_t len;
 } Acceleration;
-
-typedef float_t (*AccResolutionConvert)(int16_t);
 
 
 sdmmc_card_t *storage_enable(const char *mount_point);
 void storage_disable(sdmmc_card_t *card, const char *mount_point);
 void get_recording_filename(char *filename, const char *path);
+
+void print_integer(int value, FILE *fw);
+void print_float(float value, FILE *fw);
 
 void switch_enable(bool on, gpio_isr_t isr_handler);
 void switch_disable(void);

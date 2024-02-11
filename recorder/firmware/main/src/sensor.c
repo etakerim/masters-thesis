@@ -39,9 +39,9 @@ static esp_err_t spi_enable(spi_device_handle_t *spi_dev)
         .sclk_io_num = SENSOR_CLK,
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
-        .max_transfer_sz = 1024
+        .max_transfer_sz = SENSOR_SPI_LENGTH
     };
-    err = spi_bus_initialize(SPI_BUS, &spi_bus, SPI_DMA_CH_AUTO);
+    err = spi_bus_initialize(SPI_BUS, &spi_bus, SPI_DMA_CH_AUTO); // SPI_DMA_DISABLED
     ESP_ERROR_CHECK(err);
     spi_device_interface_config_t spi_iface = {
         .clock_speed_hz=SPI_BUS_FREQUENCY,
