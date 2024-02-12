@@ -44,12 +44,13 @@
 #define SPI_BUS                 SPI3_HOST
 
 typedef struct {
-    int16_t x[FIFO_LENGTH];
-    int16_t y[FIFO_LENGTH];
-    int16_t z[FIFO_LENGTH];
-    int32_t t[FIFO_LENGTH];
+    float x[FIFO_LENGTH];
+    float y[FIFO_LENGTH];
+    float z[FIFO_LENGTH];
+    float t[FIFO_LENGTH];
     uint16_t len;
 } Acceleration;
+
 
 
 sdmmc_card_t *storage_enable(const char *mount_point);

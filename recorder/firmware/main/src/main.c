@@ -13,7 +13,7 @@ stmdev_ctx_t sensor;
 sdmmc_card_t *card = NULL;
 
 // Write only from read_accelerometer when sensor is enabled
-int32_t sensor_timestamp = 0;
+float sensor_timestamp = 0;
 
 SemaphoreHandle_t file_mutex;
 FILE *file = NULL;
@@ -132,13 +132,15 @@ void read_accelerometer(void *args)
 
                 switch (sample->tag >> 3) {
                     case IIS3DWB_XL_TAG:
-                        acc.x[k] = *(int16_t *)&sample->data[0];
-                        acc.y[k] = *(int16_t *)&sample->data[2];
-                        acc.z[k] = *(int16_t *)&sample->data[4];
+                        acc.x[k] = iis3dwb_from_fs2g_to_mg(*(int16_t *)&sample->data[0]);
+                        acc.y[k] = iis3dwb_from_fs2g_to_mg(*(int16_t *)&sample->data[2]);
+                        acc.z[k] = iis3dwb_from_fs2g_to_mg(*(int16_t *)&sample->data[4]);
                         acc.t[k] = sensor_timestamp;
                         break;
                     case IIS3DWB_TIMESTAMP_TAG:
-                        sensor_timestamp = *(int32_t *)&sample->data[0];
+                        sensor_timestamp = iis3dwb_from_lsb_to_nsec(
+                            *(int32_t *)&sample->data[0]
+                        );
                         break;
                     default:
                         break;
@@ -153,14 +155,11 @@ void read_accelerometer(void *args)
 
 
 
-
 void write_card(void *args)
 {
     static Acceleration acc;
-    static int32_t buffer[4 * FIFO_LENGTH];
-
+    static float buffer[4 * FIFO_LENGTH];
     //TickType_t initial_time = 0, end_time = 0;
-
 
     while (true) {
         if (xQueueReceive(samples, &acc, portMAX_DELAY) == pdTRUE) {
@@ -170,12 +169,11 @@ void write_card(void *args)
                 buffer[4*k + 1] = acc.x[k];
                 buffer[4*k + 2] = acc.y[k];
                 buffer[4*k + 3] = acc.z[k];
-                // TODO: write to text buffer??
             }
 
             if (xSemaphoreTake(file_mutex, NO_WAIT) == pdTRUE) {
                 if (file != NULL) {
-                    fwrite(&buffer, sizeof(int16_t), acc.len, file);
+                    fwrite(&buffer, sizeof(float), 4 * acc.len, file);
                     fflush(file);
                 }
                 xSemaphoreGive(file_mutex);
