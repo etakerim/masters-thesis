@@ -1,38 +1,36 @@
 #include "pinout.h"
-#include "esp_timer.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/semphr.h"
 
-
+// RTOS primitives
 TaskHandle_t trigger_task;
 TaskHandle_t sampler_task;
 QueueHandle_t samples;
 
+// HW device
+spi_device_handle_t spi;
 stmdev_ctx_t sensor;
 sdmmc_card_t *card = NULL;
 
-// Write only from read_accelerometer when sensor is enabled
-int32_t sensor_timestamp = 0;
-
+// File and its mutex
 SemaphoreHandle_t file_mutex;
 FILE *file = NULL;
 
-void panic(int delay)
-{
-    bool status = true;
-    while (true) {
-        led_light(status);
-        vTaskDelay(delay / portTICK_PERIOD_MS);
-        status = !status;
-    }
-}
+// Is recording flag
+bool is_recording = false;
+// Write only from read_accelerometer when sensor is enabled
+int32_t sensor_timestamp = 0;
 
 
+// Sampler timer
 static void isr_sample(void* args)
 {
     xTaskNotifyGive(sampler_task);
 }
+
+const esp_timer_create_args_t sampler_timer_conf = {
+        .callback = &isr_sample
+};
+esp_timer_handle_t sampler_timer;
+
 
 static void IRAM_ATTR isr_switch(void *args)
 {
@@ -41,18 +39,46 @@ static void IRAM_ATTR isr_switch(void *args)
     portYIELD_FROM_ISR(higher_priority_woken);
 }
 
+// Stop timer
+static void stop_timer_run(void* args)
+{
+    // Stop recording
+    switch_disable();
+    // Stop recorder
+    esp_timer_stop(sampler_timer);
+    // wait for transactions to end
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+    sensor_disable(spi);
+
+    // Close file
+    if (xSemaphoreTake(file_mutex, portMAX_DELAY) == pdTRUE) {
+        if (file != NULL) {
+            fclose(file);
+        }
+        file = NULL;
+        xSemaphoreGive(file_mutex);
+    }
+
+    led_light(false);
+    vTaskDelay(SWITCH_DEBOUNCE);
+    is_recording = false;
+    switch_enable(true, isr_switch);
+}
+
+
+// Auto turn off timer
+const esp_timer_create_args_t stop_timer_conf = {
+    .callback = &stop_timer_run
+};
+esp_timer_handle_t stop_timer;
+
+
 void push_trigger(void *args)
 {
-    bool is_recording = false;
     char filename[MAX_FILENAME];
-    spi_device_handle_t spi;
 
-    const esp_timer_create_args_t sampler_timer_conf = {
-        .callback = &isr_sample,
-        .name = "sampler"
-    };
-    esp_timer_handle_t sampler_timer;
     esp_timer_create(&sampler_timer_conf, &sampler_timer);
+    esp_timer_create(&stop_timer_conf, &stop_timer);
 
     while (true) {
         if (ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE) {
@@ -73,13 +99,12 @@ void push_trigger(void *args)
                 sensor_timestamp = 0;
                 sensor_enable(&spi, &sensor);
                 vTaskDelay(10 / portTICK_PERIOD_MS);
+
+                esp_timer_start_once(stop_timer, AUTO_TURN_OFF_US);
                 esp_timer_start_periodic(sampler_timer, SAMPLE_RATE);
-                //esp_timer_start_once(sampler_timer, SAMPLE_RATE);
 
                 led_light(true);
-                // Debounce delay for switch
-                vTaskDelay(2000 / portTICK_PERIOD_MS);
-
+                vTaskDelay(SWITCH_DEBOUNCE);
                 is_recording = true;
                 switch_enable(false, isr_switch);
 
@@ -102,8 +127,7 @@ void push_trigger(void *args)
                 }
 
                 led_light(false);
-                // Debounce delay for switch
-                vTaskDelay(2000 / portTICK_PERIOD_MS);
+                vTaskDelay(SWITCH_DEBOUNCE);
                 is_recording = false;
                 switch_enable(true, isr_switch);
             }
@@ -113,29 +137,31 @@ void push_trigger(void *args)
 
 void read_accelerometer(void *args)
 {
-    static iis3dwb_fifo_out_raw_t fifo_data[FIFO_LENGTH];
-    static Acceleration acc;
+    Acceleration acc;
+    iis3dwb_fifo_out_raw_t fifo_data[FIFO_LENGTH];
 
     while (true) {
         if (ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == pdTRUE) {
             iis3dwb_fifo_status_t fifo_status;
             iis3dwb_fifo_status_get(&sensor, &fifo_status);
-            acc.len = fifo_status.fifo_level;
+            uint16_t n = fifo_status.fifo_level;
 
-            if (acc.len >= FIFO_LENGTH - 1) {
+            if (n >= FIFO_LENGTH - 1) {
                 led_light(false);
             }
-            iis3dwb_fifo_out_multi_raw_get(&sensor, fifo_data, acc.len);
+            iis3dwb_fifo_out_multi_raw_get(&sensor, fifo_data, n);
+            acc.len = 0;
 
-            for (uint16_t k = 0; k < acc.len; k++) {
+            for (uint16_t k = 0; k < n; k++) {
                 iis3dwb_fifo_out_raw_t *sample = &fifo_data[k];
 
                 switch (sample->tag >> 3) {
                     case IIS3DWB_XL_TAG:
-                        acc.x[k] = iis3dwb_from_fs2g_to_mg(*(int16_t *)&sample->data[0]);
-                        acc.y[k] = iis3dwb_from_fs2g_to_mg(*(int16_t *)&sample->data[2]);
-                        acc.z[k] = iis3dwb_from_fs2g_to_mg(*(int16_t *)&sample->data[4]);
-                        acc.t[k] = sensor_timestamp;
+                        acc.t[acc.len] = sensor_timestamp;
+                        acc.x[acc.len] = *(int16_t *)&sample->data[0];
+                        acc.y[acc.len] = *(int16_t *)&sample->data[2];
+                        acc.z[acc.len] = *(int16_t *)&sample->data[4];
+                        acc.len++;
                         break;
                     case IIS3DWB_TIMESTAMP_TAG:
                         sensor_timestamp = *(int32_t *)&sample->data[0];
@@ -154,12 +180,12 @@ void read_accelerometer(void *args)
 
 void write_card(void *args)
 {
-    static Acceleration acc;
-    static float buffer[NUM_OF_FIELDS * FIFO_LENGTH];
+    Acceleration acc;
+    int32_t buffer[NUM_OF_FIELDS * FIFO_LENGTH];
 
     while (true) {
         if (xQueueReceive(samples, &acc, portMAX_DELAY) == pdTRUE) {
-            int idx = 0;
+            size_t idx = 0;
             for (uint16_t k = 0; k < acc.len; k++) {
                 buffer[idx++] = acc.t[k];
                 buffer[idx++] = acc.x[k];
@@ -169,7 +195,7 @@ void write_card(void *args)
 
             if (xSemaphoreTake(file_mutex, NO_WAIT) == pdTRUE) {
                 if (file != NULL) {
-                    fwrite(&buffer, sizeof(float), idx, file);
+                    fwrite(&buffer, sizeof(int32_t), idx, file);
                     fflush(file);
                 }
                 xSemaphoreGive(file_mutex);
@@ -194,7 +220,7 @@ void app_main(void)
 
     switch_enable(true, isr_switch);
 
-    xTaskCreatePinnedToCore(push_trigger, "trigger", 4096, NULL, 4, &trigger_task, 1);
-    xTaskCreatePinnedToCore(write_card, "write", 8192, NULL, 2, NULL, 1);
-    xTaskCreatePinnedToCore(read_accelerometer, "read", 4096, NULL, 1, &sampler_task, 0);
+    xTaskCreatePinnedToCore(push_trigger, "trigger", 4000, NULL, 4, &trigger_task, 1);
+    xTaskCreatePinnedToCore(write_card, "write", 32000, NULL, 2, NULL, 1);
+    xTaskCreatePinnedToCore(read_accelerometer, "read", 16000, NULL, 1, &sampler_task, 0);
 }

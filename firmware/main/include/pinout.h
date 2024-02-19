@@ -8,12 +8,17 @@
 #include "driver/spi_master.h"
 #include "esp_err.h"
 #include "esp_log.h"
+#include "esp_timer.h"
+#include "freertos/task.h"
+#include "freertos/semphr.h"
+#include "freertos/FreeRTOS.h"
 
 
 #define MAX_FILENAME            256
 #define MOUNT_POINT             "/sd"
 #define LOG_FOLDER              MOUNT_POINT"/"
 #define NO_WAIT                 10 / portTICK_PERIOD_MS
+#define SWITCH_DEBOUNCE         2000 / portTICK_PERIOD_MS
 
 #define CARD_CLK_PIN            14
 #define CARD_CMD_PIN            15
@@ -39,17 +44,18 @@
 
 // TIMER = 9 ms (1 sample = 1000 / 26667 = 0.0374 ms)
 // Half full FIFO (256 samples = 9.6 ms)
+// Resolution is 2g
 #define SAMPLE_RATE             9000
 #define SPI_BUS                 SPI3_HOST
+#define AUTO_TURN_OFF_US        60000000
 
 typedef struct {
-    float x[FIFO_LENGTH];
-    float y[FIFO_LENGTH];
-    float z[FIFO_LENGTH];
-    int32_t t[FIFO_LENGTH];
     uint16_t len;
+    int32_t t[FIFO_LENGTH];
+    int32_t x[FIFO_LENGTH];
+    int32_t y[FIFO_LENGTH];
+    int32_t z[FIFO_LENGTH];
 } Acceleration;
-
 
 
 sdmmc_card_t *storage_enable(const char *mount_point);
@@ -66,3 +72,5 @@ int sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev);
 void sensor_disable(spi_device_handle_t spi_dev);
 void sensor_events_enable(stmdev_ctx_t *dev);
 void sensor_events_disable(stmdev_ctx_t *dev);
+
+void panic(int delay);

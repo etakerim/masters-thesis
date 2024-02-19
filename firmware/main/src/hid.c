@@ -19,6 +19,15 @@ void switch_disable(void)
     gpio_isr_handler_remove(RECORD_SWITCH_PIN);
 }
 
+void panic(int delay)
+{
+    bool status = true;
+    while (true) {
+        led_light(status);
+        vTaskDelay(delay / portTICK_PERIOD_MS);
+        status = !status;
+    }
+}
 
 void led_enable(void)
 {

@@ -8,7 +8,7 @@
 static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *buffer, uint16_t len)
 {
     spi_transaction_t t = {
-        .addr = reg & 0x7F,
+        .addr = reg & 0x7f,
         .length = 8 * len,
         .tx_buffer = buffer
     };
