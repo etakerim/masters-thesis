@@ -163,9 +163,7 @@ Fault labels and their severities come from the directory structure within the d
 
 Pearson's correlation of features to rpm is very low in the whole dataset. In the temporal domain, the correlation coefficient is within an interval of -0.08 to 0.26. In the spectral domain, the correlation to rpm for all FFT window sizes from $2^8$ up to $2^{14}$ is mostly very low from -0.14 up to 0.26, except for the centroid being around 0.35.
 
-The correlation among features can reduce prediction power if a pair is elected where $|\mathrm{corr}| > 0.95$. The feature is not added to the subset when the threshold is exceeded. High correlations are more substantial in the temporal domain that are present in these pairs (ordered from the most correlated): \{std, rms\}, \{pp, max\}, \{crest, margin\}, \{impulse, std\}, \{impulse, rms\}. In the spectral domain set \{skewness, kurtosis\} has a strong correlation.
-
-It is assumed that data points spread throughout each dimension of the feature space could distinguish groups well. The variables that are the best explained after min-max scaling total dataset variance in the temporal domain are shape (29\%), rms, std, max, and p-p (each around 15\%). In the spectral domain, variance is best explained by roll-off (28\%), entropy, skewness, centroid, and kurtosis (each around 12\%).
+The correlation among features can reduce prediction power if a pair is elected where $|\mathrm{corr}| > 0.95$. The feature is not added to the subset when the threshold is exceeded. High correlations are more substantial in the temporal domain that are present in these pairs (ordered from the most correlated): \{impulse, clearance\}, \{crest, impulse\}, \{crest, clearance\}, \{pp, rms\}. In the spectral domain set \{skewness, kurtosis\} has a strong correlation.
 
 \begin{figure}[h!]
     \centering
@@ -191,7 +189,7 @@ The variables are also more inter-correlated in the temporal domain shown by pri
     \label{fig:design:pca-loading-plot} 
 \end{figure}
 
-PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. Loading plots of PCA (Fig. \ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the temporal domain focuses more on the amplitude range: \emph{max, rms, pp, std}. The second PC mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, margin}.
+PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. Loading plots of PCA (Fig. \ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the temporal domain mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, clearance, zero-crossing}. The second PC focuses more on the amplitude range: \emph{rms, p-p, aac}.  
 
 However, the groups are not as clear-cut for spectral features. Overall chaos in spectra can be attributed to PC1: \emph{flux, entropy, negentropy, noisiness}, and the shape of frequency distribution to PC2: \emph{roll-on, roll-off, centroid}.
 
@@ -231,7 +229,7 @@ The objective of feature selection is to find a subset of the most relevant pred
 \itemsep0pt
 \item \textbf{online}: a boolean selector that influences whether metrics are calculated in batch or incremental fashion,
 \item \textbf{placement}: chooses between bearing ``A'' and bearing ``B'',
-\item \textbf{predicted variable}: select a column out of ``fault'', ``anomaly60'', ``anomaly90'' against which similarity is judged,
+\item \textbf{predicted variable}: select a column out of ``fault'', ``anomaly90'' against which similarity is judged,
 \item \textbf{rotational speed limit}: chosses whether only observations occuring within predermined range $2500 \pm 500$ rpm are filtered.
 \end{itemize}
 
@@ -254,14 +252,14 @@ The best group of attributes is elected based on a training set with multiple me
     \label{fig:design:approval-rating-features}
 \end{figure}
 
-The choice of features is very sensitive to experimental conditions. Tendencies are demonstrated by counting how many triplets the indicator appears in across all possible situations. The results of approval voting are shown in Figure~\ref{fig:design:approval-rating-features}. The most occurring attributes in the temporal domain are peak-to-peak, shape, and crest, and in the spectral domain, those are centroid, roll-off, and roll-on.
+The choice of features is very sensitive to experimental conditions. Tendencies are demonstrated by counting how many triplets the indicator appears in across all possible situations. The results of approval voting are shown in Figure~\ref{fig:design:approval-rating-features}. The most occurring attributes in the temporal domain are zero-crossing rate, peak-to-peak distance, and average amplitude change. the features dominating in the spectral domain are centroid, roll-off, and roll-on.
 
 
 \section{K-nearest neighbor classifier}
-We utilize the k-nearest neighbor algorithm to check machinery diagnostics abilities with reduced feature sets. The KNN classifier being a lazy learner means it can be adapted easily from offline to online context. Training labels are min-max scaled and establish nearest-neighbor decision boundaries for attribute values. Voronoi diagrams can display these regions and explain the model in that way. Batch learning in KNN serves here as a target performance whose attainment is desirable with online learning.
+We utilize the k-nearest neighbor algorithm to check machinery diagnostics abilities with reduced feature sets. The k-NN classifier being a lazy learner means it can be adapted easily from offline to online context. Training labels are min-max scaled and establish nearest-neighbor decision boundaries for attribute values. Voronoi diagrams can display these regions and explain the model in that way. Batch learning in k-NN serves here as a target performance whose attainment is desirable with online learning.
 
 \subsection{Batch models}
-Three types of KNN model experiments run with hold-out validation in a batch setting. First, the model learns all extracted features, so no feature selection occurs. Then, the brute-force method searches for a combination of three features with the highest training accuracy. In the end, the model performance for three attributes chosen by feature selection techniques is compared to principal components.
+Three types of k-NN model experiments run with hold-out validation in a batch setting. First, the model learns all extracted features, so no feature selection occurs. Then, the brute-force method searches for a combination of three features with the highest training accuracy. In the end, the model performance for three attributes chosen by feature selection techniques is compared to principal components.
 
 \begin{figure}[ht]
     \centering
@@ -283,7 +281,7 @@ Three types of KNN model experiments run with hold-out validation in a batch set
         \includegraphics[width=\textwidth]{assets/design/KNN-spectral-confusion-matrix-anomaly90.png}
         \caption{Prediction of high severity anomalies in testing set with spectral domain features}
     \end{subfigure}
-    \caption{Confusion matrix of KNN predictions on bearing position A}
+    \caption{Confusion matrix of k-NN predictions on bearing position A}
     \label{fig:design:KNN-confusion-matrix}
 \end{figure}
 
@@ -301,32 +299,32 @@ In anomaly prediction, the error of the first degree is 7 times more prevalent t
 \hline
 \multirow{2}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Bearing\\ position\end{tabular}}} & \multirow{2}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Target\\ variable\end{tabular}}} & \multirow{2}{*}{\textbf{Observations}}                                             & \multicolumn{3}{l|}{\textbf{Temporal domain}}                                                                                                                                                                                                                                    & \multicolumn{3}{l|}{\textbf{Spectral domain}}                                                                                                                                                                                                                                    \\ \cline{4-9} 
                                                                                      &                                                                                     &                                                                                   & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Testing\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ F1 score\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Testing\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ F1 score\end{tabular}}} \\ \hline
-\multirow{2}{*}{A}                                                                   & Fault                                                                               & \begin{tabular}[c]{@{}l@{}}$\sum 2998$\\ 498 per class\end{tabular}  & \multicolumn{1}{r|}{0.9413}                                                               & \multicolumn{1}{r|}{0.9093}                                                              & 0.91                                                                                      & \multicolumn{1}{r|}{0.9917}                                                               & \multicolumn{1}{r|}{0.9836}                                                              & 0.98                                                                                      \\ \cline{2-9} 
-                                                                                     & \begin{tabular}[c]{@{}l@{}}Anomaly\\ (0.9)\end{tabular}                               & \begin{tabular}[c]{@{}l@{}}$\sum 2454$\\ 1227 per class\end{tabular} & \multicolumn{1}{r|}{0.9668}                                                               & \multicolumn{1}{r|}{0.9535}                                                              & 0.96                                                                                      & \multicolumn{1}{r|}{0.9921}                                                               & \multicolumn{1}{r|}{0.9874}                                                              & 0.99                                                                                      \\ \hline
-\multirow{2}{*}{B}                                                                   & Fault                                                                               & \begin{tabular}[c]{@{}l@{}}$\sum 2998$\\ 498 per class\end{tabular}  & \multicolumn{1}{r|}{0.8634}                                                               & \multicolumn{1}{r|}{0.7935}                                                              & 0.79                                                                                      & \multicolumn{1}{r|}{0.9207}                                                               & \multicolumn{1}{r|}{0.8765}                                                              & 0.87                                                                                      \\ \cline{2-9} 
-                                                                                     & \begin{tabular}[c]{@{}l@{}}Anomaly \\ (0.9)\end{tabular}                              & \begin{tabular}[c]{@{}l@{}}$\sum 2394$\\ 1197 pre class\end{tabular} & \multicolumn{1}{r|}{0.9148}                                                               & \multicolumn{1}{r|}{0.8668}                                                              & 0.87                                                                                      & \multicolumn{1}{r|}{0.9428}                                                               & \multicolumn{1}{r|}{0.9156}                                                              & 0.92                                                                                      \\ \hline
+\multirow{2}{*}{A}                                                                   & Fault                                                                               & \begin{tabular}[c]{@{}l@{}}$\sum 2998$\\ 498 per class\end{tabular}  & \multicolumn{1}{r|}{0.9859}                                                               & \multicolumn{1}{r|}{0.9736}                                                              & 0.97                                                                                      & \multicolumn{1}{r|}{0.9917}                                                               & \multicolumn{1}{r|}{0.9836}                                                              & 0.98                                                                                      \\ \cline{2-9} 
+                                                                                     & \begin{tabular}[c]{@{}l@{}}Anomaly\\ (0.9)\end{tabular}                               & \begin{tabular}[c]{@{}l@{}}$\sum 2454$\\ 1227 per class\end{tabular} & \multicolumn{1}{r|}{0.9869}                                                               & \multicolumn{1}{r|}{0.9800}                                                              & 0.98                                                                                     & \multicolumn{1}{r|}{0.9921}                                                               & \multicolumn{1}{r|}{0.9874}                                                              & 0.99                                                                                      \\ \hline
+\multirow{2}{*}{B}                                                                   & Fault                                                                               & \begin{tabular}[c]{@{}l@{}}$\sum 2998$\\ 498 per class\end{tabular}  & \multicolumn{1}{r|}{0.9316}                                                               & \multicolumn{1}{r|}{0.8969}                                                              & 0.90                                                                                     & \multicolumn{1}{r|}{0.9207}                                                               & \multicolumn{1}{r|}{0.8765}                                                              & 0.87                                                                                      \\ \cline{2-9} 
+                                                                                     & \begin{tabular}[c]{@{}l@{}}Anomaly \\ (0.9)\end{tabular}                              & \begin{tabular}[c]{@{}l@{}}$\sum 2394$\\ 1197 pre class\end{tabular} & \multicolumn{1}{r|}{0.9568}                                                               & \multicolumn{1}{r|}{0.9273}                                                              & 0.93                                                                                      & \multicolumn{1}{r|}{0.9428}                                                               & \multicolumn{1}{r|}{0.9156}                                                              & 0.92                                                                                      \\ \hline
 \end{tabular}
 \end{adjustbox}
-\caption{KNN model performance trained on all extracted features}
+\caption{k-NN model performance trained on all extracted features}
 \label{tab:design:all-extracted-features}
 \end{table}
 
-Accuracies and F1 scores in both bearing positions with all extracted features are shown in Table \ref{tab:design:all-extracted-features}. Models are overtrained, especially for temporal features, because of the substantial difference between accuracy on training and validation sets. Binary classification of anomalies is unsurprisingly more precise in general than the multi-class case. Defect-type detection with all features reaches accuracy on the testing set above 98\% for bearing A, and above 87\% for bearing B.
+Accuracies and F1 scores in both bearing positions with all extracted features are shown in Table \ref{tab:design:all-extracted-features}. Models are overtrained, especially for temporal features, because of the substantial difference between accuracy on training and validation sets. Binary classification of anomalies is unsurprisingly more precise in general than the multi-class case. Defect-type detection with all features reaches accuracy on the testing set above 98\% for bearing A, and above 90\% for bearing B.
 
-Next, we exhaustively list all combinations of three features and look at the range of model performances generated. There are $\binom{n}{3}$ combinations of attribute triplets that entail 120 separate KNN models for temporal domain features and 165 for the spectral domain. The feature set with the best evaluation scores serves as a benchmark for attributes picked by selection techniques. The accuracy of the KNN algorithm for different target variables is in Figure \ref{fig:design:feature-combinations-KNN}. 
+Next, we exhaustively list all combinations of three features and look at the range of model performances generated. There are $\binom{n}{3}$ combinations of attribute triplets that entail 120 separate k-NN models for temporal domain features and 165 for the spectral domain. The feature set with the best evaluation scores serves as a benchmark for attributes picked by selection techniques. The accuracy of the k-NN algorithm for different target variables is in Figure \ref{fig:design:feature-combinations-KNN}. 
 
 \begin{figure}[ht]
     \centering
-    \begin{subfigure}[b]{\textwidth}
+    \begin{subfigure}[b]{0.8\textwidth}
         \includegraphics[width=\textwidth]{assets/design/KNN-3-features-combinations-train.png}
         \caption{Testing set}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{\textwidth}
+    \begin{subfigure}[b]{0.8\textwidth}
         \includegraphics[width=\textwidth]{assets/design/KNN-3-features-combinations-test.png}
         \caption{Training set}
     \end{subfigure}
-    \caption{Range of prediction accuracy in all KNN models with subset of 3 features. Subplots show three different predicted variables.}
+    \caption{Range of prediction accuracy in all k-NN models with subset of 3 features. Subplots show three different predicted variables.}
     \label{fig:design:feature-combinations-KNN}
 \end{figure}
 
@@ -339,13 +337,13 @@ Features picked combinatorically for predictions are listed in Table \ref{tab:de
 \begin{tabular}{|r|r|r|l|r|r|}
 \hline
 \multicolumn{1}{|l|}{\textbf{Place}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Target \\ variable\end{tabular}}} & \multicolumn{1}{l|}{\textbf{Domain}} & \multicolumn{1}{l|}{\textbf{Best feature triplet}} & \textbf{\begin{tabular}[c]{@{}l@{}}Training \\ accuracy\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Testing \\ accuracy\end{tabular}} \\ \hline
-\multirow{4}{*}{A} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}              & temporal        & \{std, skewness, shape\}         & 0.9559                & 0.9328               \\ \cline{3-6} 
+\multirow{4}{*}{A} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}              & temporal        & \{zero-crossing, aac, rms\}         & 0.9843                & 0.9792 \\ \cline{3-6} 
                    &                                               & spectral        & \{centroid, noisiness, entropy\} & 0.9818                & 0.9707               \\ \cline{2-6} 
-                   & \multirow{2}{*}{fault}                        & temporal        & \{std, skewness, shape\}         & 0.9106                & 0.8591 \\ \cline{3-6} 
+                   & \multirow{2}{*}{fault}                        & temporal        & \{zero-crossing, aac, rms\}         & 0.9701  & 0.9475 \\ \cline{3-6} 
                    &                                               & spectral        & \{centroid, kurtosis, entropy\}  & 0.9750                & 0.9505               \\ \hline
-\multirow{4}{*}{B} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}               & temporal        & \{std, kurtosis, pp\}            & 0.9085                & 0.8551               \\ \cline{3-6} 
+\multirow{4}{*}{B} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}               & temporal        & \{zero-crossing, aac, rms\}            & 0.9570                & 0.9227 \\ \cline{3-6} 
                    &                                               & spectral        & \{centroid, std, roll-on\}      & 0.9495                & 0.9185               \\ \cline{2-6} 
-                   & \multirow{2}{*}{fault}                        & temporal        & \{std, skewness, kurtosis\}      & 0.8369                & 0.7654 \\ \cline{3-6} 
+                   & \multirow{2}{*}{fault}                        & temporal        & \{zero-crossing, aac, rms\}     & 0.9173 & 0.8738 \\ \cline{3-6} 
                    &                                               & spectral        & \{centroid, std, roll-off\}     & 0.9067                & 0.8584               \\ \hline
 \end{tabular}
 \end{adjustbox}
@@ -353,7 +351,7 @@ Features picked combinatorically for predictions are listed in Table \ref{tab:de
 \label{tab:design:feature-combinations-KNN}
 \end{table}
 
-The features picked using the rank product method are shown in Table \ref{tab:design:best-3-features-KNN}. Their prediction accuracies in KNN models are subpar to optimal sets. However, the advantage is that the feature election process is not so computationally taxing. On bearing A, validation set accuracies for fault diagnostics are 85\% and 92\%, for each of the domains. Because of the low k hyperparameter value, models are overtrained either way.
+The features picked using the rank product method are shown in Table \ref{tab:design:best-3-features-KNN}. Their prediction accuracies in k-NN models are subpar to optimal sets. However, the advantage is that the feature election process is not so computationally taxing. On bearing A, validation set accuracies for fault diagnostics are 85\% and 92\%, for each of the domains. Because of the low k hyperparameter value, models are overtrained either way.
 
 \begin{table}[ht!]
 \centering
@@ -362,17 +360,17 @@ The features picked using the rank product method are shown in Table \ref{tab:de
 \begin{tabular}{|r|r|r|l|r|r|}
 \hline
 \multicolumn{1}{|l|}{\textbf{Place}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Target \\ variable\end{tabular}}} & \multicolumn{1}{l|}{\textbf{Domain}} & \multicolumn{1}{l|}{\textbf{Best feature triplet}} & \textbf{\begin{tabular}[c]{@{}l@{}}Train \\ accuracy\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Test \\ accuracy\end{tabular}} \\ \hline
-\multirow{4}{*}{A} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}                & temporal        & \{shape, std, rms\}               & 0.9333                                       & 0.8916                                      \\ \cline{3-6} 
+\multirow{4}{*}{A} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}                & temporal        & \{zero-crossing, rms, shape\}              & 0.9743 &	0.9633 \\ \cline{3-6} 
                    &                                               & spectral        & \{centroid, flux, entropy\}       & 0.9654                                       & 0.9474                                      \\ \cline{2-6} 
-                   & \multirow{2}{*}{fault}                        & temporal        & \{std, shape, max\}               & 0.9048                                       & 0.8544                                      \\ \cline{3-6} 
+                   & \multirow{2}{*}{fault}                        & temporal        & \{zero-crossing, rms, shape\}               & 0.9592 & 0.9274                                     \\ \cline{3-6} 
                    &                                               & spectral        & \{roll-off, centroid, skewness\} & 0.9504                                       & 0.9210                                      \\ \hline
-\multirow{4}{*}{B} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}              & temporal        & \{std, shape, crest\}             & 0.8961                                       & 0.8505                                      \\ \cline{3-6} 
+\multirow{4}{*}{B} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}              & temporal        &             \{zero-crossing, rms, shape\} & 0.9265	 & 0.8835                \\ \cline{3-6} 
                    &                                               & spectral        & \{std, noisiness, entropy\}       & 0.9265                                       & 0.8843                                      \\ \cline{2-6} 
-                   & \multirow{2}{*}{fault}                        & temporal        & \{pp, crest, skewness\}           & 0.8194                                       & 0.7380                                      \\ \cline{3-6} 
+                   & \multirow{2}{*}{fault}                        & temporal        & \{zero-crossing, p-p, aac\}           & 0.9113 &	0.8614                                      \\ \cline{3-6} 
                    &                                               & spectral        & \{centroid, roll-on, roll-off\} & 0.8914                                       & 0.8390                                      \\ \hline
 \end{tabular}
 \end{adjustbox}
-\caption{Three chosen features with rank product of correlation, F statistic, mutual information and their associated KNN accuracies.}
+\caption{Three chosen features with rank product of correlation, F statistic, mutual information and their associated k-NN accuracies.}
 \label{tab:design:best-3-features-KNN}
 \end{table}
 
@@ -395,7 +393,7 @@ Cluster overlaps of various defect types are also confirmed by silhouette scores
     \label{fig:design:feature-space-scatter}
 \end{figure}
 
-Model performance of the KNN algorithm preceeded by a variety of feature selection methods is compared in Figure \ref{fig:design:KNN-accuracy-batch}. The best combination of 3 features always achieves better than when the model is trained on all features. This has to do with curse of dimensionality phenomenon. 
+Model performance of the k-NN algorithm preceeded by a variety of feature selection methods is compared in Figure \ref{fig:design:KNN-accuracy-batch}. The best combination of 3 features always achieves better than when the model is trained on all features. This has to do with curse of dimensionality phenomenon. 
 
 \begin{figure}[ht]
     \centering
@@ -408,7 +406,7 @@ Model performance of the KNN algorithm preceeded by a variety of feature selecti
         \includegraphics[width=\textwidth]{assets/design/KNN-feature-selection-predictions-test.png}
         \caption{Training set}
     \end{subfigure} 
-    \caption{Batch KNN algorithm prediction accuracy with various feature sets.}
+    \caption{Batch k-NN algorithm prediction accuracy with various feature sets.}
     \label{fig:design:KNN-accuracy-batch}
 \end{figure} 
 
@@ -420,7 +418,7 @@ In every instance, a subset of spectral features is responsible for better accur
 \subsection{Online models}
 Online learning imitates hardened conditions for machinery diagnostics that appear in deployment. Delayed provision or omission of actual labels undoubtedly degrades the reliability of the classification. The question is how quickly the accuracy approaches the optimal one from the nearest neighbors trained in batch and what the effect of routine difficulties in the ongoing labeling process is.
 
-The KNN models in incremental learning experiments learn on the same base training dataset for bearing position A and with all extracted features as in a batch context. In this manner, we can compare the training accuracies in the last sample for both models. KNN is set to 5 nearest neighbors and a proximity metric of Euclidian distance. Online learning metrics are evaluated by progressive valuation on a dataset that is left unbalanced.
+The k-NN models in incremental learning experiments learn on the same base training dataset for bearing position A and with all extracted features as in a batch context. In this manner, we can compare the training accuracies in the last sample for both models. k-NN is set to 5 nearest neighbors and a proximity metric of Euclidian distance. Online learning metrics are evaluated by progressive valuation on a dataset that is left unbalanced.
 
 The \textbf{stream of events is sorted} by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}) which ensures steady increments in label counts throughout the whole duration of the simulation (Fig.~\ref{fig:design:online-event-order}). This constructed event sequence is a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine.
 
@@ -440,7 +438,7 @@ The \textbf{stream of events is sorted} by rising severity levels (Fig.~\ref{fig
     \caption{Label sequencing for progressive evaluation}
 \end{figure}
 
-Major breaking points in the stream are after 1171 observations out of 5751, where all 203 normal conditions are consumed in the training process. Counters of other faults show that model predictions are skewed towards more represented classes of imbalance and misalignement. The uneven evolution of category counts in a stream impacts the development of accuracy in the remaining experiments. The training accuracies of comparable batch models are 94.13\% \emph{(temporal features)} and 99.17\% \emph{(spectral features)}.
+Major breaking points in the stream are after 1171 observations out of 5751, where all 203 normal conditions are consumed in the training process. Counters of other faults show that model predictions are skewed towards more represented classes of imbalance and misalignement. The uneven evolution of category counts in a stream impacts the development of accuracy in the remaining experiments. The hold-out validation accuracies of comparable batch models are 97.36\% \emph{(temporal features)} and 98.36\% \emph{(spectral features)}.
 	
 During gradual learning, the correct label is supplied after a fixed period passes after its prediction. This \textbf{sliding window} simulation examines accuracy every 100 iterations. Wait times before revealing the actual class associated with the sample are 1, 50, 100, or 250 steps (Fig.~\ref{fig:design:online-fault-delay-sliding}). 
 
@@ -460,7 +458,7 @@ During gradual learning, the correct label is supplied after a fixed period pass
     \label{fig:design:scatter-plot-online}
 \end{figure}
 
-Accuracies after sequentially seeing all samples are 82.92\% \emph{(temporal)} and 89.11\% \emph{(spectral)} when labels are shown instantly. Scatter plots in Figure~\ref{fig:design:scatter-plot-online} visualize mistakes in predictions projected onto two principal components. Labeling delay of 250 observations causes accuracy to drop to 70.51\% \emph{(temporal)} and 78.81\% \emph{(spectral)}. Accuracy better than 50\% is achieved 200 steps sooner in the spectral domain than in the temporal domain.
+Accuracies after sequentially seeing all samples 96.78\% in temporal domain and 89.11\% in spectral domain when labels are shown instantly. Scatter plots in Figure~\ref{fig:design:scatter-plot-online} visualize mistakes in predictions projected onto two principal components. Labeling delay of 250 observations causes accuracy to drop to 83.94\% \emph{(temporal)} and 78.81\% \emph{(spectral)}.
 	
 \begin{figure}[ht]
     \centering
@@ -478,7 +476,7 @@ Accuracies after sequentially seeing all samples are 82.92\% \emph{(temporal)} a
 \end{figure}
 	
 	
-The \textbf{tumbling window} simulates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once. In the final sample, the accuracies are 83.41\% \emph{(temporal)} and 90.14\% \emph{(spectral)} with immediate feedback, and 77.95\% \emph{(temporal)} and 85.90\% \emph{(spectral)} with window length of 250 samples (Fig.~\ref{fig:design:online-fault-delay-tumbling}). 
+The \textbf{tumbling window} simulates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once. In the final sample, the accuracies are 89.11\% \emph{(temporal)} and 90.38\% \emph{(spectral)} with immediate feedback, and 83.08\% \emph{(temporal)} and 85.01\% \emph{(spectral)} with window length of 250 samples (Fig.~\ref{fig:design:online-fault-delay-tumbling}). 
 
 \begin{figure}[ht]
     \centering
@@ -514,4 +512,4 @@ Another common problem with online learning is \textbf{missing annotations} due 
     \label{fig:design:online-label-skip}
 \end{figure}
  
-Labeling just every \nth{5} sample (25\% of the total dataset) with a sliding window delay of 10 samples reduces accuracy for the model out of temporal features by 8.77\% to 74.07\%, and by 7.33\% for spectral features to accuracy of 82.01\% (Fig.~\ref{fig:design:online-label-skip}). Even if only 1\% of the dataset is annotated (every \nth{100} sample), the model out of spectral features retained an accuracy of 65.17\%. The same cannot be said about the model from temporal features with very poor accuracy of 53.68\%. More missing labels require recording more observations before the equivalent accuracy is reached.
+Labeling just every \nth{5} sample (25\% of the total dataset) with a sliding window delay of 10 samples reduces accuracy for the model out of temporal features by 8.41\% to 80.39\%, and by 7.33\% for spectral features to accuracy of 82.01\% (Fig.~\ref{fig:design:online-label-skip}). Even if only 1\% of the dataset is annotated (every \nth{100} sample), the model out of spectral features retained an accuracy of 65.17\% that is 4.41\% better than for temporal features.  More missing labels require recording more observations before the equivalent accuracy is reached.

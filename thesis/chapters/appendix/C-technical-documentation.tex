@@ -41,18 +41,3 @@ The vibration measurements will occur monthly for pumps and biweekly for compres
 Each measurement will involve 3 trials for each position. The sensor is mounted to the machine with adhesive on double-sided carpet tape (placement notation follows MIMOSA convention from ISO~13373-1). After every trial, the sensor will be detached and attached again. 
 
 The plan was consulted and approved by the machinery owners: VNET~a.s. and Bratislavská vodárenská spoločnosť,~a.s. Triaxial recording has a duration 60~s (at $f_s$ = 26.7 kHz) and a 16-bit resolution. The total space requirements for 108 recordings are 990 MiB.
-
-\section{Firmware activities}
-Activity diagrams describe three basic actions of firmware for logging accelerometer samples:
-
-\begin{itemize}
-\itemsep0pt
-\item begin new recording, 
-\item log block of samples into CSV file,
-\item finish recording.
-\end{itemize}
-
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=\textwidth]{assets/design/firmware-design.png}
-\end{figure} 

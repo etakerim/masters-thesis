@@ -6,6 +6,43 @@ from tqdm.notebook import tqdm
 from multiprocessing.pool import ThreadPool
 
 
+def steval_files(path: str):
+    dataset = []
+    for root, subdirs, files in os.walk(path):
+        for filename in files:
+            if filename.lower().endswith('.tsv'):
+                dataset.append(os.path.join(root, filename))
+    return dataset
+
+
+def steval_measurement(filename: str, fs: int=26866) -> Tuple[str, pd.DataFrame]:
+    g = 9.81
+    columns = ['x', 'y', 'z']
+    ts = pd.read_csv(
+        filename,
+        delimiter='\t',
+        index_col=False,
+        header=0,
+        names=['t'] + columns
+    )
+
+    for dim in columns:
+        ts[dim] -= ts[dim].mean()
+        ts[dim] = g * (ts[dim] / 1000)
+
+    ts['t'] = ts.index * (1 / fs)
+    ts.set_index('t', inplace=True)
+    return (os.path.basename(filename), ts, fs, ts.columns)
+
+
+def steval_dataset(filenames: List[str], fs: int) -> List[Tuple[str, pd.DataFrame]]:
+    dataset = []
+    for filename in sorted(filenames, key=lambda x: int(os.path.basename(x).split('.')[0])):
+        name, ts, fs, cols = steval_measurement(filename, fs)
+        dataset.append((filename, ts))
+    return dataset
+
+
 def beaglebone_measurement(filename: str, fs: int=2500) -> Tuple[str, pd.DataFrame]:
     g = 9.81
     milivolts = 1800
@@ -28,30 +65,6 @@ def beaglebone_dataset(filenames: List[str]) -> List[Tuple[str, pd.DataFrame]]:
     dataset = []
     for filename in filenames:
         name, ts, fs, cols = beaglebone_measurement(filename)
-        dataset.append((name, ts))
-    return dataset
-
-
-def icomox_measurement(filename: str, fs: int) -> Tuple[str, pd.DataFrame]:
-    g = 9.81
-    ts = pd.read_csv(filename, delimiter=',', index_col=False)
-    ts = ts.rename(columns={'aX': 'x', 'aY': 'y', 'aZ': 'z'})
-    ts['t'] /= 1000
-    # print('FS:', 1 / (ts['t'] - ts['t'].shift(1)).mean())
-    ts.set_index('t', inplace=True)
-
-    # Convert amplitude from g to m/s^2
-    for dim in ['x', 'y', 'z']:
-        ts[dim] = ts[dim] * g
-        ts[dim] -= ts[dim].mean()
-
-    return (os.path.basename(filename), ts, fs, ts.columns)
-
-
-def icomox_dataset(filenames: List[str]) -> List[Tuple[str, pd.DataFrame]]:
-    dataset = []
-    for filename in filenames:
-        name, ts, fs, cols = icomox_measurement(filename)
         dataset.append((name, ts))
     return dataset
 

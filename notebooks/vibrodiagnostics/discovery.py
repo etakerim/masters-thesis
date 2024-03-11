@@ -51,21 +51,21 @@ def lowpass_filter_extract(dataframe: pd.DataFrame, columns) -> pd.DataFrame:
 def time_features_calc(df: pd.DataFrame, col: str) -> List[Tuple[str, pd.DataFrame]]:
     x = df[col]
     features = [
-        ('std', [ft.calc_std(x)]),
+        ('zerocross', ft.zero_cross(x) / len(x)),
+        ('pp', [ft.pk_pk_distance(x)]),
+        ('aac', np.mean(np.absolute(np.diff(x)))),
+        ('rms', [ft.rms(x)]),
         ('skewness', [ft.skewness(x)]),
         ('kurtosis', [ft.kurtosis(x)]),
-        ('rms', [ft.rms(x)]),
-        ('pp', [ft.pk_pk_distance(x)]),
-        ('crest', [np.max(np.absolute(x)) / ft.rms(x)]),
-        ('margin', [np.max(nplot_label_occurencesp.absolute(x)) / (np.mean(np.sqrt(np.absolute(x))) ** 2)]),
-        ('impulse', [np.max(np.absolute(x)) / np.mean(np.absolute(x))]),
         ('shape', [ft.rms(x) / np.mean(np.absolute(x))]),
-        ('max', [ft.calc_max(x)])
+        ('crest', [np.max(np.absolute(x)) / ft.rms(x)]),
+        ('impulse', [np.max(np.absolute(x)) / np.mean(np.absolute(x))]),
+        ('clearance', [np.max(np.absolute(x)) / (np.mean(np.sqrt(np.absolute(x))) ** 2)]),
     ]
     return [(f'{col}_{f[0]}', f[1]) for f in features]
 
-def frequency_features_calc(df: pd.DataFrame, col: str, window: int) -> List[Tuple[str, pd.DataFrame]]:
-    f, pxx = spectral_transform(df, col, window)
+def frequency_features_calc(df: pd.DataFrame, col: str, window: int, fs: int) -> List[Tuple[str, pd.DataFrame]]:
+    f, pxx = spectral_transform(df, col, window, fs)
     
     fluxes = temporal_variation(df, col, window)
     envelope_spectrum = envelope_signal(f, pxx)
@@ -361,12 +361,12 @@ def envelope_signal(f: np.array, Pxx: np.array) -> np.array:
     return y_env
 
 
-def spectral_transform(dataset: pd.DataFrame, axis: str, window: int) -> (np.array, np.array):
+def spectral_transform(dataset: pd.DataFrame, axis: str, window: int, fs: int) -> (np.array, np.array):
     OVERLAP = 0.5
     STEP = int(window * OVERLAP)
     v = dataset[axis].to_numpy()
     f, Pxx = welch(
-        v, fs=mafaulda.FS_HZ, window='hann',
+        v, fs=fs, window='hann',
         nperseg=window, noverlap=STEP,
         scaling='spectrum', average='mean', detrend='constant',
         return_onesided=True

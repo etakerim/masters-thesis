@@ -64,27 +64,39 @@ Predictive maintenance has ideal prerequisites for the application of feature en
 It is important to note that the design of features is not a standalone step in the machine learning pipeline, but it should be done iteratively to improve the target model. Signal features are computed in the temporal and spectral domain~\cite{brito_fault_2021}.
 
 \subsection{Temporal domain features}
-The most widely found features in the literature are rudimentary statistical measures of the central moment: mean, variance, standard deviation, skewness, and kurtosis~(Tab.~\ref{tab:td-features}). Statistics can be calculated in any domain, but the mean value should not be used in detrended data. The vibration severity metrics out of technical standards are also highly regarded. The characteristics of amplitude include root-mean-square, peak-to-peak distance, and maximum~\cite{mostafavi_novel_2021}.
+The most widely found features in the literature are rudimentary statistical measures of the central moment: mean, variance, standard deviation, skewness, and kurtosis~(Tab.~\ref{tab:td-features}). Statistics can be calculated in any domain, but the mean value should not be used in detrended data. The vibration severity metrics out of technical standards are also highly regarded. The amplitude characteristics include root-mean-square and peak-to-peak distance~\cite{mostafavi_novel_2021}. The waveform shape is captured by zero-crossing rate and average amplitude change~\cite{moctar_time-domain_2023}.
 
-The other significant time-domain attributes are derived as ratios of previous simpler ones. These ratios are crest factor, margin factor, impulse factor, and shape factor~(Tab.~\ref{tab:td-features})~\cite{nandi_condition_2019}. Many articles have been successful in fault detection of bearings out of transients in impulsive signals with kurtosis, crest factor, and margin indicators \cite{brito_fault_2021}. It is also suggested that the shape factor can signify unbalance and misalignment faults~\cite{nandi_condition_2019}.
+The other significant time domain attributes are derived as ratios of previous simpler ones. These ratios are crest, clearance, impulse factor, and shape factor~(Tab.~\ref{tab:td-features})~\cite{nandi_condition_2019}. Many articles have been successful in fault detection of bearings out of transients in impulsive signals with kurtosis, crest, and clearance factor \cite{brito_fault_2021}. It is also suggested that the shape factor can signify unbalance and misalignment faults~\cite{nandi_condition_2019}.
 
 \begin{table}[h]
 \centering
 \renewcommand{\arraystretch}{2}
-\begin{adjustbox}{width=\columnwidth,center}
 \begin{tabular}{|l|l|l|l|}
 \hline
-\textbf{Feature}            & \textbf{Equation}                                                                    & \textbf{Feature}        & \textbf{Equation}                                                                                                  \\ \hline
-\textit{Standard deviation} & $ X_\sigma = \sqrt{\frac{1}{N}\sum_{i = 1}^{N}{\left(x_i - \bar{x}\right)^2}} $        & \textit{Crest factor}   & $ X_{cf} = \frac{max(|x_i|)}{X_{rms}} $                       \\ \hline
-\textit{Skewness}           & $ X_{sv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^3}$ & \textit{Margin factor}  & $ X_{mf} = \frac{max(|x_i|)}{\left( \frac{1}{N} \sum_{i=1}^{N}{\sqrt{|x_i|}} \right)^2} $                          \\ \hline
-\textit{Kurtosis}           & $ X_{kv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^4}$ & \textit{Impulse factor} & $ X_{if} = \frac{max(|x_i|)}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}} $                                                  \\ \hline
-\textit{Root mean square}   & $ X_{rms} = \sqrt{\frac{1}{N}\sum_{i = 1}^{N}{x_i^2}} $             & \textit{Shape factor}   & $ X_{sf} = \frac{X_{rms}}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}}$ \\ \hline
-\textit{Peak-to-peak}       & $ X_{ppv} = \max(x_i) - \min(x_i) $                                                  & \textit{Maximum}        & $ X_{max} = \max(|x_i|) $                                                                                          \\ \hline
+\textbf{Feature}            & \textbf{Equation}                                                                    \\ \hline
+\textit{Peak-to-peak}       & $ X_{ppv} = \max(x_i) - \min(x_i) $               
+\\ \hline
+\textit{Zero-crossing rate} & $X_{zc} = \frac{1}{N}\sum_{i = 1}^{N}{\mathrm{sgn}(x_i \cdot x_{i-1})} $
+\\ \hline
+\textit{Root mean square}   & $ X_{rms} = \sqrt{\frac{1}{N}\sum_{i = 1}^{N}{x_i^2}} $ 
+\\ \hline
+\textit{Skewness}           & $ X_{sv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^3}$      
+\\ \hline
+\textit{Kurtosis}           & $ X_{kv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^4}$                                           
+\\ \hline
+\textit{Shape factor}   & $ X_{sf} = \frac{X_{rms}}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}}$  
+\\ \hline
+\textit{Crest factor}   & $ X_{cf} = \frac{max(|x_i|)}{X_{rms}} $                           \\ \hline
+\textit{Impulse factor} & $ X_{if} = \frac{max(|x_i|)}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}} $                                                 
+\\ \hline       
+\textit{Clearance factor}  & $ X_{mf} = \frac{max(|x_i|)}{\left( \frac{1}{N} \sum_{i=1}^{N}{\sqrt{|x_i|}} \right)^2} $ 
+\\ \hline
+\textit{Average Amplitude Change (AAC)}        & $ X_{AAC} = \frac{1}{N}\sum_{i = 1}^{N - 1}{|x_{i + 1} - x_i|} $                             \\ \hline                                                                                     
 \end{tabular}
-\end{adjustbox}
 \caption{Temporal domain features}
 \label{tab:td-features}
 \end{table}
+
 
 \subsection{Spectral domain features}
 The mechanical faults present themselves as oscillatory patterns which are combinations of frequencies with various amplitudes. The Fourier transform is one of the most prominent strategies in power spectral density estimation. Experts on vibrodiagnostics utilize it as a primary signal processing technique for data analysis as it is recommended in ISO 13373-2 standard~\cite{noauthor_iso_2016_2}. 
@@ -94,20 +106,18 @@ The inherent symmetries in the Fourier matrix made it possible to implement the 
 \begin{table}[ht]
 \renewcommand{\arraystretch}{2}
 \centering
-\begin{adjustbox}{width=\columnwidth,center}
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Feature}           & \textbf{Equation}                                                                                                  \\ \hline
 \textit{Spectral centroid} & $ X_{fc} = \frac{\sum_{i = 0}^{N - 1}{f_i \cdot a(f_i)}}{\sum_{i = 0}^{N - 1}{a(f_i)}}$                   \\ \hline 
 \textit{Energy}            & $ E(N) = \sum_{i = 1}^{N} a^2(t) $                                                                    \\ \hline \textit{Energy ratio}                & $E_r = E_i \;/\; \sum_{i = 1}^{N}{E_i} $                                                        \\ \hline
 \textit{Spectral roll-on} & $ E(f_c) = 0.05 \cdot E(f_s / 2) $ \\ \hline                    
-\textit{Spectral roll-off} & $ E(f_c) = 0.95 \cdot E(f_s / 2) $                                                   \\ \hline
+\textit{Spectral roll-off} & $ E(f_c) = 0.85 \cdot E(f_s / 2) $                                                   \\ \hline
 \textit{Spectral flux}     & $X_{\mathrm{flux}} = 1 - \mathrm{corr}(A_{t-1}, A_t)$ \\ \hline 
 \textit{Noisiness}                   & $X_{noise} = \mathrm{SNR}(X) = \mu \;/\; \sigma $                             \\ \hline
 \textit{Shannon entropy}      & $H(X) = - \sum_{i} P(X = x_i) \cdot \ln(P(X = x_i)) $                                                  \\ \hline
 \textit{Spectral negentropy}      & $\Delta I_E(f, \Delta f) = \sum_{k = 0}^{N - 1}{\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}} \cdot \ln\left(\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}\right)$                                                \\ \hline
 \end{tabular}
-\end{adjustbox}
 \caption{Frequency domain features}
 \label{tab:fd-features}
 \end{table}

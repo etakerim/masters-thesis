@@ -41,13 +41,13 @@ Accurate multi-class classification of machine fault causes according to the cha
 Performance of classification is estimated by several metrics on the validation set obtained using hold-out or cross-validation techniques. Frequently used quantities for classifier model evaluation include accuracy, precision, recall, f1 score, area under the ROC curve, and counts of hits and misses in a confusion matrix.
 \bigbreak
 
-\textbf{K-nearest neighbors} (KNN) assigns the data point to the class where the majority of $k$ closest instances belong (Fig.~\ref{fig:KNN}). It means it can work in a semi-supervised environment because it can infer labels just from knowing a few annotations. The major drawback of KNN is a preference for the majority class in imbalanced class-size datasets~\cite{shi_improving_2020}. The issue is mitigated with class weights or resampling classes by oversampling or undersampling. The KNN algorithm requires features to be normalized to assign the same importance to each predictor.
+\textbf{K-nearest neighbors} (k-NN) assigns the data point to the class where the majority of $k$ closest instances belong (Fig.~\ref{fig:KNN}). It means it can work in a semi-supervised environment because it can infer labels just from knowing a few annotations. The major drawback of k-NN is a preference for the majority class in imbalanced class-size datasets~\cite{shi_improving_2020}. The issue is mitigated with class weights or resampling classes by oversampling or undersampling. The k-NN algorithm requires features to be normalized to assign the same importance to each predictor.
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/analysis/KNN.png}
-        \caption{KNN with k = 5}
+        \caption{k-NN with k = 5}
         \label{fig:KNN}
     \end{subfigure}
     \hfill
@@ -71,13 +71,13 @@ Manhatann distance	 & $ |x_i - y_i| $													   \\ \hline
 Euclidian distance    & $ \sqrt{\sum_{i = 1}^{n}(x_i - y_i)^2} $                               \\ \hline
 Mahalanobis distance  & $ (\mathbf{x} - \mathbf{y})^T C^{-1} (\mathbf{x} - \mathbf{y}) $       \\ \hline
 \end{tabular}
-\caption{Distance metrics for KNN}
+\caption{Distance metrics for k-NN}
 \label{tab:KNN-distance}
 \end{table}
 
-The nearest-neighbor classifier has been successfully applied in machinery fault diagnostics. On the CWRU bearing dataset, the KNN with the accuracy of 96.2\% slightly outperformed SVM (95\%) on the combination of time and frequency-domain features, time-domain features - KNN 91.2\%, SVM 88.8\%, and frequency domain features - KNN (98.8\%), SVM (96.2\%)~\cite{jamil_feature-based_2021}. 
+The nearest-neighbor classifier has been successfully applied in machinery fault diagnostics. On the CWRU bearing dataset, the k-NN with the accuracy of 96.2\% slightly outperformed SVM (95\%) on the combination of time and frequency-domain features, time-domain features - k-NN 91.2\%, SVM 88.8\%, and frequency domain features - k-NN (98.8\%), SVM (96.2\%)~\cite{jamil_feature-based_2021}. 
 
-Comparison of KNN and KLDA on a feature set consisting of average, kurtosis, skewness, and standard deviation vectors in each domain has been conducted, achieving a data reduction rate of 95\%. Best accuracy was reached for PSD features with 99.13\% with KLDA and 96.64\% with KNN classifiers and Mahalanobis metric. The sampling frequency was set at 40 kHz~\cite{altaf_new_2022}. Despite KNN lagging in accuracy, we have to keep in mind annotations for faults were complete, and machine learning was not tested in a streaming context.
+Comparison of k-NN and KLDA on a feature set consisting of average, kurtosis, skewness, and standard deviation vectors in each domain has been conducted, achieving a data reduction rate of 95\%. Best accuracy was reached for PSD features with 99.13\% with KLDA and 96.64\% with k-NN classifiers and Mahalanobis metric. The sampling frequency was set at 40 kHz~\cite{altaf_new_2022}. Despite k-NN lagging in accuracy, we have to keep in mind annotations for faults were complete, and machine learning was not tested in a streaming context.
 
 \subsection{Incremental learning}
 Online or incremental machine learning operates on the streaming data, updating the model parameters with each new incoming event or in mini-batches. This approach finds its use in big data processing when the whole dataset is not available in advance or cannot be processed at once because of memory limitations. 
