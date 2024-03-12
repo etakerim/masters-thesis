@@ -196,8 +196,8 @@ def cross_cuts_3d_anomalies(dataframe, anomalies):
 def scatter_classif(X, y_label, categories, colors, ax):
     for label, color in zip(categories, colors):
             rows = list(y_label[y_label == label].index)
-            x = X.loc[rows,0]
-            y = X.loc[rows,1]
+            x = X.loc[rows, 0]
+            y = X.loc[rows, 1]
             ax.scatter(x, y, s=2, color=color, label=label)
 
 
