@@ -13,6 +13,8 @@ imbalanced-learn
 
 # Plots
 tqdm
+# %matplotlib ipympl
+ipympl
 seaborn
 matplotlib
 adjustText
