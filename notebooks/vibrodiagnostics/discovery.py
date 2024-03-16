@@ -13,9 +13,7 @@ from scipy.fft import rfft
 from scipy.signal import butter, iirfilter, freqz, lfilter, decimate
 import pywt
 from tsfel import feature_extraction as ft
-
 import matplotlib.pylab as plt
-from vibrodiagnostics import mafaulda
 
 
 
@@ -30,91 +28,13 @@ def split_dataframe(dataframe: pd.DataFrame, parts: int = None) -> List[pd.DataF
         if len(dataframe.iloc[i:i + step]) == step
     ]
 
-def detrending_filter(dataframe: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
-    for df in dataframe:
-        df[columns] = df[columns].apply(lambda x: x - x.mean())
-    return dataframe
 
-
-def butter_bandpass_filter(data, cutoff=10000, fs=mafaulda.FS_HZ, order=5):
+def butter_bandpass_filter(data, cutoff=10000, fs=50000, order=5):
     b, a = butter(order, cutoff, fs=fs, btype='lowpass')
     y = lfilter(b, a, data.to_numpy())
     return pd.Series(data=y, index=data.index)
 
 
-def lowpass_filter_extract(dataframe: pd.DataFrame, columns) -> pd.DataFrame:
-    for df in dataframe:
-        df[columns] = df[columns].apply(butter_bandpass_filter)
-    return dataframe
-
-
-def time_features_calc(df: pd.DataFrame, col: str) -> List[Tuple[str, pd.DataFrame]]:
-    x = df[col]
-    features = [
-        ('zerocross', ft.zero_cross(x) / len(x)),
-        ('pp', [ft.pk_pk_distance(x)]),
-        ('aac', np.mean(np.absolute(np.diff(x)))),
-        ('rms', [ft.rms(x)]),
-        ('skewness', [ft.skewness(x)]),
-        ('kurtosis', [ft.kurtosis(x)]),
-        ('shape', [ft.rms(x) / np.mean(np.absolute(x))]),
-        ('crest', [np.max(np.absolute(x)) / ft.rms(x)]),
-        ('impulse', [np.max(np.absolute(x)) / np.mean(np.absolute(x))]),
-        ('clearance', [np.max(np.absolute(x)) / (np.mean(np.sqrt(np.absolute(x))) ** 2)]),
-    ]
-    return [(f'{col}_{f[0]}', f[1]) for f in features]
-
-def frequency_features_calc(df: pd.DataFrame, col: str, window: int, fs: int) -> List[Tuple[str, pd.DataFrame]]:
-    f, pxx = spectral_transform(df, col, window, fs)
-    
-    fluxes = temporal_variation(df, col, window)
-    envelope_spectrum = envelope_signal(f, pxx)
-    # loc_harmonics, _ = find_harmonics(f, pxx)
-
-    features = [
-        ('centroid', [np.average(f, weights=pxx)]),
-        ('std', [ft.calc_std(pxx)]),
-        ('skewness', [ft.skewness(pxx)]),
-        ('kurtosis', [ft.kurtosis(pxx)]),
-        ('roll_on', [spectral_roll_off_frequency(f, pxx, 0.05)]),
-        ('roll_off', [spectral_roll_off_frequency(f, pxx, 0.85)]),
-        ('flux', [np.mean(fluxes)]),
-        ('noisiness', [signal_to_noise(pxx)]),
-        ('energy', [energy(pxx)]),
-        ('entropy', [entropy(pxx / np.sum(pxx))]),
-        ('negentropy', [negentropy(envelope_spectrum)])
-    ]
-    return [(f'{col}_{f[0]}_{window}', f[1]) for f in features]
-
-
-############### BACKUP ########################xxx
-def tsfel_features_import(zip_file: ZipFile, filename: str, parts=None) -> pd.DataFrame:
-    ts = mafaulda.csv_import(zip_file, filename)
-    cfg_file = tsfel.get_features_by_domain()
-    dataframe = detrending_filter(split_dataframe(ts, parts), columns)
-        
-    result = []
-    for i, df in enumerate(dataframe):
-        df_result = tsfel.time_series_features_extractor(cfg_file, df[mafaulda.COLUMNS], fs=mafaulda.FS_HZ)
-        result.append(df_result)
-
-    return pd.concat(result).reset_index(drop=True)
-
-def me_tsfel_features_import(filename: str, loader: Callable, parts: int=None) -> pd.DataFrame:
-    print(f'Processing: {filename}')
-    name, ts, fs_hz, columns = loader(filename)
-    cfg_file = tsfel.get_features_by_domain()
-    df = detrending_filter(split_dataframe(ts, parts), ['x', 'y', 'z'])
-        
-    result = []
-    for i, df in enumerate(dataframe):
-        df_result = tsfel.time_series_features_extractor(cfg_file, df, fs=fs_hz)
-        result.append(df_result)
-
-    return pd.concat(result).reset_index(drop=True)
-
-
-#################################################xxx
 
 def plot_label_occurences(y):
     observations = []
@@ -138,39 +58,6 @@ def features_list():
             if options['n_features'] != 1:
                 options['use'] = 'no'
     return config
-
-
-def tsfel_features_generate(dataset: ZipFile, filename: str, parts=None) -> pd.DataFrame:
-    print(f'Processing: {filename}')
-
-    conf_extraction = features_list()
-    columns = mafaulda.COLUMNS
-
-    ts = mafaulda.csv_import(dataset, filename)
-    fault, severity, seq = mafaulda.parse_filename(filename)
-    dataframe = [ts] if parts is None else discovery.split_dataframe(ts, parts)
-
-    results = []
-    for i, df in enumerate(dataframe):
-        fv = pd.DataFrame({
-            'fault': [fault],
-            'severity': [severity],
-            'seq': [f'{seq}.part.{i}'],
-            'rpm': [df['rpm'].mean()]
-        })
-
-        for col in columns:
-            features = tsfel.time_series_features_extractor(
-                conf_extraction, df[col], fs=mafaulda.FS_HZ
-            )
-            features.columns = [
-                col + '_' + c.strip('0_').replace(' ', '_').lower()
-                for c in features.columns
-            ]
-            fv = fv.assign(**features)
-        results.append(fv)
-
-    return pd.concat(results).reset_index(drop=True)
 
 
 def features_wavelet_domain(zip_file: ZipFile, filename: str) -> pd.DataFrame:
@@ -231,25 +118,23 @@ def features_wavelet_domain(zip_file: ZipFile, filename: str) -> pd.DataFrame:
     return pd.DataFrame(result).reset_index(drop=True)
 
 
-###############################################################
-# https://dsp.stackexchange.com/questions/19084/applying-filter-in-scipy-signal-use-lfilter-or-filtfilt
 
-def dc_blocker(x: np.array, cutoff: float, order=1, fs=mafaulda.FS_HZ, plot=False):
-    b, a = iirfilter(order, cutoff, btype='highpass', fs=fs)
+def dc_blocker(x: np.array, cutoff: float, order, fs, plot=False):
+    b, a = iirfilter(1, cutoff, btype='highpass', fs=fs)
     if plot:
         plot_filter_response(b, a)
     y = lfilter(b, a, x)
     return y
 
 
-def downsample(x: np.array, k=None, fs_reduced=mafaulda.FS_HZ, fs=mafaulda.FS_HZ):
+def downsample(x: np.array, k, fs_reduced, fs):
     if k is None:
         k = fs // fs_reduced
     return decimate(x, k, ftype='iir')
 
 
-def lowpass_filter(x: np.array, cutoff: float, order=2, fs=mafaulda.FS_HZ, plot=False):
-    b, a = butter(order, cutoff, btype='lowpass', fs=fs)
+def lowpass_filter(x: np.array, cutoff: float, order, fs, plot=False):
+    b, a = butter(2, cutoff, btype='lowpass', fs=fs)
     if plot:
         plot_filter_response(b, a)
     y = lfilter(b, a, x)
@@ -257,7 +142,7 @@ def lowpass_filter(x: np.array, cutoff: float, order=2, fs=mafaulda.FS_HZ, plot=
 
 
 def plot_filter_response(b, a, title=''):
-    w, h = freqz(b, a, fs=mafaulda.FS_HZ)
+    w, h = freqz(b, a, fs=50000)
     fig, ax = plt.subplots()
     ax.plot(w, 20 * np.log10(abs(h)), 'b')
     ax.set_xlabel('Frequency [Hz]')
@@ -349,69 +234,13 @@ def find_harmonics(f: np.array, Pxx: np.array) -> (np.array, np.array):
     return loc_harmonics, f_harmonics
 
 
-def envelope_signal(f: np.array, Pxx: np.array) -> np.array:
-    peaks, _ = find_peaks(Pxx)
-    # peaks = mms_peak_finder(Pxx)
-    try:
-        envelope = interp1d(f[peaks], Pxx[peaks], kind='quadratic', fill_value='extrapolate')
-    except ValueError:
-        return []
-    y_env = envelope(f)
-    y_env[y_env < 0] = 0
-    return y_env
 
+DB_REF = 0.000001                                # 1 dB = 1 um/s^2
 
-def spectral_transform(dataset: pd.DataFrame, axis: str, window: int, fs: int) -> (np.array, np.array):
-    OVERLAP = 0.5
-    STEP = int(window * OVERLAP)
-    v = dataset[axis].to_numpy()
-    f, Pxx = welch(
-        v, fs=fs, window='hann',
-        nperseg=window, noverlap=STEP,
-        scaling='spectrum', average='mean', detrend='constant',
-        return_onesided=True
-    )
-    return f, Pxx
+# .assign(mag_b = lambda x: np.hypot(x.bx, x.by, x.bz))
 
-###################################################################x
-
-def energy(Pxx: np.array) -> float:
-    return np.sum(Pxx**2)
-
-
-def negentropy(x: np.array) -> float:
-    if len(x) == 0:
-        return np.nan
-    return -entropy((x ** 2) / np.mean(x ** 2))
-
-
-def signal_to_noise(x: np.array) -> float:
-    # https://dsp.stackexchange.com/questions/76291/how-to-extract-noise-from-a-signal-in-order-to-get-both-noise-power-and-signal-p
-    # https://www.geeksforgeeks.org/signal-to-noise-ratio-formula/
-    # https://saturncloud.io/blog/calculating-signaltonoise-ratio-in-python-with-scipy-v11/
-    m = np.mean(x)
-    sd = np.std(x)
-    return np.where(sd == 0, 0, m / sd)
-
-
-def spectral_roll_off_frequency(f: np.array, Pxx: np.array, percentage: float) -> float:
-    # Roll-off: Cumulative sum of energy in spectral bins and find index in f array
-    # 95% of total energy below this frequency
-    return f[np.argmax(np.cumsum(Pxx**2) >= percentage * energy(Pxx))]
-
-
-def temporal_variation(dataset: pd.DataFrame, axis: str, window: int) -> list:
-    # Temporal variation of succesive spectra (stationarity)
-    OVERLAP = 0.5
-    STEP = int(window * OVERLAP)
-    v = dataset[axis].to_numpy()
-    spectra = [
-        np.absolute(rfft(v[i:i+window] * windows.hann(window)))
-        for i in range(0, len(v) - window, STEP)
-    ]
-    # f = [i * (mafaulda.FS_HZ / window) for i in range(window // 2 + 1)]
-    fluxes = [
-        1 - np.corrcoef(psd1, psd2) for psd1, psd2 in pairwise(spectra)
-    ]
-    return fluxes
-
+def resolution_calc(fs, window):
+    print('Window size:', window)
+    print('Heinsenberg box')
+    print('\tTime step:', window / fs * 1000, 'ms')
+    print('\tFrequency step:', fs / window, 'Hz')

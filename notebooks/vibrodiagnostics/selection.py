@@ -26,11 +26,7 @@ FREQ_FEATURES_PATH_ALL = 'all_fd_features.csv'
 WPD_FEATURES_PATH_ALL = 'all_wpd_features.csv'
 TSFEL_FEATURES_PATH_ALL = 'all_tsfel_features.csv'
 
-# TD_COLUMNS = ['mean', 'std', 'skew', 'kurt', 'rms', 'pp', 'crest', 'margin', 'impulse', 'shape']
-# FD_COLUMNS = [
-#     'centroid', 'std', 'skew', 'kurt', 'roll-off', 'flux_mean', 'flux_std',
-#     'noisiness', 'energy', 'entropy', 'negentropy'
-# ]
+
 WPD_COLUMNS_EXCLUDE = {
     'fault', 'severity', 'seq', 'rpm', 'axis', 'feature'
 }
@@ -50,77 +46,6 @@ def remove_column_prefix(df):
 
 def fd_extract_feature_name(column):
     return column.str.extract(r'[A-Za-z]+_(.*)_\d+$')[0]
-
-
-def me_merge_feature_domains(time_domain: str, freq_domain: str):   
-    td_features = pd.read_csv(time_domain)
-    fd_features = pd.read_csv(freq_domain)
-    merged = td_features.merge(
-        fd_features, on=['name'], 
-        how='inner', validate='one_to_one'
-    )
-    return merged
-
-def merge_feature_domains(time_domain: str, freq_domain: str):   
-    td_features = pd.read_csv(time_domain)
-    fd_features = pd.read_csv(freq_domain)
-    merged = td_features.merge(
-        fd_features, on=['fault', 'severity', 'seq', 'rpm'], 
-        how='inner', validate='one_to_one'
-    )
-    return merged
-
-
-def me_keep_tsfel_some_columns(filename: str, domain: str) -> pd.DataFrame:
-    features = pd.read_csv(filename)
-    columns = tsfel.get_features_by_domain(domain)[domain]
-    columns = tuple([c.replace(' ', '_').lower() for c in columns.keys()])
-
-    columns = features.columns.str.endswith(columns)
-    features = features[features.columns[columns]]
-    return features
-
-
-def keep_tsfel_some_columns(filename: str, domain: str) -> pd.DataFrame:
-    features = pd.read_csv(filename)
-    columns = tsfel.get_features_by_domain(domain)[domain]
-    columns = tuple([c.replace(' ', '_').lower() for c in columns.keys()])
-
-    columns = features.columns.isin(selection.METADATA_COLUMNS) | features.columns.str.endswith(columns)
-    features = features[features.columns[columns]]
-    return features
-
-
-
-def load_td_feat(axis, path='', all=False):
-    filename = TIME_FEATURES_PATH_ALL if all else TIME_FEATURES_PATH
-
-    features = pd.read_csv(os.path.join(path, filename))
-    columns = features.columns.isin(METADATA_COLUMNS) | features.columns.str.startswith(tuple(axis))
-    features = features[features.columns[columns]]
-    features['fault'] = features['fault'].astype('category')
-    return features
-
-
-def load_fd_feat(axis, path='', all=False):
-    filename = FREQ_FEATURES_PATH_ALL if all else FREQ_FEATURES_PATH
-
-    features = pd.read_csv(os.path.join(path, filename))
-    columns = features.columns.isin(METADATA_COLUMNS) | features.columns.str.startswith(tuple(axis))
-    features = features[features.columns[columns]]
-    features['fault'] = features['fault'].astype('category')
-    return features
-
-
-def load_wavelet_domain_features(axis, path='', all=False):
-    filename = WPD_FEATURES_PATH_ALL if all else WPD_FEATURES_PATH
-
-    features = pd.read_csv(os.path.join(path, filename))
-    features['axis'] = features['axis'].astype('category')
-    features['feature'] = features['feature'].astype('category')
-    features['fault'] = features['fault'].astype('category')
-    features = features[features['axis'].isin(axis)]
-    return features
 
 
 def plot_bar_chart(ax, x, y, title):

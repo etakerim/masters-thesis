@@ -7,14 +7,14 @@
 
 \begin{document}
 
-\title{Feature selection in fault detection for predictive maintenance of rotating machinery}
-%
-\titlerunning{NeurAI}
-% If the paper title is too long for the running head, you can set
-% an abbreviated paper title here
-%
+% 4 pages (5 pages with sources)
+\title{Feature selection in fault classification of rotating machinery}
+
+\titlerunning{Features for machinery faults}
+
 \author{
-	Miroslav Hájek\thanks{Master study programme in field: Informatics Supervisor: Dr. Marcel Baláž, Institute of Computer Engineering and Applied Informatics, Faculty of Informatics and Information Technologies STU in Bratislava }
+	Miroslav Hájek\thanks{Master study programme in field: Informatics
+	Supervisor: Dr. Marcel Baláž, Institute of Computer Engineering and Applied Informatics, Faculty of Informatics and Information Technologies STU in Bratislava }
 }
 
 \institute{Faculty of Informatics and Information Technologies STU in Bratislava\\
@@ -34,9 +34,82 @@ findings
 
 
 \section{Introduction}
+- predictive maintance, research question
+
+Related work (citations)
+
+existence of standards
+domain - time, frequency, time-frequency
+feature extraction techniques
+feature selection techniques
+classification of faults
+datasets: mafaulda, cwru, rotating shaft
+Raw - KSB Cloud - BVS pumps
+!!! CITE do not describe !!!
+
+\section{Methodology}
+
+Mafaulda
+1. Signal processing (choose bearing A)
+2. Labeling - 6 classes (Class balancing by oversampling)
+3. Feature extraction - Time domain, Frequency domain - Min-max scaling before PCA
+4. Feature selection - 
+	PCA 2,3,4 - accuracy + loading plot (PC2)
+	KNN all features- 5-fold cross validation - rôzne domény, rôzne k, rôzne počty features
+	KNN exhaustive models - 
+		2,3,4 features (check corr, f-stat, mi, rank product scores)
+	 -> KNN classification(online and offiline)
+
+Custom dataset
+1. Choice of machines (pic measurement places - two images and dots)
+2. HW sensor + ESP32 + FW 60 s. recor
+3. How measure (plan)
+4. Signal processing
+4. Labeling  / Labeling (use machine - split by type) 
+5. Same as Mafaulda
+
+acc = prec micro = recall micro
 
 
-\section{Innovative approachs}
+
+\section{Results}
+
+
+Figures:
+
+Signal analysis
+- 1ks obr. Mafaulda ABVT simulator
+- 1ks plot (histogram of td signal)?
+- 1ks plot (6x subplots) Mafaulda welch from each fault (1s, 2**14 window, hann window)  - largest severity - 2500 rpm
+- 1ks plot (6x subplots) Custom dataset - each place in one day spectrum (5s segment)
+
+Feature analysis:
+Mafaulda (3) a Custom (4) 
+- 1 ks table (how many faults have how many recordings)
+- 1 ks plot (2 lines TD, FD) - numer of PC vs. explained variance
+- 1 ks plot (2x subplots TD, FD) - loading plot (PC2)
+- 1 ks (4 subplots) custom: all machines, pumps, compressors, motors
+
+
+Classification accuracy (choices of k. and feat. count, 5-fold cross validation)
+
+For mafaulda and custom (which classes - all or just one machine)
+- 1 ks All features (2x subplots TD, FD)
+	- Each subplot boxplot (k = 3,5,7)
+
+All models (exhausive) - draw rank, corr, f-stat, mi as horizontal line
+	- 3 ks plots (2, 3, 4 features)
+		- Each plot 2 boxplot subplots (TD, FD) - k-neigh. vs. accuracy of all models
+
+
+Compare accuracies of best models in each categories for given number of features and k:
+- 1 ks plot - bar chart - color rainbow - one x (td), second x (fd)
+
+
+
+\section{Summary}
+
+\section{References}
 
 
 %\begin{figure}[t]
@@ -50,7 +123,7 @@ findings
 %\caption{Patients list and MRI viewer}
 %\end{figure}
 
-\section{Summary}
+
 
 
 \begin{thebibliography}{1}
