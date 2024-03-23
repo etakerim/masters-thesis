@@ -20,31 +20,6 @@ A steeper 3~dB attenuation band can be achieved by increasing the order of the f
 
 The finite impulse response (FIR) filter is not recommended for DC component removal because of the undesirable ripple effect with the small number of taps. Cascaded-integrator-comb (CIC) filters are proposed as an alternative instead~\cite{lyons_understanding_2011}.
 
-\subsection{Adaptive noise cancellation}
-Adaptive noise cancellation (ANC) involves an adaptive filter that self-adjusts coefficients through an update algorithm in response to the reference noise signal.  The objective of this filter is to minimize the mean square error (MSE) cost function in the error signal $e_k$ between signal contaminated with Gaussian noise $d_k$ and filter output $y_k$. Additive noise $n_k$ is assumed to be correlated with noise signal $\mathbf{X_k}$~\cite{diniz_adaptive_2020}.
-
-Wiener-Hopf equations solve the optimal gradient of the MSE function and provide us with FIR filter coefficient vector $\mathbf{W_k}$.  The least mean squares (LMS) algorithm recursively approximates this analytical solution with the method of steepest descent (Equation~\ref{equ:lms-adaptive-filter})~\cite{diniz_adaptive_2020}. The multiple parameters are to be considered in the evaluation of filter performance: convergence rate, estimated error, and signal-to-noise ratio (SNR).
-
-\myequations{Adaptive noise filtering LMS update formula}
-\begin{ceqn}\begin{align} \label{equ:lms-adaptive-filter}
-\mathbf{W}_{k+1} = \mathbf{W}_{k} + 2 \mu \mathbf{X}_{k}  e_k
-\end{align}\end{ceqn}
-
-The convergence stability is affected by step size $\mu$ which is bounded from above with the inverse of the maximal eigenvalue of input covariance matrix $\lambda_{max}$. The normalized least mean squares (NLMS) can handle input of varying scales  (Equation~\ref{equ:nlms-adaptive-filter}).
-
-\myequations{Adaptive noise filtering NLMS update formula}
-\begin{ceqn}\begin{align} \label{equ:nlms-adaptive-filter}
-\mathbf{W}_{k+1} = \mathbf{W}_{k} + \frac{\mu}{\lVert\mathbf{X}_{k}\rVert^2} \mathbf{X}_{k}  e_k
-\end{align}\end{ceqn}
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.8\textwidth]{assets/analysis/adaptive-filter.png}
-	\caption{Adaptive noise cancellation filter diagram}
-	\label{fig:adaptive-filter}
-\end{figure}
-\bigbreak
-
 \subsection{Time synchronous averaging}
 Time synchronous averaging (TSA) diminishes the impact of vibration sources unrelated to the rotational frequency and its harmonics. TSA averages time-domain waveform over $N$ points and aligns it to a synchronization pulse with period $T$ (Equation~\ref{equ:tsa-average}). 
 

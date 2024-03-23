@@ -45,9 +45,19 @@ feature selection techniques
 classification of faults
 datasets: mafaulda, cwru, rotating shaft
 Raw - KSB Cloud - BVS pumps
+
+# analytical - known bearing
+Ball Pass Frequency Outer Race (BPFO)
+Ball Pass Frequency Inner Race (BPFI)
+Ball Spin Frequency (BSF)
+Fundamental Train Frequency (FTF)
 !!! CITE do not describe !!!
 
 \section{Methodology}
+
+1. Choose frequency precision (1 Hz at maximum)
+2. 12 windows at minimum (n+1 half windows with overlap), Hann window with 50\% overlap, 2^14 - 2^15 windows, 5s recodings
+
 
 Mafaulda
 1. Signal processing (choose bearing A)
@@ -61,7 +71,8 @@ Mafaulda
 	 -> KNN classification(online and offiline)
 
 Custom dataset
-1. Choice of machines (pic measurement places - two images and dots)
+1. Choice of machines (pic measurement places - two images and dots) - pumps according to standards + callibrated sensors
+	- compressor is on housing
 2. HW sensor + ESP32 + FW 60 s. recor
 3. How measure (plan)
 4. Signal processing
@@ -99,9 +110,11 @@ Mafaulda (4) a Custom (4)
 
 Classification accuracy (choices of k. and feat. count, 5-fold cross validation)
 
-For mafaulda and custom (which classes - all or just one machine)
+Whole serach space = For mafaulda and custom (which classes - all or just one machine)
 - 1 ks All features (2x subplots TD, FD)
 	- Each subplot boxplot (k = 3,5,7)
+
+2 features - best models under 55\% accuracy in test set
 
 All models (exhausive) - draw rank, corr, f-stat, mi as horizontal line
 	- 3 ks plots (2, 3, 4 features)
@@ -112,6 +125,10 @@ Compare accuracies of best models in each categories for given number of feature
 - 1 ks plot - bar chart - color rainbow - one x (td), second x (fd)
 
 
+
+- In training set growing number of neighbors decreases accuracy - in testing set there is no effect (more neighbors more overtraining)
+	- we choose k = 5
+- Number of features increases accuracy
 
 \section{Summary}
 
