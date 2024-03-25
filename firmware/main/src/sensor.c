@@ -83,7 +83,7 @@ int sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev)
 
     // Resolution: 4g
     iis3dwb_xl_full_scale_set(dev, IIS3DWB_4g);
-    // iis3dwb_xl_full_scale_set(dev,  IIS3DWB_16g);
+    // TBD: iis3dwb_xl_full_scale_set(dev,  IIS3DWB_16g);
 
     iis3dwb_fifo_watermark_set(dev, FIFO_WATERMARK);
     iis3dwb_fifo_xl_batch_set(dev, IIS3DWB_XL_BATCHED_AT_26k7Hz);

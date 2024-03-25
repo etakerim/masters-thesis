@@ -100,7 +100,7 @@ void push_trigger(void *args)
                 sensor_enable(&spi, &sensor);
                 vTaskDelay(10 / portTICK_PERIOD_MS);
 
-                esp_timer_start_once(stop_timer, AUTO_TURN_OFF_US);
+                esp_timer_start_once(stop_timer, AUTO_TURN_OFF_US);         // TBD
                 esp_timer_start_periodic(sampler_timer, SAMPLE_RATE);
 
                 led_light(true);
