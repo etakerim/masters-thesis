@@ -10,7 +10,7 @@
 
 \begin{document}
 
-\title{Fault classification of rotating machinery using limited set of features}
+\title{Fault Classification of Rotating Machinery Using Limited Set of Features and k-Nearest Neighbors}
 
 \author{
 	Miroslav Hájek\thanks{Master study programme in field: Informatics,
@@ -49,37 +49,23 @@ Technical diagnosis is tasked with identifying faulty machinery part which can b
 \section{Related work}
 Approches taken in literature to reduce vibration samples and classify faults result in similiar framework of machine learning pipeline. The general sequence of steps consist of signal acquisition, feature extraction, dimensionality reduction, and pattern recognition or fault detection~\cite{wang_bearing_2015, brito_fault_2021}. 
 
-Data retrieval from acceleration sensors is combined with factory database of machinery mechanical parameters and operating conditions~\cite{jung_vibration_2017}. The signal processing methods are traditionally used to extract low-level numerical features in time domain, frequency domain, and time-frequency domain~\cite{nandi_condition_2019}. Time-frequency features depend on transform method of which Morlet wavelet transform, discrete wavelet trasform or wavelet packet transform are ones used besides short-time Fourier transform~\cite{maurya_condition-based_2021}. Then statistical functions such as root mean square, centroid, kurtosis, energy, and entropy are applied to further compress waveform composed of bins in each of the domains~\cite{zhuo_research_2022}.
+Data retrieval from acceleration sensors is combined with factory database of machinery mechanical parameters and operating conditions~\cite{jung_vibration_2017}. The signal processing methods are traditionally used to extract low-level numerical features in time domain, frequency domain, and time-frequency domain~\cite{nandi_condition_2019}. Time-frequency features depend on transform method of which Morlet wavelet transform, discrete wavelet trasform or wavelet packet transform are ones used besides short-time Fourier transform~\cite{maurya_condition-based_2021}. Then statistical functions such as root mean square, centroid, kurtosis, energy, and entropy are applied to further compress
+waveform in each of the domains. 
 
+Feature extraction of time and frequency attributes is utilized in online monitoring of band saw blade wear status from acoustic emission signal using SVM model ~\cite{zhuo_research_2022} and in novelty detection of health status of centrifugal pump using autoencoder~\cite{mostafavi_novel_2021}. Wavelength length, average amplitude change, and zero crossing taken out of overview of time domain features for surface electromyography (sEMG)~\cite{moctar_time-domain_2023} are generic enough to be tried for machine diagnostic. Harmonic features originaly designed for sound description~\cite{peeters_large_2004} could be reused similarily. Many features found in the literature are already implemented in Time Series Feature Extraction Library (TSFEL) which is package for Python language~\cite{tsfel}. 
+
+Knowledge of rolling bearings geometry and rotational speed provides a way to calculate bearing defect frequencies for outer race (BPFO), inner race (BPFI), ball (BSF), and cage (FTF)~\cite{mohanty_machinery_2015, ziaran_technicka_2013}. There are situation when bearing fault is not evidenced by defect frequency, therefore kurtosis is recommended as it is asociated with impacts~\cite{brito_fault_2021}.
+
+Normalization assigns same weights to unbounded variables ~\cite{zheng_feature_2018}. In three-dimensional motion, either axis aligned only with principal direction of vibrations is retained, or euclidian norm is computed for each feature. The magnitude of feature vector was found useful in animal activity recognition from collar tags independent of sensor orientation~\cite{kamminga_robust_2018}. 
+
+Extracted features lower the number of dimensions from original signal. Further dimensionality reduction is caried out with various methods, namely: PCA, t-SNE, ISOMAP, ICA, and AE~\cite{brito_fault_2021}. Keeping smaller number of attributes can result in better classification performance. However major disadvantage is the removal of the meaning from obtained features. 
+
+Filtering feature selection methods decrease the feature set size so that the chosen predictors have the strongest relation to categorical predicted variable.
+The relationship is quantified with correlation, fisher score or mutual information and among others~\cite{nandi_condition_2019}. The metrics are combined to ensembles by means of electorial methods or rank product~\cite{breitling_rank_2004}.
 
 
 
 %TODO
-Na redukciu dát zo signálov z nahrávok získame numerické features. Spravidla in time and frequency domain. Najčastejšie štatické vlastnosti of waveform. Niekoľko článkov ich uvádza: . Pri vibráciach môžeme uplatniť podobné črty ako pri zvuku: (peeters) ale aj analytické odovodené z rýchlosti rotácie časti ložísk (mohanti). 
-
-
-% Time domain features
-\cite{mostafavi_novel_2021}
-\cite{moctar_time-domain_2023}
-% Spectral
-\cite{noauthor_iso_2016_2}
-\cite{peeters_large_2004}
-
-
-% Dimentionality reduction
-Features sa transformujú či cez scaling (ak chceme ponechať pôvodné) alebo metódami ako PCA (na získanie kombinácie). Viac osí môžeme použiť ako samostné črty ale lepšie je použiť len os v smere vibrácii alebo vypočítať euklidovskú normu z 3d vektora.
-% Feature transformation
-\cite{brito_fault_2021}
-\cite{zheng_feature_2018}
-\cite{kamminga_robust_2018} % euclidean norm
-
-Na zredukovanie sady features použijeme techniky feature selection, ktoré môžu byť samostatné (filtering) alebo ako súčasť modelu klasifikátora (embedded). Na výber features dopredu porovnáme ich realtion ku categorical predicted variable cez point-biserial correlation, ANOVA F-value or Mutual information. Účinnejšie je použiť ensamble ako rôzne voting systems alebo rank product.
-% Feture ranking
-\cite{nandi_condition_2019}
-% Rank product
-\cite{breitling_rank_2004}
-
-
 Existujú rôzne štandardné datasety ako Machinery fault database (Mafaulda) (50 kHz)). Aké sú tam poruchy a rýchlosti a CWRU bearing dataset (Deep Groove Ball Bearing Data Set) (12 kHz) - aké poruchy.
 % Datasets
 \cite{ribeiro_rotating_2017}
