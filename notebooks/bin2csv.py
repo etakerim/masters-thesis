@@ -13,9 +13,9 @@ fmt = 'iiii'
 struct_len = struct.calcsize(fmt)
 struct_unpack = struct.Struct(fmt).unpack_from
 
-
 for root, subdirs, files in os.walk(args.path):
     for filename in files:
+        print(filename)
         if not filename.lower().endswith('.bin'):
             continue
 

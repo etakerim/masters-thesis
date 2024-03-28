@@ -41,7 +41,7 @@ It is important to note that the design of features is not a standalone step in 
 \subsection{Temporal domain features}
 The most widely found features in the literature are rudimentary statistical measures of the central moment: mean, variance, standard deviation, skewness, and kurtosis~(Tab.~\ref{tab:td-features}). Statistics can be calculated in any domain, but the mean value should not be used in detrended data. The vibration severity metrics out of technical standards are also highly regarded. The amplitude characteristics include root-mean-square and peak-to-peak distance~\cite{mostafavi_novel_2021}. The waveform shape is captured by zero-crossing rate and average amplitude change~\cite{moctar_time-domain_2023}.
 
-The other significant time domain attributes are derived as ratios of previous simpler ones. These ratios are crest, clearance, impulse factor, and shape factor~(Tab.~\ref{tab:td-features})~\cite{nandi_condition_2019}. Many articles have been successful in fault detection of bearings out of transients in impulsive signals with kurtosis, crest, and clearance factor \cite{brito_fault_2021}. It is also suggested that the shape factor can signify unbalance and misalignment faults~\cite{nandi_condition_2019}.
+The other significant time domain attributes are derived as ratios of previous simpler ones. These ratios are crest, clearance, impulse factor, and shape factor~(Tab.~\ref{tab:td-features})~\cite{nandi_condition_2019}. Many articles have been successful in fault detection of bearings out of transients in impulsive signals with kurtosis, crest, and clearance factor~\cite{brito_fault_2021}. It is also suggested that the shape factor can signify unbalance and misalignment faults~\cite{nandi_condition_2019}.
 
 \begin{table}[h]
 \centering
@@ -333,7 +333,6 @@ Features do not contribute to the predictive power of the model with an even sha
 \subsection{Filtering methods}
 The features can be chosen intrinsically as a part of a model by \emph{embedded methods} or by machine learning search algorithm at a serious computational expense in \emph{wrapper methods}. However, we will focus on \emph{filtering methods} which rank the predictors in order of their importance for the problem at hand and separate the best performing group~\cite{johnson_feature_2019}. The most common strategy is \emph{K-Best Selection}.
 
-
 The general steps in selecting the appropriate predictors are as follows~\cite{nandi_condition_2019}:
 
 \begin{enumerate}
@@ -346,7 +345,6 @@ The general steps in selecting the appropriate predictors are as follows~\cite{n
 
     \item \textbf{Validation} - the resulting subset is tested for the specific model on synthetic and real-world datasets against well-known results. 
 \end{enumerate}
-
 
 Filter-based feature selection is preprocessing step independent of model choice with small computational requirements. Measures of information, correlation, similarity, and interdependence output the relevancy rating. Predictors are rated individually or in interacting congregations. 
 

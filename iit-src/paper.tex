@@ -1,29 +1,29 @@
 \documentclass{llncs}
 
 \usepackage{graphicx}
+\usepackage{biblatex}
 \usepackage{caption}
 %\usepackage[caption=false]{subfig}
 \usepackage[english]{babel}
 
+\addbibresource{literature.bib}
+
 \begin{document}
 
-% 4 pages (5 pages with sources)
-\title{Feature selection in fault classification of rotating machinery}
-
-\titlerunning{Features for machinery faults}
+\title{Fault classification of rotating machinery using limited set of features}
 
 \author{
-	Miroslav Hájek\thanks{Master study programme in field: Informatics
-	Supervisor: Dr. Marcel Baláž, Institute of Computer Engineering and Applied Informatics, Faculty of Informatics and Information Technologies STU in Bratislava }
+	Miroslav Hájek\thanks{Master study programme in field: Informatics,
+	Supervisor: Dr. Marcel Baláž, Institute of Computer Engineering and Applied Informatics, Faculty of Informatics and Information Technologies STU in Bratislava}
 }
 
 \institute{Faculty of Informatics and Information Technologies STU in Bratislava\\
 \email{xhajekm@stuba.sk}}
 
-\maketitle 
+\maketitle
 
 \begin{abstract}
-
+% https://guides.lib.uci.edu/c.php?g=334338&p=2249908
 what is reasearch about
 what was shown in previous studies
 new methods
@@ -34,32 +34,160 @@ findings
 
 
 \section{Introduction}
-- predictive maintance, research question
+Rotary motion machinery is utilized throughout the industry as motors, pumps, and gearboxes. All equipment have bounded productive lifespan because of wear and tear or improper operating conditions. Sonner or later, moving elements start to exhibit faults that can lead to failure if left untreated. 
 
-Related work (citations)
+Early real-time fault detection can be achieved by monitoring machine vibration levels and signal frequency content~\cite{ziaran_technicka_2013}. Sensors for vibrations are piezoelectric or MEMS wideband accelerometers. Data acquisition procedures and best evaluation practices are standardized in ISO~20816~\cite{noauthor_iso_2016} and ISO~13373~\cite{noauthor_iso_2002}. 
 
-existence of standards
-domain - time, frequency, time-frequency
-feature extraction techniques
-feature selection techniques
-classification of faults
-datasets: mafaulda, cwru, rotating shaft
-Raw - KSB Cloud - BVS pumps
+Such a monitoring solution with internet of things devices allows us to introduce predictive (PdM) or condition-based maintanance (CbM). This strategy prolongs the life of the equipment and reduces cost for replacement parts and in preventive maintanance~\cite{ziaran_technicka_2013}. 
 
-# analytical - known bearing
-Ball Pass Frequency Outer Race (BPFO)
-Ball Pass Frequency Inner Race (BPFI)
-Ball Spin Frequency (BSF)
-Fundamental Train Frequency (FTF)
-!!! CITE do not describe !!!
+Large number of machines in the plant and frequent sampling intervals poses a challange with shear amount of samples gathered. Data reduction should happen close to source to save on storage requirements, bandwidth and promote retainment of important observations only. Additional difficulty is to tailor the fault classification model to individual machinery because each piece has natural imperfections and differences in its construction. 
+
+Technical diagnosis is tasked with identifying faulty machinery part which can be bearing, shaft, coupling, belt, or gear. The commonly found defects are unbalance, misalignment, looseness, eccentricity, deformation, crack, and rub~\cite{mohanty_machinery_2015, scheffer_practical_2004}. Majority of symptoms in vibrations appear synchronous to the rotational speed of the component under investigation as rotation fundamental frequency or its harmonics~\cite{davies_handbook_2012}. Imbalance, misalignment, or looseness of the shaft occurs under 300 Hz. Bearing and gearbox defects in the late stages of development show up between 300 Hz and 1 kHz. Higher frequencies contain the bearing faults even sooner~\cite{torres_automatic_2022}.  
+
+
+
+\section{Related work}
+Approches taken in literature to reduce vibration samples and classify faults result in similiar framework of machine learning pipeline. The general sequence of steps consist of signal acquisition, feature extraction, dimensionality reduction, and pattern recognition or fault detection~\cite{wang_bearing_2015, brito_fault_2021}. 
+
+Data retrieval from acceleration sensors is combined with factory database of machinery mechanical parameters and operating conditions~\cite{jung_vibration_2017}. The signal processing methods are traditionally used to extract low-level numerical features in time domain, frequency domain, and time-frequency domain~\cite{nandi_condition_2019}. Time-frequency features depend on transform method of which Morlet wavelet transform, discrete wavelet trasform or wavelet packet transform are ones used besides short-time Fourier transform~\cite{maurya_condition-based_2021}. Then statistical functions such as root mean square, centroid, kurtosis, energy, and entropy are applied to further compress waveform composed of bins in each of the domains~\cite{zhuo_research_2022}.
+
+
+
+
+%TODO
+Na redukciu dát zo signálov z nahrávok získame numerické features. Spravidla in time and frequency domain. Najčastejšie štatické vlastnosti of waveform. Niekoľko článkov ich uvádza: . Pri vibráciach môžeme uplatniť podobné črty ako pri zvuku: (peeters) ale aj analytické odovodené z rýchlosti rotácie časti ložísk (mohanti). 
+
+
+% Time domain features
+\cite{mostafavi_novel_2021}
+\cite{moctar_time-domain_2023}
+% Spectral
+\cite{noauthor_iso_2016_2}
+\cite{peeters_large_2004}
+
+
+% Dimentionality reduction
+Features sa transformujú či cez scaling (ak chceme ponechať pôvodné) alebo metódami ako PCA (na získanie kombinácie). Viac osí môžeme použiť ako samostné črty ale lepšie je použiť len os v smere vibrácii alebo vypočítať euklidovskú normu z 3d vektora.
+% Feature transformation
+\cite{brito_fault_2021}
+\cite{zheng_feature_2018}
+\cite{kamminga_robust_2018} % euclidean norm
+
+Na zredukovanie sady features použijeme techniky feature selection, ktoré môžu byť samostatné (filtering) alebo ako súčasť modelu klasifikátora (embedded). Na výber features dopredu porovnáme ich realtion ku categorical predicted variable cez point-biserial correlation, ANOVA F-value or Mutual information. Účinnejšie je použiť ensamble ako rôzne voting systems alebo rank product.
+% Feture ranking
+\cite{nandi_condition_2019}
+% Rank product
+\cite{breitling_rank_2004}
+
+
+Existujú rôzne štandardné datasety ako Machinery fault database (Mafaulda) (50 kHz)). Aké sú tam poruchy a rýchlosti a CWRU bearing dataset (Deep Groove Ball Bearing Data Set) (12 kHz) - aké poruchy.
+% Datasets
+\cite{ribeiro_rotating_2017}
+
+
+
+Najčastejšie na zmienených datasetoch sa overovali metódy. Na klasifikáciu porúch boli aplikované prístupy machine learning ale aj deep learning and transfer learning.
+
+% Classification
+
+% Effects of Distance Measure Choice on K-Nearest Neighbor Classifier Performance: A Review
+% recently proposed nonconvex distance performed the best when applied on most data sets comparing with the other tested distances. 
+% In addition, the performance of the KNN with this top performing distance degraded only *20% while the noise level reaches 90%, this is true for most of the distances used as well. 
+% This means that the KNN classifier using any of the top 10 distances tolerates noise to a certain degree
+% KNN is one of the laziest learning methods. This implies storing all training data and waits until having the test data produced, without having to create a learning model
+% Slowness is not the only problem associated with the KNN classifier, in addition to choosing the best K-neighbors problem choosing the best distance/similarity measure is an important problem,
+% he average accuracy of all distances over the first 14 data sets, using K = 1 with and without noise: 4% with , 7% without noise less on euclidean distance than on Hassanat distance, MD is slighly better
+\cite{abu_alfeilat_effects_2019} %metrics
+
+% Improving k-Nearest Neighbors Algorithm for Imbalanced Data Classification
+% k-NN classifiers will be significantly impacted by the imbalanced class distributions of data
+% we look into the data pre-processing techniques that can be used to rebalance the training data and enhance the performance of k-NN
+%14 real-world data sets collected from different application domains
+% precision metric (overall accuracy is not a good indicator)
+% smallest of 253 (i.e., mw1) to the largest of 17186 (i.e., pc5). The number of attributes is between 9 and 74
+% The most imbalanced data set is mv1 that has the highest imbalance rate of 4556%,
+% data sampling schemes, random oversampling (ROS), random undersampling (RUS) and ensemble oversampling (ENOS) are able to improve the precision of k-NN classifiers in most data sets (15% and 39%) - lower unbalance, over 40% - higher unbalance
+% The imbalance rate is defined as the number of instances in the majority class divided by the number of instances in the minority class
+\cite{shi_improving_2020} %k-NN balancing
+
+%  article proposes a novel low-level knowledge transfer framework using a deep neural network (DNN) model for condition monitoring of machines in variable running conditions.
+% air compressor acoustic data set - 100%; 2) the Case Western Reserve University bearing data set - 93%; and 3) the intelligent maintenance system bearing data set - 100%
+% The signal processing methods are used to extract low-level features in the TD, FD, and TF domains. The process of extracting these low-level features is described as follows
+% The TD, FD, M (Morlet)WT, DWT, and WPT features have been directly given to all the classifiers for comparing the effectiveness - low-level features
+% Furthermore, features have been selected using four different feature selection techniques, i.e., mutual information feature selection (MIFS), minimal redundancy maximal relevance (mRMR) , principal component analysis (PCA), and Bhattacharyya distance (BD)
+% To compare the performance of the proposed approach, a DNN without KT is implemented. SVM, RF, and softmax classifiers have been used for fault classification.
+% CWRU - 61% SVM on 8 time domain features, 88% on 20 spectral SVM (RF and soft max worse)
+\cite{maurya_condition-based_2021}
+
+
+
+
+% review the development of machine learning and deep learning methods for bearing vibration monitoring
+% Machine learning has been widely used in bearing health monitoring, which are generally divided into two steps: feature extraction and condition classification.
+% three main machine learning methods used in health monitoring are introduced, including KNN, ANN (Artificial neural network) and SVM.
+% briefly introduces three main deep learning methods used in health monitoring: AE  (Auto-encoder), RBM (Restricted Boltzmann Machines), CNN (Convolution Neural Networks) and their corresponding variants
+% This method can accurately detect and classify bearing stator and rotor faults. In order to detect early faults of motor rolling bearings under masked noises, PCA and KNN are used to accurately measure the distance and different fault features are extracted as health indicators
+% In [87], a transfer learning approach based on a 1D CNN and frequency domain analysis of the vibration signals is presented. Using bearing data with different failure severity for testing, the classification accuracy is about 99.67%
+\cite{sheng_review_2020}
+
+% In [50], a combined power spectral density (PSD), KNN) and SVM are proposed to perform journal bearing fault diagnosis. For KNN and SVM, the best classification accuracy is 85.7% and 100%, respectively. The results show that SVM is a more powerful fault diagnosis technology for rotating machinery
+\cite{moosavian_appropriate_2012}
+
+
+% ew way of diagnosing the fault of rolling element bearings. In the current work, ML models, namely, Support Vector Machine (SVM) and K-Nearest Neighbor (KNN), are used to classify the faults associated with different ball bearing elements.
+% Using open-source Case Western Reserve University (CWRU) bearing data
+% extracted time-domain and frequency-domain features. The results show that frequency-domain features are more convincing for the training of ML models, 
+% Set 1: Combination of time and frequency-domain features = SVM 95.0 % KNN 96.2 %
+% Set 2: Non-linear time-domain features SVM 88.8 % KNN 91.2 %
+% Set 3: Frequency-domain features SVM 96.2 % KNN 98.8 %
+% the KNN classifier has a high level of accuracy compared to SVM
+\cite{jamil_feature-based_2021} %knn,svm
+
+% A New Statistical Features Based Approach for Bearing Fault Diagnosis Using Vibration Signals
+% The vibration signal is also converted to the frequency domain and the same features are extracted. All three feature sets are concatenated, creating the time, frequency and spectral power domain feature vectors. 
+%These feature vectors are finally fed into the K- nearest neighbour, support vector machine and kernel linear discriminant analysis for the detection and classification of bearing faults. 
+% With the proposed method, the reduction percentage of more than 95% percent is achieved, which not only reduces the computational burden but also the classification time. 
+% Simulation results show that the signals are classified to achieve an average accuracy of 99.13% using KLDA and 95.64% using KNN classifiers.
+% 95.64% (KNN on PSD), 99.13% (KLDA)
+% Statistical_P Fourier_P PSD_P, EMD, Fourier, PSD
+\cite{altaf_new_2022}
+
+% T4PDM: A DEEP NEURAL NETWORK BASED ON THE TRANSFORMER ARCHITECTURE FOR FAULT DIAGNOSIS OF ROTATING MACHINERY
+% Experimental results are developed and presented for the MaFaulDa and CWRU databases. T4PdM was able to achieve an overall accuracy of 99.98% and 98% for both datasets, respectively.
+\cite{nascimento_t4pdm_2022}
+
+% Bearing Fault Diagnosis Based on Statistical Locally Linear Embedding
+% Fault diagnosis is essentially a kind of pattern recognition. The measured signal samples usually distribute on nonlinear low-dimensional manifolds embedded in the high-dimensional signal space,
+% Signal acquisition, Feature extraction: time-domain, frequency-domain and time–frequency domain, Dimensionality reduction, Pattern recognition
+% A large set of statistical feature parameters has been defined in the process of roller bearing fault diagnosis
+% FEatures::::
+% . The experimental result show that S-LLE outperforms the other traditional dimensionality reduction methods such as PCA, LDA and LLE. Finally fault classification is carried out in the embedded space. Some experiments show the RBF-SVM classifier
+% The average classification accuracy (%) the original and reduction of statistical features extracted from multi-domain by various classifiers using supervised LLE.
+\cite{wang_bearing_2015}
+
+% PSD features from acceleration readings from the sensors. (1024)
+% 20 major peaks
+% The Peak Harmonic Distance Classification algorithm constructs a classifier using training data to determine equipment’s health condition category given the observed measurement’s Da
+% Remaining Usefulness Lifetime (RUL) estimation,
+% Peak Harmonic Feature Distance
+% random sample consensus (RANSAC) approach[6]. The Recursive RANSAC regression algorithm
+% enables to prolong the average lifetime of the tubes by 1.2x and reduce the replacement cost by 20%.
+\cite{jung_vibration_2017}  % RUL (remaining useful life)  models
+
+
+    Reviews the pertinent literature to orient the reader
+    States the method of the experiment
+    State the principle results of the experiment
+
+
 
 \section{Methodology}
 
 1. Choose frequency precision (1 Hz at maximum)
-2. 12 windows at minimum (n+1 half windows with overlap), Hann window with 50\% overlap, 2^14 - 2^15 windows, 5s recodings
+2. 12 windows at minimum (n+1 half windows with overlap), Hann window with 50\% overlap, $2^14 - 2^15$ windows, 5s recodings
 
 
-Mafaulda
+Mafaulda (Maximum imbalance ratio (MaxIR): The ratio of the most common label against the rarest one. = max. 1016\% to 852\%)
 1. Signal processing (choose bearing A)
 2. Labeling - 6 classes (Class balancing by oversampling)
 3. Feature extraction - Time domain, Frequency domain - Min-max scaling before PCA
@@ -82,16 +210,13 @@ Custom dataset
 acc = prec micro = recall micro
 
 
-
-\section{Results}
-
-
 Figures:
 - 1ks obr. Mafaulda ABVT simulator
 - 1ks obr. (2ks subplots) machine and compressor measurement places with red squares
-- 1 ks obr. device 
+- 1 ks obr. device
 
 
+\section{Results}
 Signal analysis
 
 - 1ks plot (histogram of td signal)?
@@ -130,11 +255,6 @@ Compare accuracies of best models in each categories for given number of feature
 	- we choose k = 5
 - Number of features increases accuracy
 
-\section{Summary}
-
-\section{References}
-
-
 %\begin{figure}[t]
 %\centering
 %\subfloat{
@@ -146,15 +266,16 @@ Compare accuracies of best models in each categories for given number of feature
 %\caption{Patients list and MRI viewer}
 %\end{figure}
 
+\section{Discussion}
+
+\section{Conclusions}
+
+
+\section*{Acknowledgements}
+We thank Lukáš Doubravský (R-DAS,~s.r.o.) for consultations on the methodology and assisting in sensor unit development. We appreciate domain experts in vibrodiagnostics prof.~Stanislav Žiaran and Dr.~Ondrej Chlebo (SjF~STU) for checking our approches. We also thank Peter Csóka and Peter Kmeťko (Bratislavská vodárenská spoločnosť,~a.s.) for allowing us access to their water pumps.
+
+\printbibliography
 
 
 
-\begin{thebibliography}{1}
-
-\bibitem{example}
-Author, F., Author, S.: Title of a proceedings paper. In: Editor,
-F., Editor, S. (eds.) CONFERENCE 2016, LNCS, vol. 9999, pp. 1--13.
-Springer, Heidelberg (2016). \doi{10.10007/1234567890}
-
-\end{thebibliography}
 \end{document}
