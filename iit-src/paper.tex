@@ -3,14 +3,20 @@
 \usepackage{graphicx}
 \usepackage{biblatex}
 \usepackage{caption}
-%\usepackage[caption=false]{subfig}
 \usepackage[english]{babel}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{csquotes}
+
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
 
 \addbibresource{literature.bib}
 
 \begin{document}
 
-\title{Fault Classification of Rotating Machinery Using Limited Set of Features and k-Nearest Neighbors}
+\title{Fault Classification of Rotating Machinery using Limited Set of Features and k-Nearest Neighbors}
 
 \author{
 	Miroslav Hájek\thanks{Master study programme in field: Informatics,
@@ -45,7 +51,6 @@ Large number of machines in the plant and frequent sampling intervals poses a ch
 Technical diagnosis is tasked with identifying faulty machinery part which can be bearing, shaft, coupling, belt, or gear. The commonly found defects are unbalance, misalignment, looseness, eccentricity, deformation, crack, and rub~\cite{mohanty_machinery_2015, scheffer_practical_2004}. Majority of symptoms in vibrations appear synchronous to the rotational speed of the component under investigation as rotation fundamental frequency or its harmonics~\cite{davies_handbook_2012}. Imbalance, misalignment, or looseness of the shaft occurs under 300 Hz. Bearing and gearbox defects in the late stages of development show up between 300 Hz and 1 kHz. Higher frequencies contain the bearing faults even sooner~\cite{torres_automatic_2022}.  
 
 
-
 \section{Related work}
 Approches taken in literature to reduce vibration samples and classify faults result in similiar framework of machine learning pipeline. The general sequence of steps consist of signal acquisition, feature extraction, dimensionality reduction, and pattern recognition or fault detection~\cite{wang_bearing_2015, brito_fault_2021}. 
 
@@ -56,154 +61,92 @@ Feature extraction of time and frequency attributes is utilized in online monito
 
 Knowledge of rolling bearings geometry and rotational speed provides a way to calculate bearing defect frequencies for outer race (BPFO), inner race (BPFI), ball (BSF), and cage (FTF)~\cite{mohanty_machinery_2015, ziaran_technicka_2013}. There are situation when bearing fault is not evidenced by defect frequency, therefore kurtosis is recommended as it is asociated with impacts~\cite{brito_fault_2021}.
 
-Normalization assigns same weights to unbounded variables ~\cite{zheng_feature_2018}. In three-dimensional motion, either axis aligned only with principal direction of vibrations is retained, or euclidian norm is computed for each feature. The magnitude of feature vector was found useful in animal activity recognition from collar tags independent of sensor orientation~\cite{kamminga_robust_2018}. 
+Normalization assigns same weights to unbounded variables~\cite{zheng_feature_2018}. In three-dimensional motion, either axis aligned only with principal direction of vibrations is retained, or euclidian norm is computed for each feature. The magnitude of feature vector was found useful in animal activity recognition from collar tags independent of sensor orientation~\cite{kamminga_robust_2018}. 
 
 Extracted features lower the number of dimensions from original signal. Further dimensionality reduction is caried out with various methods, namely: PCA, t-SNE, ISOMAP, ICA, and AE~\cite{brito_fault_2021}. Keeping smaller number of attributes can result in better classification performance. However major disadvantage is the removal of the meaning from obtained features. 
 
 Filtering feature selection methods decrease the feature set size so that the chosen predictors have the strongest relation to categorical predicted variable.
 The relationship is quantified with correlation, fisher score or mutual information and among others~\cite{nandi_condition_2019}. The metrics are combined to ensembles by means of electorial methods or rank product~\cite{breitling_rank_2004}.
 
+Machinery Fault Database (MaFaulDa)~\cite{mafaulda_dataset} or Case Western Reserve University (CWRU) bearings dataset~\cite{cwru_dataset} are routinely used for evaluation of machinery fault models. MaFaulDa contains 1951 time series measured on two bearings 
+simutanously with three uniaxial accelerometers at sampling rate of 50 kHz. Each recording lasts 5 seconds and it represents one of 5 defects but at different loads, shaft shifts, and rotation speeds between 737 to 3686 RPM. CWRU dataset has 161 scenarios at sample rates of 12 kHz or 48 kHz. Time series captures four different states of bearings on drive end and fan end of the motor.
 
+Classification of faults in machinery diagnostics focuses primarily on bearings health monitoring. Review article~\cite{sheng_review_2020} compares strengths and weaknesesses machine and deep learning models. Power spectral density (PSD) features from vibration signals of journal bearings in combination with k-NN and SVM reached classification accuracy 85.7\% and 100\%, respectively~\cite{moosavian_appropriate_2012}. Ball bearing fault diagnostic of CWRU dataset indicate better accuracy of k-NN (98.8\%) than SVM (96.2\%) on frequency-domain features~\cite{jamil_feature-based_2021}. Approach based on statistical features utilizing custom test rig compared three models for ball bearing faults: k-NN, SVM, and kernel linear discriminant analysis (KLDA). Results showed KLDA achieves best average accuracy on PSD features (99.13\%) followed by k-NN with PSD (95.64\%) and SVM with EMD (80.49\%)~\cite{altaf_new_2022}. 
 
-%TODO
-Existujú rôzne štandardné datasety ako Machinery fault database (Mafaulda) (50 kHz)). Aké sú tam poruchy a rýchlosti a CWRU bearing dataset (Deep Groove Ball Bearing Data Set) (12 kHz) - aké poruchy.
-% Datasets
-\cite{ribeiro_rotating_2017}
+On CWRU dataset SVM performs better in comparison of state-of-the-art methods to random forest (RF) and softmax classifiers. The best accuracy of SVM is 61.05\% on 5 time domain features (RF 59.07\%, Softmax 48.92\%) and 91.17\% on 64 frequency domain (RF 86.14\%, Softmax 86.05\%) features~\cite{maurya_condition-based_2021}. Random forest applied after similarity-based model has a accuracy of 96.43\% on the MaFaulDa and 98.7\% on the CWRU database~\cite{ribeiro_rotating_2017}.
 
-
-
-Najčastejšie na zmienených datasetoch sa overovali metódy. Na klasifikáciu porúch boli aplikované prístupy machine learning ale aj deep learning and transfer learning.
-
-% Classification
-
-% Effects of Distance Measure Choice on K-Nearest Neighbor Classifier Performance: A Review
-% recently proposed nonconvex distance performed the best when applied on most data sets comparing with the other tested distances. 
-% In addition, the performance of the KNN with this top performing distance degraded only *20% while the noise level reaches 90%, this is true for most of the distances used as well. 
-% This means that the KNN classifier using any of the top 10 distances tolerates noise to a certain degree
-% KNN is one of the laziest learning methods. This implies storing all training data and waits until having the test data produced, without having to create a learning model
-% Slowness is not the only problem associated with the KNN classifier, in addition to choosing the best K-neighbors problem choosing the best distance/similarity measure is an important problem,
-% he average accuracy of all distances over the first 14 data sets, using K = 1 with and without noise: 4% with , 7% without noise less on euclidean distance than on Hassanat distance, MD is slighly better
-\cite{abu_alfeilat_effects_2019} %metrics
-
-% Improving k-Nearest Neighbors Algorithm for Imbalanced Data Classification
-% k-NN classifiers will be significantly impacted by the imbalanced class distributions of data
-% we look into the data pre-processing techniques that can be used to rebalance the training data and enhance the performance of k-NN
-%14 real-world data sets collected from different application domains
-% precision metric (overall accuracy is not a good indicator)
-% smallest of 253 (i.e., mw1) to the largest of 17186 (i.e., pc5). The number of attributes is between 9 and 74
-% The most imbalanced data set is mv1 that has the highest imbalance rate of 4556%,
-% data sampling schemes, random oversampling (ROS), random undersampling (RUS) and ensemble oversampling (ENOS) are able to improve the precision of k-NN classifiers in most data sets (15% and 39%) - lower unbalance, over 40% - higher unbalance
-% The imbalance rate is defined as the number of instances in the majority class divided by the number of instances in the minority class
-\cite{shi_improving_2020} %k-NN balancing
-
-%  article proposes a novel low-level knowledge transfer framework using a deep neural network (DNN) model for condition monitoring of machines in variable running conditions.
-% air compressor acoustic data set - 100%; 2) the Case Western Reserve University bearing data set - 93%; and 3) the intelligent maintenance system bearing data set - 100%
-% The signal processing methods are used to extract low-level features in the TD, FD, and TF domains. The process of extracting these low-level features is described as follows
-% The TD, FD, M (Morlet)WT, DWT, and WPT features have been directly given to all the classifiers for comparing the effectiveness - low-level features
-% Furthermore, features have been selected using four different feature selection techniques, i.e., mutual information feature selection (MIFS), minimal redundancy maximal relevance (mRMR) , principal component analysis (PCA), and Bhattacharyya distance (BD)
-% To compare the performance of the proposed approach, a DNN without KT is implemented. SVM, RF, and softmax classifiers have been used for fault classification.
-% CWRU - 61% SVM on 8 time domain features, 88% on 20 spectral SVM (RF and soft max worse)
-\cite{maurya_condition-based_2021}
-
-
-
-
-% review the development of machine learning and deep learning methods for bearing vibration monitoring
-% Machine learning has been widely used in bearing health monitoring, which are generally divided into two steps: feature extraction and condition classification.
-% three main machine learning methods used in health monitoring are introduced, including KNN, ANN (Artificial neural network) and SVM.
-% briefly introduces three main deep learning methods used in health monitoring: AE  (Auto-encoder), RBM (Restricted Boltzmann Machines), CNN (Convolution Neural Networks) and their corresponding variants
-% This method can accurately detect and classify bearing stator and rotor faults. In order to detect early faults of motor rolling bearings under masked noises, PCA and KNN are used to accurately measure the distance and different fault features are extracted as health indicators
-% In [87], a transfer learning approach based on a 1D CNN and frequency domain analysis of the vibration signals is presented. Using bearing data with different failure severity for testing, the classification accuracy is about 99.67%
-\cite{sheng_review_2020}
-
-% In [50], a combined power spectral density (PSD), KNN) and SVM are proposed to perform journal bearing fault diagnosis. For KNN and SVM, the best classification accuracy is 85.7% and 100%, respectively. The results show that SVM is a more powerful fault diagnosis technology for rotating machinery
-\cite{moosavian_appropriate_2012}
-
-
-% ew way of diagnosing the fault of rolling element bearings. In the current work, ML models, namely, Support Vector Machine (SVM) and K-Nearest Neighbor (KNN), are used to classify the faults associated with different ball bearing elements.
-% Using open-source Case Western Reserve University (CWRU) bearing data
-% extracted time-domain and frequency-domain features. The results show that frequency-domain features are more convincing for the training of ML models, 
-% Set 1: Combination of time and frequency-domain features = SVM 95.0 % KNN 96.2 %
-% Set 2: Non-linear time-domain features SVM 88.8 % KNN 91.2 %
-% Set 3: Frequency-domain features SVM 96.2 % KNN 98.8 %
-% the KNN classifier has a high level of accuracy compared to SVM
-\cite{jamil_feature-based_2021} %knn,svm
-
-% A New Statistical Features Based Approach for Bearing Fault Diagnosis Using Vibration Signals
-% The vibration signal is also converted to the frequency domain and the same features are extracted. All three feature sets are concatenated, creating the time, frequency and spectral power domain feature vectors. 
-%These feature vectors are finally fed into the K- nearest neighbour, support vector machine and kernel linear discriminant analysis for the detection and classification of bearing faults. 
-% With the proposed method, the reduction percentage of more than 95% percent is achieved, which not only reduces the computational burden but also the classification time. 
-% Simulation results show that the signals are classified to achieve an average accuracy of 99.13% using KLDA and 95.64% using KNN classifiers.
-% 95.64% (KNN on PSD), 99.13% (KLDA)
-% Statistical_P Fourier_P PSD_P, EMD, Fourier, PSD
-\cite{altaf_new_2022}
-
-% T4PDM: A DEEP NEURAL NETWORK BASED ON THE TRANSFORMER ARCHITECTURE FOR FAULT DIAGNOSIS OF ROTATING MACHINERY
-% Experimental results are developed and presented for the MaFaulDa and CWRU databases. T4PdM was able to achieve an overall accuracy of 99.98% and 98% for both datasets, respectively.
-\cite{nascimento_t4pdm_2022}
-
-% Bearing Fault Diagnosis Based on Statistical Locally Linear Embedding
-% Fault diagnosis is essentially a kind of pattern recognition. The measured signal samples usually distribute on nonlinear low-dimensional manifolds embedded in the high-dimensional signal space,
-% Signal acquisition, Feature extraction: time-domain, frequency-domain and time–frequency domain, Dimensionality reduction, Pattern recognition
-% A large set of statistical feature parameters has been defined in the process of roller bearing fault diagnosis
-% FEatures::::
-% . The experimental result show that S-LLE outperforms the other traditional dimensionality reduction methods such as PCA, LDA and LLE. Finally fault classification is carried out in the embedded space. Some experiments show the RBF-SVM classifier
-% The average classification accuracy (%) the original and reduction of statistical features extracted from multi-domain by various classifiers using supervised LLE.
-\cite{wang_bearing_2015}
-
-% PSD features from acceleration readings from the sensors. (1024)
-% 20 major peaks
-% The Peak Harmonic Distance Classification algorithm constructs a classifier using training data to determine equipment’s health condition category given the observed measurement’s Da
-% Remaining Usefulness Lifetime (RUL) estimation,
-% Peak Harmonic Feature Distance
-% random sample consensus (RANSAC) approach[6]. The Recursive RANSAC regression algorithm
-% enables to prolong the average lifetime of the tubes by 1.2x and reduce the replacement cost by 20%.
-\cite{jung_vibration_2017}  % RUL (remaining useful life)  models
-
-
-    Reviews the pertinent literature to orient the reader
-    States the method of the experiment
-    State the principle results of the experiment
-
-
+In k-NN algorithm the number of neigbors and similarity measure has to be chosen carefully. Hassanat distance performes the best on average for k = 1 but is only by 4\% better in situation without noise and 7\% in scenarios with noise when compared to Euclidian distance~\cite{abu_alfeilat_effects_2019}. Categories in dataset fed into k-NN classifier should be balanced in size otherwise precision drops 15\% to over 40\% depending on imbalance ratio~\cite{shi_improving_2020}.
 
 \section{Methodology}
+The two principal questions regarding automated machinery fault diagnostics from vibrations are investigated in this study. How does reducing number of features and different feature selection methods impact k-nearest neighbors multiclass classifier accuracy with varying k parameter? This first exploration takes place in supervised manner with 5-fold cross validation on preprocessed MaFaulDa dataset. Then the challanges are presented of how to apply same procedures to the monitoring solution of municipal water pumping station? Calibrated data from existing pump monitoring provided by the vendor on the site is taken as a reference.
 
-1. Choose frequency precision (1 Hz at maximum)
-2. 12 windows at minimum (n+1 half windows with overlap), Hann window with 50\% overlap, $2^14 - 2^15$ windows, 5s recodings
+Classification of MaFaulDa dataset are caried out for extracted features in time domain (TD) and frequency domain (FD) separately. The accuracy is determined for features in radial axis $y$ and euclidian norm of all directions (Fig.~\ref{fig:mafaulda-simulator})  Experiments include different combination of selected attributes according to predefined conditions:
+\begin{enumerate}
+\item whole feature set with k value as odd number in range from 1 to 37,
+\item dimensionality reduction using pricipal components analysis (PCA) of whole feature set to 3 principal components ($k = 5$),
+\item every combination of 3, 4, 5 member feature subsets with k value being sequentially: 3, 5, 11, 15 (results in $\sum_{j = 3}^{5}{n\choose j}$ models for individual k value),
+\item best feature subset picked using feature selection methods: mean of point-biserial correlation to every class as a dichotomous variable, ANOVA F-value and mutual infomation ($k = 5$).
+\end{enumerate}
 
+\begin{figure}
+     \begin{subfigure}[b]{0.24\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/sensor/mafaulda-simulator.jpg}
+         \caption{MaFaulDa}
+         \label{fig:mafaulda-simulator}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.24\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/sensor/ksb-pump.jpg}
+         \caption{Water pump}
+         \label{fig:water-pump}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.24\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/sensor/sensor.jpg}
+         \caption{Accelerometer}
+         \label{fig:steval-sensor}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.24\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/sensor/ksb-cloud.jpg}
+         \caption{KSB sensor}
+         \label{fig:ksb-cloud-sensor}
+     \end{subfigure}
+     \caption{Measurement positions and accelerometer orientations}
+\end{figure}
 
-Mafaulda (Maximum imbalance ratio (MaxIR): The ratio of the most common label against the rarest one. = max. 1016\% to 852\%)
-1. Signal processing (choose bearing A)
-2. Labeling - 6 classes (Class balancing by oversampling)
-3. Feature extraction - Time domain, Frequency domain - Min-max scaling before PCA
-4. Feature selection - 
-	PCA 2,3,4 - accuracy + loading plot (PC2)
-	KNN all features- 5-fold cross validation - rôzne domény, rôzne k, rôzne počty features
-	KNN exhaustive models - 
-		2,3,4 features (check corr, f-stat, mi, rank product scores)
-	 -> KNN classification(online and offiline)
+Data preprocessing of MaFaulDa is necessary to create feature sets in TD and FD. This process of several phases.
+\begin{enumerate}
+\item \textbf{Signal filtering}: Subtraction of overall mean removes DC component. IIR Butterworth low pass filter of 5th order attenuates frequencies above above 10 kHz.
+\item \textbf{Feature extraction}: Machine behavior in one time series is time-invariant therefore each feature is calculated out of whole duration. Frequency domain features are produced using Welch's method for power spectrums from FFT with $2^{15}$ long Hann windows and 50\% overlap  (bin resolution of 1.53~Hz). The resulting features belong to domains making up respective feature sets:
+\begin{enumerate}
+\item \textbf{10 time domain features} (TD): peak-to-peak amplitude, zero-crossing rate, root mean square, skewness, kurtosis, shape factor, crest factor, impulse factor, clearance factor, average amplitude change,
+\item \textbf{11 frequency domain features} (FD): spectral centroid, standard deviation, skewness, kurtosis, roll on frequency of 5\% total energy, roll off frequency of 85\% total energy, spectral flux as a average correlation of separate windows, noisiness as a signal to noise ratio, spectral negentropy~\cite{avoci_spectral_2020}, energy, entropy.
+\end{enumerate}
+\item \textbf{Labeling}: Three target variables are constructed out of inner bearing, both bearings, and high severity defects on both bearings. Predicted variable has 6 classes: normal, misalignment, imbalance, outer race fault, inner race fault, cage fault.   In high severity scenario, the normal class is assigned to observations where weight or shaft shift applied is in half below 60\% of all configuations for that fault.
+\item \textbf{Class balancing}: Random oversampling strategy is used on all classes except the majority one.
+\end{enumerate}
 
-Custom dataset
-1. Choice of machines (pic measurement places - two images and dots) - pumps according to standards + callibrated sensors
-	- compressor is on housing
-2. HW sensor + ESP32 + FW 60 s. recor
-3. How measure (plan)
-4. Signal processing
-4. Labeling  / Labeling (use machine - split by type) 
-5. Same as Mafaulda
+Vibrations from pumps in municipal pumping station for drinking water in Podunajské Biskupice reveal practical challenges for deployment of machine learning models in the industry. Two pumps (P1, P2) of the same type KSB Omega 300-560 and two electric motors WEG W50 (M1, M2) were designated for measurements. Both machines have power 400~kW (ISO 20186 class~\rom{3}) and main shaft rotates at 1493~RPM. For purposes of expert labeling, the bearing designations at numbered places are: 6319-C3 (1), 6324-C3 (2), 6317-2Z (3 \& 4). 
 
-acc = prec micro = recall micro
+Sensor were placed above bearings in numbered positions according to ISO 13373 (Fig.~\ref{fig:water-pump}) with axis orientation depicted in Fig.~\ref{fig:steval-sensor}. Each pump is equipped with KSB cloud monitoring at place (3) (Fig.~\ref{fig:ksb-cloud-sensor}) from which rms velocity in mm/s is available for year in hourly intervals. 
 
+Our accelerometer ST IIS3DWB mounted to machine unig thin double sided tape has wideband 5 kHz linear response is sampled at 26.87~kHz. Microcontroller ESP32-POE-ISO stored triaxial 60 second long recordings onto SD card. In total 48 time series were gathered, 6 in each place. These are furter split to 5 second interval for 576 data points overall.
 
-Figures:
-- 1ks obr. Mafaulda ABVT simulator
-- 1ks obr. (2ks subplots) machine and compressor measurement places with red squares
-- 1 ks obr. device
+The signal preprocessing is similiar which exceptions that low-pass filter is left out and FFT window size is set to $2^{14}$ (bin resolution of 1.64~Hz). Fault labels are missing therefore we analyse rotational speeds and defect bearing frequencies in the frequency spectrum. As an alternative, the observations are labeled based on source machinery to 4 classes: M1, M2, P1, P2; based on sensor position to 8 classes: M1-1, M1-2, P1-3, P1-4, etc. Another classfier is made solely with P1-3 and P2-3 placements.
+Classification is done for features in main axis of motion (z) and euclidian norm of same features in all directions.
 
 
 \section{Results}
+Mafaulda tabulky - počtov - all axis, one bearing, one axis, severity all axis, severity all axis
+
 Signal analysis
+
+Figures KSB rms vibarion severity KSB-1 (P1), KSB-7 (P2)
 
 - 1ks plot (histogram of td signal)?
 - 1ks plot (6x subplots) Mafaulda welch from each fault (1s, 2**14 window, hann window)  - largest severity - 2500 rpm
@@ -241,16 +184,10 @@ Compare accuracies of best models in each categories for given number of feature
 	- we choose k = 5
 - Number of features increases accuracy
 
-%\begin{figure}[t]
-%\centering
-%\subfloat{
-%	\includegraphics[width=0.45\textwidth]{app.png}
-%}
-%\subfloat{
-%	\includegraphics[width=0.45\textwidth]{mri.png}
-%}
-%\caption{Patients list and MRI viewer}
-%\end{figure}
+
+
+
+
 
 \section{Discussion}
 
