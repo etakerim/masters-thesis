@@ -127,7 +127,7 @@ Data preprocessing of MaFaulDa is necessary to create feature sets in TD and FD.
 \item \textbf{10 time domain features} (TD): peak-to-peak amplitude, zero-crossing rate, root mean square, skewness, kurtosis, shape factor, crest factor, impulse factor, clearance factor, average amplitude change,
 \item \textbf{11 frequency domain features} (FD): spectral centroid, standard deviation, skewness, kurtosis, roll on frequency of 5\% total energy, roll off frequency of 85\% total energy, spectral flux as a average correlation of separate windows, noisiness as a signal to noise ratio, spectral negentropy~\cite{avoci_spectral_2020}, energy, entropy.
 \end{enumerate}
-\item \textbf{Labeling}: Three target variables are constructed out of inner bearing, both bearings, and high severity defects on both bearings. Predicted variable has 6 classes: normal, misalignment, imbalance, outer race fault, inner race fault, cage fault.   In high severity scenario, the normal class is assigned to observations where weight or shaft shift applied is in half below 60\% of all configuations for that fault.
+\item \textbf{Labeling}: Three target variables are constructed out of inner bearing, both bearings, and high severity defects on both bearings. Predicted variable has 6 classes: normal, misalignment (merged vertical and horizontal), imbalance, outer race fault, ball fault, cage fault. In high severity scenario, the normal class is assigned to observations where weight or shaft shift applied is in half below 60\% of all configuations for that fault.
 \item \textbf{Class balancing}: Random oversampling strategy is used on all classes except the majority one.
 \end{enumerate}
 
@@ -142,60 +142,238 @@ Classification is done for features in main axis of motion (z) and euclidian nor
 
 
 \section{Results}
-Mafaulda tabulky - počtov - all axis, one bearing, one axis, severity all axis, severity all axis
+\begin{figure}
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/spectrum/mafaulda-wideband.png}
+         \caption{MaFaulda}
+         \label{fig:mafaulda-wideband}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/spectrum/motor-wideband.png}
+         \caption{Motors}
+         \label{fig:motor-wideband}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/spectrum/pump-wideband.png}
+         \caption{Pumps}
+         \label{fig:motor-wideband}
+     \end{subfigure}
+     \caption{Wideband power spectrum}
+\end{figure}
 
-Signal analysis
-
-Figures KSB rms vibarion severity KSB-1 (P1), KSB-7 (P2)
-
-- 1ks plot (histogram of td signal)?
-- 1ks plot (6x subplots) Mafaulda welch from each fault (1s, 2**14 window, hann window)  - largest severity - 2500 rpm
-- 1ks plot (6x subplots) Custom dataset - each place in one day spectrum (5s segment)
-
-Feature analysis:
-Mafaulda (4) a Custom (4) 
-- 1 ks table (how many faults have how many recordings)
-- 1 ks plot (2 lines TD, FD) - numer of PC vs. explained variance
-- 1 ks plot (2x subplots TD, FD) - loading plot (PC2)
-
-% TODO
-- 1 ks (5 subplots) scatter: mafaulda, all machines, pumps, compressors, motors
-
-
-Classification accuracy (choices of k. and feat. count, 5-fold cross validation)
-
-Whole serach space = For mafaulda and custom (which classes - all or just one machine)
-- 1 ks All features (2x subplots TD, FD)
-	- Each subplot boxplot (k = 3,5,7)
-
-2 features - best models under 55\% accuracy in test set
-
-All models (exhausive) - draw rank, corr, f-stat, mi as horizontal line
-	- 3 ks plots (2, 3, 4 features)
-		- Each plot 2 boxplot subplots (TD, FD) - k-neigh. vs. accuracy of all models
+\begin{figure}
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/spectrum/mafaulda-fault.png}
+         \caption{MaFaulda}
+         \label{fig:mafaulda-fault}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/spectrum/motor-fault.png}
+         \caption{Motors}
+         \label{fig:motor-fault}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/spectrum/pump-fault.png}
+         \caption{Pumps}
+         \label{fig:pump-fault}
+     \end{subfigure}
+     \caption{Shaft and bearing defect frequencies}
+\end{figure}
 
 
-Compare accuracies of best models in each categories for given number of features and k:
-- 1 ks plot - bar chart - color rainbow - one x (td), second x (fd)
+\begin{table}
+\centering
+\caption{Numbers of observations by label in MaFaulDa}\label{tab:mafaulda-observation-counts}
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Label} &  \textbf{Bearing A} & \textbf{Both bearings} & \textbf{High severity} \\
+\hline
+normal            &  49  &  49  &  1125 \\
+misalignment      & 498  &  498 & 198 \\
+imbalance         & 333  &  333 & 139 \\
+cage fault        & 188  &  376 & 181 \\
+ball fault        & 186  &  323 & 132 \\
+outer race fault  & 184  &  372 & 176 \\
+\hline
+$\Sigma$ & 1438  & 1951 & 1951 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}
+     \begin{subfigure}[b]{0.48\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/ksb-cloud/P1-rms-vibration.png}
+         \caption{P1-3}
+         \label{fig:P1-ksb-rms}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.48\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/ksb-cloud/P2-rms-vibration.png}
+         \caption{P2-3}
+         \label{fig:P2-ksb-rms}
+     \end{subfigure}
+     \caption{RMS vibrations of pumps and ISO severity levels}
+\end{figure}
+
+
+% Identical plots for one axis and multiple axis
+\begin{figure}
+     \begin{subfigure}[b]{0.32\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/all-features-mafaulda/all-axis-a-bearing.png}
+         \caption{Bearing A}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.32\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/all-features-mafaulda/all-axis-all-bearings.png}
+         \caption{Both bearings}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.32\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/all-features-mafaulda/all-axis-severity.png}
+         \caption{High severity}
+     \end{subfigure}
+     \caption{Whole feature sets in TD and FD from MaFaulDa}
+\end{figure}
 
 
 
-- In training set growing number of neighbors decreases accuracy - in testing set there is no effect (more neighbors more overtraining)
-	- we choose k = 5
-- Number of features increases accuracy
+\begin{figure}
+     \begin{subfigure}[b]{0.32\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/all-features-pumps/machine.png}
+         \caption{Machines}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.32\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/all-features-pumps/position.png}
+         \caption{Positions}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.32\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/all-features-pumps/binary.png}
+         \caption{Pumps on position 3}
+     \end{subfigure}
+     \caption{Whole feature sets in TD and FD from water pumps}
+\end{figure}
 
 
+% All bearings
+\begin{figure}
+	\centering
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/scatter-mafaulda/td-all-bearings.png}
+         \caption{Both bearings in TD}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/scatter-mafaulda/td-severity.png}
+         \caption{High severity in TD}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/scatter-mafaulda/fd-all-bearings.png}
+         \caption{Both bearings in FD}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/scatter-mafaulda/fd-severity.png}
+         \caption{High severity in TD}
+     \end{subfigure}
+     \caption{PCA scatter plots of MaFaulDa with k-NN decision boundaries (k = 5)}
+\end{figure}
 
 
+\begin{figure}
+	\centering
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/scatter-pumps/position-td.png}
+         \caption{Positions in TD}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/scatter-pumps/position-fd.png}
+         \caption{Positions in FD}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/scatter-pumps/binary-td.png}
+         \caption{P1-3 and P2-3 in TD}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/scatter-pumps/binary-fd.png}
+         \caption{P1-3 and P2-3 in FD}
+     \end{subfigure}
+     \caption{PCA scatter plots of water pumps with k-NN decision boundaries (k = 5)}
+\end{figure}
 
 
-\section{Discussion}
+% All axis
+% by words relation to one axis, and one bearings
+% Pumps - spectral is better
+\begin{figure}
+	\centering
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/combinations-mafaulda/all-axis-all-bearings-f3.png}
+         \caption{Both bearings f=3}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/combinations-mafaulda/all-axis-all-bearings-f3.png}
+         \caption{Both bearings f=3}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/combinations-mafaulda/all-axis-severity-f3.png}
+         \caption{High severity k = 5}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{fig/combinations-mafaulda/all-axis-severity-k5.png}
+         \caption{High severity k = 5}
+     \end{subfigure}
+     \caption{Test accuracies of all combinations of feature subsets}
+\end{figure}
+
+%TODO
+% Table of accuracies for Maufaulda for rainbow bar plot (test set)
+
+% Table for pumps
 
 \section{Conclusions}
 
 
 \section*{Acknowledgements}
-We thank Lukáš Doubravský (R-DAS,~s.r.o.) for consultations on the methodology and assisting in sensor unit development. We appreciate domain experts in vibrodiagnostics prof.~Stanislav Žiaran and Dr.~Ondrej Chlebo (SjF~STU) for checking our approches. We also thank Peter Csóka and Peter Kmeťko (Bratislavská vodárenská spoločnosť,~a.s.) for allowing us access to their water pumps.
+We thank Lukáš Doubravský (R-DAS,~s.r.o.) for consultations on the methodology and assisting in sensor unit development. We appreciate domain experts in vibrodiagnostics prof.~Stanislav Žiaran and Dr.~Ondrej Chlebo (SjF~STU) for checking our approches. We also thank Peter Csóka and Peter Kmeťko (Bratislavská vodárenská spoločnosť,~a.s.) for enabling us access to water pumps.
 
 \printbibliography
 
