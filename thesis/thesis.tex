@@ -155,7 +155,7 @@
 \newcommand{\FacultyEN}[0] {Faculty of Informatics and Information Technologies}
 
 \newcommand{\ThesisTitle}[0] {Diplomová práca}
-\newcommand{\ThesisTitleEN}[0] {Master's thesis}
+\newcommand{\ThesisTitleEN}[0] {Master's Thesis}
 
 \newcommand{\Thesis}[0] {Diplomová práca}
 \newcommand{\ThesisEN}[0] {Master's Thesis}
@@ -175,7 +175,7 @@
 \newcommand{\RegNo}[0] {FIIT-xxxx-xxxxxx}
 \newcommand{\Date}[0] {Máj 2024}
 \newcommand{\DateEN}[0] {May 2024}
-\newcommand{\SignDateEN}[0] {4 May 2024}
+\newcommand{\SignDateEN}[0] {17 May 2024}
 \newcommand{\StudyProgramme}[0] {Inteligentné softvérové systémy}
 \newcommand{\StudyProgrammeEN}[0] {Intelligent Software Systems}
 \newcommand{\StudyField}[0] {Informatika}
@@ -275,20 +275,15 @@
 
 \input{chapters/01-introduction}
 
-\chapter{Problem analysis} \label{chapter:problem-analysis}
-In the problem analysis chapter we explore the feature engineering methods and machine learning algorithms for fault diagnostics. The basis we build upon is the domain knowledge of mechanical engineers in vibration signal measurement and its evaluation.
-
-\input{chapters/02-analysis-A-CdM}
-\input{chapters/02-analysis-B-features}
-\input{chapters/02-analysis-C-diagnostics}
-\input{chapters/02-analysis-D-datasets}
-
+\input{chapters/02-analysis}
 
 \input{chapters/03-design}
 
 \input{chapters/04-implementation}
 
-\input{chapters/05-conclusion}
+\input{chapters/05-evaluation}
+
+\input{chapters/06-conclusion}
 
 %\nocite{*}
 \printbibliography[heading=bibintoc]
@@ -305,18 +300,17 @@ In the problem analysis chapter we explore the feature engineering methods and m
 \titleformat{\chapter}{\normalfont\LARGE\bf}{Appendix \thechapter:}{0.5em}{}
 \renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{Appendix \thechapter.\ #1}}{}}
 
-% Resume
+% Ak nechce vypísať čísla strán na konci prílohy: \cleardoublepage
 \input{chapters/appendix/A-resume}
 
-\input{chapters/appendix/B-plan-of-work}
+\input{chapters/appendix/B-technical-documentation}
 
-\input{chapters/appendix/C-technical-documentation}
+\input{chapters/appendix/C-user-guide}
 
-% Ďalšie prílohy
-% \input{chapters/appendix/B-technical-docs}
-% Ak nechce vypísať čísla strán na konci prílohy: \cleardoublepage
-	
-%TODO: Digital medium
-% \input{chapters/appendix/C-digital-medium}
+\input{chapters/appendix/D-iit-src-paper}
+
+\input{chapters/appendix/E-work-plan}
+
+\input{chapters/appendix/F-digital-medium}
 
 \end{document}
