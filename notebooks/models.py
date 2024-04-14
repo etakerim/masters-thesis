@@ -40,11 +40,6 @@ def find_best_subset(
         members: int = 3,
         kfolds: int = 5
     ):
-    Y = Y.dropna().astype('category')
-    X = X[X.index.isin(Y.index)].copy()
-    Y = Y[Y.index.isin(X.index)].astype('category')
-    X = X.reset_index(drop=True)
-    Y = Y.reset_index(drop=True)
 
     kf = KFold(n_splits=kfolds, shuffle=True, random_state=10)
     elements = []
@@ -74,11 +69,6 @@ def kfold_accuracy(
         kfolds: int,
         model_name: str, 
         knn_metric='euclidean') -> Dict[str, float]:
-
-    # Remove missing data
-    Y = Y.dropna()
-    X = X[X.index.isin(Y.index)]
-    Y = Y[Y.index.isin(X.index)].astype('category')
 
     # Class balancing
     oversample = RandomOverSampler(sampling_strategy='not majority', random_state=10)
@@ -130,10 +120,6 @@ def all_features(
         model: str,
         k_neighbors: list = list(range(1, 40, 4)),
         kfold_param: int = 5) -> dict:
-    # Remove missing data
-    Y = Y.dropna()
-    X = X[X.index.isin(Y.index)]
-    Y = Y[Y.index.isin(X.index)].astype('category')
 
     # Class balancing
     oversample = RandomOverSampler(sampling_strategy='not majority', random_state=10)
@@ -183,7 +169,10 @@ def enumerate_models(
         model='knn') -> pd.DataFrame:
 
     models = []
-    domains = {'temporal': X_temporal, 'spectral': X_spectral}
+    domains = {
+        'TD': X_temporal,
+        'FD': X_spectral
+    }
 
     for fnum in num_of_features:
         for domain, X in domains.items():

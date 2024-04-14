@@ -204,3 +204,71 @@ def load_features(
     
     df[label_columns] = Y
     return df
+
+
+def mms_peak_finder(x: np.array, win_len=3) -> np.array:
+    a = sliding_window_view(x, window_shape=win_len)
+
+    mms_max = (
+        (np.max(a, axis=1) - np.min(a, axis=1)) /
+        (np.sum(a, axis=1) - np.min(a, axis=1) * win_len)
+    )
+    mms_mid = (
+        (a[:,win_len//2] - np.min(a, axis=1)) /
+        (np.sum(a, axis=1) - np.min(a, axis=1) * win_len)
+    )
+    peaks_in_windows, *other = np.where(mms_max == mms_mid)
+    return peaks_in_windows + 1
+
+
+def have_intersection(interval1, interval2):
+    new_min = max(interval1[0], interval2[0])
+    new_max = min(interval1[1], interval2[1])
+    return new_min <= new_max
+
+
+def harmonic_series_detection(f: np.array, Pxx: np.array, fs: int, fft_window: int) -> np.array:
+    peaks = mms_peak_finder(Pxx)
+    f_central = f[peaks]
+    delta_f = fs / fft_window
+    amplitudes = Pxx[peaks]
+
+    largest_frequency = int(fs / 2 + delta_f)
+    components = np.vstack((f_central, amplitudes)).T
+    k = 8     # Limit harmonics not detected in series (skips)
+
+    result = []
+    # Each component can be fundamental frequency
+    for v, a in components:
+        series = [(v, a)]
+
+        # Harmonic components from given fundamental frequency
+        order_distance = 0
+        delta_v = delta_f
+        for r, vi in enumerate(range(2*int(v), largest_frequency, int(v)), start=2):
+            # Search interval for harmonic component candidates
+            search_interval = (vi - ((r * delta_v) / 2), vi + ((r * delta_v) / 2))
+
+            # If tolerances are in search interval find minimal distance
+            # between true harmonic and candidate
+            candidates = []
+            for vj, aj in components:
+                tolerance_interval = (vj - delta_v / 2, vj + delta_v / 2)
+                if have_intersection(search_interval, tolerance_interval):
+                    candidates.append((vj, aj, abs(vj - vi)))
+
+            if len(candidates) > 0:
+                vh, ah, dh = min(candidates, key=lambda x: x[2])
+                series.append((vh, ah))
+                xh, yh = (vh - delta_v), (vh + delta_v)
+                # Update parameters to prevent of search interval growth
+                vi = (xh + yh) / (2*r)
+                delta_v = abs(xh - yh) / r
+
+            if order_distance == k:
+                break
+
+        if len(series) > 1:
+            result.append(series)
+
+    return result

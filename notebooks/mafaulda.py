@@ -161,17 +161,27 @@ def features_by_domain(
     return pd.concat(result).reset_index(drop=True)
 
 
-def assign_labels(df: pd.DataFrame, bearing: str) -> pd.DataFrame:
-    df['label'] = df.apply(lambda row: FAULTS[bearing].get(row['fault']), axis=1)
+def get_classes(df: pd.DataFrame, bearing: str) -> pd.DataFrame:
+    if not bearing:
+        faults = [f for f in FAULTS.values()]
+        faults = {k: v for d in faults for k, v in d.items()}
+        df['label'] = df.apply(lambda row: faults.get(row['fault']), axis=1)
+    else:
+        df['label'] = df.apply(lambda row: FAULTS[bearing].get(row['fault']), axis=1)
     df['label'] = df['label'].astype('category')
+    return df
+
+
+def assign_labels(df: pd.DataFrame, bearing: str) -> pd.DataFrame:
+    df = get_classes(df, bearing)
     df = df.dropna()
     df = df.drop(columns=LABEL_COLUMNS)
     df = df.reset_index(drop=True)
     return df
 
 
-def label_severity(df: pd.DataFrame, bearing: str, level: float, debug: bool = False) -> pd.DataFrame:
-    df['label'] = df.apply(lambda row: FAULTS[bearing].get(row['fault']), axis=1)
+def label_severity(df: pd.DataFrame, bearing: str, level: float, debug: bool = False, keep: bool = False) -> pd.DataFrame:
+    df = get_classes(df, bearing)
     df = df.dropna()
     df = df.reset_index(drop=True)
     df['label'] = df['label'].astype('category')
@@ -201,6 +211,7 @@ def label_severity(df: pd.DataFrame, bearing: str, level: float, debug: bool = F
             )
             
     df.loc[df['severity_level'] < level, 'label'] = 'normal'
-    df = df.drop(columns=LABEL_COLUMNS)
-    df = df.drop(columns=['severity_class', 'severity_level', 'severity_no'])
+    if not keep:
+        df = df.drop(columns=LABEL_COLUMNS)
+        df = df.drop(columns=['severity_class', 'severity_level', 'severity_no'])
     return df

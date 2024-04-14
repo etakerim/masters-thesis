@@ -122,6 +122,17 @@ def assign_labels(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def get_classes(df: pd.DataFrame, labels: Dict[str, dict]) -> pd.DataFrame:
+    df['label'] = df.apply(
+        lambda row: labels.get(row['device'], {}).get(row['position']), axis=1
+    )
+    df['label'] = df['label'].astype('category')
+    df = df.dropna()
+    df = df.drop(columns=LABEL_COLUMNS)
+    df = df.reset_index(drop=True)
+    return df
+
+
 def beaglebone_measurement(filename: str, fs: int) -> Tuple[str, pd.DataFrame]:
     milivolts = 1800
     resolution = 2**12
