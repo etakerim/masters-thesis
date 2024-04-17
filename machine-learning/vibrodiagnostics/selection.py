@@ -6,7 +6,7 @@ from river import (
 )
 from scipy.stats import pointbiserialr
 
-############### ONLINE FEATURE SELECTION SCORE ###############################
+
 class Correlation(stats.base.Bivariate):
 
     def __init__(self):
@@ -111,12 +111,10 @@ class MutualInformation(stats.base.Bivariate):
                 p_x = self.row_margins[r].get() / n
                 p_y = self.col_margins[c].get() / n
                 if p_x != 0 and p_y != 0 and p_xy != 0:
-                    score += p_xy * math.log(p_xy / (p_x * p_y))
+                    score += p_xy * np.log(p_xy / (p_x * p_y))
 
         return score
 
-#################################################################
-##################### CORRELATION ###############################
 
 def corr_classif(X, y):
     X = pd.DataFrame(X)

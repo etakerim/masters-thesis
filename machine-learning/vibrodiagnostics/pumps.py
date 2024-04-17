@@ -10,7 +10,7 @@ from zipfile import ZipFile
 
 import numpy as np
 import pandas as pd
-import extraction
+from vibrodiagnostics import extraction
 
 
 SAMPLING_RATE = 26866

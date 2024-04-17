@@ -20,7 +20,7 @@ from sklearn.svm import LinearSVC
 from sklearn.naive_bayes import GaussianNB
 
 from tqdm.notebook import tqdm
-import ranking
+from vibrodiagnostics import ranking
 
 
 def transform_to_pca(X, n):

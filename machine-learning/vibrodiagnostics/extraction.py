@@ -206,7 +206,7 @@ def load_features(
     return df
 
 
-def mms_peak_finder(x: np.array, win_len=3) -> np.array:
+def mms_peak_finder(x: np.array, win_len: int = 3) -> np.array:
     a = sliding_window_view(x, window_shape=win_len)
 
     mms_max = (

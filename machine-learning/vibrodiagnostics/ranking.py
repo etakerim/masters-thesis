@@ -24,7 +24,7 @@ from river import (
     stream,
     preprocessing
 )
-import selection
+from vibrodiagnostics import selection
 
 
 class ExperimentOutput(Enum):

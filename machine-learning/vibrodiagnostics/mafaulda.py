@@ -1,4 +1,5 @@
 import re
+import os
 from typing import (
     Callable,
     Tuple,
@@ -16,7 +17,10 @@ from scipy.signal import (
     welch
 )
 from sklearn.preprocessing import MinMaxScaler
-import extraction
+from imblearn.over_sampling import RandomOverSampler
+from sklearn.model_selection import train_test_split
+
+from vibrodiagnostics import extraction
 
 
 SAMPLING_RATE = 50000
@@ -118,8 +122,6 @@ def csv_import(dataset: ZipFile, filename: str) -> pd.DataFrame:
     ts = (
         ts
         .assign(t = lambda x: x.index * T)
-        .reset_index()
-        .assign(t = lambda x: x.index * T)
         .set_index('t')
         .assign(rpm = lambda x: rpm_calc(x.tachometer))
     )
@@ -215,3 +217,89 @@ def label_severity(df: pd.DataFrame, bearing: str, level: float, debug: bool = F
         df = df.drop(columns=LABEL_COLUMNS)
         df = df.drop(columns=['severity_class', 'severity_level', 'severity_no'])
     return df
+
+
+def load_source(domain: str, row: dict, train_size: float = 0.8) -> tuple:
+    PATH = '../datasets/'
+    FEATURES_PATH = os.path.join(PATH, 'features')
+    MAFAULDA_TEMPORAL = os.path.join(FEATURES_PATH, 'MAFAULDA_TD.csv')
+    MAFAULDA_SPECTRAL = os.path.join(FEATURES_PATH, 'MAFAULDA_FD.csv')
+
+    dataset = {
+        'TD': MAFAULDA_TEMPORAL,
+        'FD': MAFAULDA_SPECTRAL,
+        'axis': {
+            'A': ['ax', 'ay', 'az'],
+            'B': ['bx', 'by', 'bz']
+        },
+        'labels': ['fault', 'severity', 'rpm']
+    }
+
+    placement = row['placement']
+    df = extraction.load_features(
+        dataset[domain],
+        dataset['axis'][placement],
+        dataset['labels']
+    )
+    frame = assign_labels(df, placement)
+    Y = frame['label']
+    X = frame.drop(columns=['label'])
+
+    # Batch / Online hold-out (balance and event sequencing)
+    if row.get('online') is True:
+        features = label_severity(df, placement, 0.5, keep=True)
+        # Shuffle order within severity level and order event with increasing severity
+        groups = [
+            frame.sample(frac=1, random_state=10)
+            for i, frame in (
+                features
+                .sort_values(by='severity_level')
+                .groupby('severity_level')
+            )
+        ]
+        rows = list(pd.concat(groups).index)
+        X = X.loc[rows].reset_index(drop=True)
+        Y = Y.loc[rows].reset_index(drop=True)
+
+        X_train, X_test, Y_train, Y_test = train_test_split(
+            X, Y, train_size=train_size, random_state=10
+        )   
+        X_train, X_test, Y_train, Y_test = (
+            X_train.sort_index(), X_test.sort_index(),
+            Y_train.sort_index(), Y_test.sort_index()
+        )
+
+    else:
+        oversample = RandomOverSampler(sampling_strategy='not majority', random_state=10)
+        X, Y = oversample.fit_resample(X, Y.to_numpy())
+        X.reset_index(drop=True, inplace=True)
+        Y = pd.Series(Y)
+
+        X_train, X_test, Y_train, Y_test = train_test_split(
+            X, Y, train_size=train_size, stratify=Y, random_state=10
+        )
+
+        scaler = MinMaxScaler()
+        X_train[X_train.columns] = scaler.fit_transform(X_train)
+        X_test[X_test.columns] = scaler.transform(X_test)
+
+    return X_train, X_test, Y_train, Y_test
+
+
+def get_features_list(domain: str):
+    PATH = '../datasets/'
+    FEATURES_PATH = os.path.join(PATH, 'features')
+    MAFAULDA_TEMPORAL = os.path.join(FEATURES_PATH, 'MAFAULDA_TD.csv')
+    MAFAULDA_SPECTRAL = os.path.join(FEATURES_PATH, 'MAFAULDA_FD.csv')
+
+    domains = {
+        'TD': MAFAULDA_TEMPORAL,
+        'FD': MAFAULDA_SPECTRAL,
+    }
+    features = {}
+    for dname, dataset in domains.items():
+        names = pd.read_csv(dataset)
+        names = names.columns.str.extract(r'([a-z]{2})_([a-z\_\-]+)')[1].unique()
+        features[dname] = names
+
+    return features[domain]

@@ -12,8 +12,7 @@ from sklearn.metrics import silhouette_score
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
 
-import extraction
-import models
+from vibrodiagnostics import extraction, models
 
 
 def plot_models_performance_bar(
@@ -336,25 +335,25 @@ def cross_cuts_3d(X_train: pd.DataFrame, y_train: pd.DataFrame, ylim=None):
         ax[i].legend()
 
 
-def cross_cuts_3d_anomalies(dataframe, anomalies):
-    df = dataframe.copy()
-    df['anomaly'] = anomalies
-    df['anomaly'] = df['anomaly'].astype('category')
-    
+def cross_cuts_3d_cluster(X_train, cluster, title):
+    df = X_train.copy()
+    df['cluster'] = cluster
+    df['cluster'] = df['cluster'].astype('category')
+
+    categories = df['cluster'].cat.categories
+    colors = sb.color_palette('hls', len(categories))
     fig, ax = plt.subplots(1, 3, figsize=(15, 3))
-    
+    fig.suptitle(title)
+
     for i, axes in enumerate(((0, 1), (0, 2), (1, 2))):
         a, b = axes
-        x = df.loc[:, df.columns[a]]
-        y = df.loc[:, df.columns[b]]
-        ax[i].scatter(x, y, color='grey', s=1)
+         
+        for label, color in zip(categories, colors):
+            rows = list(df[df['cluster'] == label].index)
+            x = df.loc[rows, df.columns[a]]
+            y = df.loc[rows, df.columns[b]]
+            ax[i].scatter(x, y, s=1, color=color, label=label)
 
-        for flag, color in ((False, 'green'), (True, 'red')):
-            points = list(df[df['anomaly'] == flag].index)
-            x = df.loc[points, df.columns[a]]
-            y = df.loc[points, df.columns[b]]
-            ax[i].scatter(x, y, color=color, s=1)
-    
         ax[i].set_xlabel(df.columns[a])
         ax[i].set_ylabel(df.columns[b])
         ax[i].grid()
