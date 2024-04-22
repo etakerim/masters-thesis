@@ -7,12 +7,13 @@ import itertools
 import numpy as np
 import pandas as pd
 from imblearn.over_sampling import RandomOverSampler
+from scipy.stats import percentileofscore
 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import KFold
 from sklearn import metrics
 from sklearn.metrics import silhouette_score
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, PowerTransformer
 from sklearn.decomposition import PCA
 
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -68,12 +69,13 @@ def kfold_accuracy(
         k_neighbors: int,
         kfolds: int,
         model_name: str, 
+        power_transform: bool = True,
         knn_metric='euclidean') -> Dict[str, float]:
 
     # Class balancing
     oversample = RandomOverSampler(sampling_strategy='not majority', random_state=10)
     X, Y = oversample.fit_resample(X, Y.to_numpy())
-    X.reset_index(drop=True, inplace=True)
+    X = X.reset_index(drop=True)
     Y = pd.Series(Y)
 
     kf = KFold(n_splits=kfolds, shuffle=True, random_state=10)
@@ -86,10 +88,14 @@ def kfold_accuracy(
             X.loc[train_idx].copy(), X.loc[test_idx].copy(),
             Y.loc[train_idx].copy(), Y.loc[test_idx].copy()
         )
-        # Scale
-        scaler = MinMaxScaler()
-        x_train[x_train.columns] = scaler.fit_transform(x_train)
-        x_test[x_test.columns] = scaler.transform(x_test)
+
+        if power_transform is True:
+            transform = PowerTransformer(method='yeo-johnson', standardize=True)
+        else:
+            transform = MinMaxScaler()
+
+        x_train[x_train.columns] = transform.fit_transform(x_train)
+        x_test[x_test.columns] = transform.transform(x_test)
     
         # Train k-NN model on all features
         if model_name == 'knn':
@@ -117,21 +123,19 @@ def kfold_accuracy(
 def all_features(
         X: pd.DataFrame,
         Y: pd.DataFrame,
-        model: str,
+        model: str = 'knn',
+        power_transform: bool = False,
         k_neighbors: list = list(range(1, 40, 4)),
         kfold_param: int = 5) -> dict:
-
-    # Class balancing
-    oversample = RandomOverSampler(sampling_strategy='not majority', random_state=10)
-    X, Y = oversample.fit_resample(X, Y.to_numpy())
-    X.reset_index(drop=True, inplace=True)
-    Y = pd.Series(Y)
 
     train_accuracy = []
     test_accuracy = []
 
     for k in k_neighbors:
-        accuracy = kfold_accuracy(X, Y, k, kfold_param, model)
+        accuracy = kfold_accuracy(
+            X, Y, k, kfold_param, model,
+            power_transform=power_transform
+        )
         train_accuracy.append(accuracy['train'])
         test_accuracy.append(accuracy['test'])
 
@@ -149,38 +153,132 @@ def feature_combinations(
         num_of_features: int,
         kfolds: int,
         domain: str,
-        model: str) -> List[dict]:
+        model: str,
+        power_transform: bool = False) -> List[dict]:
     
     results = []
     for features in tqdm(itertools.combinations(X.columns, r=num_of_features)):
-        r = kfold_accuracy(X[list(features)], Y, k_neighbors, kfolds, model)
-        r.update({'features': list(features), 'f': num_of_features, 'k': k_neighbors, 'domain': domain})
+        r = kfold_accuracy(
+            X[list(features)], Y, k_neighbors, kfolds, model,
+            power_transform=power_transform
+        )
+        r.update({
+            'features': list(features),
+            'f': num_of_features,
+            'k': k_neighbors,
+            'domain': domain
+        })
         results.append(r)
     return results
 
 
 def enumerate_models(
-        X_temporal: pd.DataFrame,
-        X_spectral: pd.DataFrame,
+        X: pd.DataFrame,
         Y: pd.DataFrame,
+        domain: str,
         k_neighbors: Tuple[int] = (3, 5, 11, 15),
         num_of_features: Tuple[int] = (2, 3, 4, 5), 
         kfolds=5,
+        power_transform: bool = False,
         model='knn') -> pd.DataFrame:
 
     models = []
-    domains = {
-        'TD': X_temporal,
-        'FD': X_spectral
-    }
-
     for fnum in num_of_features:
-        for domain, X in domains.items():
-            for k in k_neighbors:
-                result = feature_combinations(X, Y, k, fnum, kfolds, domain, model)
-                models.extend(result)
+        for k in k_neighbors:
+            result = feature_combinations(
+                X, Y, k, fnum, kfolds, domain, model,
+                power_transform=power_transform
+            )
+            models.extend(result)
                 
     return pd.DataFrame.from_records(models)
+
+
+def accuracies_to_table(
+        domain: str,
+        set: str,
+        distribution: pd.DataFrame,
+        accuracy: pd.DataFrame) -> dict:
+
+    train_accuracy = accuracy['train']
+    test_accuracy = accuracy['test']
+    train_score = percentileofscore(distribution['train'].to_numpy(), train_accuracy)
+    test_score = percentileofscore(distribution['test'].to_numpy(), test_accuracy)
+    return {
+        'domain': domain,
+        'set': set, 
+        'train_accuracy': train_accuracy,
+        'test_accuracy': test_accuracy, 
+        'train_percentile': train_score,
+        'test_percentile': test_score 
+    }
+
+
+def feature_selection_accuracies(
+        X: pd.DataFrame,
+        Y: pd.DataFrame,
+        domain: str,
+        models_summary: pd.DataFrame,
+        k_neighbors: int = 5,
+        number_of_features: int = 3,
+        power_transform: bool = False) -> Dict[str, int]:
+    
+    MODEL_TYPE = 'knn'
+    kfolds = 5
+    results = []
+
+    accuracy_distribution = models_summary[
+        (models_summary['domain'] == domain) &
+        (models_summary['k'] == k_neighbors) & 
+        (models_summary['f'] == number_of_features)
+    ].sort_values(by='train', ascending=False)
+
+    y_best = all_features(
+        X, Y, MODEL_TYPE,
+        k_neighbors=[k_neighbors],
+        power_transform=power_transform
+    )
+    y_best = {'train': y_best['train'][0], 'test': y_best['test'][0]}
+    title = 'All features'
+    r = accuracies_to_table(domain, title, accuracy_distribution, y_best)
+    results.append(r)
+
+    y_best = kfold_accuracy(
+        transform_to_pca(X, n=number_of_features), 
+        Y, k_neighbors, kfolds, MODEL_TYPE,
+        power_transform=power_transform
+    )
+    title = f'PCA PC'
+    r = accuracies_to_table(domain, title, accuracy_distribution, y_best)
+    results.append(r)
+
+    y_best = (
+        accuracy_distribution
+        .head(1)
+        .to_dict('records')[0]
+    )
+    title = f'Best features'
+    r = accuracies_to_table(domain, title, accuracy_distribution, y_best)
+    r['features'] = accuracy_distribution['features']
+    results.append(r)
+
+    fsel_methods = [
+        ('rank', 'Rank product'),
+        ('corr', 'Correlation'),
+        ('f_stat', 'F statistic'),
+        ('mi', 'Mutual information')
+    ]
+    for pos, (name, title) in enumerate(fsel_methods):
+        features = find_best_subset(X, Y, name, members=number_of_features)
+        y_best = kfold_accuracy(
+            X[list(features)], Y, k_neighbors, kfolds, MODEL_TYPE,
+            power_transform=power_transform
+        )
+        r = accuracies_to_table(domain, title, accuracy_distribution, y_best)
+        r['features'] = features
+        results.append(r)
+
+    return results
 
 
 def model_boundaries(X, Y, n=5, model_name='knn', knn_metric='euclidean'):

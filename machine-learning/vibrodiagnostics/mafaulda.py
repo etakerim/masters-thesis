@@ -135,7 +135,8 @@ def features_by_domain(
         dataset: ZipFile,
         filename: str,
         window: int = None,
-        parts: int = 1) -> pd.DataFrame:
+        parts: int = 1,
+        multirow: bool = False) -> pd.DataFrame:
 
     # print(f'Processing: {filename}')
     fs = SAMPLING_RATE
@@ -150,15 +151,21 @@ def features_by_domain(
 
     result = []
     for i, df in enumerate(dataframe):
-        fvector = [
+        header = [
             ('fault', [fault]),
             ('severity', [severity]),
             ('seq', [f'{seq}.part.{i}']),
             ('rpm', [df['rpm'].mean()])
         ]
         for col in columns:
-            fvector.extend(features_calc(df, col, fs, window))
-        result.append(pd.DataFrame(dict(fvector))) 
+            if multirow is True:
+                for data in features_calc(df, col, fs, window):
+                    row = dict(header.copy())
+                    row.update(data)
+                    result.append(pd.DataFrame(row))
+            else:
+                header.extend(features_calc(df, col, fs, window))
+                result.append(pd.DataFrame(dict(header))) 
 
     return pd.concat(result).reset_index(drop=True)
 

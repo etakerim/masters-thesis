@@ -21,6 +21,10 @@ from scipy.signal import (
 from scipy.fft import rfft
 from scipy.interpolate import interp1d
 from tsfel import feature_extraction as ft
+import pywt
+from scipy.signal import iirfilter, lfilter, decimate
+
+from vibrodiagnostics import mafaulda
 
 
 def energy(pxx: np.array) -> float:
@@ -116,7 +120,7 @@ def time_features_calc(df: pd.DataFrame, col: str, fs: int, window: int) -> List
 
 def frequency_features_calc(df: pd.DataFrame, col: str, fs: int, window: int) -> List[Tuple[str, pd.DataFrame]]:
     f, pxx = spectral_transform(df[col], window, fs)
-    
+
     fluxes = temporal_variation(df[col], window)
     envelope_spectrum = envelope_signal(f, pxx)
 
@@ -136,6 +140,53 @@ def frequency_features_calc(df: pd.DataFrame, col: str, fs: int, window: int) ->
     return [(f'{col}_{f[0]}', f[1]) for f in features]
 
 
+def wavelet_features_calc(df: pd.DataFrame, col: str, fs: int, window: int) -> List[Tuple[str, pd.DataFrame]]:
+    max_level = 6
+    wavelet = 'dmey'
+    ordering = 'freq'
+    x = df[col]
+    result = []
+    columns = mafaulda.BEARINGS_COLUMNS
+
+    for col in columns:
+        wp = pywt.WaveletPacket(data=x, wavelet=wavelet, mode='symmetric')
+
+        for feature in ('energy', 'energy_ratio', 'kurtosis', 'negentropy'):
+            wpd_header = []
+            row = {
+                'axis': col,
+                'feature': feature
+            }
+
+            feature_vector = []
+            for level in range(1, max_level + 1):
+                nodes = wp.get_level(level, ordering)
+
+                if feature == 'energy':
+                    e = [energy(node.data) for node in nodes]
+                    feature_vector.extend(e)
+
+                elif feature == 'energy_ratio':
+                    e = [energy(node.data) for node in nodes]
+                    total_energy = np.sum(e)
+                    energy_ratios = [energy(node.data) / total_energy for node in nodes]
+                    feature_vector.extend(energy_ratios)
+
+                elif feature == 'kurtosis':
+                    kurts = [ft.kurtosis(node.data) for node in nodes]
+                    feature_vector.extend(kurts)
+
+                elif feature == 'negentropy':
+                    negentropies = [negentropy(node.data) for node in nodes]
+                    feature_vector.extend(negentropies)
+
+                wpd_header.extend([f'L{level}_{i}' for i in range(len(nodes))])
+
+            row.update(dict(zip(wpd_header, feature_vector)))
+            result.append(row)
+    return result
+
+
 def list_files(dataset: ZipFile) -> List[str]:
     filenames = [
         f.filename
@@ -152,7 +203,7 @@ def fs_list_files(root_path: str) -> List[str]:
         for root, dirs, files in os.walk(root_path)
         for filename in files
         if filename.endswith(('.csv', '.tsv'))
-        
+
     ]
     filenames.sort()
     return filenames
@@ -201,7 +252,7 @@ def load_features(
     for name in feature_names:
         vector_dims = [f'{dim}_{name}' for dim in axis]
         df[name] = X[vector_dims].apply(np.linalg.norm, axis=1)
-    
+
     df[label_columns] = Y
     return df
 
@@ -225,6 +276,20 @@ def have_intersection(interval1, interval2):
     new_min = max(interval1[0], interval2[0])
     new_max = min(interval1[1], interval2[1])
     return new_min <= new_max
+
+
+def dc_blocker(x: np.array, cutoff: float, order, fs, plot=False):
+    b, a = iirfilter(1, cutoff, btype='highpass', fs=fs)
+    if plot:
+        plot_filter_response(b, a)
+    y = lfilter(b, a, x)
+    return y
+
+
+def downsample(x: np.array, k, fs_reduced, fs):
+    if k is None:
+        k = fs // fs_reduced
+    return decimate(x, k, ftype='iir')
 
 
 def harmonic_series_detection(f: np.array, Pxx: np.array, fs: int, fft_window: int) -> np.array:

@@ -11,107 +11,45 @@ import seaborn as sb
 from sklearn.metrics import silhouette_score
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
+from scipy.signal import freqz
 
 from vibrodiagnostics import extraction, models
 
 
-def plot_models_performance_bar(
-        X_temporal: pd.DataFrame,
-        X_spectral: pd.DataFrame, 
-        Y: pd.DataFrame,
-        models_summary: pd.DataFrame,
-        k_neighbors: int = 5,
-        number_of_features: int = 3) -> pd.DataFrame:
+DOMAIN_TITLES = {
+    'TD': 'Time domain',
+    'FD': 'Frequency domain',
+    'TD+FD': 'Time and Frequency domain'
+}
 
-    MODEL_TYPE = 'knn'
-    Y = Y.dropna().astype('category')
-    X_temporal = X_temporal[X_temporal.index.isin(Y.index)].copy()
-    X_spectral = X_spectral[X_spectral.index.isin(Y.index)].copy()
-    Y = Y[Y.index.isin(X_temporal.index)].astype('category')
 
-    X_temporal = X_temporal.reset_index(drop=True)
-    X_spectral = X_spectral.reset_index(drop=True)
-    Y = Y.reset_index(drop=True)
-    Y = Y.cat.codes
 
-    fig, ax = plt.subplots(1, 2, figsize=(10, 5)) 
+def plot_models_performance_bar(results: pd.DataFrame) -> pd.DataFrame:
+    if len(results['domain'].unique()) == 1:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 6))
+        ax = [ax]
+    else:
+        fig, ax = plt.subplots(1, 2, figsize=(10, 5), sharey=True)
+
+    width = 0.13
     columns = ['train', 'test']
-    kfolds = 5
     x = np.arange(len(columns))
-    domains = {'TD': X_temporal, 'FD': X_spectral}
-    results = []
 
-    for i, (domain, X) in enumerate(domains.items()):
-        width = 0.13
+    for i, (domain_name, domain) in enumerate(results.groupby(by=['domain'])):
+        for pos, (name, scenario) in enumerate(domain.iterrows(), start=-3):
+            title = scenario['set']
+            y = scenario['train_accuracy'], scenario['test_accuracy']
+            rect = ax[i].bar(x + pos*width, y, width, label=title)
 
-        y_best = models.all_features(X, Y, MODEL_TYPE, [k_neighbors])
-        y_best = [y_best['train'][0], y_best['test'][0]]
-        rect = ax[i].bar(x - 3*width, y_best, width, label='All features')
-        ax[i].bar_label(rect, padding=3, fmt=lambda x: f'{x * 100:.0f}')
-        results.append({
-            'domain': domain, 'set': 'All features', 
-            'train': y_best[0], 'test': y_best[1]
-        })
-
-        y_best = models.kfold_accuracy(
-            models.transform_to_pca(X, n=number_of_features), 
-            Y, k_neighbors, kfolds, MODEL_TYPE
-        )
-        y_best = [y_best['train'], y_best['test']]
-        rect = ax[i].bar(
-            x - 2*width, y_best, width,
-            label=f'PCA {number_of_features} PC'
-        )
-        ax[i].bar_label(rect, padding=3, fmt=lambda x: f'{x * 100:.0f}')
-        results.append({
-            'domain': domain, 'set': f'PCA {number_of_features} PC', 
-            'train': y_best[0], 'test': y_best[1]
-        })
-
-        y_best = models_summary[
-            (models_summary['domain'] == domain) &
-            (models_summary['k'] == k_neighbors) & 
-            (models_summary['f'] == number_of_features)
-        ].sort_values(by='train', ascending=False).head(1).to_dict('records')[0]
-
-        y_best = [y_best['train'], y_best['test']]
-        rect = ax[i].bar(x - 1*width, y_best, width, label='Best 3 features')
-        ax[i].bar_label(rect, padding=3, fmt=lambda x: f'{x * 100:.0f}')
-        results.append({
-            'domain': domain, 'set': f'Best {number_of_features} features', 
-            'train': y_best[0], 'test': y_best[1]
-        })
-
-        fsel_methods = [
-            ('rank', 'Rank product'),
-            ('corr', 'Correlation'),
-            ('f_stat', 'F statistic'),
-            ('mi', 'Mutual information')
-        ]
-        for pos, (name, title) in enumerate(fsel_methods):
-            features = models.find_best_subset(X, Y, name, members=number_of_features)
-            y_best = models.kfold_accuracy(X[list(features)], Y, k_neighbors, kfolds, MODEL_TYPE)
-            y_best = [y_best['train'], y_best['test']]
-
-            rect = ax[i].bar(x + pos*width, y_best, width, label=title)
             ax[i].bar_label(rect, padding=3, fmt=lambda x: f'{x * 100:.0f}')
-    
-            results.append({
-                'domain': domain,
-                'set': title, 
-                'train': y_best[0],
-                'test': y_best[1]
-            })
-
-        ax[i].set_xticks(x, columns)
-        ax[i].legend(loc='lower right')
-        ax[i].set_ylim(0.5, None)
-        ax[i].set_title(domain)
-        ax[i].set_ylabel('Accuracy')
+            ax[i].set_xticks(x, columns)
+            ax[i].legend(loc='lower right')
+            ax[i].set_ylim(0.5, None)
+            ax[i].set_title(DOMAIN_TITLES[domain_name[0]])
+            ax[i].set_ylabel('Accuracy')
 
     plt.tight_layout()
     plt.show()
-    return pd.DataFrame.from_records(results)
 
 
 # Scatter plot of best features with rank product
@@ -163,6 +101,7 @@ def scatter_features_3d(
         ax[i].set_xlabel(columns[0])
         ax[i].set_ylabel(columns[1])
         ax[i].grid(True)
+    fig.tight_layout()
     plt.show()
 
 
@@ -256,7 +195,6 @@ def project_classes(
         # Put the result into a color plot
         Z = Z.reshape(xx.shape)
         ax.pcolormesh(xx, yy, Z, cmap=cmap, alpha=0.5)
-
 
     ax.scatter(X_pca[0], X_pca[1], c=Y.cat.codes, cmap=cmap, edgecolors='black')
 
@@ -438,12 +376,12 @@ def plot_cumulative_explained_variance(td_variance: np.array, fd_variance: np.ar
     ax.plot(
         np.arange(1, len(td_variance) + 1),
         100 * np.cumsum(td_variance), 
-        marker='s', label='Temporal features'
+        marker='s', label='Features in time domain'
     )
     ax.plot(
         np.arange(1, len(fd_variance) + 1), 
         100 * np.cumsum(fd_variance),
-        marker='s', label='Spectral features'
+        marker='s', label='Features in frequency domain'
     )
     ax.set_xlabel('Number of principal components')
     ax.set_ylabel('Explained variance [%]')
@@ -476,9 +414,10 @@ def loading_plot(loadings: list, feature_names: List[str], bottom: float, top: f
     plt.ylim(bottom, top)
     plt.grid()
     plt.show()
+    
 
 
-def plot_all_knn(td_results: dict, fd_results: dict, kfold: int = 5):
+def plot_all_knn(td_results: dict, fd_results: dict):
     fig, ax = plt.subplots(1, 1, figsize=(8, 5))
     ax.plot(td_results['k'], td_results['train'], marker='x', color='darkblue', label='train - temporal')
     ax.plot(td_results['k'], td_results['test'], marker='x', color='blue', label='test - temporal')
@@ -494,17 +433,36 @@ def plot_all_knn(td_results: dict, fd_results: dict, kfold: int = 5):
     plt.show()
 
 
-def boxplot_enumerate_models_accuracy(results, metric, plots_col: str, inplot_col: str):
+def plot_all_knn_simple(results: dict):
+    fig, ax = plt.subplots(1, 1, figsize=(8, 5))
+    ax.plot(results['k'], results['train'], marker='x', color='darkblue', label='training set')
+    ax.plot(results['k'], results['test'], marker='x', color='blue', label='testing set')
+
+    ax.set_ylabel(f'Accuracy')
+    ax.set_xlabel('K-neighbors')
+    ax.set_xticks(results['k'])
+    ax.grid(True)
+    ax.legend()
+    plt.show()
+
+
+def boxplot_enumerate_models_accuracy(results: pd.DataFrame, metric, plots_col: str, inplot_col: str):
     for fnum, features in results.groupby(by=plots_col):
-        fig, ax = plt.subplots(1, 2, figsize=(10, 4), sharey=True)
+        if len(features['domain'].unique()) == 1:
+            fig, ax = plt.subplots(1, 1, figsize=(5, 4))
+            ax = [ax]
+        else:
+            fig, ax = plt.subplots(1, 2, figsize=(10, 4), sharey=True)
+    
         for i, group in enumerate(features.groupby(by='domain', sort=False)):
             domain_name, domain = group 
             ax[i].grid()
+            domain_name = DOMAIN_TITLES[domain_name]
             
             if plots_col == 'k':
-                ax[i].set_title(f'K-neighbors: {fnum}, Domain: {domain_name}')
+                ax[i].set_title(f'K-neighbors: {fnum}, {domain_name}')
             if plots_col == 'f':
-                ax[i].set_title(f'Features: {fnum}, Domain: {domain_name}')
+                ax[i].set_title(f'Features: {fnum}, {domain_name}')
 
             boxplot_data = {}
             for k, models in domain.groupby(by=[inplot_col]):
@@ -535,3 +493,12 @@ def plot_label_occurences(y):
     class_occurences = pd.DataFrame.from_records(observations).cumsum()
     ax = class_occurences.plot(grid=True, figsize=(10, 5), xlabel='Observations', ylabel='Label occurences')
     return ax, class_occurences
+
+
+def plot_filter_response(b, a, title=''):
+    w, h = freqz(b, a, fs=50000)
+    fig, ax = plt.subplots()
+    ax.plot(w, 20 * np.log10(abs(h)), 'b')
+    ax.set_xlabel('Frequency [Hz]')
+    ax.set_ylabel('Amplitude [dB]')
+    ax.set_title(title)
