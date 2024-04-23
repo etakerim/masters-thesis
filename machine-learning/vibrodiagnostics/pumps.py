@@ -122,14 +122,15 @@ def assign_labels(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def get_classes(df: pd.DataFrame, labels: Dict[str, dict]) -> pd.DataFrame:
+def get_classes(df: pd.DataFrame, labels: Dict[str, dict], keep: bool = False) -> pd.DataFrame:
     df['label'] = df.apply(
         lambda row: labels.get(row['device'], {}).get(row['position']), axis=1
     )
     df['label'] = df['label'].astype('category')
-    df = df.dropna()
-    df = df.drop(columns=LABEL_COLUMNS)
-    df = df.reset_index(drop=True)
+    if not keep:
+        df = df.dropna()
+        df = df.drop(columns=LABEL_COLUMNS)
+        df = df.reset_index(drop=True)
     return df
 
 

@@ -11,6 +11,7 @@ from multiprocessing.pool import ThreadPool
 from tqdm.notebook import tqdm
 
 import numpy as np
+from numpy.lib.stride_tricks import sliding_window_view
 import pandas as pd
 from scipy.stats import entropy
 from scipy.signal import (

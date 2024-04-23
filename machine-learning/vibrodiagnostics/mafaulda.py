@@ -180,16 +180,21 @@ def get_classes(df: pd.DataFrame, bearing: str) -> pd.DataFrame:
     df['label'] = df['label'].astype('category')
     return df
 
-
-def assign_labels(df: pd.DataFrame, bearing: str) -> pd.DataFrame:
-    df = get_classes(df, bearing)
+def clean_columns(df: pd.DataFrame) -> pd.DataFrame:
     df = df.dropna()
-    df = df.drop(columns=LABEL_COLUMNS)
+    df = df.drop(columns=LABEL_COLUMNS + ['severity_class', 'severity_level', 'severity_no'], errors='ignore')
     df = df.reset_index(drop=True)
     return df
 
 
-def label_severity(df: pd.DataFrame, bearing: str, level: float, debug: bool = False, keep: bool = False) -> pd.DataFrame:
+def assign_labels(df: pd.DataFrame, bearing: str, keep: bool = False) -> pd.DataFrame:
+    df = get_classes(df, bearing)
+    if not keep:
+        df = clean_columns(df)
+    return df
+
+
+def mark_severity(df: pd.DataFrame, bearing: str, debug: bool = False):
     df = get_classes(df, bearing)
     df = df.dropna()
     df = df.reset_index(drop=True)
@@ -218,11 +223,14 @@ def label_severity(df: pd.DataFrame, bearing: str, level: float, debug: bool = F
                 f'Severity: {sev}, '
                 f'Severity Levels: {scale}'
             )
-            
+    return df
+
+
+def label_severity(df: pd.DataFrame, bearing: str, level: float, debug: bool = False, keep: bool = False) -> pd.DataFrame:
+    df = mark_severity(df, bearing, debug)
     df.loc[df['severity_level'] < level, 'label'] = 'normal'
     if not keep:
-        df = df.drop(columns=LABEL_COLUMNS)
-        df = df.drop(columns=['severity_class', 'severity_level', 'severity_no'])
+        df = clean_columns(df)
     return df
 
 

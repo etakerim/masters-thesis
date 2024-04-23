@@ -23,6 +23,12 @@ from sklearn.naive_bayes import GaussianNB
 from tqdm.notebook import tqdm
 from vibrodiagnostics import ranking
 
+from sklearn import metrics as skmetrics
+from tqdm.notebook import tqdm
+from river import metrics
+from river import preprocessing
+from river import neighbors, utils, evaluate, stream
+
 
 def transform_to_pca(X, n):
     scaler = MinMaxScaler()
@@ -111,8 +117,8 @@ def kfold_accuracy(
         y_predict_train = model.predict(x_train)
         y_predict_test = model.predict(x_test)
 
-        round_train_acc.append(metrics.accuracy_score(y_train, y_predict_train))
-        round_test_acc.append(metrics.accuracy_score(y_test, y_predict_test))
+        round_train_acc.append(skmetrics.accuracy_score(y_train, y_predict_train))
+        round_test_acc.append(skmetrics.accuracy_score(y_test, y_predict_test))
     
     return {
         'train': np.array(round_train_acc).mean(),
@@ -310,3 +316,63 @@ def model_boundaries(X, Y, n=5, model_name='knn', knn_metric='euclidean'):
     model.fit(x_train, y_train)
 
     return model
+
+
+def knn_online_learn(
+        X: pd.DataFrame,
+        Y: pd.DataFrame,
+        window_len: int = 1,
+        learn_skip: int = 0,
+        clusters: int = False) -> pd.DataFrame:
+    # Buffer true samples for learning for later: simulate delayed annotation
+    learning_window = []
+
+    # Model consists of scaler to give approximately same weight to all features and kNN
+    scaler = preprocessing.MinMaxScaler() 
+    knn = neighbors.KNNClassifier(n_neighbors=5)
+
+    scores = []                 # List of tuples with accuracy, precision and recall score on each iteration
+    v_true = []                 # Append y true sample on each iteration
+    v_predict = []              # Append y predicted sample on each iteration
+
+    skipping = 0
+    started = False
+    order_saved = []
+    X['label'] = Y
+
+    for idx, row in tqdm(X.iterrows()):
+        x = {k: v for k, v in dict(row).items() if k != 'label'}
+        x_scaled = scaler.learn_one(x).transform_one(x)
+        y_true = row['label']
+        learning_window.append((x_scaled, y_true))
+
+        if started:
+            # Predict sample after at least one example has been learned
+            y_predict = knn.predict_one(x_scaled)
+            v_true.append(y_true)
+            v_predict.append(y_predict)
+            order_saved.append(idx)
+
+            scores.append([
+                idx,
+                skmetrics.accuracy_score(v_true, v_predict),
+                skmetrics.precision_score(v_true, v_predict, average='micro'),
+                skmetrics.recall_score(v_true, v_predict, average='micro')
+            ])
+
+        # Provide labels after window length has passed
+        if len(learning_window) == window_len:
+            for x, y in learning_window:
+                # Learn first sample at start of window
+                if skipping == learn_skip:
+                    started = True
+                    knn.learn_one(x, y)
+                    skipping = 0
+                else:
+                    skipping += 1
+            learning_window = []
+
+    if clusters:
+        return pd.Series(v_predict, index=order_saved)
+        
+    return pd.DataFrame(scores, columns=['step', 'accuracy', 'precision', 'recall'])
