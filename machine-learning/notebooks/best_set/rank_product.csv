@@ -1,0 +1,5 @@
+placement,online,TD_rms,TD_pp,TD_zerocross,TD_shape,TD_aac,TD_crest,TD_clearance,TD_impulse,TD_skewness,TD_kurtosis,FD_roll_off,FD_flux,FD_skewness,FD_negentropy,FD_entropy,FD_noisiness,FD_kurtosis,FD_centroid,FD_std,FD_roll_on,FD_energy
+A,False,True,False,True,True,False,False,False,False,False,False,True,True,True,False,False,False,False,False,False,False,False
+A,True,True,False,True,True,False,False,False,False,False,False,True,True,False,False,False,False,False,True,False,False,False
+B,False,False,True,True,False,True,False,False,False,False,False,True,False,False,False,False,False,False,True,False,True,False
+B,True,False,True,True,False,True,False,False,False,False,False,True,True,False,False,False,False,False,False,False,True,False

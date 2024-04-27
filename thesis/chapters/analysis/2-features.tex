@@ -36,9 +36,9 @@ After preprocessing, raw numerical vectors are merely low-level descriptors of t
 
 Predictive maintenance has ideal prerequisites for the application of feature engineering because the signal is usually pseudo-stationary, and the trend monitoring variables come out of extensive domain expertise in mechanics. The advantages of the add-in extraction effort, as opposed to processing samples unmodified, are to gain better classification precision, reduce computational burden and storage capacity downstream with dimensionality reduction~\cite{johnson_feature_2019}. 
 
-It is important to note that the design of features is not a standalone step in the machine learning pipeline, but it should be done iteratively to improve the target model. Signal features are computed in the temporal and spectral domain~\cite{brito_fault_2021}.
+It is important to note that the design of features is not a standalone step in the machine learning pipeline, but it should be done iteratively to improve the target model. Signal features are computed in the time and frequency domain~\cite{brito_fault_2021}.
 
-\subsection{Temporal domain features}
+\subsection{Time-domain features}
 The most widely found features in the literature are rudimentary statistical measures of the central moment: mean, variance, standard deviation, skewness, and kurtosis~(Tab.~\ref{tab:td-features}). Statistics can be calculated in any domain, but the mean value should not be used in detrended data. The vibration severity metrics out of technical standards are also highly regarded. The amplitude characteristics include root-mean-square and peak-to-peak distance~\cite{mostafavi_novel_2021}. The waveform shape is captured by zero-crossing rate and average amplitude change~\cite{moctar_time-domain_2023}.
 
 The other significant time domain attributes are derived as ratios of previous simpler ones. These ratios are crest, clearance, impulse factor, and shape factor~(Tab.~\ref{tab:td-features})~\cite{nandi_condition_2019}. Many articles have been successful in fault detection of bearings out of transients in impulsive signals with kurtosis, crest, and clearance factor~\cite{brito_fault_2021}. It is also suggested that the shape factor can signify unbalance and misalignment faults~\cite{nandi_condition_2019}.
@@ -68,12 +68,12 @@ The other significant time domain attributes are derived as ratios of previous s
 \\ \hline
 \textit{Average Amplitude Change (AAC)}        & $ X_{AAC} = \frac{1}{N}\sum_{i = 1}^{N - 1}{|x_{i + 1} - x_i|} $                             \\ \hline                                                                                     
 \end{tabular}
-\caption{Temporal domain features}
+\caption{Time-domain features}
 \label{tab:td-features}
 \end{table}
 
 
-\subsection{Spectral domain features}
+\subsection{Frequency-domain features}
 The mechanical faults present themselves as oscillatory patterns which are combinations of frequencies with various amplitudes. The Fourier transform is one of the most prominent strategies in power spectral density estimation. Experts on vibrodiagnostics utilize it as a primary signal processing technique for data analysis as it is recommended in ISO 13373-2 standard~\cite{noauthor_iso_2016_2}. 
 
 The inherent symmetries in the Fourier matrix made it possible to implement the Fast Fourier transform (FFT) algorithm with time complexity $O(n \log n)$. The drawback of the plain spectral analysis is the lack of resolution for events that occurred at distant time instants, and so their spectral components might adversely blend in together. 
@@ -93,11 +93,11 @@ The inherent symmetries in the Fourier matrix made it possible to implement the 
 \textit{Shannon entropy}      & $H(X) = - \sum_{i} P(X = x_i) \cdot \ln(P(X = x_i)) $                                                  \\ \hline
 \textit{Spectral negentropy}      & $\Delta I_E(f, \Delta f) = \sum_{k = 0}^{N - 1}{\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}} \cdot \ln\left(\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}\right)$                                                \\ \hline
 \end{tabular}
-\caption{Frequency domain features}
+\caption{Frequency-domain features}
 \label{tab:fd-features}
 \end{table}
 
-In the spectral domain, we can obtain the usual statistical properties of the distribution being spectral centroid, skew and kurtosis. Additionally, spectral roll-on and roll-off, fundamental frequency, entropy, negentropy, spectral flux, signal-to-noise ratio (noisiness), energy in frequency bands, and energy ratio are extracted (Tab.~\ref{tab:fd-features})~\cite{peeters_large_2004}. 
+In the frequency domain, we can obtain the usual statistical properties of the distribution being spectral centroid, skew and kurtosis. Additionally, spectral roll-on and roll-off, fundamental frequency, entropy, negentropy, spectral flux, signal-to-noise ratio (noisiness), energy in frequency bands, and energy ratio are extracted (Tab.~\ref{tab:fd-features})~\cite{peeters_large_2004}. 
 
 In geometric terms, the spectral centroid represents the barycenter of the frequency magnitude plot. Spectral roll-off gives a notion about the spectral distribution because it identifies the frequency $f_c$ below which 95\% of the signal energy is contained. Complementary, the roll-on frequency is chosen so that 5\% of the signal energy is below this value. According to the definition, spectral flux is normalized cross-correlation between two successive amplitude spectra a value of one means the spectra are the most dissimilar.
 
@@ -128,6 +128,36 @@ Multiple harmonic series and the sidebands can be separated into a discrete set 
 v_i^{(r)} = \frac{v_j}{\min{|v_j - r \cdot v_i|}}
 \label{equ:harmonic-search}
 \end{align}\end{ceqn}
+
+\subsection{Bearing defect frequencies}
+%TODO n = number of balls, d - average of outer ring diameter and outer ring, f_s - rotation speed, beta - contact angle - ball bearings close to 0
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{assets/analysis/bearing-parts.jpg}
+    \caption{Bearing parts~\cite{lu_what_is_ball_bearing_2023}}
+    \label{fig:bearing-parts}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Feature}            & \textbf{Equation}                                                                   
+ \\ \hline
+\textit{Outer race fault frequency} & $ BPFO = f_s \cdot \frac{n}{2} \cdot \left(1 - \frac{d}{D}\cos \beta \right)$               
+\\ \hline
+\textit{Inner race fault frequency} & $ BPFI = f_s \cdot \frac{n}{2} \cdot \left(1 + \frac{d}{D}\cos \beta \right)$
+\\ \hline
+\textit{Cage rotation frequency}    & $ FTF = f_s \cdot \frac{1}{2} \cdot \left(1 - \frac{d}{D}\cos \beta \right) $      
+\\ \hline
+\textit{Ball defect frequencies} & $ BSF = f_s \cdot \frac{D}{d} \cdot \left(1 + \left(\frac{D}{d}\cos \beta\right)^2 \right) $
+\\ \hline
+\end{tabular}
+\caption{Bearing defect frequencies}
+\label{tab:bearing-defect-features}
+\end{table}
 
 \subsection{Time-frequency domain features}
 The \textbf{Short-time Fourier transform} (STFT) splits the time-domain signal into equal-length intervals. Individual chunks have a 50\% overlap and are multiplied with weights of window function to balance scalloping loss and spectral leakage due to Fourier transform periodicity assumption. Traditionally, the Hann window is commonly used instead of the rectangular window~\cite{ziaran_technicka_2013,noauthor_iso_2016_2}.
@@ -348,7 +378,7 @@ The general steps in selecting the appropriate predictors are as follows~\cite{n
 
 Filter-based feature selection is preprocessing step independent of model choice with small computational requirements. Measures of information, correlation, similarity, and interdependence output the relevancy rating. Predictors are rated individually or in interacting congregations. 
 
-\subsection{Scores for ranking}
+\subsection{Feature importanance ranking}
 Most of the scores are based on supervised learning, so they expect true class labels to apportion the measurements respectively. After the scores are assigned to the first $n$ features, those below a threshold are removed. 
 
 The frequently used scores upon which the feature relevance is ordered are~\cite{nandi_condition_2019}: 

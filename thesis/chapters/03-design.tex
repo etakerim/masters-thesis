@@ -19,7 +19,6 @@ This thesis aims to provide answers to four research questions. The focus is pri
     \item Prepare dataset to be used in conjunction with machine learning models, namely by identifying labels and balancing classes.
     \item Find the best subsets of features in the temporal and spectral domain with previously analyzed feature extraction and selection methods.
     \item Evaluate the performance of models described in the diagnostics section with a significant focus on the k-nearest neighbor algorithm.
-    \item Combine feature selection with an online machine learning model.
     \item Acquire measurements of vibrations from machines in the real environment to form a novel dataset of machinery behavior.
     \item Develop hardware and implement its firmware to obtain such measurements of the quality demanded by vibrodiagnostics standards.
 \end{todolist}
@@ -40,6 +39,448 @@ The goals are impacted by certain \textbf{risks} that are assessed and tracked:
 \end{enumerate}
 
 
+% -------------------------------------------------------------------------------
+\clearpage
+
+% All features --------------------------------------------------------
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/TD-confusion-matrix.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/FD-confusion-matrix.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \caption{All features confusion matrix}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/FD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{All features accuracy based on k-value}
+\end{figure}
+
+
+% Standing fan (EDA) --------------------------------------------------------
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/standing-fan/fan-audio-speed-1.png}
+        \caption{Speed 1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/standing-fan/fan-audio-speed-2.png}
+        \caption{Speed 2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/standing-fan/fan-audio-speed-3.png}
+        \caption{Speed 3}
+    \end{subfigure}
+    \caption{Frequency spectrum from sound of standing fan}
+\end{figure}
+
+% Frequency from vibrations
+% Plot
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{assets/results/standing-fan/standing-fan-accel.png}
+    \caption{Estimation of rotation speed from vibrations}
+\end{figure}
+
+
+
+% Clusters with true labels --------------------------------------------------------------
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/PCA-TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/PCA-FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/PCA-TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/PCA-FD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{PCA of all features to 2 components}
+\end{figure}
+
+%TODO fix inverse transform
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/FD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{3 Best features and their ranges}
+\end{figure}
+
+
+
+% Incremental learning ------------------------------------------------------
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/order-natural.png}
+        \caption{Order by raising severity}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/order-severity.png}
+        \caption{Order after relabeing normal class}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/severity-levels.png}
+        \caption{Order of severities}
+    \end{subfigure}
+    \caption{Ordering of faults}
+\end{figure}
+
+% Gradual
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/gradual-TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/gradual-FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/gradual-TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/gradual-TD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{Gradual learning (window = 1, skip = 0)}
+\end{figure}
+
+
+% Tumbling windows
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/tumbling-TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/tumbling-FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/tumbling-TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/tumbling-FD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{Tumbling window in incremental learning}
+\end{figure}
+
+
+% % Label skips and parts of dataset
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/all-features-TD-skip.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/all-features-FD-skip.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-labels-TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-labels-FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure} 
+    \caption{Skip labels in incremental learning}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-label-TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-label-FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-label-TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-label-FD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{Skip labels in incremental learning with different sizes}
+\end{figure}
+
+
+% Histograms of machinery measurements
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/C1.png}
+        \caption{C1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/C2.png}
+        \caption{C2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/M1.png}
+        \caption{M1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/M2.png}
+        \caption{M2}
+    \end{subfigure} 
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/M3.png}
+        \caption{M3}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/P1.png}
+        \caption{P1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/P2.png}
+        \caption{P2}
+    \end{subfigure} 
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/P3.png}
+        \caption{P3}
+    \end{subfigure} 
+    \caption{Histograms}
+\end{figure}
+
+% Correlations to RPM
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{assets/results/feature-values/corr-to-rpm.png}
+    \caption{Correlation of features to RPM over all experiments}
+\end{figure}
+
+
+
+% Features range (3D)
+% Standing Fan
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/fan-TD-features.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/fan-FD-features.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \caption{Feature range in standing fan}
+\end{figure}
+
+
+% Pumps and compressors
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/pumps-TD-dim-3.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/pumps-FD-dim-3.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \caption{Feature range in pumps}
+\end{figure}
+
+
+% Mafaulda
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/features-TD-dim3-A+B.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/features-FD-dim3-A+B.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \caption{Feature range in MaFaulDa}
+\end{figure}
+
+
+
+% Feature combinations accuracy
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/fsel-accuracy.png}
+        \caption{Accuracy}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/fsel-percentile.png}
+        \caption{Percentile}
+    \end{subfigure}
+    \caption{Feature selection method choices}
+\end{figure}
+
+% In fsel percentile - mention median from notebook for each method - table
+\begin{table}[h]
+\begin{tabular}{|l|r|r|}
+\hline
+\textbf{Method}    & \multicolumn{1}{l|}{\textbf{Median percentile {[}\%{]}}} & \multicolumn{1}{l|}{\textbf{Median accuracy {[}\%{]}}} \\ \hline
+Rank product       & 93.94                                                    & 81.84                                                  \\ \hline
+Mutual information & 93.33                                                    & 81.33                                                  \\ \hline
+F statistic        & 91.01                                                    & 81.26                                                  \\ \hline
+Correlation        & 84.11                                                    & 79.25                                                  \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-features-A-dim3.png}
+        \caption{Time domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-5-neighbors-A-dim3.png}
+        \caption{Time domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-features-A-dim3.png}
+        \caption{Frequency domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-5-neighbors-A-dim3.png}
+        \caption{Frequency domain features}
+    \end{subfigure}
+    \caption{Model accuracy distribution}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3.png}
+    \caption{Model distibution with feature selection methods (k = 5, f = 3)}
+\end{figure}
+
+
+% Counts table
+
+
+
+% Best feature selection methods table (order by best count)
+
+
+
+% Bearing frequencies table
+
+
+
+\clearpage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%TODO ---------------------------------------------------------------------------
 \section{Dataset exploration}
 In establishing the viability of methods to be deployed on the sensor node, we explore the MaFaulDa dataset. It is the largest known machinery fault collection, so it is possible to create multiple subsets based on required conditions. 
 
@@ -83,7 +524,7 @@ Before the low pass filter usage, the peak at 20 kHz with a sideband was present
     \centering
     \begin{subfigure}[b]{0.44\textwidth}
         \includegraphics[width=\textwidth]{assets/design/Mafaulda-A-time-waveform.png}
-        \caption{Temporal domain waveforms}
+        \caption{Time domain waveforms}
         \label{fig:design:fault-temporal-waveform}
     \end{subfigure}
     \hfill
@@ -118,20 +559,20 @@ Signal chunks are converted afterward into \textbf{10 temporal and 11 spectral f
 The Euclidean norm of feature in the triaxial vector eliminates reliance on the direction of measurement. Value ranges are depicted in Figure~\ref{fig:design:feature-range}. 
 
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/feature-range-temporal.png}
-        \caption{Temporal features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/feature-range-spectral.png}
-        \caption{Spectral features}
-    \end{subfigure}
-    \caption{Feature value ranges in inner bearing position (A)}
-    \label{fig:design:feature-range}
-\end{figure}
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/feature-range-temporal.png}
+%        \caption{Time-domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/feature-range-spectral.png}
+%        \caption{Frequency-domain features}
+%    \end{subfigure}
+%    \caption{Feature value ranges in inner bearing position (A)}
+%    \label{fig:design:feature-range}
+%\end{figure}
 
 Fault labels and their severities come from the directory structure within the dataset. The binary target variable indicating whether to initiate a warning is called an anomaly. Anomalies are labeled according to relative fault severity level. We decided to investigate two fault severities having levels above 0.6 and 0.9. The quantity of observation by fault and anomaly severity is shown in Table \ref{tab:observation-counts}. The dataset is substantially unbalanced.
 
@@ -165,29 +606,29 @@ Pearson's correlation of features to rpm is very low in the whole dataset. In th
 
 The correlation among features can reduce prediction power if a pair is elected where $|\mathrm{corr}| > 0.95$. The feature is not added to the subset when the threshold is exceeded. High correlations are more substantial in the temporal domain that are present in these pairs (ordered from the most correlated): \{impulse, clearance\}, \{crest, impulse\}, \{crest, clearance\}, \{pp, rms\}. In the spectral domain set \{skewness, kurtosis\} has a strong correlation.
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.8\textwidth]{assets/design/pca-explained-variance.png}
-    \caption{Number of principal components to cumulative explained variance percentage in the inner bearing position}
-    \label{fig:design:pca-explained-variance} 
-\end{figure}
+%\begin{figure}[h!]
+%    \centering
+%    \includegraphics[width=0.8\textwidth]{assets/design/pca-explained-variance.png}
+%    \caption{Number of principal components to cumulative explained variance percentage in the inner bearing position}
+%    \label{fig:design:pca-explained-variance} 
+%\end{figure}
 
 The variables are also more inter-correlated in the temporal domain shown by principal component analysis. For 95\% of the explained variance of PCA 3 components (98.69\%) are needed in the temporal domain whereas 4 in the spectral domain (95.26\%). Figure \ref{fig:design:pca-explained-variance} visualizes cumulative explained variance with an increasing number of principal components. 
 
-\begin{figure}[h!]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/pca-loading-plot-temporal.png}
-        \caption{Temporal features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/pca-loading-plot-spectral.png}
-        \caption{Spectral features}
-    \end{subfigure}
-    \caption{PCA loading plots for min-max scaled features from the inner bearing position}
-    \label{fig:design:pca-loading-plot} 
-\end{figure}
+%\begin{figure}[h!]
+%    \centering
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/pca-loading-plot-temporal.png}
+%        \caption{Temporal features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/pca-loading-plot-spectral.png}
+%        \caption{Spectral features}
+%    \end{subfigure}
+%    \caption{PCA loading plots for min-max scaled features from the inner bearing position}
+%    \label{fig:design:pca-loading-plot} 
+%\end{figure}
 
 PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. Loading plots of PCA (Fig. \ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the temporal domain mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, clearance, zero-crossing}. The second PC focuses more on the amplitude range: \emph{rms, p-p, aac}.  
 
@@ -225,32 +666,11 @@ In a year, the system gathers 31.54 Gs (gigasamples) which is 58.74 GiB with a 1
 \subsection{Feature selection}
 The objective of feature selection is to find a subset of the most relevant predictors in each domain. As a starting point, the set consists of 3 non-correlated attributes under diverse conditions. Ultimately, a number of chosen features are to be tweaked to increase prediction accuracy. Four criteria are combined to put together 24 scenarios that filter rows from MaFaulDa:
 
-\begin{itemize}
-\itemsep0pt
-\item \textbf{online}: a boolean selector that influences whether metrics are calculated in batch or incremental fashion,
-\item \textbf{placement}: chooses between bearing ``A'' and bearing ``B'',
-\item \textbf{predicted variable}: select a column out of ``fault'', ``anomaly90'' against which similarity is judged,
-\item \textbf{rotational speed limit}: chosses whether only observations occuring within predermined range $2500 \pm 500$ rpm are filtered.
-\end{itemize}
 
 In feature evaluation for fault prediction, we use hold-out validation in batch models and progressive valuation in online models. Classes in observations for batch models are rebalanced to the majority class with a random oversampling strategy. The training and testing set split ratio is 80 to 20. Classes for incremental learning are ordered by relative severity level and shuffled within levels. 
 
 The best group of attributes is elected based on a training set with multiple methods. We compute the mean of the absolute value from point-biserial correlation, F statistic, and mutual information to the predicted variable. The features are then ordered in descending order by the received score. These individual ranks are combined by rank product to create an ensemble out of the metrics. Reference implementation of feature selection metrics uses Python packages Scikit Learn\footnote{SciKit Learn: \url{https://scikit-learn.org/}} in batch learning and RiverML\footnote{RiverML: \url{https://riverml.xyz/}} for online learning.
 
-\begin{figure}[h!]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/approval-voting-temporal.png}
-        \caption{Temporal domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/approval-voting-spectral.png}
-        \caption{Spectral domain features}
-    \end{subfigure}
-    \caption{Approval rating of the best triplet of features to target variable ``fault'' scored by rank product of correlation, F statistic, and mutual information.}
-    \label{fig:design:approval-rating-features}
-\end{figure}
 
 The choice of features is very sensitive to experimental conditions. Tendencies are demonstrated by counting how many triplets the indicator appears in across all possible situations. The results of approval voting are shown in Figure~\ref{fig:design:approval-rating-features}. The most occurring attributes in the temporal domain are zero-crossing rate, peak-to-peak distance, and average amplitude change. the features dominating in the spectral domain are centroid, roll-off, and roll-on.
 
@@ -261,29 +681,6 @@ We utilize the k-nearest neighbor algorithm to check machinery diagnostics abili
 \subsection{Batch models}
 Three types of k-NN model experiments run with hold-out validation in a batch setting. First, the model learns all extracted features, so no feature selection occurs. Then, the brute-force method searches for a combination of three features with the highest training accuracy. In the end, the model performance for three attributes chosen by feature selection techniques is compared to principal components.
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/KNN-temporal-confusion-matrix-fault.png}
-        \caption{Prediction for 6 fault classes in testing set with temporal domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/KNN-spectral-confusion-matrix-fault.png}
-        \caption{Prediction for 6 fault classes in testing set with spectral domain features}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/KNN-temporal-confusion-matrix-anomaly90.png}
-        \caption{Prediction of high severity anomalies in testing set with temporal domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/KNN-spectral-confusion-matrix-anomaly90.png}
-        \caption{Prediction of high severity anomalies in testing set with spectral domain features}
-    \end{subfigure}
-    \caption{Confusion matrix of k-NN predictions on bearing position A}
-    \label{fig:design:KNN-confusion-matrix}
-\end{figure}
 
 Two models are created for the target variable in classification with all 10 temporal and 11 spectral features. The subset of records includes all rotational speeds on bearing position A. Either six fault labels or anomalies above 0.9 severity level are guessed by the model with the same hold-out validation split as before. 
 
@@ -291,42 +688,22 @@ Confusion matrices for fault prediction and high severity anomaly are shown in F
 
 In anomaly prediction, the error of the first degree is 7 times more prevalent than the error of the second degree. False positives are preferable, since we do not want the machine to fail prematurely and not know about it. In all cases, spectral features maintain better prediction metrics than all temporal features because of less interdependency among features. Bearing B exhibits overall worse classification performance because of more noise in the original signal.
 
-\begin{table}[h]
-\centering
-\renewcommand{\arraystretch}{1.2}
-\begin{adjustbox}{width=\textwidth}
-\begin{tabular}{|l|l|l|rrr|rrr|}
-\hline
-\multirow{2}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Bearing\\ position\end{tabular}}} & \multirow{2}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Target\\ variable\end{tabular}}} & \multirow{2}{*}{\textbf{Observations}}                                             & \multicolumn{3}{l|}{\textbf{Temporal domain}}                                                                                                                                                                                                                                    & \multicolumn{3}{l|}{\textbf{Spectral domain}}                                                                                                                                                                                                                                    \\ \cline{4-9} 
-                                                                                     &                                                                                     &                                                                                   & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Testing\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ F1 score\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Testing\\ accuracy\end{tabular}}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Training\\ F1 score\end{tabular}}} \\ \hline
-\multirow{2}{*}{A}                                                                   & Fault                                                                               & \begin{tabular}[c]{@{}l@{}}$\sum 2998$\\ 498 per class\end{tabular}  & \multicolumn{1}{r|}{0.9859}                                                               & \multicolumn{1}{r|}{0.9736}                                                              & 0.97                                                                                      & \multicolumn{1}{r|}{0.9917}                                                               & \multicolumn{1}{r|}{0.9836}                                                              & 0.98                                                                                      \\ \cline{2-9} 
-                                                                                     & \begin{tabular}[c]{@{}l@{}}Anomaly\\ (0.9)\end{tabular}                               & \begin{tabular}[c]{@{}l@{}}$\sum 2454$\\ 1227 per class\end{tabular} & \multicolumn{1}{r|}{0.9869}                                                               & \multicolumn{1}{r|}{0.9800}                                                              & 0.98                                                                                     & \multicolumn{1}{r|}{0.9921}                                                               & \multicolumn{1}{r|}{0.9874}                                                              & 0.99                                                                                      \\ \hline
-\multirow{2}{*}{B}                                                                   & Fault                                                                               & \begin{tabular}[c]{@{}l@{}}$\sum 2998$\\ 498 per class\end{tabular}  & \multicolumn{1}{r|}{0.9316}                                                               & \multicolumn{1}{r|}{0.8969}                                                              & 0.90                                                                                     & \multicolumn{1}{r|}{0.9207}                                                               & \multicolumn{1}{r|}{0.8765}                                                              & 0.87                                                                                      \\ \cline{2-9} 
-                                                                                     & \begin{tabular}[c]{@{}l@{}}Anomaly \\ (0.9)\end{tabular}                              & \begin{tabular}[c]{@{}l@{}}$\sum 2394$\\ 1197 pre class\end{tabular} & \multicolumn{1}{r|}{0.9568}                                                               & \multicolumn{1}{r|}{0.9273}                                                              & 0.93                                                                                      & \multicolumn{1}{r|}{0.9428}                                                               & \multicolumn{1}{r|}{0.9156}                                                              & 0.92                                                                                      \\ \hline
-\end{tabular}
-\end{adjustbox}
-\caption{k-NN model performance trained on all extracted features}
-\label{tab:design:all-extracted-features}
-\end{table}
+%\begin{table}[h]
+%\centering
+%\renewcommand{\arraystretch}{1.2}
+%\begin{adjustbox}{width=\textwidth}
+%
+%\end{tabular}
+%\end{adjustbox}
+%\caption{k-NN model performance trained on all extracted features}
+%\label{tab:design:all-extracted-features}
+%\end{table}
 
 Accuracies and F1 scores in both bearing positions with all extracted features are shown in Table \ref{tab:design:all-extracted-features}. Models are overtrained, especially for temporal features, because of the substantial difference between accuracy on training and validation sets. Binary classification of anomalies is unsurprisingly more precise in general than the multi-class case. Defect-type detection with all features reaches accuracy on the testing set above 98\% for bearing A, and above 90\% for bearing B.
 
 Next, we exhaustively list all combinations of three features and look at the range of model performances generated. There are $\binom{n}{3}$ combinations of attribute triplets that entail 120 separate k-NN models for temporal domain features and 165 for the spectral domain. The feature set with the best evaluation scores serves as a benchmark for attributes picked by selection techniques. The accuracy of the k-NN algorithm for different target variables is in Figure \ref{fig:design:feature-combinations-KNN}. 
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.8\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/KNN-3-features-combinations-train.png}
-        \caption{Testing set}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.8\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/KNN-3-features-combinations-test.png}
-        \caption{Training set}
-    \end{subfigure}
-    \caption{Range of prediction accuracy in all k-NN models with subset of 3 features. Subplots show three different predicted variables.}
-    \label{fig:design:feature-combinations-KNN}
-\end{figure}
+
 
 Features picked combinatorically for predictions are listed in Table \ref{tab:design:feature-combinations-KNN}. The worst accuracy occurs for temporal features in multi-class classification, 86\% and 77\% depending on bearing position, as compared to 98\% and 91\% accuracy for spectral features. An improvement would come with increasing the number of features, using a different base feature set with greater discriminatory power, or using a more sophisticated model.
 
@@ -378,43 +755,43 @@ Lowering the number of attributes allows visualization of labels in planar scatt
 
 Cluster overlaps of various defect types are also confirmed by silhouette scores around zero. Therefore, the k hyperparameter cannot be increased much, as it would cause the merge of mutually confused categories. Low-severity faults should be relabeled as a class without fault to watch out just for alert conditions.
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/best-features-scatter-fault-A-temporal.png}
-        \caption{Temporal domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/best-features-scatter-fault-A-spectral.png}
-        \caption{Spectral domain features}
-    \end{subfigure} 
-    \caption{Cross sections of 3-dimensional feature spaces with ground truth labels for best attributes. Features are chosen by rank product method.}
-    \label{fig:design:feature-space-scatter}
-\end{figure}
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/best-features-scatter-fault-A-temporal.png}
+%        \caption{Temporal domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/best-features-scatter-fault-A-spectral.png}
+%        \caption{Spectral domain features}
+%    \end{subfigure} 
+%    \caption{Cross sections of 3-dimensional feature spaces with ground truth labels for best attributes. Features are chosen by rank product method.}
+%    \label{fig:design:feature-space-scatter}
+%\end{figure}
 
 Model performance of the k-NN algorithm preceeded by a variety of feature selection methods is compared in Figure \ref{fig:design:KNN-accuracy-batch}. The best combination of 3 features always achieves better than when the model is trained on all features. This has to do with curse of dimensionality phenomenon. 
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/KNN-feature-selection-predictions-train.png}
-        \caption{Testing set}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/KNN-feature-selection-predictions-test.png}
-        \caption{Training set}
-    \end{subfigure} 
-    \caption{Batch k-NN algorithm prediction accuracy with various feature sets.}
-    \label{fig:design:KNN-accuracy-batch}
-\end{figure} 
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/KNN-feature-selection-predictions-train.png}
+%        \caption{Testing set}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/KNN-feature-selection-predictions-test.png}
+%        \caption{Training set}
+%    \end{subfigure} 
+%    \caption{Batch k-NN algorithm prediction accuracy with various feature sets.}
+%    \label{fig:design:KNN-accuracy-batch}
+%\end{figure} 
 
 We suspected that the PCA property of maximizing variances in each of the few dimensions would support more separation of clustered groups and would be beneficial in classification. The bar chart supports this assumption. PCA always produces greater model accuracy than any other method of feature selection. The rank product of the three scoring techniques is not better every time, but it balances out aggregated methods to achieve more stable results across testing sets. 
 
 In every instance, a subset of spectral features is responsible for better accuracy than a subset of temporal features. Presumably, it is so because of many correlated pairs of attributes in the temporal domain. Further tests should be made to determine optimal feature subsets and the impact of altering the feature election process.
 
-
+\clearpage
 \subsection{Online models}
 Online learning imitates hardened conditions for machinery diagnostics that appear in deployment. Delayed provision or omission of actual labels undoubtedly degrades the reliability of the classification. The question is how quickly the accuracy approaches the optimal one from the nearest neighbors trained in batch and what the effect of routine difficulties in the ongoing labeling process is.
 
@@ -422,94 +799,94 @@ The k-NN models in incremental learning experiments learn on the same base train
 
 The \textbf{stream of events is sorted} by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}) which ensures steady increments in label counts throughout the whole duration of the simulation (Fig.~\ref{fig:design:online-event-order}). This constructed event sequence is a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine.
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-fault-train.png}
-        \caption{Event ordering of faults}
-        \label{fig:design:online-event-order}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/Online-severity-levels.png}
-        \caption{Fault severity levels ordering}
-        \label{fig:design:online-count-severity-level}
-    \end{subfigure}
-    \caption{Label sequencing for progressive evaluation}
-\end{figure}
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-fault-train.png}
+%        \caption{Event ordering of faults}
+%        \label{fig:design:online-event-order}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/Online-severity-levels.png}
+%        \caption{Fault severity levels ordering}
+%        \label{fig:design:online-count-severity-level}
+%    \end{subfigure}
+%    \caption{Label sequencing for progressive evaluation}
+%\end{figure}
 
 Major breaking points in the stream are after 1171 observations out of 5751, where all 203 normal conditions are consumed in the training process. Counters of other faults show that model predictions are skewed towards more represented classes of imbalance and misalignement. The uneven evolution of category counts in a stream impacts the development of accuracy in the remaining experiments. The hold-out validation accuracies of comparable batch models are 97.36\% \emph{(temporal features)} and 98.36\% \emph{(spectral features)}.
 	
 During gradual learning, the correct label is supplied after a fixed period passes after its prediction. This \textbf{sliding window} simulation examines accuracy every 100 iterations. Wait times before revealing the actual class associated with the sample are 1, 50, 100, or 250 steps (Fig.~\ref{fig:design:online-fault-delay-sliding}). 
 
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-temporal.png}
-        \caption{Principal components from temporal domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-spectral.png}
-        \caption{Principal components from spectral domain features}
-    \end{subfigure}
-    \caption{Classification labels in incremental learning \emph{(from left)}: true labels, predicted labels, mistakes in predictions.}
-    \label{fig:design:scatter-plot-online}
-\end{figure}
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-temporal.png}
+%        \caption{Principal components from temporal domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-spectral.png}
+%        \caption{Principal components from spectral domain features}
+%    \end{subfigure}
+%    \caption{Classification labels in incremental learning \emph{(from left)}: true labels, predicted labels, mistakes in predictions.}
+%    \label{fig:design:scatter-plot-online}
+%\end{figure}
 
 Accuracies after sequentially seeing all samples 96.78\% in temporal domain and 89.11\% in spectral domain when labels are shown instantly. Scatter plots in Figure~\ref{fig:design:scatter-plot-online} visualize mistakes in predictions projected onto two principal components. Labeling delay of 250 observations causes accuracy to drop to 83.94\% \emph{(temporal)} and 78.81\% \emph{(spectral)}.
 	
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-fault.png}
-        \caption{Temporal domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-fault.png}
-        \caption{Spectral domain features}
-    \end{subfigure}
-    \caption{Incremental learning on all extracted feature with delayed reveal of labels in sliding windows}
-    \label{fig:design:online-fault-delay-sliding}
-\end{figure}
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-fault.png}
+%        \caption{Temporal domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-fault.png}
+%        \caption{Spectral domain features}
+%    \end{subfigure}
+%    \caption{Incremental learning on all extracted feature with delayed reveal of labels in sliding windows}
+%    \label{fig:design:online-fault-delay-sliding}
+%\end{figure}
 	
 	
 The \textbf{tumbling window} simulates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once. In the final sample, the accuracies are 89.11\% \emph{(temporal)} and 90.38\% \emph{(spectral)} with immediate feedback, and 83.08\% \emph{(temporal)} and 85.01\% \emph{(spectral)} with window length of 250 samples (Fig.~\ref{fig:design:online-fault-delay-tumbling}). 
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-temporal-domain-fault.png}
-        \caption{Temporal domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-spectral-domain-fault.png}
-        \caption{Spectral domain features}
-    \end{subfigure}
-    \caption{Incremental learning on all extracted feature with delayed reveal of labels at regular intervals in tumbing windows}
-    \label{fig:design:online-fault-delay-tumbling}
-\end{figure}
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-temporal-domain-fault.png}
+%        \caption{Temporal domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-spectral-domain-fault.png}
+%        \caption{Spectral domain features}
+%    \end{subfigure}
+%    \caption{Incremental learning on all extracted feature with delayed reveal of labels at regular intervals in tumbing windows}
+%    \label{fig:design:online-fault-delay-tumbling}
+%\end{figure}
 
 A \textbf{tumbling window} is more accurate according to progressive valuation because the labeling delay decreases towards the window's end. Initial 0\% accuracy is caused by a warming-up period in data collection during the span of the first few windows. The true labels are unknown. After just a handful of windows in the beginning, accuracy jumps above 60\% and stabilizes after 1000 observations.
 
 Another common problem with online learning is \textbf{missing annotations} due to the size of the dataset. In the simulation of missing labels, the equal-length gaps are skipped before another observation is annotated. This approach of choosing samples to annotate without considering their representativeness results in severe harm to predictions. 
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-temporal-domain-fault.png}
-        \caption{Temporal domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-spectral-domain-fault.png}
-        \caption{Spectral domain features}
-    \end{subfigure}
-    \caption{Incremental learning with missing true labels and sliding window delay of 10 observations}
-    \label{fig:design:online-label-skip}
-\end{figure}
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-temporal-domain-fault.png}
+%        \caption{Temporal domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-spectral-domain-fault.png}
+%        \caption{Spectral domain features}
+%    \end{subfigure}
+%    \caption{Incremental learning with missing true labels and sliding window delay of 10 observations}
+%    \label{fig:design:online-label-skip}
+%\end{figure}
  
 Labeling just every \nth{5} sample (25\% of the total dataset) with a sliding window delay of 10 samples reduces accuracy for the model out of temporal features by 8.41\% to 80.39\%, and by 7.33\% for spectral features to accuracy of 82.01\% (Fig.~\ref{fig:design:online-label-skip}). Even if only 1\% of the dataset is annotated (every \nth{100} sample), the model out of spectral features retained an accuracy of 65.17\% that is 4.41\% better than for temporal features.  More missing labels require recording more observations before the equivalent accuracy is reached.

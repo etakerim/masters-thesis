@@ -24,6 +24,15 @@ DOMAIN_TITLES = {
 
 
 
+def evolution_of_severity_levels(df: pd.DataFrame):
+    fig, ax = plt.subplots(1, 1, figsize=(10, 5))
+    ax.plot(np.arange(0, len(df)), df['severity_level'], color='red')
+    ax.set_xlabel('Observations')
+    ax.set_ylabel('Severity level')
+    ax.grid()
+    plt.show()
+
+
 def plot_models_performance_bar(results: pd.DataFrame) -> pd.DataFrame:
     if len(results['domain'].unique()) == 1:
         fig, ax = plt.subplots(1, 1, figsize=(8, 6))

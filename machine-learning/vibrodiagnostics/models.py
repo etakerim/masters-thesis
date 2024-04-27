@@ -163,7 +163,7 @@ def feature_combinations(
         power_transform: bool = False) -> List[dict]:
     
     results = []
-    for features in tqdm(itertools.combinations(X.columns, r=num_of_features)):
+    for features in tqdm(list(itertools.combinations(X.columns, r=num_of_features))):
         r = kfold_accuracy(
             X[list(features)], Y, k_neighbors, kfolds, model,
             power_transform=power_transform
