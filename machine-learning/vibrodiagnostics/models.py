@@ -275,7 +275,7 @@ def feature_selection_accuracies(
         ('mi', 'Mutual information')
     ]
     for pos, (name, title) in enumerate(fsel_methods):
-        features = find_best_subset(X, Y, name, members=number_of_features)
+        features = find_best_subset(X, Y, name, members=number_of_features)   # TODO: fix
         y_best = kfold_accuracy(
             X[list(features)], Y, k_neighbors, kfolds, MODEL_TYPE,
             power_transform=power_transform
