@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>7</zoom_level>
+  <element>
+    <id>UMLSpecialState</id>
+    <coordinates>
+      <x>658</x>
+      <y>245</y>
+      <w>14</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>type=initial</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLSpecialState</id>
+    <coordinates>
+      <x>931</x>
+      <y>665</y>
+      <w>14</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>type=final</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>623</x>
+      <y>287</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Open MaFaulDa
+dataset</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>658</x>
+      <y>252</y>
+      <w>21</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>623</x>
+      <y>350</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Import CSV log</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>623</x>
+      <y>469</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Split file to parts</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>623</x>
+      <y>532</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Detrending filter</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>623</x>
+      <y>595</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Low-pass filter</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.baselet.element.old.allinone.ActivityDiagramText</type>
+    <coordinates>
+      <x>1043</x>
+      <y>224</y>
+      <w>56</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>title:loop
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>700</x>
+      <y>812</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Euclidean norm</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>686</x>
+      <y>686</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Welch 
+spectral transform</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>336</x>
+      <y>364</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Random 
+oversampling</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>336</x>
+      <y>441</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Split to 5 folds</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>336</x>
+      <y>518</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>MixMax Scaler</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>336</x>
+      <y>588</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Train kNN</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>336</x>
+      <y>658</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Accuracy on 
+validation set</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>336</x>
+      <y>728</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Average accuracy
+from each fold</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLObject</id>
+    <coordinates>
+      <x>273</x>
+      <y>420</y>
+      <w>217</w>
+      <h>294</h>
+    </coordinates>
+    <panel_attributes>Loop
+valign=top</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLObject</id>
+    <coordinates>
+      <x>567</x>
+      <y>336</y>
+      <w>217</w>
+      <h>392</h>
+    </coordinates>
+    <panel_attributes>Loop
+valign=top</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLObject</id>
+    <coordinates>
+      <x>581</x>
+      <y>448</y>
+      <w>189</w>
+      <h>315</h>
+    </coordinates>
+    <panel_attributes>Loop
+valign=top</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>623</x>
+      <y>399</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Extract label
+from file path</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>665</x>
+      <y>756</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Keep rows
+for bearing</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>686</x>
+      <y>735</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Extract 
+frequency-domain
+features</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>588</x>
+      <y>686</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Extract 
+time-domain
+features</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLSpecialState</id>
+    <coordinates>
+      <x>665</x>
+      <y>651</y>
+      <w>28</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>type=decision</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLSpecialState</id>
+    <coordinates>
+      <x>665</x>
+      <y>784</y>
+      <w>28</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>type=decision</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>588</x>
+      <y>819</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Keep only one
+axis</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>595</x>
+      <y>651</y>
+      <w>84</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+[domain = FD]</panel_attributes>
+    <additional_attributes>10.0;20.0;100.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>595</x>
+      <y>784</y>
+      <w>84</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+[dim = 1]</panel_attributes>
+    <additional_attributes>10.0;20.0;100.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>665</x>
+      <y>861</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Relabel for severity</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>665</x>
+      <y>917</y>
+      <w>91</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Online learn
+order 
+by severity</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

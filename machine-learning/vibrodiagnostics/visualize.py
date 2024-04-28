@@ -10,6 +10,7 @@ from adjustText import adjust_text
 import seaborn as sb
 from sklearn.metrics import silhouette_score
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import PowerTransformer
 from sklearn.decomposition import PCA
 from scipy.signal import freqz
 
@@ -68,8 +69,15 @@ def scatter_features_3d(
         features: list,
         size: tuple = (15, 5),
         boundary=False,
-        model_name='knn'):
+        model_name='knn',
+        power_transform: bool = False):
 
+    if power_transform is True:
+        scaler = PowerTransformer(method='yeo-johnson', standardize=True)
+    else:
+        scaler = MinMaxScaler()
+
+    X = X.copy()
     scaler = MinMaxScaler()
     X[X.columns] = scaler.fit_transform(X)
 
@@ -93,7 +101,11 @@ def scatter_features_3d(
             y_max = q.max() + q.std()
             xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
                                 np.arange(y_min, y_max, h))
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+            table = np.c_[xx.ravel(), yy.ravel()]
+
+            table = pd.DataFrame(table)
+            table.columns = list(columns)
+            Z = model.predict(table)
             Z = Z.reshape(xx.shape)
             ax[i].pcolormesh(xx, yy, Z, cmap=cmap, alpha=0.5)
 
@@ -119,10 +131,14 @@ def scatter_features_3d_plot(
         Y: pd.DataFrame,
         features: list,
         size: tuple = (8, 8),
-        model_name='knn',
-        boundary=False):
+        model_name: str ='knn',
+        boundary: bool = False,
+        power_transform: bool = False):
 
-    scaler = MinMaxScaler()
+    if power_transform is True:
+        scaler = PowerTransformer(method='yeo-johnson', standardize=True)
+    else:
+        scaler = MinMaxScaler()
     X_scaled = X.copy()
     X_scaled[X_scaled.columns] = scaler.fit_transform(X_scaled)
 

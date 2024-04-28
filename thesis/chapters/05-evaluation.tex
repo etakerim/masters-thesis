@@ -1,55 +1,52 @@
 \chapter{Evaluation} \label{section:evaluation} 
-% Notebooky:
-% MAFAULDA preprocessing - feature extraction and helper
 
 
- 
-% Vyhodnotenie experimentov - výsledky
+\section{MaFaulDa and k-Nearest Neighbors}
 
-% Remove anomaly and replace with 2 severity levels - MAFAULDA
-
-% Fan firmware validation
-% Speed estimation - spectroid app, audio
-% Acc from three diffent places
-
-% Offline - KNN
-% MafaulDa labeling:
-% Bez aj stĺpce pre B nielen A a zdvojnásob dataset pri A+B
-% A, B, A+B, A-severity-0.5, B-severity-0.5, A+B-severity-0.5
-% main axis / 3 axis
-
-% Explanatory analysis
-	% Korelácia s RPM
-	% Rozsah hodnôt features
-% All features - MaFaulDa: (FD, TD, FD+TD), CWRU: (FD, TD, FD+TD)
-% All combinations - k-values, feature values
-% Feature selection methods - choose best features for all feature values and k-values (in which quantile of distribution of all cominations)
-% 	- Evolution of rank product based on k
-% Scatter plots in 3D and decision boundaries of best features
-
-% DBSCAN - determine parameters (eps, ...), Silhoutte score
+\subsection{Complete feature sets}
+% Confusion matrix
 
 
-% Online - KNN
-% Progressive valuation - severity of how is data sorted
-	% Sorting - postupne rastúca severita u všetkých chýb rovnako
-	% - Náhodne začne vybiehať každá
-% Different kinds of windows
-	% Same experiments as in offline
-	% - All features
-	% - All cominations
-	% - Feature selection methods 
-	
-% Uchovať všetky features po neajkú hranicu n generácii
-% Skórovať priebežne cez rank product podľa stability faktora a n-generáciach - koľko generácii si držia poradie a s akým náskokom
+% Accuracy based on scenario
+
+\subsection{Feature subset combinations}
+% Boxplots
+% Table of distribution description (dim=3, severity=False/True, bearing=A+B) - k, f, min, max, mean, std
+
+\subsection{Feature selection techniques}
+% Accuracy tables
+% Compare linear complexity accuracy with whole distribution
+% compare dimensions
+% compare percentiles
+% 2d and 3d plots of best features
+
+\subsection{Incremental learning}
+% Tumbing window
+% Label skips
 
 
-% Analýza vibrácii z čerpadiel
-% kompresory
-% pumpy - ksb
-% pumpy - ksb cloud
-% pumpa - sigma
 
-% Mafaulda
+\section{Validation of sensor unit}
+% Validation of firmware on standing fan - speeds
 
-% CWRU
+
+
+
+
+\section{Industial dataset analysis}
+
+\subsection{Feature ranges}
+% Amplitude histograms
+% Box plots of features
+
+\subsection{Time-frequency waveforms}
+
+\subsection{Bearing deafect frequencies}
+% Domain expert analysis
+
+\subsection{Pump long-term monitoring}
+% Total vibration levels - challange - long-live span (5 years)
+% Turn on-off - redundancy
+% Reverse engineer of spectra (low resolution)
+
+

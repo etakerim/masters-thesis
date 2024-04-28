@@ -1,0 +1,1154 @@
+\chapter{Design} \label{chapter:design}
+The design phase sets out to elaborate on the scenarios for experiments with IoT device. In these experiments, we compare and combine approaches from industry standards and papers presented in the analysis section. Conclusions are taken into consideration in establishing the plan of measurements and in the construction of the sensor unit.
+
+\section{Research questions}
+This thesis aims to provide answers to four research questions. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
+\begin{enumerate}[label=RQ\arabic*., font=\bfseries]
+    \itemsep0pt
+	\item Which temporal and spectral features can be extracted from vibration signals to provide the most accurate record of machinery faults?
+	\item What is the reduction in transmission goodput when chosen signal features are used?
+	\item What accuracy of prediction models can be achieved with various feature subsets?
+	\item How can machinery faults be continuously identified and predicted based upon collected events?
+\end{enumerate}
+
+\noindent In accomplishing the objectives of our research we propose several \textbf{goals}:
+\begin{todolist}
+    \itemsep0pt
+    \item Statistically and visually describe vibration signals from the Machinery fault database (MauFaulDa).
+    \item Establish a list of conditions that should be later investigated in the experimental setting.
+    \item Prepare dataset to be used in conjunction with machine learning models, namely by identifying labels and balancing classes.
+    \item Find the best subsets of features in the temporal and spectral domain with previously analyzed feature extraction and selection methods.
+    \item Evaluate the performance of models described in the diagnostics section with a significant focus on the k-nearest neighbor algorithm.
+    \item Acquire measurements of vibrations from machines in the real environment to form a novel dataset of machinery behavior.
+    \item Develop hardware and implement its firmware to obtain such measurements of the quality demanded by vibrodiagnostics standards.
+\end{todolist}
+
+However, we leave out from our efforts experiments on the data features calculated from wavelets and peaks in the spectral domain. The reason is that we did not find a way to represent extracted features more succinctly as a single number. We also did not discover a strategy for choosing only the relevant frequency bins. The assembled description is retained to lead further research on that topic.
+
+The goals are impacted by certain \textbf{risks} that are assessed and tracked:
+
+\begin{enumerate}[label=R-\arabic*., font=\bfseries]
+\itemsep0pt
+\item Machines in the real environment will not be available for vibration measurements. \\ \emph{Mitigation}: Contact and establish collaboration with alternative partners. 
+\item Repeated measurements will not be consistent, and a lack of data is obtained from different classes.
+\\ \emph{Mitigation}: Prepare a plan for measurements and photo document sensor placements. 
+\item Fault modes can not be reliably differentiated and labeled in the dataset.
+\\ \emph{Mitigation}: Consult domain experts and machine maintenance staff.
+\item Suggestions made by exploring the MaFaulDa dataset will not be applicable in practice. \\
+\emph{Mitigation}: When applicable, apply the same procedures as in MaFaulDa to measured data.
+\end{enumerate}
+
+
+
+
+% All features --------------------------------------------------------
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/TD-confusion-matrix.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/FD-confusion-matrix.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \caption{All features confusion matrix}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/all-features/FD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{All features accuracy based on k-value}
+\end{figure}
+
+
+% Standing fan (EDA) --------------------------------------------------------
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/standing-fan/fan-audio-speed-1.png}
+        \caption{Speed 1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/standing-fan/fan-audio-speed-2.png}
+        \caption{Speed 2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/standing-fan/fan-audio-speed-3.png}
+        \caption{Speed 3}
+    \end{subfigure}
+    \caption{Frequency spectrum from sound of standing fan}
+\end{figure}
+
+% Frequency from vibrations
+% Plot
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{assets/results/standing-fan/standing-fan-accel.png}
+    \caption{Estimation of rotation speed from vibrations}
+\end{figure}
+
+
+
+% Clusters with true labels --------------------------------------------------------------
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/PCA-TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/PCA-FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/PCA-TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/PCA-FD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{PCA of all features to 2 components}
+\end{figure}
+
+%TODO fix inverse transform
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/FD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{3 Best features and their ranges}
+\end{figure}
+
+
+
+% Incremental learning ------------------------------------------------------
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/order-natural.png}
+        \caption{Order by raising severity}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/order-severity.png}
+        \caption{Order after relabeing normal class}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/severity-levels.png}
+        \caption{Order of severities}
+    \end{subfigure}
+    \caption{Ordering of faults}
+\end{figure}
+
+% Gradual
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/gradual-TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/gradual-FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/gradual-TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/gradual-TD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{Gradual learning (window = 1, skip = 0)}
+\end{figure}
+
+
+% Tumbling windows
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/tumbling-TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/tumbling-FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/tumbling-TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/tumbling-FD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{Tumbling window in incremental learning}
+\end{figure}
+
+
+% % Label skips and parts of dataset
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/all-features-TD-skip.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/all-features-FD-skip.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-labels-TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-labels-FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure} 
+    \caption{Skip labels in incremental learning}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-label-TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-label-FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-label-TD-severity.png}
+        \caption{Time-domain features (severity)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-label-FD-severity.png}
+        \caption{Frequency-domain features (severity)}
+    \end{subfigure} 
+    \caption{Skip labels in incremental learning with different sizes}
+\end{figure}
+
+
+% Histograms of machinery measurements
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/C1.png}
+        \caption{C1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/C2.png}
+        \caption{C2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/M1.png}
+        \caption{M1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/M2.png}
+        \caption{M2}
+    \end{subfigure} 
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/M3.png}
+        \caption{M3}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/P1.png}
+        \caption{P1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/P2.png}
+        \caption{P2}
+    \end{subfigure} 
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/histograms/P3.png}
+        \caption{P3}
+    \end{subfigure} 
+    \caption{Histograms}
+\end{figure}
+
+% Correlations to RPM
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{assets/results/feature-values/corr-to-rpm.png}
+    \caption{Correlation of features to RPM over all experiments}
+\end{figure}
+
+
+
+% Features range (3D)
+% Standing Fan
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/fan-TD-features.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/fan-FD-features.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \caption{Feature range in standing fan}
+\end{figure}
+
+
+% Pumps and compressors
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/pumps-TD-dim-3.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/pumps-FD-dim-3.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \caption{Feature range in pumps}
+\end{figure}
+
+
+% Mafaulda
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/features-TD-dim3-A+B.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/features-FD-dim3-A+B.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \caption{Feature range in MaFaulDa}
+\end{figure}
+
+
+
+% Feature combinations accuracy
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/fsel-accuracy.png}
+        \caption{Accuracy}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/fsel-percentile.png}
+        \caption{Percentile}
+    \end{subfigure}
+    \caption{Feature selection method choices}
+\end{figure}
+
+% In fsel percentile - mention median from notebook for each method - table
+\begin{table}[h]
+\begin{tabular}{|l|r|r|}
+\hline
+\textbf{Method}    & \multicolumn{1}{l|}{\textbf{Median percentile {[}\%{]}}} & \multicolumn{1}{l|}{\textbf{Median accuracy {[}\%{]}}} \\ \hline
+Rank product       & 93.94                                                    & 81.84                                                  \\ \hline
+Mutual information & 93.33                                                    & 81.33                                                  \\ \hline
+F statistic        & 91.01                                                    & 81.26                                                  \\ \hline
+Correlation        & 84.11                                                    & 79.25                                                  \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-features-A-dim3.png}
+        \caption{Time domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-5-neighbors-A-dim3.png}
+        \caption{Time domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-features-A-dim3.png}
+        \caption{Frequency domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-5-neighbors-A-dim3.png}
+        \caption{Frequency domain features}
+    \end{subfigure}
+    \caption{Model accuracy distribution}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3.png}
+    \caption{Model distibution with feature selection methods (k = 5, f = 3)}
+\end{figure}
+
+
+% Counts table
+
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+\hline
+\textbf{Bearings} & \textbf{Severity} & \textbf{Misalignment} & \textbf{Imbalance} & \textbf{Cage fault} & \textbf{Ball fault} & \textbf{Outer race fault} & \textbf{Normal} & \textbf{$\Sigma$} \\ \hline
+A                 & No                & 498                   & 333                & 188                 & 186                 & 184                       & 49              & 1438              \\ \hline
+B                 & No                & 498                   & 333                & 188                 & 137                 & 188                       & 49              & 1393              \\ \hline
+A+B               & No                & 996                   & 666                & 376                 & 323                 & 372                       & 98              & 2831              \\ \hline
+A                 & Yes               & 248                   & 188                & 91                  & 87                  & 86                        & 738             & 1438              \\ \hline
+B                 & Yes               & 248                   & 188                & 90                  & 45                  & 90                        & 732             & 1393              \\ \hline
+A+B               & Yes               & 496                   & 376                & 181                 & 132                 & 176                       & 1470            & 2831              \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+% Best feature selection methods table (order by best count)
+\begin{table}[]
+\begin{tabular}{|l|r|r|r|}
+\hline
+                            & \multicolumn{1}{l|}{\textbf{Best method for scenarios}} & \multicolumn{1}{l|}{\textbf{Scenarios {[}\%{]}}} & \multicolumn{1}{l|}{\textbf{Mean percentile {[}\%{]}}} \\ \hline
+\textbf{Rank product}       & 151                                                     & 69.91                                            & 90.85                                                  \\ \hline
+\textbf{Mutual information} & 46                                                      & 21.30                                            & 90.35                                                  \\ \hline
+\textbf{Correlation}        & 13                                                      & 6.02                                             & 88.88                                                  \\ \hline
+\textbf{F statistic}        & 6                                                       & 2.78                                             & 78.70                                                  \\ \hline
+\textbf{$\Sigma$}           & 216                                                     & 100.000000                                       & -                                                      \\ \hline
+\end{tabular}
+\end{table}
+
+
+% Bearing frequencies table
+\begin{table}[h]
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Placement}     & \multicolumn{1}{l|}{\textbf{Motor \#1}} & \multicolumn{1}{l|}{\textbf{Motor \#2}} & \multicolumn{1}{l|}{\textbf{Pump \#3 \& \#4}} \\ \hline
+\textbf{Bearing}       & \multicolumn{1}{l|}{6319-C3}            & \multicolumn{1}{l|}{6324-C3}            & \multicolumn{1}{l|}{6317-2Z}                  \\ \hline
+\textbf{$n$}           & 8                                       & 8                                       & 8                                             \\ \hline
+\textbf{$f_s$}         & 1493                                    & 1493                                    & 1493                                          \\ \hline
+\textbf{$d$ {[}mm{]}}  & 33.12                                   & 41.28                                   & 30.00                                         \\ \hline
+\textbf{$D$ {[}mm{]}}  & 147.5                                   & 190.0                                   & 132.5                                         \\ \hline
+\textbf{$\beta$}       & 0                                       & 0                                       & 0                                             \\ \hline
+\textbf{RPM {[}Hz{]}}  & 24.88                                   & 24.88                                   & 24.88                                         \\ \hline
+\textbf{BPFO {[}Hz{]}} & 77.18                                   & 77.91                                   & 77.00                                         \\ \hline
+\textbf{BPFI {[}Hz{]}} & 121.88                                  & 121.16                                  & 122.07                                        \\ \hline
+\textbf{BSF {[}Hz{]}}  & 58.20                                   & 59.97                                   & 57.77                                         \\ \hline
+\textbf{FTF {[}Hz{]}}  & 9.65                                    & 9.74                                    & 9.63                                          \\ \hline
+\end{tabular}
+\end{table}
+
+
+% Time-frequency spectrum
+% Compare with other pump - same places
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/K3-z-STFT.png}
+        \caption{K3}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/M1-2-z-STFT.png}
+        \caption{M1-2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P1-3-z-STFT.png}
+        \caption{P1-3}
+    \end{subfigure}
+    \caption{Time frequency spectrum}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/X-P2-Turn-on-Sigma.png}
+        \caption{P2-3 turn off with intererence (X-axis)}
+    \end{subfigure}
+    \caption{Time frequency spectrum}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P1-slow-down.png}
+        \caption{Pump P1 turns off}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P2-speed-up.png}
+        \caption{Pump P2 turn on}
+    \end{subfigure}
+\end{figure}
+
+
+% Dataset scenarios - 24 scenarios
+\begin{itemize}
+\item domain - TD, FD
+\item dim - 1, 3
+\item bearing - A, B, A+B
+\item severity - No, Yes
+\end{itemize}
+
+
+
+\clearpage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%TODO ---------------------------------------------------------------------------
+\section{Dataset exploration}
+In establishing the viability of methods to be deployed on the sensor node, we explore the MaFaulDa dataset. It is the largest known machinery fault collection, so it is possible to create multiple subsets based on required conditions. 
+
+One representative recording is first selected in each available fault category. The sample is visualized and statistically described in both temporal and spectral domains. A whole step-by-step procedure is outlined in the activity diagram (Fig.~\ref{fig:design:mafaulda-preprocessing}).
+
+%\begin{figure}[ht]
+%	\centering
+%	\includegraphics[width=\textwidth]{assets/design/activity-data-exploration.png}
+%	\caption{Activity diagram of MaFaulDa dataset preprocessing}
+%	\label{fig:design:mafaulda-preprocessing}
+%\end{figure}
+
+MaFaulda contains 1951 records labeled with inducted faults of increasing severity. The defects were set up on the machine simulator as is mentioned in the part about datasets. Time series of the triaxial piezoelectric accelerometers in separate files have a sampling frequency of 50 kHz. 
+
+These vibration sensors are placed in two positions. The first placement is around the inner underhang bearing named \emph{A} which is closer to the motor. The second location is around the outer overhang bearing denoted as \emph{B} position.
+
+\subsection{Fault annotations}
+The MaFaulDa has annotations altogether for 10 classes of faults, of which there is 1 class for fault-free baseline operation, 3 classes for shaft defects, 3 classes for inner bearing defects, and 3 for outer bearing defects. Some categories are redundant or irrelevant for a given sensor position. 
+
+Therefore, rotor shaft misalignement in vertical and horizontal directions are merged into one joint group. Depending on the chosen bearing position, only records having relevant labels are considered. 
+
+This means that fault classification solely concerns bearing in direct contact and shaft mechanically passing through it. The bearings affect each other, but the effect on the opposite side should appear via a common interconnection shaft. 
+
+In the end, that leaves \textbf{6 types of labels}: baseline, two shaft faults are imbalance and misalignment, and three bearing faults are cage fault, ball fault, and outer race fault. In the step of choosing the accelerometer location, records pointing to the other bearing as a source of the malfunction are discarded. Then the next action renames the labels to be better recognizable and unite the same phenomena.
+
+Groups of identified machine defects are additionally characterized by altered masses attached or motor shaft displacement shifts. The set amount is sorted in ascending order, separating \textbf{multiple event severities}. However, the count of severity levels is not identical in every group. Levels are hence scaled into the range between zero and one using a min-max scaler. Scaling is applied to classes separately.
+
+The strength of the recorded response to the underlying defect is also dependent on the shaft \textbf{rotational speed}. Speed in rpm units is calculated from pulsed speedometer output. It is the average distance between two successive rising edges: 
+\begin{ceqn}\begin{align}
+\mathrm{rpm} = 60 \;/\; \overline{\Delta t}
+\end{align}\end{ceqn}
+
+\textbf{One specimen waveform} is picked from each fault class to illustrate their superficial differences. Recordings are filtered to get the highest severity levels and around a mean rotation speed of 2500 rpm (42 Hz) to see the patterns most pronounced. The baseline class sample is chosen according to fixed rotor speed.
+
+\subsection{Signal filters}
+The DC component in the three-dimensional vibration signal is removed by subtracting the global mean. Immediately follows a digital IIR Butterworth \textbf{low pass filter} of \nth{5} order with cutoff frequency 10 kHz at -3 dB. 
+
+Before the low pass filter usage, the peak at 20 kHz with a sideband was present as an unwanted artifact. It could not have been reliably recorded due to the linear frequency response of the sensor up to 10 kHz. At the same time, such a frequency is outside the range of any feasible MEMS accelerometer.
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.44\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/Mafaulda-A-time-waveform.png}
+        \caption{Time domain waveforms}
+        \label{fig:design:fault-temporal-waveform}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.55\textwidth}
+        \includegraphics[width=\textwidth]{assets/design/Mafaulda-A-spectrum-Y-axis.png}
+        \caption{Spectra in radial direction}
+        \label{fig:design:fault-spectral-waveform}
+    \end{subfigure} 
+    \caption{Inner bearing vibrations (A) for each fault category with the highest fault severity at 2500 rpm}
+\end{figure}
+
+Temporal domain waveforms of the 300 ms signal slice are shown in the graphs in Figure \ref{fig:design:fault-temporal-waveform}. Subplots for radial, tangential, and axial directions are laid out in columns from left to right. Amplitudes vary with limits from $\pm 3\; \mathrm{m/s}^2$ in baseline and misalignment time series up to $\pm 11\;\mathrm{m/s}^2$ in case of severe bearing faults. 
+
+The frequency spectrum in Figure \ref{fig:design:fault-spectral-waveform} is obtained by FFT and Hann window of length $2^{14}$. The signal chunk represents an uncertainty box with a duration of approximately 328 ms and a spectral resolution of little over 3 Hz. The graph has been cropped in both axes to make the most important peaks visible.
+
+
+\subsection{Statistical tests}
+The statistical tests and visual checks are conducted to assess \textbf{normality and stationary} of time series. Half a second of amplitude samples are used from every sensor channel. These 25 thousand observations are downsampled tenfold to $2500$. 
+
+\textbf{Shapiro-Wilk's test} rejects the null hypothesis (${p < 0.05}$) that data is drawn from a normal distribution under most circumstances. The signal has normal distribution when it resembles pink noise lacking a regular pattern or weak exhibition of fault symptoms. \textbf{Quantile–quantile plots} confirm non-normal distribution because of the striking samples tilt to the diagonal line.
+
+\textbf{Augmented Dickey-Fuller test} rejects the null hypothesis of unit root (${p < 0.001}$). The same is confirmed with the \textbf{autocorrelation} function shape. It denotes that the stochastic process is stationary as the oscillation is bounded.
+
+\section{Feature relevance}
+Attributes described in section \ref{section:feature-extraction} are independently summarized from each sensor position and direction. Then similarity score of features is ascertained in relation to a predicted variable. The subset of the strongest predictors is chosen based on the order of their perceived importance.
+
+\subsection{Feature extraction}
+Each file in the MaFaulDa contains six accelerometer channels. In the feature extraction process, the sequence of samples is split into five parts or 1-second intervals. The portions are passed through the same DC removal and low pass filters as previously. The rotational speed is derived from speedometer pulses within the chunk.
+
+Signal chunks are converted afterward into \textbf{10 temporal and 11 spectral features}. Welch's method for spectrum density estimation averaging over $2^{14}$ long FFT segments after Hann windowing is the source for spectral features. The reference implementation of feature calculation is crafted according to mathematical formulas atop of Python packages \emph{SciPy}\footnote{SciPy: \url{https://scipy.org/}} and \emph{Time Series Feature Extraction Library} (TSFEL)\footnote{TSFEL: \url{https://tsfel.readthedocs.io/}}.
+
+The Euclidean norm of feature in the triaxial vector eliminates reliance on the direction of measurement. Value ranges are depicted in Figure~\ref{fig:design:feature-range}. 
+
+
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/feature-range-temporal.png}
+%        \caption{Time-domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/feature-range-spectral.png}
+%        \caption{Frequency-domain features}
+%    \end{subfigure}
+%    \caption{Feature value ranges in inner bearing position (A)}
+%    \label{fig:design:feature-range}
+%\end{figure}
+
+Fault labels and their severities come from the directory structure within the dataset. The binary target variable indicating whether to initiate a warning is called an anomaly. Anomalies are labeled according to relative fault severity level. We decided to investigate two fault severities having levels above 0.6 and 0.9. The quantity of observation by fault and anomaly severity is shown in Table \ref{tab:observation-counts}. The dataset is substantially unbalanced.
+
+
+Pearson's correlation of features to rpm is very low in the whole dataset. In the temporal domain, the correlation coefficient is within an interval of -0.08 to 0.26. In the spectral domain, the correlation to rpm for all FFT window sizes from $2^8$ up to $2^{14}$ is mostly very low from -0.14 up to 0.26, except for the centroid being around 0.35.
+
+The correlation among features can reduce prediction power if a pair is elected where $|\mathrm{corr}| > 0.95$. The feature is not added to the subset when the threshold is exceeded. High correlations are more substantial in the temporal domain that are present in these pairs (ordered from the most correlated): \{impulse, clearance\}, \{crest, impulse\}, \{crest, clearance\}, \{pp, rms\}. In the spectral domain set \{skewness, kurtosis\} has a strong correlation.
+
+%\begin{figure}[h!]
+%    \centering
+%    \includegraphics[width=0.8\textwidth]{assets/design/pca-explained-variance.png}
+%    \caption{Number of principal components to cumulative explained variance percentage in the inner bearing position}
+%    \label{fig:design:pca-explained-variance} 
+%\end{figure}
+
+The variables are also more inter-correlated in the temporal domain shown by principal component analysis. For 95\% of the explained variance of PCA 3 components (98.69\%) are needed in the temporal domain whereas 4 in the spectral domain (95.26\%). Figure \ref{fig:design:pca-explained-variance} visualizes cumulative explained variance with an increasing number of principal components. 
+
+%\begin{figure}[h!]
+%    \centering
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/pca-loading-plot-temporal.png}
+%        \caption{Temporal features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/pca-loading-plot-spectral.png}
+%        \caption{Spectral features}
+%    \end{subfigure}
+%    \caption{PCA loading plots for min-max scaled features from the inner bearing position}
+%    \label{fig:design:pca-loading-plot} 
+%\end{figure}
+
+PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. Loading plots of PCA (Fig. \ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the temporal domain mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, clearance, zero-crossing}. The second PC focuses more on the amplitude range: \emph{rms, p-p, aac}.  
+
+However, the groups are not as clear-cut for spectral features. Overall chaos in spectra can be attributed to PC1: \emph{flux, entropy, negentropy, noisiness}, and the shape of frequency distribution to PC2: \emph{roll-on, roll-off, centroid}.
+
+
+\subsection{Data volume savings}
+The apparent advantage of feature discovery is reducing the amount of data downstream. Data compression must occur on edge devices to enable the utilization of wireless low-power wide area networks (LPWAN). The protocol stack may differ, so goodput is compared without node configuration metadata and keepalive messages. 
+
+The machinery monitoring system relies on determining several parameters:
+\begin{itemize}
+\itemsep0pt
+\item \textbf{Number of source channels} ($S$): comprises the number of monitored machines, measurement locations for sensors, and active sensor axes.
+\item \textbf{Sampling frequency} ($f_s$): is set based on the linear response of the accelerometer, the types of faults intended for detection, and how soon they should be noticed after they arise. The higher required sensitivity means a higher sampling rate derived according to the Nyquist theorem. At a minimum, it should be 15 kHz to 20 kHz.
+\item \textbf{Interval between successive measurements} ($T$): specifies the minimal response time to sudden failure. The more critical the machine is, the interval should be shorter. The bigger the machine parts, the slower the defect evolves.
+\item \textbf{Duration of valid recording} ($D$): is the captured snapshot of machine unaltered behavior associated with a timestamp. Duration should cover at least 3 windows for spectral estimation. The spectral resolution of 1 Hz amounts to 3 seconds of signal under such assumptions.
+\item \textbf{Number of extracted features} ($F$): are ideally key trend indicators pointing to symptoms of common malfunctions. We aim for a total of 6 features.
+\end{itemize}
+
+Equation \ref{equ:compression-ratio-features} expresses the lossy compression ratio ($\mathcal{C}$) formula if trend indicators are stored instead of full recording. The number of raw channels ($S_{\mathrm{in}}$) can differ from those extracted in features ($S_{\mathrm{out}}$). Parameter $D = 0.5$ when we use frequency bins with 1 Hz resolution.
+
+\myequations{Lossy compression ratio with features}
+\begin{ceqn}\begin{align} \label{equ:compression-ratio-features}
+\mathcal{C} = \frac{D \cdot f_s \cdot S_{\mathrm{in}}}{F \cdot S_{\mathrm{out}}}
+\end{align}\end{ceqn}
+
+\textbf{Compression ratio} for MaFaulDa dataset compared to all 21 extracted features in 3 dimensions is 2381:1. If 6 features are kept, the compression is 25000:1, which is a saving of the original data by 99.996\%.
+
+As an example to approximate required network goodput and storage in practice, we consider continuous vibration \textbf{monitoring for municipal water pumping station}. The station has 3 pumps and 3 electric motors. 
+
+A pump and motor pair have 4 bearings together for drive end and non-drive end positions. Each position has a sensor mounted in 3 directions that makes a total of \emph{36 source channels}. The sampling frequency at each position is set to \emph{20 kHz}. The recordings have \emph{duration of 5 seconds} and are triggered regularly every 1 hour (\emph{8760 times per year}).
+
+In a year, the system gathers 31.54 Gs (gigasamples) which is 58.74 GiB with a 16-bit ADC resolution. Reasonably precise spectral estimation with 10 thousand bins needs 3.15 Gs per year. On the other hand, 6 features out of each channel keep only 1.89 Ms per year for a lossy compression ratio of 16667:1. Low data volumes potentially enable feature selection and models to be offloaded directly to edge devices. The entire machine's history can be kept in a small flash memory module.
+
+\subsection{Feature selection}
+The objective of feature selection is to find a subset of the most relevant predictors in each domain. As a starting point, the set consists of 3 non-correlated attributes under diverse conditions. Ultimately, a number of chosen features are to be tweaked to increase prediction accuracy. Four criteria are combined to put together 24 scenarios that filter rows from MaFaulDa:
+
+
+In feature evaluation for fault prediction, we use hold-out validation in batch models and progressive valuation in online models. Classes in observations for batch models are rebalanced to the majority class with a random oversampling strategy. The training and testing set split ratio is 80 to 20. Classes for incremental learning are ordered by relative severity level and shuffled within levels. 
+
+The best group of attributes is elected based on a training set with multiple methods. We compute the mean of the absolute value from point-biserial correlation, F statistic, and mutual information to the predicted variable. The features are then ordered in descending order by the received score. These individual ranks are combined by rank product to create an ensemble out of the metrics. Reference implementation of feature selection metrics uses Python packages Scikit Learn\footnote{SciKit Learn: \url{https://scikit-learn.org/}} in batch learning and RiverML\footnote{RiverML: \url{https://riverml.xyz/}} for online learning.
+
+
+The choice of features is very sensitive to experimental conditions. Tendencies are demonstrated by counting how many triplets the indicator appears in across all possible situations. The results of approval voting are shown in Figure~\ref{fig:design:approval-rating-features}. The most occurring attributes in the temporal domain are zero-crossing rate, peak-to-peak distance, and average amplitude change. the features dominating in the spectral domain are centroid, roll-off, and roll-on.
+
+
+\section{K-nearest neighbor classifier}
+We utilize the k-nearest neighbor algorithm to check machinery diagnostics abilities with reduced feature sets. The k-NN classifier being a lazy learner means it can be adapted easily from offline to online context. Training labels are min-max scaled and establish nearest-neighbor decision boundaries for attribute values. Voronoi diagrams can display these regions and explain the model in that way. Batch learning in k-NN serves here as a target performance whose attainment is desirable with online learning.
+
+\subsection{Batch models}
+Three types of k-NN model experiments run with hold-out validation in a batch setting. First, the model learns all extracted features, so no feature selection occurs. Then, the brute-force method searches for a combination of three features with the highest training accuracy. In the end, the model performance for three attributes chosen by feature selection techniques is compared to principal components.
+
+
+Two models are created for the target variable in classification with all 10 temporal and 11 spectral features. The subset of records includes all rotational speeds on bearing position A. Either six fault labels or anomalies above 0.9 severity level are guessed by the model with the same hold-out validation split as before. 
+
+Confusion matrices for fault prediction and high severity anomaly are shown in Figure \ref{fig:design:KNN-confusion-matrix}. In this example, the number of k neighbors is 5, the distance metric is the Euclidian norm, and the algorithm for proximity queries is a k-d tree. The most inaccuracies in the temporal domain are between misalignment and bearing race faults. In the spectral domain, the model confuses imbalance and bearing faults because mass to unbalance is hung onto the shaft to cause bearing defects. 
+
+In anomaly prediction, the error of the first degree is 7 times more prevalent than the error of the second degree. False positives are preferable, since we do not want the machine to fail prematurely and not know about it. In all cases, spectral features maintain better prediction metrics than all temporal features because of less interdependency among features. Bearing B exhibits overall worse classification performance because of more noise in the original signal.
+
+%\begin{table}[h]
+%\centering
+%\renewcommand{\arraystretch}{1.2}
+%\begin{adjustbox}{width=\textwidth}
+%
+%\end{tabular}
+%\end{adjustbox}
+%\caption{k-NN model performance trained on all extracted features}
+%\label{tab:design:all-extracted-features}
+%\end{table}
+
+Accuracies and F1 scores in both bearing positions with all extracted features are shown in Table \ref{tab:design:all-extracted-features}. Models are overtrained, especially for temporal features, because of the substantial difference between accuracy on training and validation sets. Binary classification of anomalies is unsurprisingly more precise in general than the multi-class case. Defect-type detection with all features reaches accuracy on the testing set above 98\% for bearing A, and above 90\% for bearing B.
+
+Next, we exhaustively list all combinations of three features and look at the range of model performances generated. There are $\binom{n}{3}$ combinations of attribute triplets that entail 120 separate k-NN models for temporal domain features and 165 for the spectral domain. The feature set with the best evaluation scores serves as a benchmark for attributes picked by selection techniques. The accuracy of the k-NN algorithm for different target variables is in Figure \ref{fig:design:feature-combinations-KNN}. 
+
+
+
+Features picked combinatorically for predictions are listed in Table \ref{tab:design:feature-combinations-KNN}. The worst accuracy occurs for temporal features in multi-class classification, 86\% and 77\% depending on bearing position, as compared to 98\% and 91\% accuracy for spectral features. An improvement would come with increasing the number of features, using a different base feature set with greater discriminatory power, or using a more sophisticated model.
+
+\begin{table}[ht!]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{|r|r|r|l|r|r|}
+\hline
+\multicolumn{1}{|l|}{\textbf{Place}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Target \\ variable\end{tabular}}} & \multicolumn{1}{l|}{\textbf{Domain}} & \multicolumn{1}{l|}{\textbf{Best feature triplet}} & \textbf{\begin{tabular}[c]{@{}l@{}}Training \\ accuracy\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Testing \\ accuracy\end{tabular}} \\ \hline
+\multirow{4}{*}{A} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}              & temporal        & \{zero-crossing, aac, rms\}         & 0.9843                & 0.9792 \\ \cline{3-6} 
+                   &                                               & spectral        & \{centroid, noisiness, entropy\} & 0.9818                & 0.9707               \\ \cline{2-6} 
+                   & \multirow{2}{*}{fault}                        & temporal        & \{zero-crossing, aac, rms\}         & 0.9701  & 0.9475 \\ \cline{3-6} 
+                   &                                               & spectral        & \{centroid, kurtosis, entropy\}  & 0.9750                & 0.9505               \\ \hline
+\multirow{4}{*}{B} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}               & temporal        & \{zero-crossing, aac, rms\}            & 0.9570                & 0.9227 \\ \cline{3-6} 
+                   &                                               & spectral        & \{centroid, std, roll-on\}      & 0.9495                & 0.9185               \\ \cline{2-6} 
+                   & \multirow{2}{*}{fault}                        & temporal        & \{zero-crossing, aac, rms\}     & 0.9173 & 0.8738 \\ \cline{3-6} 
+                   &                                               & spectral        & \{centroid, std, roll-off\}     & 0.9067                & 0.8584               \\ \hline
+\end{tabular}
+\end{adjustbox}
+\caption{Features with the highest accuracies on the training set found combinatorically}
+\label{tab:design:feature-combinations-KNN}
+\end{table}
+
+The features picked using the rank product method are shown in Table \ref{tab:design:best-3-features-KNN}. Their prediction accuracies in k-NN models are subpar to optimal sets. However, the advantage is that the feature election process is not so computationally taxing. On bearing A, validation set accuracies for fault diagnostics are 85\% and 92\%, for each of the domains. Because of the low k hyperparameter value, models are overtrained either way.
+
+\begin{table}[ht!]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{|r|r|r|l|r|r|}
+\hline
+\multicolumn{1}{|l|}{\textbf{Place}} & \multicolumn{1}{l|}{\textbf{\begin{tabular}[c]{@{}l@{}}Target \\ variable\end{tabular}}} & \multicolumn{1}{l|}{\textbf{Domain}} & \multicolumn{1}{l|}{\textbf{Best feature triplet}} & \textbf{\begin{tabular}[c]{@{}l@{}}Train \\ accuracy\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}Test \\ accuracy\end{tabular}} \\ \hline
+\multirow{4}{*}{A} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}                & temporal        & \{zero-crossing, rms, shape\}              & 0.9743 &	0.9633 \\ \cline{3-6} 
+                   &                                               & spectral        & \{centroid, flux, entropy\}       & 0.9654                                       & 0.9474                                      \\ \cline{2-6} 
+                   & \multirow{2}{*}{fault}                        & temporal        & \{zero-crossing, rms, shape\}               & 0.9592 & 0.9274                                     \\ \cline{3-6} 
+                   &                                               & spectral        & \{roll-off, centroid, skewness\} & 0.9504                                       & 0.9210                                      \\ \hline
+\multirow{4}{*}{B} & \multirow{2}{*}{\begin{tabular}[c]{@{}r@{}}anomaly\\ (0.9)\end{tabular}}              & temporal        &             \{zero-crossing, rms, shape\} & 0.9265	 & 0.8835                \\ \cline{3-6} 
+                   &                                               & spectral        & \{std, noisiness, entropy\}       & 0.9265                                       & 0.8843                                      \\ \cline{2-6} 
+                   & \multirow{2}{*}{fault}                        & temporal        & \{zero-crossing, p-p, aac\}           & 0.9113 &	0.8614                                      \\ \cline{3-6} 
+                   &                                               & spectral        & \{centroid, roll-on, roll-off\} & 0.8914                                       & 0.8390                                      \\ \hline
+\end{tabular}
+\end{adjustbox}
+\caption{Three chosen features with rank product of correlation, F statistic, mutual information and their associated k-NN accuracies.}
+\label{tab:design:best-3-features-KNN}
+\end{table}
+
+Lowering the number of attributes allows visualization of labels in planar scatter plots. The data points in 3-dimensional cross-sections are colored by true fault classes of all severities in Figure \ref{fig:design:feature-space-scatter}. We observe the inability to separate faults by linear boundaries in given feature spaces and the noncompactness of clusters. 
+
+Cluster overlaps of various defect types are also confirmed by silhouette scores around zero. Therefore, the k hyperparameter cannot be increased much, as it would cause the merge of mutually confused categories. Low-severity faults should be relabeled as a class without fault to watch out just for alert conditions.
+
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/best-features-scatter-fault-A-temporal.png}
+%        \caption{Temporal domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/best-features-scatter-fault-A-spectral.png}
+%        \caption{Spectral domain features}
+%    \end{subfigure} 
+%    \caption{Cross sections of 3-dimensional feature spaces with ground truth labels for best attributes. Features are chosen by rank product method.}
+%    \label{fig:design:feature-space-scatter}
+%\end{figure}
+
+Model performance of the k-NN algorithm preceeded by a variety of feature selection methods is compared in Figure \ref{fig:design:KNN-accuracy-batch}. The best combination of 3 features always achieves better than when the model is trained on all features. This has to do with curse of dimensionality phenomenon. 
+
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/KNN-feature-selection-predictions-train.png}
+%        \caption{Testing set}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/KNN-feature-selection-predictions-test.png}
+%        \caption{Training set}
+%    \end{subfigure} 
+%    \caption{Batch k-NN algorithm prediction accuracy with various feature sets.}
+%    \label{fig:design:KNN-accuracy-batch}
+%\end{figure} 
+
+We suspected that the PCA property of maximizing variances in each of the few dimensions would support more separation of clustered groups and would be beneficial in classification. The bar chart supports this assumption. PCA always produces greater model accuracy than any other method of feature selection. The rank product of the three scoring techniques is not better every time, but it balances out aggregated methods to achieve more stable results across testing sets. 
+
+In every instance, a subset of spectral features is responsible for better accuracy than a subset of temporal features. Presumably, it is so because of many correlated pairs of attributes in the temporal domain. Further tests should be made to determine optimal feature subsets and the impact of altering the feature election process.
+
+\clearpage
+\subsection{Online models}
+Online learning imitates hardened conditions for machinery diagnostics that appear in deployment. Delayed provision or omission of actual labels undoubtedly degrades the reliability of the classification. The question is how quickly the accuracy approaches the optimal one from the nearest neighbors trained in batch and what the effect of routine difficulties in the ongoing labeling process is.
+
+The k-NN models in incremental learning experiments learn on the same base training dataset for bearing position A and with all extracted features as in a batch context. In this manner, we can compare the training accuracies in the last sample for both models. k-NN is set to 5 nearest neighbors and a proximity metric of Euclidian distance. Online learning metrics are evaluated by progressive valuation on a dataset that is left unbalanced.
+
+The \textbf{stream of events is sorted} by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}) which ensures steady increments in label counts throughout the whole duration of the simulation (Fig.~\ref{fig:design:online-event-order}). This constructed event sequence is a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine.
+
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/Online-event-ordering-fault-train.png}
+%        \caption{Event ordering of faults}
+%        \label{fig:design:online-event-order}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/Online-severity-levels.png}
+%        \caption{Fault severity levels ordering}
+%        \label{fig:design:online-count-severity-level}
+%    \end{subfigure}
+%    \caption{Label sequencing for progressive evaluation}
+%\end{figure}
+
+Major breaking points in the stream are after 1171 observations out of 5751, where all 203 normal conditions are consumed in the training process. Counters of other faults show that model predictions are skewed towards more represented classes of imbalance and misalignement. The uneven evolution of category counts in a stream impacts the development of accuracy in the remaining experiments. The hold-out validation accuracies of comparable batch models are 97.36\% \emph{(temporal features)} and 98.36\% \emph{(spectral features)}.
+	
+During gradual learning, the correct label is supplied after a fixed period passes after its prediction. This \textbf{sliding window} simulation examines accuracy every 100 iterations. Wait times before revealing the actual class associated with the sample are 1, 50, 100, or 250 steps (Fig.~\ref{fig:design:online-fault-delay-sliding}). 
+
+
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-temporal.png}
+%        \caption{Principal components from temporal domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/pca-scatter-online-fault-spectral.png}
+%        \caption{Principal components from spectral domain features}
+%    \end{subfigure}
+%    \caption{Classification labels in incremental learning \emph{(from left)}: true labels, predicted labels, mistakes in predictions.}
+%    \label{fig:design:scatter-plot-online}
+%\end{figure}
+
+Accuracies after sequentially seeing all samples 96.78\% in temporal domain and 89.11\% in spectral domain when labels are shown instantly. Scatter plots in Figure~\ref{fig:design:scatter-plot-online} visualize mistakes in predictions projected onto two principal components. Labeling delay of 250 observations causes accuracy to drop to 83.94\% \emph{(temporal)} and 78.81\% \emph{(spectral)}.
+	
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-temporal-domain-fault.png}
+%        \caption{Temporal domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-accuracy-delay-spectral-domain-fault.png}
+%        \caption{Spectral domain features}
+%    \end{subfigure}
+%    \caption{Incremental learning on all extracted feature with delayed reveal of labels in sliding windows}
+%    \label{fig:design:online-fault-delay-sliding}
+%\end{figure}
+	
+	
+The \textbf{tumbling window} simulates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once. In the final sample, the accuracies are 89.11\% \emph{(temporal)} and 90.38\% \emph{(spectral)} with immediate feedback, and 83.08\% \emph{(temporal)} and 85.01\% \emph{(spectral)} with window length of 250 samples (Fig.~\ref{fig:design:online-fault-delay-tumbling}). 
+
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-temporal-domain-fault.png}
+%        \caption{Temporal domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-delay-spectral-domain-fault.png}
+%        \caption{Spectral domain features}
+%    \end{subfigure}
+%    \caption{Incremental learning on all extracted feature with delayed reveal of labels at regular intervals in tumbing windows}
+%    \label{fig:design:online-fault-delay-tumbling}
+%\end{figure}
+
+A \textbf{tumbling window} is more accurate according to progressive valuation because the labeling delay decreases towards the window's end. Initial 0\% accuracy is caused by a warming-up period in data collection during the span of the first few windows. The true labels are unknown. After just a handful of windows in the beginning, accuracy jumps above 60\% and stabilizes after 1000 observations.
+
+Another common problem with online learning is \textbf{missing annotations} due to the size of the dataset. In the simulation of missing labels, the equal-length gaps are skipped before another observation is annotated. This approach of choosing samples to annotate without considering their representativeness results in severe harm to predictions. 
+
+%\begin{figure}[ht]
+%    \centering
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-temporal-domain-fault.png}
+%        \caption{Temporal domain features}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/gradual-learning-skip-spectral-domain-fault.png}
+%        \caption{Spectral domain features}
+%    \end{subfigure}
+%    \caption{Incremental learning with missing true labels and sliding window delay of 10 observations}
+%    \label{fig:design:online-label-skip}
+%\end{figure}
+ 
+Labeling just every \nth{5} sample (25\% of the total dataset) with a sliding window delay of 10 samples reduces accuracy for the model out of temporal features by 8.41\% to 80.39\%, and by 7.33\% for spectral features to accuracy of 82.01\% (Fig.~\ref{fig:design:online-label-skip}). Even if only 1\% of the dataset is annotated (every \nth{100} sample), the model out of spectral features retained an accuracy of 65.17\% that is 4.41\% better than for temporal features.  More missing labels require recording more observations before the equivalent accuracy is reached.
+
+\chapter{Implementation} \label{section:implementation} 
+The methodology applied so far for the dataset recorded in a laboratory is to be tested on vibration signals from the industrial environment. Established guidelines for introducing a monitoring system have been described in the section on technical standards (Section~\ref{section:technical-standards}). 
+
+We employ a slightly customized validation procedure that involves the selection of machines to be monitored, identifying positions for measurements according to technical specifications, taking preliminary readings, and developing a device capable of capturing the usual failure modes. The collection of the novel dataset is accompanied by an agreed upon schedule.
+
+\section{Machinery for monitoring}
+Three kinds of rotating machines are at disposal for vibration measurements. Those are a standing fan, scroll compressor, and water pump.
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.17\textwidth}
+    		\centering
+        \includegraphics[width=\textwidth]{assets/design/machine-fan.jpg}
+        \caption{\footnotesize Fan}
+        \label{fig:machine:fan}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.25\textwidth}
+    		\centering
+        \includegraphics[width=\textwidth]{assets/design/sensor/copeland-compressor.jpg}
+        \caption{\footnotesize Compressor}
+        \label{fig:machine:compressor}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.31\textwidth}
+    		\centering
+        \includegraphics[width=\textwidth]{assets/design/sensor/ksb-pump.jpg}
+        \caption{\footnotesize Water pump KSB}
+        \label{fig:machine:pump-ksb}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.31\textwidth}
+    		\centering
+        \includegraphics[width=\textwidth]{assets/design/sensor/sigma-pump.jpg}
+        \caption{\footnotesize Water pump Sigma}
+        \label{fig:machine:pump-sigma}
+    \end{subfigure}
+    \caption{Machines dedicated for vibration measurements}
+\end{figure}
+
+\textbf{Standing fan} is model \emph{Kalorik~TKG~VT1037} (Fig.~\ref{fig:machine:fan}) and one unit is available to us. It serves as a test bed during the sensor unit development. The sensor is placed on the plastic casing at the back of the drive motor. The fan has a 45~cm diameter with 3~propellers and a power of 45~W (class~\rom{1}). It has a switch for 3 rotational speeds, which are approximately 18.5~Hz (1100~rpm), 20.4~Hz (1200~rpm), and 22~Hz (1300~rpm).
+
+\textbf{Scroll compressor} is model \emph{Copeland~ZR16} (Fig.~\ref{fig:machine:compressor}). Altogether, two units are available in two independent air conditioning units for the data center. The compressor has 9.7~kW of power (class~\rom{1}) and rotates at 2900 rpm (48.3 Hz). Two possible measurement locations are located on the sides on top of the bearings, just above the base and above the scroll.
+
+\textbf{Water pumps} are available as 3 units in municipal drinking water pumping station. The apparatus consists of a single-stage axially split volute casing pump and an attached electric induction motor. 
+
+The newer primary pumps with bundled wireless cloud monitoring system are two units of \emph{KSB Omega~300-560} (Fig.~\ref{fig:machine:pump-ksb}). The pumps were commissioned in 2018, and they rotate at 1493 rpm (24.9 Hz). The electric motor provides 400~kW of power (class~\rom{3}).
+
+The secondary pump is one unit named \emph{Sigma~300-OVD-600} (Fig.~\ref{fig:machine:pump-sigma}) installed in 1986. It rotates at 1485 rpm (24.75 Hz), and its electric motor has power of 450~kW (class~\rom{3}). Each pump and motor have 2 bearings. Therefore, there are 4 measurement positions in total.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+    		\centering
+        \includegraphics[width=\textwidth]{assets/design/ksb-guard-rms.png}
+        \caption{Vibration rms velocity dashboard}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+    		\centering
+        \includegraphics[width=\textwidth]{assets/design/ksb-guard-spectrum.png}
+        \caption{Vibration spectral analysis dashboard}
+    \end{subfigure}
+     \caption{KSB Guard cloud monitoring for pumps}
+     \label{fig:design:ksb-guard}
+\end{figure}
+
+\textbf{Complete schedule} for planned vibration data gathering on the designated machines and measurement procedure is described in Appendix~\ref{appendix:technical-docs}. In addition, we are able to export the entire historical record at hourly intervals. Logs from \textbf{KSB Guard} cloud monitoring tool contain vibration rms velocities and frequency spectra for two monitored KSB water pumps (Figure~\ref{fig:design:ksb-guard}).
+
+
+\section{Sensor hardware and drivers}
+In preliminary exploratory vibration measurements of machines, the ADXL335 accelerometer is connected to BeagleBone Black microcontroller. The bandwidth, sensitivity, and sampling frequency of the makeshift solution do not appear to be adequate (Table~\ref{tab:design:hw-sensors}).
+
+\begin{table}[ht]
+\renewcommand{\arraystretch}{1.2}
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Accelerometer}                           & \textbf{ADXL335} & \textbf{IIS3DWB}   \\ \hline
+\textbf{Vendor}                                  & Analog Devices   & STMicroelectronics \\ \hline
+\textbf{Bus}                                     & Analog           & SPI                \\ \hline
+\textbf{Axis}                                    & 3                & 1 or 3             \\ \hline
+\textbf{Range} (g)                               & $\pm$ 3          & $\pm$ 2 - 16      \\ \hline
+\textbf{Bandwidth} (kHz)                         & 0.55 - 1.6       & 5 - 6.3            \\ \hline
+\textbf{Sensitivity} (mg/LSB)                    & 2.93            & 0.06 - 0.49       \\ \hline
+\textbf{Noise density} ($\mu g / \sqrt{\mathrm{Hz}}$ rms) & 150 - 300        & 75                 \\ \hline
+\textbf{Microcontroller}                         & Beaglebone Black & ESP32-PoE-ISO      \\ \hline
+\textbf{CPU SoC}                                 & TI Sitara AM3358 & ESP32-WROOM-32     \\ \hline
+\textbf{Output data rate} (kHz)                  & 2.5              & 26.7               \\ \hline
+\textbf{ADC resolution} (bit)                    & 12               & 16                 \\ \hline
+\textbf{FIFO}                                    & -                & 3 kB (512 samples) \\ \hline
+\end{tabular}
+\caption{Hardware parameters of previous and proposed sensor units}
+\label{tab:design:hw-sensors}
+\end{table}
+
+The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches industrial standards for vibration monitoring. ESP32-PoE-ISO is chosen as a microcontroller development kit because it has an SD card slot connected via SD/MMC bus. It enables us to store all samples from FIFO. The accelerometer uses an SPI bus with a maximum speed of 10 MHz that can be connected to any physical GPIO pin. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth]{assets/design/hw-block-schematic.png}
+	\caption{Sensor unit hardware block diagram}
+	\label{fig:design:block-diagram-hw}
+\end{figure}
+
+The drivers for necessary low-level interfaces and FAT32 filesystem are  implemented already in ESP-IDF SDK\footnote{ESP-IDF SDK: \url{https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html}}. The accelerometer driver is also made available by the vendor\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}. Activity diagrams of required firmware functionality are in Appendix~\ref{appendix:technical-docs}.
+
+
+\section{Firmware}
+% Timing is crutial 19ms.
+Activity diagrams describe three basic actions of firmware for logging accelerometer samples:
+
+\begin{itemize}
+\itemsep0pt
+\item begin new recording, 
+\item log block of samples into CSV file,
+\item finish recording.
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=\textwidth]{assets/design/firmware-design.png}
+\end{figure} 
+
+\section{Dataset description}
+
+
+\section{BVS cloud}
+
+\section{Compressors}
+
+\section{Water pumps}
+
+
+
+
+
+
+%\section{Preliminary measurements}
+%During the initial on-site inspections of machinery, we carried out preliminary measurements of vibration signals. Raw waveforms of acceleration for the fan, two different compressors, and the outer bearing on a pump and motor in three axes are plotted in Figure~\ref{fig:design:preliminary-acceleration}. The acceleration rarely exceeds 1~g. 
+%
+%In frequency spectra in Figure~\ref{fig:design:preliminary-spectrum} behavior of machines can be clearly discerned below the resonance frequency of the accelerometer (550 Hz). The compressor suspected to be faulty has a stronger \nth{4} harmonic and above than the other one.
+%
+%
+%\begin{figure}[h]
+%    \centering
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-temporal.png}
+%        \caption{Acceleration in $\mathrm{m/s}^2$}
+%        \label{fig:design:preliminary-acceleration}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.49\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-velocity.png}
+%        \caption{Approximate velocity in $\mathrm{mm/s}$}
+%        \label{fig:design:preliminary-velocity}
+%    \end{subfigure} 
+%    \caption{Temporal domain waveforms in all spatial directions with 300 ms duration at 1 s timestamp}
+%\end{figure} 
+%
+%Figure~\ref{fig:design:preliminary-velocity} documents the effort to obtain vibration velocity (as per ISO~20186) by integration with the composite trapezoidal rule. The significant drift after integration is eliminated by subtracting the mean of the envelope constructed using cubic interpolation of peaks. Envelopes must be tweaked further to achieve more accurate values. The orbital plot of the first harmonic frequency $f_{max} \pm 5\;\mathrm{Hz}$ in Figure~\ref{fig:design:orbital-analysis} allows us to check the sensor deviation out of the axis of rotation.
+%
+%\begin{figure}[h]
+%    \centering
+%    \begin{subfigure}[b]{0.45\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/compressor-orbitals-1x.png}
+%		\caption{Orbital analysis of compressor's \nth{1}~harmonic frequency}
+%		\label{fig:design:orbital-analysis}
+%    \end{subfigure}
+%    \hfill
+%    \begin{subfigure}[b]{0.54\textwidth}
+%        \includegraphics[width=\textwidth]{assets/design/EDA-custom-dataset-spectral-X-axis.png}
+%        \caption{FFT with Hann window of length $2^{10}$ ($\approx$~409~ms)}
+%        \label{fig:design:preliminary-spectrum}
+%    \end{subfigure} 
+%    \caption{Orbital and spectral methods of vibration signal analysis}
+%\end{figure}
+
+
+\chapter{Conclusion} \label{section:conclusion}  
+In the thesis we focused on trend indicator selection for an inexpensive industrial condition monitoring solution from vibration signals. The goal is to enable timely fault detection of machinery parts with as little input data as possible. For that purpose, we answer four research questions.
+
+Attributes extracted to describe machine behavior come mainly from descriptive statistics, audio signal processing studies, and vibrodiagnostics technical standards (ISO 20186 and ISO 13343). These formulas compute 10 features summarizing the waveform in the temporal domain and 11 features characterizing spectral density estimation in 3 spatial directions \textbf{(RQ1)}.
+
+In order to achieve more pronounced data savings, we choose the subset of 3 features in each domain by keeping the ones with the most similarity to the target variable. Feature selection metrics of the correlation coefficient, F statistic, mutual information, and their rank product are applicable in supervised learning. The features are squished from multiple dimensions using the Euclidian norm. Lossy compression ratios attained are 2381:1 for all features and 25000:1 for 6 features in the MaFaulDa dataset. We managed to discard more than 99.995\% of irrelevant data \textbf{(RQ2)}.
+
+Feature subsets are subjected after normalization to a k-nearest neighbor classifier that ascertains their relative fault detection power. Because of model overtraining with small k, the feature triplets equal or slightly outperformed the whole set of features on the validation set with accuracy up to 10\%. The spectral features reach higher accuracies than temporal because of their smaller interdependency \textbf{(RQ3)}. 
+
+The ensemble of feature selection with rank product produces the best model performance out of three combined in the majority of situations. No approach could find a triplet of predictors with an accuracy close to optimal one discovered exhaustively. Training on three principal components produced better accuracy than filtering feature selection, but PC mapping onto original trend indicators is unclear even in loading plots \textbf{(RQ3)}.
+
+The considerable obstacle in an autonomous fault detection system deployment is the availability of labels for target variables. Annotations can be assigned belatedly or even never. Incremental learning k-NN model on an unbalanced dataset on the whole feature set achieves at best 90\% accuracy with immediate feedback, 85\% with labels coming in 250 long tumbling windows, and 82\% with just 25\% of observations associated with the label. The comparable model trained in batch reaches an accuracy of 98\% \textbf{(RQ4)}.
+
+Conclusions so far have been made on the MaFaulDa dataset imitating the realistic conditions. Therefore, in proper validation of the proposed solution in practice, we will compare it with the custom-made dataset. 
+
+The vibration signals will be gathered on compressors in air conditioning units and water pumps in municipal pumping stations. We will develop firmware for sensor units capable of sampling accelerometers and saving measurements onto SD cards. The challenge awaits us in labeling samples themselves as it requires substantial expert knowledge. 
+
+Feature selection methods should be incorporated into incremental learning. Hyperparameters shall be adjusted, and the balancing method used to increase model performance. The outlined tasks awaiting completion are planned for the DP~\rom{3} phase.
