@@ -2,9 +2,6 @@
 The design phase sets out to elaborate on the scenarios for experiments with IoT device. In these experiments, we compare and combine approaches from industry standards and papers presented in the analysis section. Conclusions are taken into consideration in establishing the plan of measurements and in the construction of the sensor unit.
 
 \section{Research questions}
-% Questions
-% Goals
-% Project risk management
 This thesis aims to provide answers to four research questions. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
 \begin{enumerate}[label=RQ\arabic*., font=\bfseries]
     \itemsep0pt
@@ -26,20 +23,7 @@ This thesis aims to provide answers to four research questions. The focus is pri
     \item Develop hardware and implement its firmware to obtain such measurements of the quality demanded by vibrodiagnostics standards.
 \end{todolist}
 
-However, we leave out from our efforts experiments on the data features calculated from wavelets and peaks in the spectral domain. The reason is that we did not find a way to represent extracted features more succinctly as a single number. We also did not discover a strategy for choosing only the relevant frequency bins. The assembled description is retained to lead further research on that topic.
-
-The goals are impacted by certain \textbf{risks} that are assessed and tracked:
-
-\begin{enumerate}[label=R-\arabic*., font=\bfseries]
-\itemsep0pt
-\item Machines in the real environment will not be available for vibration measurements. \\ \emph{Mitigation}: Contact and establish collaboration with alternative partners. 
-\item Repeated measurements will not be consistent, and a lack of data is obtained from different classes.
-\\ \emph{Mitigation}: Prepare a plan for measurements and photo document sensor placements. 
-\item Fault modes can not be reliably differentiated and labeled in the dataset.
-\\ \emph{Mitigation}: Consult domain experts and machine maintenance staff.
-\item Suggestions made by exploring the MaFaulDa dataset will not be applicable in practice. \\
-\emph{Mitigation}: When applicable, apply the same procedures as in MaFaulDa to measured data.
-\end{enumerate}
+However, we leave out from our efforts experiments on the data features calculated from wavelets and peaks in the spectral domain. The reason is that we did not find a way to represent extracted features more succinctly as a single number. We also did not discover a strategy for choosing only the relevant frequency bins.
 
 
 \section{Machine learning pipeline}
@@ -70,19 +54,22 @@ Dataset scenarios - 24 scenarios
 
 
 \section{Exploratory data analysis of MaFaulDa}
-% Fault counts
 \begin{table}[h]
+\renewcommand{\arraystretch}{1.2}
 \centering
-\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+\begin{tabular}{|lr|r|r|r|r|r|r|}
 \hline
-\textbf{Bearings} & \textbf{Severity} & \textbf{Misalignment} & \textbf{Imbalance} & \textbf{Cage fault} & \textbf{Ball fault} & \textbf{Outer race fault} & \textbf{Normal} & \textbf{$\Sigma$} \\ \hline
-A                 & No                & 498                   & 333                & 188                 & 186                 & 184                       & 49              & 1438              \\ \hline
-B                 & No                & 498                   & 333                & 188                 & 137                 & 188                       & 49              & 1393              \\ \hline
-A+B               & No                & 996                   & 666                & 376                 & 323                 & 372                       & 98              & 2831              \\ \hline
-A                 & Yes               & 248                   & 188                & 91                  & 87                  & 86                        & 738             & 1438              \\ \hline
-B                 & Yes               & 248                   & 188                & 90                  & 45                  & 90                        & 732             & 1393              \\ \hline
-A+B               & Yes               & 496                   & 376                & 181                 & 132                 & 176                       & 1470            & 2831              \\ \hline
+\multicolumn{2}{|l|}{\textbf{Bearing}}                                            & \multicolumn{1}{l|}{A}  & \multicolumn{1}{l|}{A+B} & \multicolumn{1}{l|}{B}  & \multicolumn{1}{l|}{A}   & \multicolumn{1}{l|}{A+B} & \multicolumn{1}{l|}{B}   \\ \hline
+\multicolumn{2}{|l|}{\textbf{Relabel by severity}}                                & \multicolumn{1}{l|}{No} & \multicolumn{1}{l|}{No}  & \multicolumn{1}{l|}{No} & \multicolumn{1}{l|}{Yes} & \multicolumn{1}{l|}{Yes} & \multicolumn{1}{l|}{Yes} \\ \hline
+\multicolumn{1}{|l|}{\multirow{6}{*}{\textbf{Fault}}} & \textbf{misalignment}     & 498                     & 996                      & 498                     & 248                      & 496                      & 248                      \\ \cline{2-8} 
+\multicolumn{1}{|l|}{}                                & \textbf{imbalance}        & 333                     & 666                      & 333                     & 188                      & 376                      & 188                      \\ \cline{2-8} 
+\multicolumn{1}{|l|}{}                                & \textbf{cage fault}       & 188                     & 376                      & 188                     & 91                       & 181                      & 90                       \\ \cline{2-8} 
+\multicolumn{1}{|l|}{}                                & \textbf{ball fault}       & 186                     & 323                      & 137                     & 87                       & 132                      & 45                       \\ \cline{2-8} 
+\multicolumn{1}{|l|}{}                                & \textbf{outer race fault} & 184                     & 372                      & 188                     & 86                       & 176                      & 90                       \\ \cline{2-8} 
+\multicolumn{1}{|l|}{}                                & \textbf{normal}           & 49                      & 98                       & 49                      & 738                      & 1470                     & 732                      \\ \hline
+\multicolumn{2}{|l|}{$\Sigma$}                                                    & \textbf{1438}           & \textbf{2831}            & \textbf{1393}           & \textbf{1438}            & \textbf{2831}            & \textbf{1393}            \\ \hline
 \end{tabular}
+\caption{Number of rows in MaFaulDa according to label}
 \end{table}
 
 % Correlation to RPM
@@ -92,27 +79,42 @@ A+B               & Yes               & 496                   & 376             
     \caption{Correlation of features to RPM over all experiments}
 \end{figure}
 
+% Feature correlations
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/corr-A-3-TD.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/corr-A-3-FD.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \caption{Feature correlations in MaFaulDa}
+\end{figure}
+
 
 % Features Range
 % Mafaulda
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-values/features-TD-dim1-A+B.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/features-TD-dim1-A.png}
         \caption{Time-domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-values/features-FD-dim1-A+B.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/features-FD-dim1-A.png}
         \caption{Frequency-domain features}
     \end{subfigure}
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-values/features-TD-dim3-A+B.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/features-TD-dim3-A.png}
         \caption{Time-domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-values/features-FD-dim3-A+B.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/features-FD-dim3-A.png}
         \caption{Frequency-domain features}
     \end{subfigure}
     \caption{Feature range in MaFaulDa}
@@ -186,7 +188,7 @@ A+B               & Yes               & 496                   & 376             
 % Block diagram of device
 
 % HW parameters and mention temporary device
-\begin{table}[ht]
+\begin{table}[h]
 \renewcommand{\arraystretch}{1.2}
 \centering
 \begin{tabular}{|l|l|l|}
@@ -205,7 +207,7 @@ A+B               & Yes               & 496                   & 376             
 \textbf{ADC resolution} (bit)                    & 16                 \\ \hline
 \textbf{FIFO}                                    & 3 kB (512 samples) \\ \hline
 \end{tabular}
-\caption{Hardware parameters of previous and proposed sensor units}
+\caption{Hardware parameters of accelerometer data logger}
 \label{tab:design:hw-sensors}
 \end{table}
 

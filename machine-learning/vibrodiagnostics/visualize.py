@@ -496,7 +496,9 @@ def boxplot_enumerate_models_accuracy(results: pd.DataFrame, metric, plots_col: 
             ax[i].boxplot(
                 boxplot_data.values(),
                 labels=boxplot_data.keys(),
-                medianprops = {'linewidth': 2, 'color': 'black'})
+                medianprops={'linewidth': 2, 'color': 'black'},
+                notch=True
+            )
             ax[i].set_ylabel('Accuracy')
             if plots_col == 'f':
                 ax[i].set_xlabel('K-neighbors')

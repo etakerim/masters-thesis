@@ -1,7 +1,7 @@
 \chapter{Evaluation} \label{section:evaluation} 
 
 
-\section{MaFaulDa and k-nearest neighbors}
+\section{MaFaulDa in k-nearest neighbors}
 
 \subsection{Complete feature sets}
 % Confusion matrix
@@ -16,7 +16,7 @@
         \includegraphics[width=\textwidth]{assets/results/all-features/FD-confusion-matrix.png}
         \caption{Frequency-domain features}
     \end{subfigure}
-    \caption{Confusion matrix for complete sets of features }
+    \caption{Confusion matrix for complete sets of features}
 \end{figure}
 
 % Nearest neighbors - how many points have neighbourhood of same class A+B
@@ -66,22 +66,22 @@
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A+B-False-False-F3.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A-False-False-F3.png}
         \caption{Time domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A+B-False-False-K5.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A-False-False-K5.png}
         \caption{Time domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A+B-False-False-F3.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A-False-False-F3.png}
         \caption{Frequency domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A+B-False-False-K5.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A-False-False-K5.png}
         \caption{Frequency domain features}
     \end{subfigure}
     \caption{Model accuracy distribution (Bearings A+B, Dim = 3, Severity False)}
@@ -91,22 +91,22 @@
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A+B-True-False-F3.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A-True-False-F3.png}
         \caption{Time domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A+B-True-False-K5.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A-True-False-K5.png}
         \caption{Time domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A+B-True-False-F3.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A-True-False-F3.png}
         \caption{Frequency domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A+B-True-False-K5.png}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A-True-False-K5.png}
         \caption{Frequency domain features}
     \end{subfigure}
     \caption{Model accuracy distribution (Severity True)}
@@ -116,108 +116,140 @@
 \subsection{Feature selection techniques}
 % Accuracy tables
 % Compare linear complexity accuracy with whole distribution
+
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3.png}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3-TD-train.png}
+        \caption{Time domain features (train)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3-TD-test.png}
+        \caption{Time domain features (test)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3-FD-train.png}
+        \caption{Frequency domain features (train)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3-FD-test.png}
+        \caption{Frequency domain features (test)}
+    \end{subfigure}
     \caption{Model distibution with feature selection methods (k = 5, f = 3)}
 \end{figure}
 
+
+
+
 % compare dimensions (table)
-% Please add the following required packages to your document preamble:
-% \usepackage{multirow}
-\begin{table}[]
+\begin{table}[h]
+\begin{adjustbox}{width=\textwidth}
 \begin{tabular}{|l|rr|rr|r|l|}
 \hline
 \multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}                                   & \multicolumn{2}{l|}{\textbf{Percentile}}                                 & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Axis}}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
                                       & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{}                               &                                         \\ \hline
-All features                          & \multicolumn{1}{r|}{85.56}          & 76.91                              & \multicolumn{1}{r|}{97.58}          & 98.18                              & 1                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{82.83}          & 72.93                              & \multicolumn{1}{r|}{87.88}          & 86.67                              & 1                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{85.97}          & 78.26                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
-Rank product                          & \multicolumn{1}{r|}{81.93}          & 70.88                              & \multicolumn{1}{r|}{80.00}          & 73.94                              & 1                                                   & roll\_off, roll\_on, flux               \\ \hline
-Correlation                           & \multicolumn{1}{r|}{78.85}          & 66.58                              & \multicolumn{1}{r|}{36.36}          & 35.76                              & 1                                                   & roll\_off, kurtosis, skewness           \\ \hline
-F statistic                           & \multicolumn{1}{r|}{81.93}          & 70.88                              & \multicolumn{1}{r|}{80.00}          & 73.94                              & 1                                                   & roll\_on, roll\_off, flux               \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{81.43}          & 69.91                              & \multicolumn{1}{r|}{73.94}          & 64.85                              & 1                                                   & energy, std, roll\_off                  \\ \hline
-All features                          & \multicolumn{1}{r|}{89.34}          & 82.58                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{82.49}          & 71.27                              & \multicolumn{1}{r|}{60.00}          & 57.58                              & 3                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{88.55}          & 81.07                              & \multicolumn{1}{r|}{100.00}         & 98.79                              & 3                                                   &                                         \\ \hline
-Rank product                          & \multicolumn{1}{r|}{83.84}          & 74.88                              & \multicolumn{1}{r|}{78.18}          & 81.21                              & 3                                                   & flux, roll\_off, std                    \\ \hline
-Correlation                           & \multicolumn{1}{r|}{77.58}          & 64.32                              & \multicolumn{1}{r|}{7.27}           & 6.06                               & 3                                                   & flux, skewness, kurtosis                \\ \hline
-F statistic                           & \multicolumn{1}{r|}{80.05}          & 68.02                              & \multicolumn{1}{r|}{30.30}          & 30.30                              & 3                                                   & flux, std, skewness                     \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{84.17}          & 74.63                              & \multicolumn{1}{r|}{80.00}          & 80.61                              & 3                                                   & roll\_off, roll\_on, flux               \\ \hline
+All features                          & \multicolumn{1}{r|}{92.52}          & 87.68                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{87.90}          & 79.42                              & \multicolumn{1}{r|}{96.67}          & 96.67                              & 1                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{89.70}          & 81.96                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
+Rank product                          & \multicolumn{1}{r|}{87.51}          & 79.35                              & \multicolumn{1}{r|}{95.83}          & 96.67                              & 1                                                   & zerocross, shape, pp                    \\ \hline
+Correlation                           & \multicolumn{1}{r|}{87.51}          & 79.35                              & \multicolumn{1}{r|}{95.83}          & 96.67                              & 1                                                   & shape, zerocross, pp                    \\ \hline
+F statistic                           & \multicolumn{1}{r|}{86.95}          & 78.65                              & \multicolumn{1}{r|}{88.33}          & 95.00                              & 1                                                   & pp, zerocross, aac                      \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{86.98}          & 78.28                              & \multicolumn{1}{r|}{89.17}          & 94.17                              & 1                                                   & zerocross, shape, rms                   \\ \hline
+All features                          & \multicolumn{1}{r|}{96.03}          & 92.80                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{91.20}          & 84.67                              & \multicolumn{1}{r|}{95.00}          & 93.33                              & 3                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{91.93}          & 85.47                              & \multicolumn{1}{r|}{100.00}         & 99.17                              & 3                                                   &                                         \\ \hline
+Rank product                          & \multicolumn{1}{r|}{90.59}          & 84.07                              & \multicolumn{1}{r|}{91.67}          & 90.00                              & 3                                                   & zerocross, pp, rms                      \\ \hline
+Correlation                           & \multicolumn{1}{r|}{91.63}          & 85.04                              & \multicolumn{1}{r|}{99.17}          & 95.83                              & 3                                                   & zerocross, shape, pp                    \\ \hline
+F statistic                           & \multicolumn{1}{r|}{90.59}          & 84.07                              & \multicolumn{1}{r|}{91.67}          & 90.00                              & 3                                                   & rms, pp, zerocross                      \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{91.63}          & 85.04                              & \multicolumn{1}{r|}{99.17}          & 95.83                              & 3                                                   & zerocross, pp, shape                    \\ \hline
 \end{tabular}
-\caption{k=5, f=3, bearing=A+B, severity=False, domain=FD}
-\end{table}
-
-
-\begin{table}[]
-\begin{tabular}{|l|rr|rr|r|l|}
-\hline
-\multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}                                   & \multicolumn{2}{l|}{\textbf{Percentile}}                                 & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Axis}}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
-                                      & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{}                               &                                         \\ \hline
-All features                          & \multicolumn{1}{r|}{88.04}          & 81.44                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{84.82}          & 76.42                              & \multicolumn{1}{r|}{95.83}          & 97.50                              & 1                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{85.72}          & 77.29                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
-Rank product                          & \multicolumn{1}{r|}{85.72}          & 77.29                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   & rms, pp, aac                            \\ \hline
-Correlation                           & \multicolumn{1}{r|}{83.86}          & 74.92                              & \multicolumn{1}{r|}{85.00}          & 88.33                              & 1                                                   & rms, pp, shape                          \\ \hline
-F statistic                           & \multicolumn{1}{r|}{85.72}          & 77.29                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   & rms, pp, aac                            \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{85.72}          & 77.29                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   & aac, rms, pp                            \\ \hline
-All features                          & \multicolumn{1}{r|}{92.43}          & 88.42                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{87.61}          & 81.66                              & \multicolumn{1}{r|}{96.67}          & 99.17                              & 3                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{88.06}          & 80.41                              & \multicolumn{1}{r|}{100.00}         & 98.33                              & 3                                                   &                                         \\ \hline
-Rank product                          & \multicolumn{1}{r|}{87.03}          & 79.42                              & \multicolumn{1}{r|}{95.00}          & 94.17                              & 3                                                   & pp, rms, zerocross                      \\ \hline
-Correlation                           & \multicolumn{1}{r|}{83.15}          & 73.39                              & \multicolumn{1}{r|}{69.17}          & 68.33                              & 3                                                   & pp, rms, shape                          \\ \hline
-F statistic                           & \multicolumn{1}{r|}{86.21}          & 78.26                              & \multicolumn{1}{r|}{88.33}          & 85.83                              & 3                                                   & pp, rms, aac                            \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{87.03}          & 79.42                              & \multicolumn{1}{r|}{95.00}          & 94.17                              & 3                                                   & zerocross, rms, pp                      \\ \hline
-\end{tabular}
-\caption{k=5, f=3, bearing=A+B, severity=False, domain=TD}
+\end{adjustbox}
+\caption{k=5, f=3, bearing=A, severity=False, domain=TD}
 \end{table}
 
 
 \begin{table}[h]
+\begin{adjustbox}{width=\textwidth}
 \begin{tabular}{|l|rr|rr|r|l|}
 \hline
 \multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}                                   & \multicolumn{2}{l|}{\textbf{Percentile}}                                 & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Axis}}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
                                       & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{}                               &                                         \\ \hline
-All features                          & \multicolumn{1}{r|}{90.82}          & 84.90                              & \multicolumn{1}{r|}{99.39}          & 98.18                              & 1                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{88.56}          & 82.35                              & \multicolumn{1}{r|}{76.36}          & 76.97                              & 1                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{90.89}          & 85.56                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
-Rank product                          & \multicolumn{1}{r|}{89.65}          & 84.22                              & \multicolumn{1}{r|}{93.94}          & 96.06                              & 1                                                   & entropy, flux, centroid                 \\ \hline
-Correlation                           & \multicolumn{1}{r|}{88.48}          & 82.26                              & \multicolumn{1}{r|}{74.55}          & 75.76                              & 1                                                   & entropy, flux, noisiness                \\ \hline
-F statistic                           & \multicolumn{1}{r|}{89.65}          & 84.22                              & \multicolumn{1}{r|}{93.94}          & 96.06                              & 1                                                   & entropy, flux, centroid                 \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{89.65}          & 84.22                              & \multicolumn{1}{r|}{93.94}          & 96.06                              & 1                                                   & flux, entropy, centroid                 \\ \hline
-All features                          & \multicolumn{1}{r|}{92.67}          & 88.19                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{89.37}          & 83.56                              & \multicolumn{1}{r|}{69.09}          & 67.88                              & 3                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{91.17}          & 86.97                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
-Rank product                          & \multicolumn{1}{r|}{88.89}          & 82.69                              & \multicolumn{1}{r|}{55.76}          & 53.94                              & 3                                                   & flux, entropy, skewness                 \\ \hline
-Correlation                           & \multicolumn{1}{r|}{88.89}          & 82.69                              & \multicolumn{1}{r|}{55.76}          & 53.94                              & 3                                                   & flux, entropy, skewness                 \\ \hline
-F statistic                           & \multicolumn{1}{r|}{88.89}          & 82.69                              & \multicolumn{1}{r|}{55.76}          & 53.94                              & 3                                                   & flux, skewness, entropy                 \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{90.15}          & 84.75                              & \multicolumn{1}{r|}{84.24}          & 86.67                              & 3                                                   & roll\_off, flux, roll\_on               \\ \hline
+All features                          & \multicolumn{1}{r|}{88.15}          & 79.99                              & \multicolumn{1}{r|}{99.39}          & 98.18                              & 1                                                   &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{83.83}          & 74.43                              & \multicolumn{1}{r|}{77.58}          & 83.03                              & 1                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{88.93}          & 81.86                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
+Rank product                          & \multicolumn{1}{r|}{86.87}          & 77.51                              & \multicolumn{1}{r|}{95.76}          & 93.33                              & 1                                                   & entropy, roll\_off, flux                \\ \hline
+Correlation                           & \multicolumn{1}{r|}{80.54}          & 68.01                              & \multicolumn{1}{r|}{33.33}          & 31.52                              & 1                                                   & kurtosis, roll\_off, skewness           \\ \hline
+F statistic                           & \multicolumn{1}{r|}{86.87}          & 77.51                              & \multicolumn{1}{r|}{95.76}          & 93.33                              & 1                                                   & flux, entropy, roll\_off                \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{88.11}          & 80.96                              & \multicolumn{1}{r|}{99.39}          & 99.39                              & 1                                                   & entropy, centroid, roll\_off            \\ \hline
+All features                          & \multicolumn{1}{r|}{93.67}          & 88.45                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{86.76}          & 78.51                              & \multicolumn{1}{r|}{64.85}          & 70.91                              & 3                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{92.86}          & 87.52                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
+Rank product                          & \multicolumn{1}{r|}{90.70}          & 84.74                              & \multicolumn{1}{r|}{94.55}          & 96.36                              & 3                                                   & roll\_off, flux, centroid               \\ \hline
+Correlation                           & \multicolumn{1}{r|}{84.55}          & 75.10                              & \multicolumn{1}{r|}{38.18}          & 42.42                              & 3                                                   & roll\_off, negentropy, skewness         \\ \hline
+F statistic                           & \multicolumn{1}{r|}{90.70}          & 84.74                              & \multicolumn{1}{r|}{94.55}          & 96.36                              & 3                                                   & roll\_off, flux, centroid               \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{90.73}          & 83.60                              & \multicolumn{1}{r|}{94.55}          & 94.55                              & 3                                                   & roll\_off, entropy, noisiness           \\ \hline
 \end{tabular}
-\caption{k=5, f=3, bearing=A+B, severity=True, domain=FD}
+\end{adjustbox}
+\caption{k=5, f=3, bearing=A, severity=False, domain=FD}
 \end{table}
 
-\begin{table}[]
-\begin{tabular}{|l|ll|ll|l|l|}
+
+\begin{table}[h]
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{|l|rr|rr|r|l|}
 \hline
-\multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}              & \multicolumn{2}{l|}{\textbf{Percentile}}            & \multirow{2}{*}{\textbf{Axis}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
-                                      & \multicolumn{1}{l|}{\textbf{Train}} & \textbf{Test} & \multicolumn{1}{l|}{\textbf{Train}} & \textbf{Test} &                                &                                         \\ \hline
-All features                          & \multicolumn{1}{l|}{91.56}          & 86.70         & \multicolumn{1}{l|}{100.00}         & 100.00        & 1                              &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{l|}{89.82}          & 84.25         & \multicolumn{1}{l|}{93.33}          & 95.00         & 1                              &                                         \\ \hline
-Best features                         & \multicolumn{1}{l|}{90.04}          & 84.02         & \multicolumn{1}{l|}{100.00}         & 91.67         & 1                              &                                         \\ \hline
-Rank product                          & \multicolumn{1}{l|}{90.00}          & 83.97         & \multicolumn{1}{l|}{99.17}          & 90.00         & 1                              & zerocross, shape, pp                    \\ \hline
-Correlation                           & \multicolumn{1}{l|}{89.82}          & 83.96         & \multicolumn{1}{l|}{93.33}          & 88.33         & 1                              & shape, zerocross, rms                   \\ \hline
-F statistic                           & \multicolumn{1}{l|}{88.39}          & 82.21         & \multicolumn{1}{l|}{49.17}          & 54.17         & 1                              & pp, rms, shape                          \\ \hline
-Mutual information                    & \multicolumn{1}{l|}{89.84}          & 83.67         & \multicolumn{1}{l|}{95.00}          & 83.33         & 1                              & zerocross, aac, rms                     \\ \hline
-All features                          & \multicolumn{1}{l|}{93.55}          & 90.50         & \multicolumn{1}{l|}{100.00}         & 100.00        & 3                              &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{l|}{91.66}          & 87.31         & \multicolumn{1}{l|}{99.17}          & 99.17         & 3                              &                                         \\ \hline
-Best features                         & \multicolumn{1}{l|}{91.91}          & 87.77         & \multicolumn{1}{l|}{100.00}         & 100.00        & 3                              &                                         \\ \hline
-Rank product                          & \multicolumn{1}{l|}{91.91}          & 87.77         & \multicolumn{1}{l|}{100.00}         & 100.00        & 3                              & shape, zerocross, rms                   \\ \hline
-Correlation                           & \multicolumn{1}{l|}{91.91}          & 87.77         & \multicolumn{1}{l|}{100.00}         & 100.00        & 3                              & shape, rms, zerocross                   \\ \hline
-F statistic                           & \multicolumn{1}{l|}{89.27}          & 83.54         & \multicolumn{1}{l|}{73.33}          & 67.50         & 3                              & shape, pp, rms                          \\ \hline
-Mutual information                    & \multicolumn{1}{l|}{91.91}          & 87.77         & \multicolumn{1}{l|}{100.00}         & 100.00        & 3                              & zerocross, shape, rms                   \\ \hline
+\multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}                                   & \multicolumn{2}{l|}{\textbf{Percentile}}                                 & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Axis}}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
+                                      & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{}                               &                                         \\ \hline
+All features                          & \multicolumn{1}{r|}{94.99}          & 92.07                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{92.67}          & 89.20                              & \multicolumn{1}{r|}{84.17}          & 87.50                              & 1                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{93.99}          & 91.31                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
+Rank product                          & \multicolumn{1}{r|}{92.71}          & 88.55                              & \multicolumn{1}{r|}{85.00}          & 80.83                              & 1                                                   & zerocross, shape, rms                   \\ \hline
+Correlation                           & \multicolumn{1}{r|}{92.71}          & 88.55                              & \multicolumn{1}{r|}{85.00}          & 80.83                              & 1                                                   & zerocross, shape, rms                   \\ \hline
+F statistic                           & \multicolumn{1}{r|}{92.71}          & 88.55                              & \multicolumn{1}{r|}{85.00}          & 80.83                              & 1                                                   & zerocross, shape, rms                   \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{91.31}          & 86.99                              & \multicolumn{1}{r|}{67.50}          & 67.50                              & 1                                                   & zerocross, shape, impulse               \\ \hline
+All features                          & \multicolumn{1}{r|}{96.42}          & 94.76                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{94.63}          & 92.07                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{94.58}          & 91.71                              & \multicolumn{1}{r|}{100.00}         & 99.17                              & 3                                                   &                                         \\ \hline
+Rank product                          & \multicolumn{1}{r|}{94.31}          & 91.40                              & \multicolumn{1}{r|}{98.33}          & 95.83                              & 3                                                   & zerocross, shape, rms                   \\ \hline
+Correlation                           & \multicolumn{1}{r|}{94.31}          & 91.40                              & \multicolumn{1}{r|}{98.33}          & 95.83                              & 3                                                   & zerocross, shape, rms                   \\ \hline
+F statistic                           & \multicolumn{1}{r|}{94.31}          & 91.40                              & \multicolumn{1}{r|}{98.33}          & 95.83                              & 3                                                   & shape, zerocross, rms                   \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{91.90}          & 88.51                              & \multicolumn{1}{r|}{72.50}          & 76.67                              & 3                                                   & zerocross, shape, clearance             \\ \hline
 \end{tabular}
-\caption{k=5, f=3, bearing=A+B, severity=True, domain=TD}
+\end{adjustbox}
+\caption{k=5, f=3, bearing=A, severity=True, domain=TD}
 \end{table}
+
+
+\begin{table}[h]
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{|l|rr|rr|r|l|}
+\hline
+\multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}                                   & \multicolumn{2}{l|}{\textbf{Percentile}}                                 & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Axis}}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
+                                      & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{}                               &                                         \\ \hline
+All features                          & \multicolumn{1}{r|}{94.17}          & 90.94                              & \multicolumn{1}{r|}{100.00}         & 99.39                              & 1                                                   &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{91.49}          & 87.78                              & \multicolumn{1}{r|}{80.00}          & 86.67                              & 1                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{94.13}          & 91.37                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
+Rank product                          & \multicolumn{1}{r|}{93.75}          & 90.29                              & \multicolumn{1}{r|}{99.39}          & 99.39                              & 1                                                   & entropy, centroid, flux                 \\ \hline
+Correlation                           & \multicolumn{1}{r|}{93.75}          & 90.29                              & \multicolumn{1}{r|}{99.39}          & 99.39                              & 1                                                   & entropy, flux, centroid                 \\ \hline
+F statistic                           & \multicolumn{1}{r|}{93.75}          & 90.29                              & \multicolumn{1}{r|}{99.39}          & 99.39                              & 1                                                   & entropy, centroid, flux                 \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{93.75}          & 90.29                              & \multicolumn{1}{r|}{99.39}          & 99.39                              & 1                                                   & centroid, entropy, flux                 \\ \hline
+All features                          & \multicolumn{1}{r|}{95.20}          & 93.20                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{92.14}          & 88.84                              & \multicolumn{1}{r|}{69.09}          & 73.94                              & 3                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{94.64}          & 91.94                              & \multicolumn{1}{r|}{100.00}         & 99.39                              & 3                                                   &                                         \\ \hline
+Rank product                          & \multicolumn{1}{r|}{94.50}          & 92.19                              & \multicolumn{1}{r|}{99.39}          & 100.00                             & 3                                                   & entropy, centroid, flux                 \\ \hline
+Correlation                           & \multicolumn{1}{r|}{94.50}          & 92.19                              & \multicolumn{1}{r|}{99.39}          & 100.00                             & 3                                                   & entropy, centroid, flux                 \\ \hline
+F statistic                           & \multicolumn{1}{r|}{94.50}          & 92.19                              & \multicolumn{1}{r|}{99.39}          & 100.00                             & 3                                                   & entropy, flux, centroid                 \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{93.32}          & 90.67                              & \multicolumn{1}{r|}{90.91}          & 91.52                              & 3                                                   & roll\_off, entropy, noisiness           \\ \hline
+\end{tabular}
+\end{adjustbox}
+\caption{k=5, f=3, bearing=A, severity=True, domain=FD}
+\end{table}
+
+
 
 
 % compare percentiles
@@ -446,51 +478,9 @@ Correlation        & 84.11                                                    & 
 \section{Industrial dataset analysis}
 
 \subsection{Feature ranges}
-% Amplitude histograms
+% Amplitude histograms - 20m/s^2, 40m/s^2, 150m/s^
 % Histograms of machinery measurements
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{0.33\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/histograms/C1.png}
-        \caption{C1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.33\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/histograms/C2.png}
-        \caption{C2}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.33\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/histograms/M1.png}
-        \caption{M1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.33\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/histograms/M2.png}
-        \caption{M2}
-    \end{subfigure} 
-    \hfill
-    \begin{subfigure}[b]{0.33\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/histograms/M3.png}
-        \caption{M3}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.33\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/histograms/P1.png}
-        \caption{P1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.33\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/histograms/P2.png}
-        \caption{P2}
-    \end{subfigure} 
-    \hfill
-    \begin{subfigure}[b]{0.33\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/histograms/P3.png}
-        \caption{P3}
-    \end{subfigure} 
-    \caption{Histograms}
-\end{figure}
+
 
 % Box plots of features
 \begin{figure}[h]
@@ -510,53 +500,25 @@ Correlation        & 84.11                                                    & 
 \subsection{Time-frequency waveforms}
 \begin{figure}[h]
     \centering
-    \begin{subfigure}[b]{0.33\textwidth}
+    \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{assets/results/eda/frequency-spectrum-motors.png}
-        \caption{Motors frequency domain}
+        \caption{Motors}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.33\textwidth}
+    \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{assets/results/eda/frequency-spectrum-pumps.png}
-        \caption{Pumps frequency domain}
+        \caption{Pumps}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.33\textwidth}
+    \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{assets/results/eda/frequency-spectrum-compressors.png}
-        \caption{Compressor frequency domain}
+        \caption{Compressor}
     \end{subfigure} 
     \caption{Frequency domain}
 \end{figure}
 
 
 % Time-frequency spectrum
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/K3-z-STFT.png}
-        \caption{K3}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/M1-2-z-STFT.png}
-        \caption{M1-2}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P1-3-z-STFT.png}
-        \caption{P1-3}
-    \end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P3-3-z-STFT.png}
-        \caption{P3-3}
-    \end{subfigure}
-	\hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/X-P2-Turn-on-Sigma.png}
-        \caption{P2-3 turn off with intererence (X-axis)}
-    \end{subfigure}
-    \caption{Time frequency spectrum}
-\end{figure}
 
 % Low frequencies (under 1KHz)
 

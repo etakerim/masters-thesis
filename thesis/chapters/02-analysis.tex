@@ -242,18 +242,21 @@ The inherent symmetries in the Fourier matrix made it possible to implement the 
 \textit{Spectral flux}     & $X_{\mathrm{flux}} = 1 - \mathrm{corr}(A_{t-1}, A_t)$ \\ \hline 
 \textit{Noisiness}                   & $X_{noise} = \mathrm{SNR}(X) = \mu \;/\; \sigma $                             \\ \hline
 \textit{Shannon entropy}      & $H(X) = - \sum_{i} P(X = x_i) \cdot \ln(P(X = x_i)) $                                                  \\ \hline
-\textit{Spectral negentropy}      & $\Delta I_E(f, \Delta f) = \sum_{k = 0}^{N - 1}{\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}} \cdot \ln\left(\frac{E(k, f, \Delta f)^2}{\frac{1}{N} \sum_{k=0}^{N-1} E(k, f, \Delta f)^2}\right)$                                                \\ \hline
+\textit{Spectral negentropy}      & $\Delta I_E(f, \Delta f) = \sum_{k = 0}^{N - 1}{p \cdot \ln(p); p = \frac{\mathrm{SES}^2}{\frac{1}{N} \sum_{k=0}^{N-1} \mathrm{SES}^2}}$                                                \\ \hline
 \end{tabular}
 \caption{Frequency-domain features}
 \label{tab:fd-features}
 \end{table}
 
+
+
 In the frequency domain, we can obtain the usual statistical properties of the distribution being spectral centroid, skew and kurtosis. Additionally, spectral roll-on and roll-off, fundamental frequency, entropy, negentropy, spectral flux, signal-to-noise ratio (noisiness), energy in frequency bands, and energy ratio are extracted (Tab.~\ref{tab:fd-features})~\cite{peeters_large_2004}. 
 
 In geometric terms, the spectral centroid represents the barycenter of the frequency magnitude plot. Spectral roll-off gives a notion about the spectral distribution because it identifies the frequency $f_c$ below which 95\% of the signal energy is contained. Complementary, the roll-on frequency is chosen so that 5\% of the signal energy is below this value. According to the definition, spectral flux is normalized cross-correlation between two successive amplitude spectra a value of one means the spectra are the most dissimilar.
 
-``Negentropy measures the inclination of a system to increase its level of organization''~\cite{avoci_spectral_2020}. The larger \emph{spectral negentropy} suggests more fault-induced impulses. $E(k, f, \Delta f)$ denotes the squared envelope spectrum (SES) which is an envelope in the Fourier domain: $\mathcal{F}\{ |y(k, f, \Delta f)|^2 \}$.
+``Negentropy measures the inclination of a system to increase its level of organization''~\cite{avoci_spectral_2020}. The larger \emph{spectral negentropy} suggests more fault-induced impulses. The squared envelope spectrum (SES) is interpreted as $E(k, f, \Delta f)$ which is an envelope in the Fourier domain: $\mathcal{F}\{ |y(k, f, \Delta f)|^2 \}$.
 
+\subsection{Features in harmonic frequencies}
 If a single principal frequency exists, it can be determined by maximum likelihood estimation. Such frequency would explain the signal spectrum the best~\cite{peeters_large_2004}. The frequency spectrum is a discrete set of amplitudes where peaks have to be reliably identified to create representative attributes.
 
 The essential peak-finding approaches are based either on magnitude or gradient. All found extrema are commonly filtered with the magnitude of prominences and the width at half prominence. In the magnitude-based method, the middle point $x_i$ is compared to two neighboring points and the peak is then: $x_{i-1} < x_i > x_{i+1}$. The gradient-based method evaluates the first derivative at the point which is equal to zero if the point is a local maximum, local minimum, or inflection point~\cite{adikaram_non-parametric_2016}.
@@ -271,21 +274,27 @@ A substantial improvement is a robust non-parametric peak identification named \
 \frac{a_{max} - a_{min}}{a_{max} \cdot 3 - S_3} = \frac{a_{max} - a_{mid}}{a_{max} \cdot 3 - S_3}
 \label{equ:mms-minima}
  \end{align}\end{ceqn}
-
-Multiple harmonic series and the sidebands can be separated into a discrete set of frequency components, each with a central frequency, uncertainty, and amplitude $C_i(v_i, \Delta v_i, A_i)$ by an exhaustive search algorithm. Harmonic family identification is a non-trivial problem because of spectrum estimation errors. The criterion is proposed to select harmonics at the minimal distance from the true fundamental frequency multiple~(Equation~\ref{equ:harmonic-search}). Two series with the same fundamental frequency are merged and thought of as a modulation series~\cite{gerber_identification_2013}.
-
+ 
 \myequations{Harmonic series search criterion}
 \begin{ceqn}\begin{align}
 v_i^{(r)} = \frac{v_j}{\min{|v_j - r \cdot v_i|}}
 \label{equ:harmonic-search}
 \end{align}\end{ceqn}
 
+Multiple harmonic series and the sidebands can be separated into a discrete set of frequency components, each with a central frequency, uncertainty, and amplitude $C_i(v_i, \Delta v_i, A_i)$ by an exhaustive search algorithm. Harmonic family identification is a non-trivial problem because of spectrum estimation errors. The criterion is proposed to select harmonics at the minimal distance from the true fundamental frequency multiple~(Equation~\ref{equ:harmonic-search}). Two series with the same fundamental frequency are merged and thought of as a modulation series~\cite{gerber_identification_2013}.
+
+
 \subsection{Bearing defect frequencies}
+
 %TODO n = number of balls, d - average of outer ring diameter and outer ring, f_s - rotation speed, beta - contact angle - ball bearings close to 0
+
+% Rolling element bearings have four very important components, two circular races, between which the rolling elements—rollers, tapered rollers, or spherical balls—are held. The fourth important element in a rolling element bearing is the cage or the separator. The cage ensures that no two rolling elements come in contact with each other
+% The bearing vibration is further complicated when the radial loads on the bearing change during rotation of the shaft, and defects like impurities or scratches, pits, and so on, develop on the bearing element surfaces
+% The characteristic bearing defect frequencies for the different rolling elements of bearings can be determined
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{assets/analysis/bearing-parts.jpg}
+    \includegraphics[width=0.7\textwidth]{assets/analysis/bearing-parts.jpg}
     \caption{Bearing parts~\cite{lu_what_is_ball_bearing_2023}}
     \label{fig:bearing-parts}
 \end{figure}
@@ -431,44 +440,6 @@ Tool wear diagnosis based on acoustic emission (AE) signal considers \emph{wavel
 
 Discrete wavelet transform and wavelet packets partition the spectrum into predefined frequency bands that do not always adequately capture individual elementary oscillations. Adaptive spectral segmentation is needed to extract separate intrinsic mode functions (IMF).
 
-\subsection{Empirical wavelet features}
-\textbf{Empirical Wavelet Transform} (EWT) constructs adaptive bandpass filters with Meyer wavelet. The inner product of the signal with the scaling function $\hat{\phi_n}$ obtains the approximation coefficients and the inner product with the wavelet function results in detail coefficients.
-
-The normalized frequency axis in range $\omega \in [0, \pi]$ is divided by split points $\omega_0, \dots, \omega_N$ where $\omega_n = f_n \cdot 2 \pi\;/\;f_s$ (Fig.~\ref{fig:ewt-spectrum-segmentation}). Each segment is bounded between $[\omega_{n-1}, \omega_n]$ with a transition phase of width $2\tau_n$ and polynomial transition function $\beta(x)$. A tight frame set of empirical wavelets is built by setting the transition phase proportional to the band boundary: $\tau_n = \lambda \omega_n$, and proportional constant must obey constrain: $\lambda = \min\left(\frac{\omega_{n+1} - \omega_n}{\omega_{n+1} + \omega_n}\right)$. The $N$ boundaries defining different portions of the Fourier spectrum are placed at the center between two consecutive local maxima~\cite{gilles_empirical_2013}.
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.9\textwidth]{assets/analysis/EWT.png}
-    \caption{Empirical wavelet segmentation of Fourier spectrum~\cite{gilles_empirical_2013}}
-    \label{fig:ewt-spectrum-segmentation}
-\end{figure}
-
-The drawback of EWT is improper segmentation in noisy and non-stationary signals, producing too many uninformative partitions of the spectrum. The solutions we discuss fall into two groups that apply improvements before or after the wavelet transformation step. 
-
-A combination of \textbf{Maximum Correlated Kurtosis Deconvolution} and improved EWT (MKCD-EWT) favors periodic impacts by dynamically constructing an optimal FIR filter that maximizes the correlation kurtosis of the signal. The envelope curve smooths the amplitude spectrum by linear interpolation (Fig.~\ref{fig:mkcd-ewt-segmentation}). The threshold accounting for desired SNR modifies the envelope when more than $n$ components are discovered ($A_h$ is maximal amplitude and $A_l$ is minimal amplitude): $\lambda = A_l + \frac{C}{\mathrm{SNR}}(A_h - A_l)$. \emph{Squared envelope spectrum} and \emph{Teager energy operator spectrum} are computed as fault features for the IMF with the highest kurtosis~\cite{li_fault_2019}. 
-
-The segmentation boundary detection can also be accomplished on the spectral envelope consisting of \textbf{Piecewise Cubic Hermite Interpolating Polynomial} (PCHIP-EWT) instead of scanning the Fourier spectrum directly (Fig.~\ref{fig:pchip-ewt-segmentation}). Divisions of the upper cut-off frequency are kept if local power indicates a subband with useful information ($p_i(f) \geq \lambda$)  as in the case of an abrupt level change. Local power is the ratio of $n$th local envelope maximum and the difference between indexes of its adjacent local minima:  $p_i(f) = K_{max(i)(f)} \;/\;\left(f_{k_{min(i+1)}} - f_{k_{min(i)}}\right)$. The best $\lambda$ is set experimentally~\cite{zhuang_improved_2020}.
-
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/analysis/MKCD-EWT.png}
-        \caption{MKCD-EWT~\cite{li_fault_2019}}
-        \label{fig:mkcd-ewt-segmentation}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/analysis/PCHIP-EWT.png}
-        \caption{PCHIP-EWT~\cite{zhuang_improved_2020}}
-        \label{fig:pchip-ewt-segmentation}
-    \end{subfigure}
-    \caption{Illustration of improved EWT spectral segmentations}
-\end{figure}
-
-The inspiration for filtering on an adaptive basis comes from \textbf{Empirical mode decomposition} (EMD). This procedure locates local maxima and minima in the time waveform that are interpolated with cubic splines to form signal envelopes. The average of the upper and lower envelope is repeatedly subtracted from the residuals recovering the higher order and lower frequency IMFs~\cite{wang_computational_2014}. 
-
-The EMD is not recommended for practical applications because it suffers from mode mixing problems and lacks rigid theoretical foundations. Many improvements based on the mode sifting process, such as Local Mean Decomposition (LMD), Ensemble Empirical Mode Decomposition (EEMD), Concealed Component Decomposition (CCD)~\cite{tiwari_novel_2021}, and Empirical Wavelet Transform, have been devised as being capable of estimating more reasonable modes.
-
 Wavelet domain features and associated spectral segmentation appear to be a powerful tool in conserving data bandwidth. These variables turn out to be difficult to communicate and comprehend. Therefore, we will use more standardized metrics in further studies.
 
 \section{Feature transformations} \label{section:feature-selection}
@@ -611,15 +582,7 @@ Quality of clustering results is evaluated by \emph{Silhouette score} in the ran
 In the online maintenance phase, DenStream summarizes the nearby observations into core \emph{micro-clusters} that can be potential micro-clusters or outlier \emph{micro-clusters} (Fig.~\ref{fig:denstream})~\cite{ghesmoune_state---art_2016}. The (outlier) \emph{o-micro-clusters} can grow into (potential) \emph{p-micro-clusters} when they encompass $\beta \mu$ points. The outliers are discounted after some time in accordance to the decay function: $f(t) = 2^{-\lambda t}$ or below the lower weight limit $\xi$. The on-demand offline stage runs DBSCAN over the approximate representation in micro-clusters to deliver final apportionment~\cite{cao_density-based_2006}.
 \bigbreak
 
-\textbf{Half-Space Tree} (HS-Tree) stands upon the concept of Isolation forest. It assumes that random splitting of each axis in the feature space will isolate outliers to their separate divisions sooner than non-deviant observations~\cite{gervasi_anomaly_2020, torres_automatic_2022}. This ensemble of trees is better suited for batch setting. HS-Tree stands out in adapting to changing streams because it is trained solely on normal data, requires constant memory, and is faster than density-based methods~\cite{tan_fast_2011}.
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.8\textwidth]{assets/analysis/HS-Tree.png}
-    \caption{Half-space tree~\cite{tan_fast_2011}}
-\end{figure}
-
-A full binary tree is built before the novelty detection begins by splitting tree nodes along the divisions in the randomly chosen perpendicular planes. The node stores its depth, value limits of the axis bisection (half-space), count of contained data points (mass) in two consecutive windows, and links to both child nodes~\cite{tan_fast_2011}. 
+%\cite{tan_fast_2011}. 
 
 \subsection{Classification}
 Accurate multi-class classification of machine fault causes according to the characteristics of known ones is a much more difficult task than novelty detection. Fault combinations have to be recorded and transformed into feature space. Interactions among fault root causes have to be considered. We are aware of rapid advances in knowledge transfer for deep neural networks~\cite{maurya_condition-based_2021}. So far, solutions seem not production-ready and hard to explain. Therefore, we opt to use a simpler model.
