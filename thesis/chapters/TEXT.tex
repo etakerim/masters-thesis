@@ -26,9 +26,6 @@ Dosiahnuté stratové kompresné pomery pre MaFaulDa sú 2381:1 pre všetky atri
 
 Model postupného učenia k-NN dosahuje prinajlepšom 90\% presnosť s okamžitou spätnou väzbou, 85\% so značkami oneskorenými o 250 pozorovaní a 82\% s iba 25\% anotovaného súboru údajov. Porovnateľný model trénovaný v dávkach dosahuje presnosť 98\%.  Doteraz boli urobené závery podľa súboru údajov MaFaulDa, ktoré plánujeme overiť na súbore údajov získaných v priemysle počas DP3.
 
-
-
-
 % Features range (3D)
 % Standing Fan
 \begin{figure}[h]
@@ -66,27 +63,9 @@ MaFaulda contains 1951 records labeled with inducted faults of increasing severi
 These vibration sensors are placed in two positions. The first placement is around the inner underhang bearing named \emph{A} which is closer to the motor. The second location is around the outer overhang bearing denoted as \emph{B} position.
 
 \subsection{Fault annotations}
-The MaFaulDa has annotations altogether for 10 classes of faults, of which there is 1 class for fault-free baseline operation, 3 classes for shaft defects, 3 classes for inner bearing defects, and 3 for outer bearing defects. Some categories are redundant or irrelevant for a given sensor position. 
-
-Therefore, rotor shaft misalignement in vertical and horizontal directions are merged into one joint group. Depending on the chosen bearing position, only records having relevant labels are considered. 
-
-This means that fault classification solely concerns bearing in direct contact and shaft mechanically passing through it. The bearings affect each other, but the effect on the opposite side should appear via a common interconnection shaft. 
-
-In the end, that leaves \textbf{6 types of labels}: baseline, two shaft faults are imbalance and misalignment, and three bearing faults are cage fault, ball fault, and outer race fault. In the step of choosing the accelerometer location, records pointing to the other bearing as a source of the malfunction are discarded. Then the next action renames the labels to be better recognizable and unite the same phenomena.
-
-Groups of identified machine defects are additionally characterized by altered masses attached or motor shaft displacement shifts. The set amount is sorted in ascending order, separating \textbf{multiple event severities}. However, the count of severity levels is not identical in every group. Levels are hence scaled into the range between zero and one using a min-max scaler. Scaling is applied to classes separately.
-
-The strength of the recorded response to the underlying defect is also dependent on the shaft \textbf{rotational speed}. Speed in rpm units is calculated from pulsed speedometer output. It is the average distance between two successive rising edges: 
-\begin{ceqn}\begin{align}
-\mathrm{rpm} = 60 \;/\; \overline{\Delta t}
-\end{align}\end{ceqn}
-
-\textbf{One specimen waveform} is picked from each fault class to illustrate their superficial differences. Recordings are filtered to get the highest severity levels and around a mean rotation speed of 2500 rpm (42 Hz) to see the patterns most pronounced. The baseline class sample is chosen according to fixed rotor speed.
 
 \subsection{Signal filters}
-The DC component in the three-dimensional vibration signal is removed by subtracting the global mean. Immediately follows a digital IIR Butterworth \textbf{low pass filter} of \nth{5} order with cutoff frequency 10 kHz at -3 dB. 
 
-Before the low pass filter usage, the peak at 20 kHz with a sideband was present as an unwanted artifact. It could not have been reliably recorded due to the linear frequency response of the sensor up to 10 kHz. At the same time, such a frequency is outside the range of any feasible MEMS accelerometer.
 
 \begin{figure}[ht]
     \centering

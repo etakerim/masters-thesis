@@ -1,8 +1,8 @@
 \chapter{Design} \label{chapter:design}
-%TODO
+During the design stage, we set out research questions and detail the steps of the machine learning pipeline for diagnosing fault types in the MaFaulDa dataset. The explanatory analysis of MaFaulDa hints at the underlying dependencies with feature sets that can degrade the machine learning model of choice. We adapt the methodology for measurements from standards and apply it to data logger requirements and data acquisition from industrial equipment.
 
 \section{Research questions}
-This thesis aims to provide answers to four research questions. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
+The thesis aims to provide answers to four research questions. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
 \begin{enumerate}[label=RQ\arabic*., font=\bfseries]
     \itemsep0pt
 	\item Which temporal and spectral features can be extracted from vibration signals to provide the most accurate record of machinery faults?
@@ -23,26 +23,54 @@ This thesis aims to provide answers to four research questions. The focus is pri
     \item Develop hardware and implement its firmware to obtain such measurements of the quality demanded by vibrodiagnostics standards.
 \end{todolist}
 
-
 \section{Machine learning pipeline}
-% UML pipeline (fig.) and parameters
+The similar data processing framework we adopt can be found elsewhere in the literature. It generally consists of signal acquisition, feature extraction, dimensionality reduction, and pattern recognition or fault detection~\cite{wang_bearing_2015}. However, the realization of the steps must be decomposed closer to suit the dataset structure, desired processing goals, and investigated parameters. The entire design of the data flow can be seen in Fig.~\ref{fig:design:ml-pipeline}.
 
-Dataset scenarios - 24 scenarios
-\begin{itemize}
-\item domain - TD, FD
-\item dim - 1, 3
-\item bearing - A, B, A+B
-\item severity - No, Yes
-\end{itemize}
-
-% Describe steps in pipeline
 \begin{figure}[h]
     \centering
-	\includegraphics[width=\textwidth]{assets/design/pipeline-design.png}
-\end{figure} 
+	\includegraphics[width=0.9\textwidth]{assets/design/pipeline-design.png}
+	\caption{Machine learning pipeline for MaFaulDa dataset}
+	\label{fig:design:ml-pipeline}
+\end{figure}
+\afterpage{\clearpage}
 
+\textbf{In preprocessing step}, the signals stored in columns of CSV files within the MaFaulDa ZIP archive are first associated with metadata according to the file's path in the directory structure. The hierarchically topmost folder describes the simulated defect. There is directory for \emph{normal}, \emph{imbalance}, \emph{horizontal-misalignment}, \emph{vertical-misalignment}, \emph{overhang} (outer bearing), \emph{underhang} (inner bearing). Each bearing has an additional folder layer for dividing bearing faults: \emph{ball\_fault}, \emph{cage\_fault}, \emph{outer\_race}. Each fault category except the normal class contains various fault severities with units of grams or millimeters. The severities in turn consist of individual files with different rpm speeds. 
 
-% Experiments and metrics:
+We neglect the acceleration sensor orientation, therefore, the labels for shaft misalignment in vertical and horizontal directions are merged into the same group. In the end, that leaves \textbf{6 types of labels}: baseline, two shaft faults are imbalance and misalignment, and three bearing faults are cage fault, ball fault, and outer race fault.  
+
+Depending on the chosen bearing position, only time series associated with that bearing are retained because the standards demand each bearing be assessed separately. Fault classification concerns bearing in direct contact and shaft mechanically passing through it.
+
+The strength of the recorded response to the underlying defect is dependent on the shaft \textbf{rotational speed}. Speed in units of rpm is calculated from pulsed speedometer output. It is the average distance between two successive rising edges:
+\begin{ceqn}\begin{align}
+\mathrm{rpm} = 60 \;/\; \overline{\Delta t}
+\end{align}\end{ceqn}
+
+The final \textbf{file description} is the triplet of \textbf{fault}, \textbf{severity}, and \textbf{rpm}.
+
+After labeling we insert a step to split the time series into parts when the duration is long enough to introduce more observations artificially. This assumption is not met for MaFaulDa because, for the desired frequency resolution for features of close to 1~Hz, we need a window size of 32768 samples. Variation reduction in spectral estimation brings the necessity to average at least 12 overlapping windows. The full length of 5 seconds provides 15 whole overlapping windows. 
+
+The DC component in the three-dimensional vibration signal is removed by subtracting the global mean. Immediately follows a digital IIR Butterworth low pass filter of \nth{5} order with cutoff frequency 10 kHz at -3 dB. Before the usage of a low pass filter, the peak at 20 kHz with a sideband was present as an unwanted artifact. It could not have been reliably recorded due to the linear frequency response of the sensor up to 10 kHz. At the same time, such a frequency is outside the range of any feasible MEMS accelerometer.
+
+Initial labels can be exchanged for a label of fault-free state when the severity is low. The count of severity levels is not identical in every group. The numerical amounts for each level are sorted in ascending order within each fault and then these levels are normalized using a min-max scaler.
+
+The preprocessed signal from each axis of accelerometer is packed up to two base feature sets in time domain (TD) and frequency domain (FD). The feature extraction formulas are is identical with formulas presented in the section \ref{section:feature-extraction} of analysis chapter. The frequency transform is Welch's method averaging FFT vectors from 32768 samples after Hann windowing and 50\% overlap. The feature sets are:
+\begin{itemize}
+\item \textbf{TD has 10 time-domain features}: peak-to-peak amplitude (\emph{pp}), zero-crossing rate (\emph{zerocross}), root mean square (\emph{rms}), skewness, kurtosis, shape factor, crest factor, impulse factor, clearance factor, average amplitude change (aac), 
+\item \textbf{FD has 11 frequency-domain features}: spectral centroid, standard deviation (\emph{std}), skewness, kurtosis, roll-on frequency, roll-off frequency, spectral flux, noisiness, spectral negentropy, energy, entropy.
+\end{itemize}
+ 
+The four conditions is applied in the instance of the pipeline to filter observations with calculated features to create 24 scenarios:
+\begin{itemize}
+\item \textbf{source bearings}: keep samples and fault labels either just for the inner bearing (A), for only the outer bearing (B), or both bearings (A+B).
+\item \textbf{feature domain}: change the set of extracted features an input to downstream models and those can be time-domain (TD) and frequency-domain (FD) features,
+\item \textbf{accelerometer axis}: consider either one principal direction of motion or all three dimensions to aggregate under same feature name,
+\item \textbf{high severity faults}: to more precisely capture fault frequencies found in real environment the low severity defects can be considered as normal operation.
+\end{itemize}
+
+The fault classification performance metrics are judged after balancing classes with random oversampling using strategy to resample all but majority class, feature normalization and 5-fold cross-validation validation on k-nearest neighbor classifier. In the multi-class classification the micro-averaged performance metrics of accuracy, precision, and recall results in the same number, therefore accuracy is only one on the output. 
+
+The hyperparameters of k-neighbours and subset of utilzed features is tweaked and results are compared under different initial conditions from preprocessing and in multiple experiments.
+
 \begin{itemize}
 \item Complete feature sets
 \item Feature combinations
@@ -73,7 +101,7 @@ Dataset scenarios - 24 scenarios
 % Correlation to RPM
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{assets/results/feature-values/corr-to-rpm.png}
+    \includegraphics[width=0.8\textwidth]{assets/results/feature-values/corr-to-rpm.png}
     \caption{Correlation of features to RPM over all experiments}
 \end{figure}
 
