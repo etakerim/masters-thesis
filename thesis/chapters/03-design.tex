@@ -1,5 +1,5 @@
 \chapter{Design} \label{chapter:design}
-The design phase sets out to elaborate on the scenarios for experiments with IoT device. In these experiments, we compare and combine approaches from industry standards and papers presented in the analysis section. Conclusions are taken into consideration in establishing the plan of measurements and in the construction of the sensor unit.
+%TODO
 
 \section{Research questions}
 This thesis aims to provide answers to four research questions. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
@@ -17,13 +17,11 @@ This thesis aims to provide answers to four research questions. The focus is pri
     \item Statistically and visually describe vibration signals from the Machinery fault database (MauFaulDa).
     \item Establish a list of conditions that should be later investigated in the experimental setting.
     \item Prepare dataset to be used in conjunction with machine learning models, namely by identifying labels and balancing classes.
-    \item Find the best subsets of features in the temporal and spectral domain with previously analyzed feature extraction and selection methods.
+    \item Find the best subsets of features in the time and frequnecy domain with previously analyzed feature extraction and selection methods.
     \item Evaluate the performance of models described in the diagnostics section with a significant focus on the k-nearest neighbor algorithm.
     \item Acquire measurements of vibrations from machines in the real environment to form a novel dataset of machinery behavior.
     \item Develop hardware and implement its firmware to obtain such measurements of the quality demanded by vibrodiagnostics standards.
 \end{todolist}
-
-However, we leave out from our efforts experiments on the data features calculated from wavelets and peaks in the spectral domain. The reason is that we did not find a way to represent extracted features more succinctly as a single number. We also did not discover a strategy for choosing only the relevant frequency bins.
 
 
 \section{Machine learning pipeline}
@@ -37,6 +35,7 @@ Dataset scenarios - 24 scenarios
 \item severity - No, Yes
 \end{itemize}
 
+% Describe steps in pipeline
 \begin{figure}[h]
     \centering
 	\includegraphics[width=\textwidth]{assets/design/pipeline-design.png}
@@ -49,7 +48,6 @@ Dataset scenarios - 24 scenarios
 \item Feature combinations
 \item Feature selection methods
 \item Incremental learning
-\item Clustering - Silouette score
 \end{itemize}
 
 

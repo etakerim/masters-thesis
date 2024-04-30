@@ -2,18 +2,18 @@
 In the problem analysis chapter we explore the feature engineering methods and machine learning algorithms for fault diagnostics. The basis we build upon is the domain knowledge of mechanical engineers in vibration signal measurement and its evaluation.
 
 \section{Condition monitoring} \label{section:condition-monitoring}
-All rotating machinery eventually fails because of the long-term strain on the individual parts, inadequate workmanship, installation, or operational procedures. In the end, these factors cause the equipment not to fulfill its intended functionality. Many instrumentation methods are practiced to reveal evolving faults: vibration and acoustic noise monitoring, electric supply line measurements, thermography, oil and particle analysis, ultrasonic testing, etc. Vibration signals are the preferred tool for rotating machinery monitoring \cite{mohanty_machinery_2015}.
+All rotating machinery eventually fails because of the long-term strain on the individual parts, inadequate workmanship, installation, or operational procedures. In the end, these factors cause the equipment not to fulfill its intended functionality. Many instrumentation methods are practiced to reveal evolving faults: vibration and acoustic noise monitoring, electric supply line measurements, thermography, oil and particle analysis, ultrasonic testing, etc. Vibration signals are the preferred tool for rotating machinery monitoring~\cite{mohanty_machinery_2015}.
 
-The defect needs to be repaired or replaced, preferably without significant production downtime, further damage to the other attached elements, or any endangerment of the responsible personnel. The maintenance strategies are chosen according to the machine's importance as a result of potential failure's impact on the system. The guide to set appropriate maintenance procedures as outlined in the IEC~60706-2 standard, and involves reliability-centered maintenance analysis~\cite{el-thalji_predictive_2019}.
+The defect needs to be repaired or replaced, preferably without significant production downtime, further damage to the other attached elements, or any endangerment of the responsible personnel. The maintenance strategies are chosen according to the machine's importance as a result of potential failure's impact on the system. The guide to set appropriate maintenance procedures is outlined in the IEC~60706-2 standard and involves reliability-centered maintenance analysis~\cite{el-thalji_predictive_2019}.
 
 \subsection{Maintenance strategies}
-There are three different approaches to maintenance across the industry: \textbf{reactive, preventive, and predictive}~\cite{scheffer_practical_2004}. In general, the more sophisticated methods are beneficial in a high-stakes environment. The unexpected machine shutdown can have a negative economic impact on the enterprise, resulting in decreased product quality and demands for spare parts to be ready in the supply inventory at all times. In certain situations, it suffices to utilize a simpler maintenance program, but predictive maintenance gains attraction in Industry 4.0 to optimize usage of assets~\cite{cinar_machine_2020}.
+There are three different approaches to maintenance across the industry: \textbf{reactive, preventive, and predictive}~\cite{scheffer_practical_2004}. In general, the more sophisticated methods are beneficial in a high-stakes environment. The unexpected machine shutdown can have a negative economic impact on the enterprise which results in decreased product quality and demands for spare parts to be ready in the supply inventory at all times. In certain situations, it suffices to utilize a simpler maintenance program, but predictive maintenance gains attraction in Industry 4.0 to optimize usage of assets~\cite{cinar_machine_2020}.
 
-\textbf{Reactive maintenance} allows machinery to run until a complete failure. This is the most inappropriate way to maintain the production line, but it is straightforward enough. It requires a large stock of replacement parts on-site and breakage inflicts a ``crisis management mode'' upon the plant \cite{scheffer_practical_2004}. On-demand repairs are justified when short downtime is acceptable, full and swift replacement of a broken machine with a backup is possible, or there is a negligible threat to the surrounding environment from failure~\cite{ziaran_technicka_2013}.
+\textbf{Reactive maintenance} allows machinery to run until a complete failure which is the most inappropriate way to maintain the production line, but it is straightforward enough. It requires a large stock of replacement parts on-site. Any breakage inflicts crisis management upon the plant \cite{scheffer_practical_2004}. On-demand repairs are justified when short downtime is acceptable, full and swift replacement of a broken machine with a backup is possible, or there is a negligible threat to the surrounding environment from failure~\cite{ziaran_technicka_2013}.
 
-\textbf{Preventive maintenance} is performed before any issue is detected. Maintenance occurs at regular intervals derived from a predetermined period in the calendar or expected machine running time (MTTF - Mean Time To Failure). The schedule is crucial but can result in components being replaced in good condition, creating waste. The parts can occasionally stay in operation too long, and the machine breaks as a result. Conservative planning is usually the norm to keep the machines always in a perfect state, and therefore more frequent interventions are required~\cite{mohanty_machinery_2015}.
+\textbf{Preventive maintenance} is performed before any issue is detected. Maintenance occurs at regular intervals derived from a predetermined period in the calendar or expected machine running time and its mean time to failure (MTTF). The schedule is crucial but can result in components being replaced in good condition, creating waste. The parts can occasionally stay in operation too long, and the machine breaks as a result. Conservative planning is usually the norm to keep the machines in perfect shape. Therefore, more frequent interventions are required~\cite{mohanty_machinery_2015}.
 
-\textbf{Predictive maintenance} known as condition-based maintenance (CbM), improves the predictability of reactive maintenance and eliminates waste in overall resource utilization of cautious prevention. The machine downtime is scheduled after the detection of unhealthy trends in fault monitoring with sensors and the identification of troublesome components.
+\textbf{Predictive maintenance} (PdM) known also as condition-based maintenance (CbM), improves the predictability of reactive maintenance and eliminates waste in overall resource utilization of cautious prevention. The machine downtime is scheduled after the detection of unhealthy trends in fault monitoring with sensors and the identification of troublesome components.
 
 A measurable decrease in effectiveness allows us to order necessary parts in advance and organize repairs of several machines at a convenient time. The missed detection leads to increased costs compared to previous methods and raises the expectation that faults are distinguishable among themselves~\cite{davies_handbook_2012}.
 
@@ -24,9 +24,9 @@ A measurable decrease in effectiveness allows us to order necessary parts in adv
 	\label{fig:p-f-curve}
 \end{figure}
 
-The \emph{P-F curve} is a widespread representation of equipment degradation over time based on historical records (Fig.~\ref{fig:p-f-curve}). Corrective action should be taken between the event of potential failure (P), when the fault detection is activated, and functional failure point (F) in the P-F interval~\cite{bousdekis_enterprise_2021}.  These division points are not exactly set but have a statistical distribution to them.
+The \emph{P-F curve} is a widespread representation of equipment's degradation over time based on historical records (Fig.~\ref{fig:p-f-curve}). Corrective action should be taken between the event of potential failure (P), when the fault detection is activated, and functional failure point (F) in the P-F interval~\cite{bousdekis_enterprise_2021}. These division points are not set precisely but have a statistical distribution.
 
-The \emph{Remaining Useful Life} (RUL) of the specific running machine in the given instance can be merely estimated analytically, with the survival probabilities of the individual components, based on the model of the ``run-to-failure'' histories, and usage parameters~\cite{okoh_overview_2014}. Predictive condition monitoring aims to extend lifespan to the maximum by predicting expected RUL.
+The \emph{Remaining Useful Life} (RUL) of the specific running machine in the given instance can be merely estimated analytically, with the survival probabilities of the individual components, based on the model of the ``run-to-failure'' history and usage parameters~\cite{okoh_overview_2014}. Predictive condition monitoring aims to extend the lifespan to the maximum by predicting expected RUL.
 
 \begin{figure}[ht]
 	\centering
@@ -35,12 +35,12 @@ The \emph{Remaining Useful Life} (RUL) of the specific running machine in the gi
 	\label{fig:bathtub-curve}
 \end{figure}
 
-A high failure rate is present not only at the worn-out stage when the parts are fatigued or corroded, but also in the early stages soon after assembly. Manufacturing or material defects, inadequate installation, or improper start-up procedures, are all suspected causes. During the stable middle phase, malfunction can occur after the machine's excessive overload. The time plot to failure rate is known as the bathtub curve~(Fig.~\ref{fig:bathtub-curve}).
+A high failure rate is present at the worn-out stage when the parts are fatigued or corroded. It can also be registered in the early stages soon after assembly. Manufacturing or material defects, inadequate installation, or improper start-up procedures are all suspected causes. During the stable middle phase, malfunction can occur after the machine's excessive overload. The time plot to failure rate is known as the bathtub curve~(Fig.~\ref{fig:bathtub-curve}).
 
 \subsection{Vibration fault types}
 Mechanical problems during machinery operation bring about vibrations in many instances. Therefore, vibroacoustic diagnostics is considered as one of the most important methods in early component fault identification~\cite{ziaran_technicka_2013}.
 
-The cause of vibration comes out of the changing force in its magnitude or direction. The most emerging defects can be encompassed by explaining the deficiencies of the mechanical structure. These defects are broadly categorized as \textbf{unbalance, misalignment, looseness, eccentricity, deformation, crack, and influence of the external force} (friction)~\cite{davies_handbook_2012}. It is important to stress that our concern is not the underlying deformities in mechanical parts, but the correct fault classification based on the signal waveform.
+The cause of vibration comes out of the changing force in its magnitude or direction. The most emerging defects can be encompassed by explaining the deficiencies of the mechanical structure. These defects are broadly categorized as \textbf{unbalance, misalignment, looseness, eccentricity, deformation, crack, and influence of the external force} (friction)~\cite{davies_handbook_2012}. It is important to stress that our concern are not the underlying deformities in mechanical parts but the correct fault classification based on the signal waveform.
 
 \begin{figure}[ht]
 	\centering
@@ -51,7 +51,7 @@ The cause of vibration comes out of the changing force in its magnitude or direc
 
 Rotating machine disorders exhibit frequency signatures at various ranges in the frequency spectrum with supplementary symptoms carried in phase signal. Most of the occurring faults can be tied to the main rotational speed of the component under investigation (Fig.~\ref{fig:machinery-vibrations})~\cite{davies_handbook_2012}. Imbalance, misalignment, and looseness normally appear at frequencies up to 300 Hz. These low-frequency faults are associated with the movement of the shaft and primarily coincide with revolution speed and its harmonics. Bearing and gearbox defects in the late stages of development, show up in the range between 300 Hz and 1 kHz. Higher frequencies, measured traditionally to a limit of 10 kHz, help notice the faults in bearings even sooner~\cite{torres_automatic_2022}.
 
-One of the methods vibration experts utilize in the identification of the damaged part, according to the frequency spectrum, is \textbf{order analysis}. The excessive peaks at harmonic frequencies are of interest. Harmonics are integer multiples of fundamental frequency (1x rpm)~(Tab.~\ref{tab:vibration-causes}):
+One of the methods vibration experts utilize in the identification of the damaged part, according to the frequency spectrum, is \textbf{order analysis}. The excessive peaks in harmonic frequencies are of interest. Harmonics are integer multiples of fundamental frequency (1x rpm)~(Tab.~\ref{tab:vibration-causes}):
 
 \begin{table}[h]
 \renewcommand{\arraystretch}{1.2}
@@ -73,7 +73,36 @@ One of the methods vibration experts utilize in the identification of the damage
 
 Because of inherent tolerances in machine manufacturing and assembly, the rotational frequency always manifests itself, even in baseline signature~\cite{davies_handbook_2012, noauthor_iso_2002}. In the most likely scenario, some faults appear as compared to rotational frequency solely in \textbf{synchronous, subsynchronous, or non-synchronous components}. The defects can occur in a predictable combination of the ones mentioned. Other common patterns experts look for are modulation sidebands typical for bearings and gears extractable with cepstrum analysis~\cite{ziaran_technicka_2013}. Procedures relying on elimination narrow down unrelated causes effectively.
 
-%TODO bearing image / equations
+The mechanical properties of bearings are instrumental in identifying the characteristic frequencies of their components~\cite{mohanty_machinery_2015, ziaran_technicka_2013}. Bearings are composed of outer and inner circular races between which the rolling elements are held inside the cage to avoid mutual contact~(Fig.\ref{fig:bearing-parts}). The developing scratches or pits can appear as increases in amplitude around characteristic frequencies and their harmonics but sometimes this is not enough for accurate diagnostics~\cite{brito_fault_2021}. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assets/analysis/bearing-parts.jpg}
+    \caption{Bearing parts~\cite{lu_what_is_ball_bearing_2023}}
+    \label{fig:bearing-parts}
+\end{figure}
+
+The table \ref{tab:bearing-defect-features} provides formulas for rolling bearing defect frequencies at rotational speed $f_s$ where $n$ is a number of rolling elements, $d$ is the average of outer and inner ring diameters, and contact angle $\beta$. Because the frequencies of components depend on shaft rotational speed the values are supplied as its multiplication factors alongside datasets.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Feature}            & \textbf{Equation}                                                                   
+ \\ \hline
+\textit{Outer race fault frequency} & $ BPFO = f_s \cdot \frac{n}{2} \cdot \left(1 - \frac{d}{D}\cos \beta \right)$               
+\\ \hline
+\textit{Inner race fault frequency} & $ BPFI = f_s \cdot \frac{n}{2} \cdot \left(1 + \frac{d}{D}\cos \beta \right)$
+\\ \hline
+\textit{Cage rotation frequency}    & $ FTF = f_s \cdot \frac{1}{2} \cdot \left(1 - \frac{d}{D}\cos \beta \right) $      
+\\ \hline
+\textit{Ball defect frequencies} & $ BSF = f_s \cdot \frac{D}{d} \cdot \left(1 + \left(\frac{D}{d}\cos \beta\right)^2 \right) $
+\\ \hline
+\end{tabular}
+\caption{Characteristic frequencies of bearings}
+\label{tab:bearing-defect-features}
+\end{table}
 
 \subsection{Technical standards} \label{section:technical-standards}
 Vibration-based condition monitoring practices adopted in the factory's predictive maintenance management must comply with normative guidelines formalized in ISO international standards. Standards are concerned with each step in the process that originates with transducer placements and data acquisition. They prescribe conventions for setting fault severity levels and provide empirically observed vibration characteristics of common defects. Relevant standards for IoT diagnostics systems are \emph{ISO 20816} (updated from ISO 10816) and \emph{ISO 13373}.
@@ -83,7 +112,7 @@ Vibration-based condition monitoring practices adopted in the factory's predicti
 
 The vibration severity is the maximum magnitude measured in two radial directions (horizontal, and vertical) or supplemented with a third direction along the shaft on the axial axis. Multiple measurement locations, i.e. on different bearings or couplings, should be assessed independently.
 
-Criteria introduced to judge vibration severity are absolute vibration magnitude, change in the magnitude vector, and rate of change. In terms of maximal magnitudes, the machines of varying sizes are split into four severity zones defined in the chart ~(Tab.~\ref{tab:iso20816-vibration-severity}). The values in this table serve as guidelines towards realistic requirements between machine manufacturers and their customers.
+Criteria introduced to judge vibration severity are absolute vibration magnitude, change in the magnitude vector, and rate of change. In terms of maximal magnitudes, the machines of varying sizes are split into four severity zones defined in the chart~(Tab.~\ref{tab:iso20816-vibration-severity}). The values in this table serve as guidelines for realistic requirements between machine manufacturers and their customers.
 
 \begin{table}[h]
 \centering
@@ -112,9 +141,9 @@ Criteria introduced to judge vibration severity are absolute vibration magnitude
 
 Zone A is reserved for newly commissioned machines. Zone B signifies suitability for long-term operation. In zone C the machine is deemed in unsatisfactory condition and corrective action should be taken soon. Finally, in zone D vibrations can cause damage to the machine. The span of acceptable values differs with the machine class from \rom{1} through to \rom{4} and their output power of 15~kW (class~\rom{1}), 75~kW (class~\rom{2}), 10~MW (class~\rom{3}), or greater.
 
-The operational limits in the form of \emph{alarms} and \emph{trips} are usually established on the zone boundaries or close to them. Alarms are placed between zones B and C providing a warning about reaching the threshold significant for noticeable change. Trips in between zones C and D urge immediate action or machine shut down. Both limits should not exceed 1.25 times the upper boundary of the lower zones and initially are set based on previous experience with the machine~\cite{noauthor_iso_2002}.
+The operational limits in the form of \emph{alarms} and \emph{trips} are usually established on the zone boundaries or close to them. Alarms are placed between zones B and C providing a warning about reaching the threshold significant for noticeable change. Trips in between zones C and D urge immediate action or machine shut down. Both limits should not exceed 1.25 times the upper boundary of the lower zones and are initially set based on previous experience with the machine~\cite{noauthor_iso_2002}.
 
-\textbf{ISO 13373-1:2002} delves into further nuances of vibration monitoring and expands on procedures outlined in terms of the vocabulary in ISO 20186. According to the standard, the data collection operates in continuous or periodic observation modes which follow an event or interval. Both designs can be permanently mounted. In continuous collection, it is recommended to have a ``multiplexing rate sufficiently rapid, so there is no significant data or trends lost''~\cite{noauthor_iso_2002}. When channels are scanned in succession with gaps between data points, the system is known as ``scanning''.
+\textbf{ISO 13373-1:2002} delves into further nuances of vibration monitoring and expands on procedures outlined in terms of the ISO 20186 vocabulary. According to the standard, the data collection operates in continuous or periodic observation modes that follow an event or interval. Both designs can be permanently mounted. In continuous collection, it is recommended to have a ``multiplexing rate sufficiently rapid, so there is no significant data or trends lost''~\cite{noauthor_iso_2002}. When channels are scanned in succession with gaps between data points, the system is known as ``scanning''.
 
 The condition monitoring program is run according to a flowchart adapted from one designed by the standard specifically to best benefit the plant. Those steps can be summarized as follows~\cite{noauthor_iso_2002}:
 
@@ -133,7 +162,7 @@ The condition monitoring program is run according to a flowchart adapted from on
 
 Measurement of vibrations should be accompanied by a description of the machine and its operating conditions. The machine description includes its identifier and type, power source, rated rotation speed and power, configuration (shaft or belt driven), and machine support. Measurement parameters are to be recorded alongside the measurement value itself, such as timestamp, transducer type, sensor location and orientation in \textbf{MIMOSA convention} (Machinery Information Management Open System Alliance), measurement units and units qualifier (p-p, rms), and other processing options (filters, number of averages, etc.)~\cite{noauthor_iso_2002}.
 
-The transducer of choice for condition monitoring is the accelerometer, which can provide the acceleration value of the body and velocity after signal integration. However, standard advise against double integrating for displacement. The recommended frequency range for an accelerometer is 0.1~Hz to 30~kHz. The choice of transducer mount significantly lowers its resonance frequency, which is least influenced by the stud mount and stiff cement mount. The resonance is reduced to around 8~kHz with the use of soft epoxy or permanent magnet.
+The transducer of choice for condition monitoring is the accelerometer. It measures the acceleration value of the body and velocity after signal integration. However, standards advise against double integrating for displacement. The recommended frequency range for an accelerometer is 0.1~Hz to 30~kHz. The choice of transducer mount significantly influences its resonance frequency. The stud mount and stiff cement mount least lower the effective resonance. The resonance is reduced to around 8~kHz when using the soft epoxy or permanent magnet.
 
 \begin{figure}[h]
 	\centering
@@ -148,9 +177,8 @@ Equipment's ``health'' can be mischaracterized when there are significant differ
 
 The vibration baseline is defined by broad-band magnitudes and phases of motion vectors, the waveform in the time and frequency domain, the rotational speed of the machine as well as its frequency response to different speeds during start-up and coast-down captured in the Bode plot and waterfall plot. Changes during the machine's operation are then depicted in value trends. Trends can be shown by overall amplitudes or limited to frequency bands.
 
-
 \section{Signal preprocessing} \label{section:signal-preprocessing}
-The vibration signals in a factory environment are inherently full of disturbances. Nearby equipment operation and handling of heavy objects in the surroundings can all contribute to the unwanted chaotic movement in otherwise mostly pure oscillatory motion. In addition, accelerometers suffer from systematic measurement errors in the form of thermal noise, zero-g offset as a result of slight miscalibration, and bias originating from a constant force of gravity. These unavoidable distortions are to some extent suppressable by digital filters. In the preprocessing stage, we consider trend removal, noise reduction with adaptive filters, and time synchronous averaging to eliminate external interference.
+The vibration signals in a factory environment are inherently full of disturbances. Nearby equipment operation and heavy objects handling in the surroundings can all contribute to the unwanted chaotic movement in otherwise mostly pure oscillatory motion. In addition, accelerometers suffer from systematic measurement errors in the form of thermal noise, zero-g offset from slight miscalibration, and bias originating from a constant force of gravity. These unavoidable distortions are somewhat suppressable by digital filters. In the preprocessing stage, we consider trend removal and time synchronous averaging to eliminate external interference.
 
 \subsection{Detrending}
 The oscillatory motion should be centered around the zero level for further manipulation. The constant offset is eliminated simply by subtracting the overall mean from the signal. Moreover, the high pass DC blocker infinite impulse response (IIR) filter of 1st order can adjust to shifts of the average value over time (Equation~\ref{equ:iir-dc-blocker}). The transition band depends upon the choice of corner frequency $f_{3dB}$ (Fig.~\ref{fig:dc-blocker}).
@@ -160,7 +188,7 @@ The oscillatory motion should be centered around the zero level for further mani
 y_k = (1 - \frac{\omega}{2}) \cdot (x_k  -  x_{k - 1}) + (1 - \omega) \cdot y_{k - 1}; \quad \omega = 2\pi \cdot \frac{f_{3dB}}{f_s}
 \end{align}\end{ceqn}
 
-A steeper 3~dB attenuation band can be achieved by increasing the order of the filter. Then the cutoff frequency should be such that filter coefficients are fractions to counteract rounding errors~\cite{tittelbach-helmrich_digital_2021}.
+A steeper 3~dB attenuation band is achieved by increasing the order of the filter. Then, the cutoff frequency should be such that filter coefficients are fractions to counteract rounding errors~\cite{tittelbach-helmrich_digital_2021}.
 
 \begin{figure}[h]
 	\centering
@@ -185,14 +213,14 @@ This technique has been successfully applied to the gearbox and bearing fault di
 \section{Feature extraction} \label{section:feature-extraction}
 After preprocessing, raw numerical vectors are merely low-level descriptors of the underlying physical phenomena. At first, these incomprehensible sequences of numbers are reduced to summary attributes called features in the process of feature extraction or feature discovery. Features can be hand-crafted (as is our case), learned implicitly within the model representation, or explicitly from an optimization problem solution. 
 
-Predictive maintenance has ideal prerequisites for the application of feature engineering because the signal is usually pseudo-stationary, and the trend monitoring variables come out of extensive domain expertise in mechanics. The advantages of the add-in extraction effort, as opposed to processing samples unmodified, are to gain better classification precision, reduce computational burden and storage capacity downstream with dimensionality reduction~\cite{johnson_feature_2019}. 
+Predictive maintenance has ideal prerequisites for the application of feature engineering because the signal is usually pseudo-stationary, and the trend monitoring variables come out of extensive domain expertise in mechanics. The advantages of the add-in extraction effort as opposed to processing unmodified samples are to gain better classification precision and reduce computational burden and storage capacity downstream with dimensionality reduction~\cite{johnson_feature_2019}. 
 
-It is important to note that the design of features is not a standalone step in the machine learning pipeline, but it should be done iteratively to improve the target model. Signal features are computed in the time and frequency domain~\cite{brito_fault_2021}.
+It is important to note that the design of features is not a standalone step in the machine learning pipeline, but it should be performed iteratively to improve the target model. Signal features are computed in the time and frequency domain~\cite{brito_fault_2021}.
 
 \subsection{Time-domain features}
 The most widely found features in the literature are rudimentary statistical measures of the central moment: mean, variance, standard deviation, skewness, and kurtosis~(Tab.~\ref{tab:td-features}). Statistics can be calculated in any domain, but the mean value should not be used in detrended data. The vibration severity metrics out of technical standards are also highly regarded. The amplitude characteristics include root-mean-square and peak-to-peak distance~\cite{mostafavi_novel_2021}. The waveform shape is captured by zero-crossing rate and average amplitude change~\cite{moctar_time-domain_2023}.
 
-The other significant time domain attributes are derived as ratios of previous simpler ones. These ratios are crest, clearance, impulse factor, and shape factor~(Tab.~\ref{tab:td-features})~\cite{nandi_condition_2019}. Many articles have been successful in fault detection of bearings out of transients in impulsive signals with kurtosis, crest, and clearance factor~\cite{brito_fault_2021}. It is also suggested that the shape factor can signify unbalance and misalignment faults~\cite{nandi_condition_2019}.
+The other significant time-domain attributes are derived as ratios of previous simpler ones. These ratios are crest, clearance, impulse factor, and shape factor~(Tab.~\ref{tab:td-features})~\cite{nandi_condition_2019}. Many articles have been successful in fault detection of bearings out of transients in impulsive signals with kurtosis, crest, and clearance factor~\cite{brito_fault_2021}. It is also suggested that the shape factor can signify unbalance and misalignment faults~\cite{nandi_condition_2019}.
 
 \begin{table}[h]
 \centering
@@ -248,18 +276,16 @@ The inherent symmetries in the Fourier matrix made it possible to implement the 
 \label{tab:fd-features}
 \end{table}
 
+In the frequency domain, we can obtain the usual statistical properties of the distribution which are spectral centroid, skew, and kurtosis. Additionally, spectral roll-on and roll-off, fundamental frequency, entropy, negentropy, spectral flux, signal-to-noise ratio (noisiness), energy in frequency bands, and energy ratio are extracted (Tab.~\ref{tab:fd-features})~\cite{peeters_large_2004}. 
 
-
-In the frequency domain, we can obtain the usual statistical properties of the distribution being spectral centroid, skew and kurtosis. Additionally, spectral roll-on and roll-off, fundamental frequency, entropy, negentropy, spectral flux, signal-to-noise ratio (noisiness), energy in frequency bands, and energy ratio are extracted (Tab.~\ref{tab:fd-features})~\cite{peeters_large_2004}. 
-
-In geometric terms, the spectral centroid represents the barycenter of the frequency magnitude plot. Spectral roll-off gives a notion about the spectral distribution because it identifies the frequency $f_c$ below which 95\% of the signal energy is contained. Complementary, the roll-on frequency is chosen so that 5\% of the signal energy is below this value. According to the definition, spectral flux is normalized cross-correlation between two successive amplitude spectra a value of one means the spectra are the most dissimilar.
+In geometric terms, the spectral centroid represents the barycenter of the frequency magnitude plot. Spectral roll-off gives a notion about the spectral distribution because it identifies the frequency $f_c$ below which 85\% of the signal energy is contained. The roll-on frequency is chosen so that 5\% of the signal energy is below this value. According to the definition, spectral flux is normalized cross-correlation between two successive amplitude spectra. A flux value of one means the spectra are the most dissimilar.
 
 ``Negentropy measures the inclination of a system to increase its level of organization''~\cite{avoci_spectral_2020}. The larger \emph{spectral negentropy} suggests more fault-induced impulses. The squared envelope spectrum (SES) is interpreted as $E(k, f, \Delta f)$ which is an envelope in the Fourier domain: $\mathcal{F}\{ |y(k, f, \Delta f)|^2 \}$.
 
 \subsection{Features in harmonic frequencies}
 If a single principal frequency exists, it can be determined by maximum likelihood estimation. Such frequency would explain the signal spectrum the best~\cite{peeters_large_2004}. The frequency spectrum is a discrete set of amplitudes where peaks have to be reliably identified to create representative attributes.
 
-The essential peak-finding approaches are based either on magnitude or gradient. All found extrema are commonly filtered with the magnitude of prominences and the width at half prominence. In the magnitude-based method, the middle point $x_i$ is compared to two neighboring points and the peak is then: $x_{i-1} < x_i > x_{i+1}$. The gradient-based method evaluates the first derivative at the point which is equal to zero if the point is a local maximum, local minimum, or inflection point~\cite{adikaram_non-parametric_2016}.
+The essential peak-finding approaches are based either on magnitude or gradient. All found extrema are commonly filtered with the magnitude of prominences and the width at half prominence. In the magnitude-based method, the middle point $x_i$ is compared to two neighbouring points and the peak is then: $x_{i-1} < x_i > x_{i+1}$. The gradient-based method evaluates the first derivative at the point that is equal to zero if the point is a local maximum, local minimum, or inflection point~\cite{adikaram_non-parametric_2016}.
 
 A substantial improvement is a robust non-parametric peak identification named \emph{MMS} based on the sum of terms in an arithmetic progression based on maximum, minimum, and sum. MMS max-min finder in the elementary form processes points in the window of length 3, it advances one point and deems its middle point as a local extremum if it satisfies equalities below. Equation~\ref{equ:mms-maxima} is for the hill and Equation~\ref{equ:mms-minima} is for the valley. The filtration techniques are incorporated in the adaptations of the MMS algorithm: MMS-WBF, MMS-SG, MMS-LH~\cite{adikaram_non-parametric_2016}.
 
@@ -283,44 +309,8 @@ v_i^{(r)} = \frac{v_j}{\min{|v_j - r \cdot v_i|}}
 
 Multiple harmonic series and the sidebands can be separated into a discrete set of frequency components, each with a central frequency, uncertainty, and amplitude $C_i(v_i, \Delta v_i, A_i)$ by an exhaustive search algorithm. Harmonic family identification is a non-trivial problem because of spectrum estimation errors. The criterion is proposed to select harmonics at the minimal distance from the true fundamental frequency multiple~(Equation~\ref{equ:harmonic-search}). Two series with the same fundamental frequency are merged and thought of as a modulation series~\cite{gerber_identification_2013}.
 
-
-\subsection{Bearing defect frequencies}
-
-%TODO n = number of balls, d - average of outer ring diameter and outer ring, f_s - rotation speed, beta - contact angle - ball bearings close to 0
-
-% Rolling element bearings have four very important components, two circular races, between which the rolling elements—rollers, tapered rollers, or spherical balls—are held. The fourth important element in a rolling element bearing is the cage or the separator. The cage ensures that no two rolling elements come in contact with each other
-% The bearing vibration is further complicated when the radial loads on the bearing change during rotation of the shaft, and defects like impurities or scratches, pits, and so on, develop on the bearing element surfaces
-% The characteristic bearing defect frequencies for the different rolling elements of bearings can be determined
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.7\textwidth]{assets/analysis/bearing-parts.jpg}
-    \caption{Bearing parts~\cite{lu_what_is_ball_bearing_2023}}
-    \label{fig:bearing-parts}
-\end{figure}
-
-\begin{table}[h]
-\centering
-\renewcommand{\arraystretch}{2}
-\begin{tabular}{|l|l|l|l|}
-\hline
-\textbf{Feature}            & \textbf{Equation}                                                                   
- \\ \hline
-\textit{Outer race fault frequency} & $ BPFO = f_s \cdot \frac{n}{2} \cdot \left(1 - \frac{d}{D}\cos \beta \right)$               
-\\ \hline
-\textit{Inner race fault frequency} & $ BPFI = f_s \cdot \frac{n}{2} \cdot \left(1 + \frac{d}{D}\cos \beta \right)$
-\\ \hline
-\textit{Cage rotation frequency}    & $ FTF = f_s \cdot \frac{1}{2} \cdot \left(1 - \frac{d}{D}\cos \beta \right) $      
-\\ \hline
-\textit{Ball defect frequencies} & $ BSF = f_s \cdot \frac{D}{d} \cdot \left(1 + \left(\frac{D}{d}\cos \beta\right)^2 \right) $
-\\ \hline
-\end{tabular}
-\caption{Bearing defect frequencies}
-\label{tab:bearing-defect-features}
-\end{table}
-
 \subsection{Time-frequency domain features}
-The \textbf{Short-time Fourier transform} (STFT) splits the time-domain signal into equal-length intervals. Individual chunks have a 50\% overlap and are multiplied with weights of window function to balance scalloping loss and spectral leakage due to Fourier transform periodicity assumption. Traditionally, the Hann window is commonly used instead of the rectangular window~\cite{ziaran_technicka_2013,noauthor_iso_2016_2}.
+The \textbf{Short-time Fourier transform} (STFT) splits the time-domain signal into equal-length intervals. Individual chunks have a 50\% overlap and are multiplied with weights of window function to balance scalloping loss and spectral leakage due to the Fourier transform periodicity assumption. Traditionally, the Hann window is commonly used instead of the rectangular window~\cite{ziaran_technicka_2013,noauthor_iso_2016_2}.
 
 In the time-frequency domain, the same features can be derived as in the frequency domain, but in addition, the attributes are time-localized in this way. The STFT has a considerable flaw for implementation in a self-adaptable system and that is fixed resolution. The optimal window size has to be set beforehand or chosen after performing multiple transformations on chunks out of the range of lengths. Welch's method averages multiple consecutive blocks to better estimate the spectrum. We have already researched the suitability of STFT for online detection of constant frequencies~\cite{hajek_iot_2022}.
 
@@ -406,7 +396,7 @@ The dyadic filter bank is another signal decomposition technique that generates 
 
 The maximum depth of the decomposition tree is $\log_2{n}$ where $n$ is the number of input samples. Energy, energy ratio, and entropy are prevalent features that succinctly encode the wavelet coefficients. Otherwise, the additional extracted levels raise the total number of data dimensions.
 
-In washing machine status classification, the discrete wavelet transform with Daubechies wavelet (db4) and fifth-level decomposition provide features with a combination of approximation (cA5) and detail coefficients (cD1, \dots, cD5). Washing machines belong to three categories: no fault, electric motor clamping screws problem, and a loose or broken counterweight. Extracted measures were sample mean and sample variances over autocorrelation functions of coefficients (AcD$n$) and smoothed coefficients cD1, cD2 by moving average filter~\cite{goumas_classification_2002}.
+In washing machine status classification, the discrete wavelet transform with Daubechies wavelet (db4) and fifth-level decomposition provides features with a combination of approximation (cA5) and detail coefficients (cD1, \dots, cD5). Washing machines belong to three categories: no fault, electric motor clamping screws problem, and a loose or broken counterweight. Extracted measures were sample mean and sample variances over autocorrelation functions of coefficients (AcD$n$) and smoothed coefficients cD1, cD2 by moving average filter~\cite{goumas_classification_2002}.
 
 \textbf{Wavelet Packet Decomposition} (WPD) applies filters to split detail coefficients identically as approximation ones (Fig.~\ref{fig:wpd-filter-bank}) thus increasing the resolution in the high-frequency bands and providing uniform spectrum partitioning. 
 
@@ -436,11 +426,11 @@ Each wavelet packet coefficient $w_{j,n,k}$ captures subband frequency content a
 
 The wavelet packet energy ratio for weak feature extraction has been incorporated into the method of multiple frequency band demodulation (MFBD). The highest $n$ energy coefficients are selected out of 8 narrow frequency bands to subsequently affect the principal components. Demodulation principle for the frequency bandwidth prescribes $n$ to satisfy condition: $1\;/\;2^n > f_{\mathrm{modulation}}\;/\;f_s$. The first few eigenvectors that explain together more than 80\% of energy are retained to reconstruct the signal with a Fourier transform and retain the weak fault components~\cite{song_mfbd_2021}.
 
-Tool wear diagnosis based on acoustic emission (AE) signal considers \emph{wavelet packet energy} in bands $E_{8}$, $E_{10}$, $E_{12}$, \emph{energy ratios} $P_{8}$, $P_{13}$, and \emph{energy entropy} as having high correlation ($|r| > 0.8$) with the band saw flank face width. The acoustic signal is decomposed into three layers using Daubechies db3 wavelet. The bottom layer contains bands numbered 7 through 14, each with a bandwidth of 62.5 kHz, because of the 1 MHz sampling frequency. The feature vector constructed in the article includes other statistical metrics out of power spectral density that has reached a notable correlation with evolving wear. The statistics are \emph{skewness}, \emph{kurtosis}, \emph{shape factor}, and \emph{centroid frequency}~\cite{zhuo_research_2022}.
+Tool wear diagnosis based on acoustic emission (AE) signal considers \emph{wavelet packet energy} in bands $E_{8}$, $E_{10}$, $E_{12}$, \emph{energy ratios} $P_{8}$, $P_{13}$, and \emph{energy entropy} as having high correlation ($|r| > 0.8$) with the band saw flank face width. The acoustic signal is decomposed into three layers using Daubechies db3 wavelet. The bottom layer contains bands numbered 7 through 14, each with a bandwidth of 62.5 kHz, because of the 1 MHz sampling frequency. The feature vector constructed in the article includes other statistical metrics out of power spectral density that have reached a notable correlation with evolving wear. The statistics are \emph{skewness}, \emph{kurtosis}, \emph{shape factor}, and \emph{centroid frequency}~\cite{zhuo_research_2022}.
 
 Discrete wavelet transform and wavelet packets partition the spectrum into predefined frequency bands that do not always adequately capture individual elementary oscillations. Adaptive spectral segmentation is needed to extract separate intrinsic mode functions (IMF).
 
-Wavelet domain features and associated spectral segmentation appear to be a powerful tool in conserving data bandwidth. These variables turn out to be difficult to communicate and comprehend. Therefore, we will use more standardized metrics in further studies.
+Wavelet domain features and associated spectral segmentation appear to be a powerful tool for conserving data bandwidth. These variables turn out to be difficult to communicate and comprehend. Therefore, we further use more standardized metrics.
 
 \section{Feature transformations} \label{section:feature-selection}
 Numerical features from the feature extraction phase have non-normal distributions and span wide ranges. Broad differences among features skew the spread on a particular axis. Inevitably, it can degrade the discernment of fault diagnostics models that map input onto a smooth function as regression does~\cite{zheng_feature_2018}. The feature scaling, power transform, and principal component analysis modify attribute values to gain more meaningful predictors, but one must be cautious in model interpretation.
@@ -508,7 +498,7 @@ The frequently used scores upon which the feature relevance is ordered are~\cite
 \begin{itemize}
 \item \textbf{Variance threshold} - removes low-variance features below the set threshold.
 
-\item \textbf{Correlation coefficient} - expresses the linear relationship between two variables. The codependent variables are of three sorts: quantitative, ordinal, and nominal. The choice of coefficient calculation is determined by the type of variables under consideration shown in Table \ref{tab:corr-coef}. 
+\item \textbf{Correlation coefficient} - expresses the linear relationship between two variables. The codependent variables are of three sorts: quantitative, ordinal, and nominal. The choice of coefficient calculation is determined by the type of variables under consideration as shown in Table \ref{tab:corr-coef}. 
 
 
 \emph{Pearson correlation} coeficient expresses similarity between two quantitative features: $f_i$ and $f_j$. In the classification setting, the correlation of feature $f$ makes sense only with dichotomous target class label $c$ using \emph{point biserial coeficient}. Mathematically, this is equivalent to the Pearson coefficient. Rank correspondence is quantified with either Spearman rho or Kendall's Tau~\cite{calkins_more_2005}.
@@ -544,7 +534,7 @@ r(i) = \frac{\mathrm{cov}(f, c)}{\sqrt{\mathrm{var}(f) \cdot \mathrm{var}(c)}}
 \label{equ:fisher-score}
 \end{align}\end{ceqn}
 
-\item \textbf{Mutal information} - quantifies the dependence between features, or between features and class labels. It is almost identical to Information Gain. The probability distribution of proximity of variables derives from the relative entropy known as the Kullback-Leibler distance. Mutual information presumes variables are discrete. In the case of quantitative variables, mutual information is estimated by binning or nearest neighbors methods~\cite{ross_mutual_2014}.
+\item \textbf{Mutal information} - quantifies the dependence between features, or between features and class labels. It is almost identical to Information Gain. The probability distribution of proximity of variables derives from the relative entropy known as the Kullback-Leibler distance. Mutual information presumes variables are discrete. In the case of quantitative variables, mutual information is estimated by binning or nearest neighbours methods~\cite{ross_mutual_2014}.
 
 Probabilities $P(x)$, $P(y)$, $P(x, y)$ are estimated in the contingency table from event occurrence count to all sample population $|x|\;/\;N$. Joint probability $P(x, y)$ represents samples of feature $x$ simultaneously in class $y$.
 
@@ -556,7 +546,6 @@ Probabilities $P(x)$, $P(y)$, $P(x, y)$ are estimated in the contingency table f
 
 Multiple subsets of predictors produced by each evaluation metric can train several variants of a classification model. Sets of attributes can be combined into an ensemble by \emph{electoral system}. One such example is \textbf{majority voting} which chooses the best feature out of the group. \textbf{Rank product} unifies several feature orderings by computing the geometric mean of feature rank in every experiment realization~\cite{breitling_rank_2004}.
 
-
 \section{Diagnostics techniques} \label{section:diagnostics-techniques}
 Fault identification in the rotating machinery is a one-class or multi-class classification problem acting in a semi-supervised manner because labels for degraded conditions are scarce in practice. The automation goals in monitoring can be broadly categorized as anomaly detection and recognizing the momentary fault type.
 
@@ -565,12 +554,12 @@ The guiding principles for algorithm selection are simplicity in terms of their 
 \subsection{Novelty detection}
 Anomaly, novelty, or outlier detection determines whether a health status deviates considerably from the baseline profile. The expert can then step in and diagnose the machine after the notice. Anomaly is a rare observation different from the others, raising suspicion that it was created by unrelated behavior~\cite{aggarwal_outlier_2016}. The observations get assigned anomaly scores, and those over the threshold are novelties.
 
-The measurements coming in the steaming fashion have to be processed in a single pass. The detection model must deal with the minimal admissible assumptions about the nature of the input events. The outliers are derived based on non-parametric statistical models, nearest-neighbor clustering, and isolation-based approaches~\cite{gervasi_anomaly_2020}.
+The measurements coming in the steaming fashion have to be processed in a single pass. The detection model must deal with the minimal admissible assumptions about the nature of the input events. The outliers are derived based on non-parametric statistical models, nearest-neighbour clustering, and isolation-based approaches~\cite{gervasi_anomaly_2020}.
 \bigbreak
 
-\textbf{DenStream} is a density-based algorithm adapted from DBSCAN to cluster streaming data of arbitrarily shaped groups. Samples it includes in the first step into coherent clusters are core data points in each other's neighborhoods. Core points have at least \emph{MinPts} ($\mu$) points in their neighborhood of radius \emph{Eps} ($\varepsilon$) units. Then non-core points in the proximity area of the core point are attached to the cluster containing it~\cite{aggarwal_data_2014}.
+\textbf{DenStream} is a density-based algorithm adapted from DBSCAN to cluster streaming data of arbitrarily shaped groups. Samples it includes in the first step into coherent clusters are core data points in each other's neighbourhoods. Core points have at least \emph{MinPts} ($\mu$) points in their neighbourhood of radius \emph{Eps} ($\varepsilon$) units. Then non-core points in the proximity area of the core point are attached to the cluster containing it~\cite{aggarwal_data_2014}.
 
-Quality of clustering results is evaluated by \emph{Silhouette score} in the range [-1; 1]. It demands points within clusters to have high cohesion and at the same time to have large separation from other clusters. The low score indicates a too small or too large number of clusters~\cite{rousseeuw_rousseeuw_1987}. 
+Quality of clustering results is evaluated by \emph{Silhouette score} in the range [-1; 1]. It demands points within clusters to have high cohesion and at the same time to have large separation from other clusters. The low score indicates a too-small or too-large number of clusters~\cite{rousseeuw_rousseeuw_1987}. 
 
 \begin{figure}[ht]
     \centering
@@ -579,18 +568,15 @@ Quality of clustering results is evaluated by \emph{Silhouette score} in the ran
     \label{fig:denstream}
 \end{figure}
 
-In the online maintenance phase, DenStream summarizes the nearby observations into core \emph{micro-clusters} that can be potential micro-clusters or outlier \emph{micro-clusters} (Fig.~\ref{fig:denstream})~\cite{ghesmoune_state---art_2016}. The (outlier) \emph{o-micro-clusters} can grow into (potential) \emph{p-micro-clusters} when they encompass $\beta \mu$ points. The outliers are discounted after some time in accordance to the decay function: $f(t) = 2^{-\lambda t}$ or below the lower weight limit $\xi$. The on-demand offline stage runs DBSCAN over the approximate representation in micro-clusters to deliver final apportionment~\cite{cao_density-based_2006}.
-\bigbreak
-
-%\cite{tan_fast_2011}. 
+In the online maintenance phase, DenStream summarizes the nearby observations into core \emph{micro-clusters} that can be potential micro-clusters or outlier \emph{micro-clusters} (Fig.~\ref{fig:denstream})~\cite{ghesmoune_state---art_2016}. The (outlier) \emph{o-micro-clusters} can grow into (potential) \emph{p-micro-clusters} when they encompass $\beta \mu$ points. The outliers are discounted after some time in accordance with the decay function: $f(t) = 2^{-\lambda t}$ or below the lower weight limit $\xi$. The on-demand offline stage runs DBSCAN over the approximate representation in micro-clusters to deliver final apportionment~\cite{cao_density-based_2006}.
 
 \subsection{Classification}
-Accurate multi-class classification of machine fault causes according to the characteristics of known ones is a much more difficult task than novelty detection. Fault combinations have to be recorded and transformed into feature space. Interactions among fault root causes have to be considered. We are aware of rapid advances in knowledge transfer for deep neural networks~\cite{maurya_condition-based_2021}. So far, solutions seem not production-ready and hard to explain. Therefore, we opt to use a simpler model.
+Accurate multi-class classification of machine faults according to the characteristics of known causes is a much more difficult task than novelty detection. Fault combinations have to be recorded and transformed into feature space. Interactions among fault root causes have to be considered. We are aware of rapid advances in knowledge transfer for deep neural networks~\cite{maurya_condition-based_2021}. So far, solutions seem to be hard to implement. Therefore, we opt to use a simpler model.
 
-Performance of classification is estimated by several metrics on the validation set obtained using hold-out or cross-validation techniques. Frequently used quantities for classifier model evaluation include accuracy, precision, recall, f1 score, area under the ROC curve, and counts of hits and misses in a confusion matrix.
+The performance of classification is estimated by several metrics on the validation set obtained using hold-out or cross-validation techniques. Frequently used quantities for classifier model evaluation include accuracy, precision, recall, f1 score, area under the ROC curve, and counts of hits and misses in a confusion matrix.
 \bigbreak
 
-\textbf{K-nearest neighbors} (k-NN) assigns the data point to the class where the majority of $k$ closest instances belong (Fig.~\ref{fig:KNN}). It means it can work in a semi-supervised environment because it can infer labels just from knowing a few annotations. The major drawback of k-NN is a preference for the majority class in imbalanced class-size datasets~\cite{shi_improving_2020}. The issue is mitigated with class weights or resampling classes by oversampling or undersampling. The k-NN algorithm requires features to be normalized to assign the same importance to each predictor.
+\textbf{K-nearest neighbours} (k-NN) assigns the data point to the class where the majority of $k$ closest instances belong (Fig.~\ref{fig:KNN}). It means it can work in a semi-supervised environment because it can infer labels just from knowing a few annotations. The major drawback of k-NN is a preference for the majority class in imbalanced class-size datasets. The issue is mitigated with class weights or resampling classes by oversampling or undersampling. The model without class balancing drops in precision from 15\% to over 40\% depending on the imbalance ratio~\cite{shi_improving_2020}. The k-NN algorithm requires features to be normalized to assign the same importance to each predictor.
 
 \begin{figure}[ht]
     \centering
@@ -605,10 +591,10 @@ Performance of classification is estimated by several metrics on the validation 
         \caption{M-tree data structure}
         \label{fig:m-tree}
     \end{subfigure}
-    \caption{Nearest neighbors classification algorithm~\cite{chen_skyline_2009}}
+    \caption{Nearest neighbours classification algorithm~\cite{chen_skyline_2009}}
 \end{figure}
 
-The sense of distance between feature vectors $\mathbf{x}$, $\mathbf{y}$ have to be defined, so several metrics are available like \emph{Euclidian distance}, \emph{Mahalanobis distance}, \emph{Manhatann distance} etc. (Tab.~\ref{tab:KNN-distance})~\cite{sheng_review_2020, abu_alfeilat_effects_2019}. The optimal $k$ parameter is set by supervised learning according to the breaking point in the elbow curve that plots choices of $k$ against the error rate. The demanding neighborhood queries are sped up using spatial index in spatial databases that utilizes search tree such as kd-tree, R-tree, or M-tree.
+The meaning of distance between feature vectors $\mathbf{x}$, $\mathbf{y}$ have to be defined, so several metrics are available like \emph{Euclidian distance}, \emph{Mahalanobis distance}, \emph{Manhatann distance} etc. (Tab.~\ref{tab:KNN-distance})~\cite{sheng_review_2020, abu_alfeilat_effects_2019}. The optimal $k$ parameter is set by supervised learning according to the breaking point in the elbow curve that plots choices of $k$ against the error rate. The demanding neighbourhood queries are sped up using spatial indexes in databases that utilize search trees such as kd-tree, R-tree, or M-tree.
 
 \begin{table}[ht]
 \centering
@@ -616,7 +602,7 @@ The sense of distance between feature vectors $\mathbf{x}$, $\mathbf{y}$ have to
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Distance}     & \textbf{$d(\mathbf{x}, \mathbf{y})$}                                   \\ \hline
-Manhatann distance	 & $ |x_i - y_i| $													   \\ \hline
+Manhattan distance	 & $ |x_i - y_i| $													   \\ \hline
 Euclidian distance    & $ \sqrt{\sum_{i = 1}^{n}(x_i - y_i)^2} $                               \\ \hline
 Mahalanobis distance  & $ (\mathbf{x} - \mathbf{y})^T C^{-1} (\mathbf{x} - \mathbf{y}) $       \\ \hline
 \end{tabular}
@@ -624,9 +610,9 @@ Mahalanobis distance  & $ (\mathbf{x} - \mathbf{y})^T C^{-1} (\mathbf{x} - \math
 \label{tab:KNN-distance}
 \end{table}
 
-The nearest-neighbor classifier has been successfully applied in machinery fault diagnostics. On the CWRU bearing dataset, the k-NN with the accuracy of 96.2\% slightly outperformed SVM (95\%) on the combination of time and frequency-domain features, time-domain features - k-NN 91.2\%, SVM 88.8\%, and frequency domain features - k-NN (98.8\%), SVM (96.2\%)~\cite{jamil_feature-based_2021}. 
+The nearest-neighbour classifier has been successfully applied in machinery fault diagnostics. On the CWRU bearing dataset, the k-NN with the accuracy of 96.2\% slightly outperformed SVM (95\%) on the combination of time and frequency-domain features, on set of time-domain features (k-NN 91.2\%, SVM 88.8\%), and on frequency domain features (k-NN 98.8\%, SVM 96.2)\%~\cite{jamil_feature-based_2021}.
 
-Comparison of k-NN and KLDA on a feature set consisting of average, kurtosis, skewness, and standard deviation vectors in each domain has been conducted, achieving a data reduction rate of 95\%. Best accuracy was reached for PSD features with 99.13\% with KLDA and 96.64\% with k-NN classifiers and Mahalanobis metric. The sampling frequency was set at 40 kHz~\cite{altaf_new_2022}. Despite k-NN lagging in accuracy, we have to keep in mind annotations for faults were complete, and machine learning was not tested in a streaming context.
+Comparison of SVM, KNN, and KLDA for the classification of three kinds of bearing faults reaches more than 95\% of data reduction decreasing the time complexity of the models. The test rig rotates at 800 rpm and is sampled at 40 kHz. Their approach uses feature sets of average, kurtosis, skewness, and standard deviation applied on vibration signal after the Fourier transform and its second derivatives over the moving window. The best accuracy was reached by 40 thousand \emph{PSD} set with 99.13\% with KLDA compared to 95.64\% with k-NN and Mahalanobis metric. The \emph{Statistical} set of 8 $\times$ 228 features has accuracy 98.27\% (KLDA) and 93.53\% (k-NN)~\cite{altaf_new_2022}.
 
 \subsection{Incremental learning}
 Online or incremental machine learning operates on the streaming data, updating the model parameters with each new incoming event or in mini-batches. This approach finds its use in big data processing when the whole dataset is not available in advance or cannot be processed at once because of memory limitations. 
@@ -655,7 +641,7 @@ There are some additional obstacles to watch out for with incremental learning i
     \label{fig:online-learn-arch}
 \end{figure} 
 
-Deployment of an online machine learning model alongside supporting services is different from in established MLOps processes. Model store and Inference service components are supplemented with Labelling and Learning service~\cite{gaia_online_2022}. Their goal is to tune model parameters gradually as additional ground truth labels are provided. Labels can be provided later in a scheme called ``log and wait'', but data features are stored until such time.
+Deployment of an online machine learning model alongside supporting services is different from established MLOps processes. Model store and Inference service components are supplemented with Labelling and Learning service~\cite{gaia_online_2022}. Their goal is to tune model parameters gradually as additional ground truth labels are provided. Labels can be provided later in a scheme called ``log and wait'', but data features are stored until such time.
   
 \section{Datasets of machinery faults} \label{section:evaluation-datasets}
 The experimentally designed features' relevancy is first proven in comparison to comprehensive benchmark datasets. There are a few standardized datasets used in the related work, e.g. \cite{ribeiro_rotating_2017}.
