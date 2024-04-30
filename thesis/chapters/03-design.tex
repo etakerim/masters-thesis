@@ -55,31 +55,49 @@ Initial labels can be exchanged for a label of fault-free state when the severit
 
 The preprocessed signal from each axis of accelerometer is packed up to two base feature sets in time domain (TD) and frequency domain (FD). The feature extraction formulas are is identical with formulas presented in the section \ref{section:feature-extraction} of analysis chapter. The frequency transform is Welch's method averaging FFT vectors from 32768 samples after Hann windowing and 50\% overlap. The feature sets are:
 \begin{itemize}
-\item \textbf{TD has 10 time-domain features}: peak-to-peak amplitude (\emph{pp}), zero-crossing rate (\emph{zerocross}), root mean square (\emph{rms}), skewness, kurtosis, shape factor, crest factor, impulse factor, clearance factor, average amplitude change (aac), 
-\item \textbf{FD has 11 frequency-domain features}: spectral centroid, standard deviation (\emph{std}), skewness, kurtosis, roll-on frequency, roll-off frequency, spectral flux, noisiness, spectral negentropy, energy, entropy.
+\itemsep0pt
+\item \textbf{TD has 10 time-domain features} - peak-to-peak amplitude (\emph{pp}), zero-crossing rate (\emph{zerocross}), root mean square (\emph{rms}), skewness, kurtosis, shape factor, crest factor, impulse factor, clearance factor, average amplitude change (aac), 
+\item \textbf{FD has 11 frequency-domain features} - spectral centroid, standard deviation (\emph{std}), skewness, kurtosis, roll-on frequency, roll-off frequency, spectral flux, noisiness, spectral negentropy, energy, entropy.
 \end{itemize}
  
-The four conditions is applied in the instance of the pipeline to filter observations with calculated features to create 24 scenarios:
+The four conditions are applied in the instance of the pipeline to filter observations with calculated features to create 24 scenarios:
 \begin{itemize}
-\item \textbf{source bearings}: keep samples and fault labels either just for the inner bearing (A), for only the outer bearing (B), or both bearings (A+B).
-\item \textbf{feature domain}: change the set of extracted features an input to downstream models and those can be time-domain (TD) and frequency-domain (FD) features,
-\item \textbf{accelerometer axis}: consider either one principal direction of motion or all three dimensions to aggregate under same feature name,
-\item \textbf{high severity faults}: to more precisely capture fault frequencies found in real environment the low severity defects can be considered as normal operation.
+\itemsep0pt
+\item \textbf{Source bearings} - samples and fault labels are left in either just for the inner bearing (A), for only the outer bearing (B), or for both bearings (A+B).
+\item \textbf{Feature domain} - the set of extracted features as an input to downstream models is changed either to TD or FD set,
+\item \textbf{Accelerometer axis} - Either one principal direction of motion or all three dimensions is aggregated under same feature name (1 or 3),
+\item \textbf{High severity faults} - to more precisely simulate fault frequencies found in real environment the low severity defects can be considered as normal operation (Yes or No).
 \end{itemize}
 
-The fault classification performance metrics are judged after balancing classes with random oversampling using strategy to resample all but majority class, feature normalization and 5-fold cross-validation validation on k-nearest neighbor classifier. In the multi-class classification the micro-averaged performance metrics of accuracy, precision, and recall results in the same number, therefore accuracy is only one on the output. 
+The fault classification performance metrics are evaluated after balancing classes feature normalization, and 5-fold cross-validation validation on the k-nearest neighbor classifier with Euclidean distance metric. The population of classes is evened out with random oversampling using a strategy to resample all but the majority class. In the multi-class classification, the micro-averaged performance metrics of accuracy, precision, and recall result in the same number. Therefore, accuracy is only one on the output. 
 
-The hyperparameters of k-neighbours and subset of utilzed features is tweaked and results are compared under different initial conditions from preprocessing and in multiple experiments.
+The hyperparameter of k-neighbours and a subset of features are tweaked, and results are compared under different preprocessing conditions and in multiple experiments:
 
 \begin{itemize}
-\item Complete feature sets
-\item Feature combinations
-\item Feature selection methods
-\item Incremental learning
+\itemsep0pt
+\item \textbf{Complete feature sets}: compare the accuracy of the k-NN model in relation to the k-value as an odd number in the range from 1 to 37 on the dataset under different conditions. The TD and FD sets are treated separately.
+
+\item \textbf{Feature combinations} - every combination of feature subsets with 2, 3, and 4 members are evaluated to obtain the statistical distribution of all possible k-NN models. The k-value is sequentially increased from options 3, 5, and 11 neighbours. The single k-value generates $\sum_{j=2}^{4}{\binom{n}{j}}$ where $n$ is number of members in complete feature set. In total 375 models for TD and 550 models for FD are tested under identical conditions. 
+
+The observed effect is a rate of decrease in accuracy while shrinking the number of features to the bare minimum. The side product is finding the global optimum by brute force of the most informative attributes in predicting the defect.
+
+\item \textbf{Feature selection methods} - the choice of feature subset is performed in linear time complexity as opposed to exponential in combinatorial case. The dimensionality reduction using \textbf{principal components analysis} (PCA) does further extraction and retains only the components that best explain the variance. The disadvantage is that the resulting linear combination cannot be interpreted easily. 
+
+The best feature subset from complete sets is picked after ranking the features according to their importance. The bivariate scores for ranking are the mean of point biserial \textbf{correlation} to every class label as a dichotomous variable, \textbf{Fisher score} (F statistic), and \textbf{Mutual information}. The rank product combines the three latter scores into the ensemble. The comparison for the accuracy of the feature selection strategy is made in relation to the entire model accuracy distribution. 
+
+\item \textbf{Incremental learning} - the order of samples tries to simulate the gradually worsening state of the machine and delayed annotation of defects. Observations are sorted based on increasing relative severity. The faults with the same severity are lined up randomly. 
+
+The \textbf{tumbling window} of lengths 1, 10, 100 measurements imitates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once.
+
+Another common problem with online learning is \textbf{missing annotations} due to the size of the dataset. The equal-length gaps of 0, 2, 10, and 50 labels are skipped before another observation is annotated. This approach of skipping samples without considering their representativeness can result in harm to predictions. 
 \end{itemize}
 
+The experimental design involves the filter conditions that create 24 forms of the original MaFaulDa. The four main experiments test hyperparameters on each dataset variation. Those are k-neighbors, a number and kind of features in batch learning tumbling windows, and label skips in incremental learning.
 
 \section{Exploratory data analysis of MaFaulDa}
+% To better explain the behavior of the models we examine number of observation per fault category and spatial separability of the groups, ranges and interdependecies of the features. 
+
+% Out of 1951 time series, just xx is for inner bearing (A) and xx for outer bearing. We can see taht by merging the vertical and horizontal misalignment this label has the most occurence with xx\%. Normal class is the less populous with just xx\%.
 \begin{table}[h]
 \renewcommand{\arraystretch}{1.2}
 \centering
@@ -98,10 +116,12 @@ The hyperparameters of k-neighbours and subset of utilzed features is tweaked an
 \caption{Number of rows in MaFaulDa according to label}
 \end{table}
 
+% The inner and outer bearings each have diffent number of recodings made so the total counts differ: xx for bearing A and xx for bearing B. After relabeling the normal class became the largest taking up xx\%. Bearing A+B just concatanes observations from both beraings so the value is the sum. Inbalance ratio as a largest to smallest numbered class is xx \% for original labels and xx \% after relabeling
+
 % Correlation to RPM
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{assets/results/feature-values/corr-to-rpm.png}
+    \includegraphics[width=\textwidth]{assets/results/feature-values/corr-to-rpm.png}
     \caption{Correlation of features to RPM over all experiments}
 \end{figure}
 
@@ -207,6 +227,8 @@ The hyperparameters of k-neighbours and subset of utilzed features is tweaked an
     \end{subfigure} 
     \caption{PCA explained variance and loading plots (A bearing)}
 \end{figure}
+
+% silhouette score
 
 
 
