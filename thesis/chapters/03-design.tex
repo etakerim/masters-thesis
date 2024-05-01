@@ -83,28 +83,30 @@ The observed effect is a rate of decrease in accuracy while shrinking the number
 
 \item \textbf{Feature selection methods} - the choice of feature subset is performed in linear time complexity as opposed to exponential in combinatorial case. The dimensionality reduction using \textbf{principal components analysis} (PCA) does further extraction and retains only the components that best explain the variance. The disadvantage is that the resulting linear combination cannot be interpreted easily. 
 
-The best feature subset from complete sets is picked after ranking the features according to their importance. The bivariate scores for ranking are the mean of point biserial \textbf{correlation} to every class label as a dichotomous variable, \textbf{Fisher score} (F statistic), and \textbf{Mutual information}. The rank product combines the three latter scores into the ensemble. The comparison for the accuracy of the feature selection strategy is made in relation to the entire model accuracy distribution. 
+The best feature subset from complete sets is picked after ranking the features according to their importance. An additional rule is that attributes cannot be added to the same set when they correlate very strongly  $|\mathrm{corr}| > 0.95$. The feature with a lower rank is added instead to the set.
 
-\item \textbf{Incremental learning} - the order of samples tries to simulate the gradually worsening state of the machine and delayed annotation of defects. Observations are sorted based on increasing relative severity. The faults with the same severity are lined up randomly. 
+The bivariate scores for ranking are the mean of point biserial \textbf{correlation} to every class label as a dichotomous variable, \textbf{Fisher score} (F statistic), and \textbf{Mutual information}. The correlation among features can reduce model's prediction power. The rank product combines the three latter scores into the ensemble. The comparison for the accuracy of the feature selection strategy is made in relation to the entire model accuracy distribution. 
+
+\item \textbf{Incremental learning} - the order of samples tries to simulate the gradually worsening state of the machine and delayed annotation of defects. Observations are sorted based on increasing relative severity. The faults within levels are shuffled randomly. 
 
 The \textbf{tumbling window} of lengths 1, 10, 100 measurements imitates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once.
 
-Another common problem with online learning is \textbf{missing annotations} due to the size of the dataset. The equal-length gaps of 0, 2, 10, and 50 labels are skipped before another observation is annotated. This approach of skipping samples without considering their representativeness can result in harm to predictions. 
+Another common problem with online learning is \textbf{missing annotations} due to the size of the dataset. The equal-length gaps of 0, 2, 10, and 50 labels are skipped before another observation is annotated. This approach of skipping samples without considering their representativeness can harm the predictions. 
 \end{itemize}
 
 The experimental design involves the filter conditions that create 24 forms of the original MaFaulDa. The four main experiments test hyperparameters on each dataset variation. Those are k-neighbors, a number and kind of features in batch learning tumbling windows, and label skips in incremental learning.
 
 \section{Exploratory data analysis of MaFaulDa}
-% To better explain the behavior of the models we examine number of observation per fault category and spatial separability of the groups, ranges and interdependecies of the features. 
+A better explanation for model behavior is arranged by examining the number of observations per fault category, spatial separability of the distinguished groups, and scales of the attributes and their interdependencies.
 
-% Out of 1951 time series, just xx is for inner bearing (A) and xx for outer bearing. We can see taht by merging the vertical and horizontal misalignment this label has the most occurence with xx\%. Normal class is the less populous with just xx\%.
+Out of the 1951 time series, the inner bearing (A) has 1438, and the outer bearing (B) has 1393~(Tab.~\ref{tab:design:label-count}). Sorce bearing A+B just concatanes observations from both postions so the column sums their counts together. The observations for shaft defects are shared regardless of the bearing. 
 \begin{table}[h]
 \renewcommand{\arraystretch}{1.2}
 \centering
-\begin{tabular}{|lr|r|r|r|r|r|r|}
+\begin{tabular}{|ll|r|r|r|r|r|r|}
 \hline
-\multicolumn{2}{|l|}{\textbf{Bearing}}                                            & \multicolumn{1}{l|}{A}  & \multicolumn{1}{l|}{A+B} & \multicolumn{1}{l|}{B}  & \multicolumn{1}{l|}{A}   & \multicolumn{1}{l|}{A+B} & \multicolumn{1}{l|}{B}   \\ \hline
-\multicolumn{2}{|l|}{\textbf{Relabel by severity}}                                & \multicolumn{1}{l|}{No} & \multicolumn{1}{l|}{No}  & \multicolumn{1}{l|}{No} & \multicolumn{1}{l|}{Yes} & \multicolumn{1}{l|}{Yes} & \multicolumn{1}{l|}{Yes} \\ \hline
+\multicolumn{2}{|l|}{\textbf{Source bearing}}                                            & \multicolumn{1}{l|}{A}  & \multicolumn{1}{l|}{A+B} & \multicolumn{1}{l|}{B}  & \multicolumn{1}{l|}{A}   & \multicolumn{1}{l|}{A+B} & \multicolumn{1}{l|}{B}   \\ \hline
+\multicolumn{2}{|l|}{\textbf{High severity faults}}                                & \multicolumn{1}{l|}{No} & \multicolumn{1}{l|}{No}  & \multicolumn{1}{l|}{No} & \multicolumn{1}{l|}{Yes} & \multicolumn{1}{l|}{Yes} & \multicolumn{1}{l|}{Yes} \\ \hline
 \multicolumn{1}{|l|}{\multirow{6}{*}{\textbf{Fault}}} & \textbf{misalignment}     & 498                     & 996                      & 498                     & 248                      & 496                      & 248                      \\ \cline{2-8} 
 \multicolumn{1}{|l|}{}                                & \textbf{imbalance}        & 333                     & 666                      & 333                     & 188                      & 376                      & 188                      \\ \cline{2-8} 
 \multicolumn{1}{|l|}{}                                & \textbf{cage fault}       & 188                     & 376                      & 188                     & 91                       & 181                      & 90                       \\ \cline{2-8} 
@@ -113,61 +115,93 @@ The experimental design involves the filter conditions that create 24 forms of t
 \multicolumn{1}{|l|}{}                                & \textbf{normal}           & 49                      & 98                       & 49                      & 738                      & 1470                     & 732                      \\ \hline
 \multicolumn{2}{|l|}{$\Sigma$}                                                    & \textbf{1438}           & \textbf{2831}            & \textbf{1393}           & \textbf{1438}            & \textbf{2831}            & \textbf{1393}            \\ \hline
 \end{tabular}
-\caption{Number of rows in MaFaulDa according to label}
+\caption{Number of observation in MaFaulDa split by class label according to source bearing}
+\label{tab:design:label-count}
 \end{table}
 
-% The inner and outer bearings each have diffent number of recodings made so the total counts differ: xx for bearing A and xx for bearing B. After relabeling the normal class became the largest taking up xx\%. Bearing A+B just concatanes observations from both beraings so the value is the sum. Inbalance ratio as a largest to smallest numbered class is xx \% for original labels and xx \% after relabeling
+The fusion of vertical and horizontal misalignment gives rise to the label that occurs the most at 34.63\%. The baseline class is the least populous at 3.4\% for the inner bearing. After relacing low severity faults with the normal status it became the largest with 51.32\%. The imbalance ratio as a proportion of the largest to the smallest classes is 10.16 for original labels and 8.58 after relabeling.
 
-% Correlation to RPM
+Exemplary waveforms from each fault class illustrate their
+superficial differences in oscillatory behavior. The files with the highest severity levels and around an average rotational speed of 2500 rpm (42 Hz) are displayed to discern patterns.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{assets/results/feature-values/corr-to-rpm.png}
-    \caption{Correlation of features to RPM over all experiments}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/eda/mafaulda-TD-A.png}
+        \caption{Time domain for all axis}
+        \label{fig:design:fault-temporal-waveform}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.50\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/eda/mafaulda-faults.png}
+        \caption{Frequency domain in radial direction}
+        \label{fig:design:fault-spectral-waveform}
+    \end{subfigure}
+    \caption{Vibrations from inner bearing (A) for every fault class with the highest fault severity at 2500 rpm}
 \end{figure}
 
-% Feature correlations
+Time-domain waveforms of the 300 ms signal slice are shown in the graphs in Figure \ref{fig:design:fault-temporal-waveform}. Subplots for radial, tangential, and axial directions are in columns from left to right. Amplitudes vary with limits from $\pm 3\; \mathrm{m/s}^2$ in baseline and misalignment time series up to $\pm 11\;\mathrm{m/s}^2$ in case of severe bearing faults. 
+
+The frequency spectrum in Figure \ref{fig:design:fault-spectral-waveform} is obtained by FFT and Hann window of 16384 samples. The signal chunk represents an uncertainty box with a duration of approximately 328 ms and a spectral resolution of little over 3 Hz. The graph has been cropped in variables to make the most important peaks visible.
+
+The numeric scale of distinct attributes calculated out of signals for bearing A widely differs ~(Fig.~\ref{fig:design:feature-range}). The magnitude of three spatial dimensions stretches the scale towards larger values or introduces more outliers. Many of the indicators used for fault detection are dimensionless numbers but for others, the information about units of measurement is still attainable. 
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/features-TD-dim1-A.png}
+        \caption{Time-domain features for 1 axis}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/features-FD-dim1-A.png}
+        \caption{Frequency-domain features for 3 axes}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/features-TD-dim3-A.png}
+        \caption{Time-domain features for 1 axis}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/features-FD-dim3-A.png}
+        \caption{Frequency-domain features for 3 axes}
+    \end{subfigure}
+    \caption{The value ranges of attributes for bearing A, depending on the number of directions that feature is aggregated out of}
+    \label{fig:design:feature-range}
+\end{figure}
+
+Inside the interquartile range of three axis features the peak-to-peak is approximately between 2 - 22 $\mathrm{m/s}^2$, root-mean-square is 0.4 - 2.5 $\mathrm{m/s}^2$, average amplitude change represents 0.05 - 0.45 $\mathrm{m/s}^2$ of amplitude change in 20 $\mu\mathrm{s}$. In the frequency domain, the spectral centroid is 100 - 5900 Hz, roll-off frequencies arise below 5000 Hz, roll-on frequencies are below 400 Hz, and entropy occurs from 4 to 12 nats.
+
+Despite the differences in ranges in some instances by several orders of magnitude, there are still dependencies among variables in the complete feature sets. The TD set~(Fig.~\ref{fig:design:corr-td}) appears to have less strongly correlated pairs than the FD set~(Fig.~\ref{fig:design:corr-fd}) in terms of Pearson correlation coefficient. 
+
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-values/corr-A-3-TD.png}
         \caption{Time-domain features}
+        \label{fig:design:corr-td}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-values/corr-A-3-FD.png}
         \caption{Frequency-domain features}
+        \label{fig:design:corr-fd}
     \end{subfigure}
-    \caption{Feature correlations in MaFaulDa}
+    \caption{Pearson correlations of variables from inner bearing (A) in feature sets aggregated out of 3 axes}
 \end{figure}
 
+Crest, impulse, and clearance in TD have correlations of 100\%. Other very strongly positively correlated variables are peak-to-peak to root-mean-square at 95\% and average amplitude change at 83\%. Kurtosis is strongly correlated with skewness at 72\% and with crest, impulse, and clearance at 66\%. Shape and zero-crossing rate are also correlated at 72\%. In the FD set the roll-on frequency, energy, and standard deviation are the most uncorrelated to all other variables. However, the energy and std are highly correlated to each other. Skewness and kurtosis of the frequency spectrum have a strong association of 99\%. The rest of the attributes have an absolute value of correlation greater than 68\% in pairs amongst themselves.
 
-% Features Range
-% Mafaulda
 \begin{figure}[h]
     \centering
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-values/features-TD-dim1-A.png}
-        \caption{Time-domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-values/features-FD-dim1-A.png}
-        \caption{Frequency-domain features}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-values/features-TD-dim3-A.png}
-        \caption{Time-domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-values/features-FD-dim3-A.png}
-        \caption{Frequency-domain features}
-    \end{subfigure}
-    \caption{Feature range in MaFaulDa}
+    \includegraphics[width=0.8\textwidth]{assets/results/feature-values/corr-to-rpm.png}
+    \caption{Correlation of features to rpm over all experiments}
+    \label{fig:design:rpm-corr}
 \end{figure}
 
-% PCA plot of labels
-% Clusters with true labels
+The faults in the MaFaulDa were measured at several rotational speeds. This increases the robustness of the machine-learning model. In practice, if the model is trained only at one speed and then the speed alters, the features tied to rpm could inhibit the prediction accuracy. The distribution of correlations of each predictor to rpm under all experimental conditions is shown in Figure~\ref{fig:design:rpm-corr}. 
+
+The overwhelming majority of predictors are weakly correlated to rotational speed. The moderate correlation appears for average amplitude change with the median of 54\% and peak-to-peak with median of 31\%. These two features are less suited for idenfifying fault types in variable speed situations.
+
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
@@ -189,47 +223,32 @@ The experimental design involves the filter conditions that create 24 forms of t
         \includegraphics[width=\textwidth]{assets/results/labels/PCA-FD-severity.png}
         \caption{Frequency-domain features (severity)}
     \end{subfigure} 
-    \caption{PCA of all features to 2 components}
+    \caption{PCA of complete feature set into two principal components (bearing A and 3 axis}
+    \label{fig:design:pca-complete-sets}
 \end{figure}
 
-% Time domain waveforms of different faults
+The separability of fault groups into clusters is qualitatively analyzed by projecting normalized complete feature sets onto the plain utilizing two principal components. The transformed TD and FD sets are shown in Figure~\ref{fig:design:pca-complete-sets} with original labels and after low severities are assigned ``normal'' class. The decision boundaries that color the feature space around the data points are determined in 0.02x0.02 square areas by k-NN with five neighbours.
+
+Shaft misalignment and bearing ball fault look quite lumped together, whereas imbalance is mixed with cage fault. The silhouette score quantifies the amount of cluster overlap which indicates a very weak clustering score with values around 0.08. The explained variance with two components is 84.7\% for TD and 86.5\% using original labels.
+
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/eda/mafaulda-TD-A.png}
-        \caption{Time domain}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/eda/mafaulda-faults.png}
-        \caption{Frequency domain (around 2500 rpm)}
-    \end{subfigure}
-    \caption{MaFaulDa}
-\end{figure}
-
-
-% PCA loading plots
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/eda/PCA-explained-variance.png}
+        \includegraphics[width=\textwidth]{assets/results/eda/PCA-TD-loading-plot.png}
         \caption{Time-domain features}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/eda/PCA-TD-loading-plot.png}
-        \caption{Frequency-domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/results/eda/PCA-FD-loading-plot.png}
-        \caption{Time-domain features (severity)}
+        \caption{Frequency-domain features}
     \end{subfigure} 
-    \caption{PCA explained variance and loading plots (A bearing)}
+    \caption{PCA loading plots for bearing A}
+    \label{fig:design:pca-loading-plot}
 \end{figure}
 
-% silhouette score
+Loading plots of PCA (Fig.~\ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the time domain mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, clearance, zero-crossing rate}. The second PC focuses more on the amplitude range: \emph{rms, peak-to-peak, aac}. 
 
+However, the groups are not as clear-cut for frequency-domain features. Overall chaos in frequency spectra can be attributed to PC1: \emph{flux, entropy, negentropy, noisiness}, and the shape of frequency distribution to PC2: \emph{roll-on, roll-off}.
 
 
 \section{Accelerometer data logger}

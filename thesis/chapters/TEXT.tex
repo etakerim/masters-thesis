@@ -80,12 +80,10 @@ These vibration sensors are placed in two positions. The first placement is arou
         \caption{Spectra in radial direction}
         \label{fig:design:fault-spectral-waveform}
     \end{subfigure} 
-    \caption{Inner bearing vibrations (A) for each fault category with the highest fault severity at 2500 rpm}
+    \caption{}
 \end{figure}
 
-Temporal domain waveforms of the 300 ms signal slice are shown in the graphs in Figure \ref{fig:design:fault-temporal-waveform}. Subplots for radial, tangential, and axial directions are laid out in columns from left to right. Amplitudes vary with limits from $\pm 3\; \mathrm{m/s}^2$ in baseline and misalignment time series up to $\pm 11\;\mathrm{m/s}^2$ in case of severe bearing faults. 
 
-The frequency spectrum in Figure \ref{fig:design:fault-spectral-waveform} is obtained by FFT and Hann window of length $2^{14}$. The signal chunk represents an uncertainty box with a duration of approximately 328 ms and a spectral resolution of little over 3 Hz. The graph has been cropped in both axes to make the most important peaks visible.
 
 
 \subsection{Statistical tests}
@@ -126,7 +124,7 @@ Fault labels and their severities come from the directory structure within the d
 
 Pearson's correlation of features to rpm is very low in the whole dataset. In the temporal domain, the correlation coefficient is within an interval of -0.08 to 0.26. In the spectral domain, the correlation to rpm for all FFT window sizes from $2^8$ up to $2^{14}$ is mostly very low from -0.14 up to 0.26, except for the centroid being around 0.35.
 
-The correlation among features can reduce prediction power if a pair is elected where $|\mathrm{corr}| > 0.95$. The feature is not added to the subset when the threshold is exceeded. High correlations are more substantial in the temporal domain that are present in these pairs (ordered from the most correlated): \{impulse, clearance\}, \{crest, impulse\}, \{crest, clearance\}, \{pp, rms\}. In the spectral domain set \{skewness, kurtosis\} has a strong correlation.
+ temporal domain that are present in these pairs (ordered from the most correlated): \{impulse, clearance\}, \{crest, impulse\}, \{crest, clearance\}, \{pp, rms\}. In the spectral domain set \{skewness, kurtosis\} has a strong correlation.
 
 %\begin{figure}[h!]
 %    \centering
@@ -152,9 +150,7 @@ The variables are also more inter-correlated in the temporal domain shown by pri
 %    \label{fig:design:pca-loading-plot} 
 %\end{figure}
 
-PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. Loading plots of PCA (Fig. \ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the temporal domain mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, clearance, zero-crossing}. The second PC focuses more on the amplitude range: \emph{rms, p-p, aac}.  
-
-However, the groups are not as clear-cut for spectral features. Overall chaos in spectra can be attributed to PC1: \emph{flux, entropy, negentropy, noisiness}, and the shape of frequency distribution to PC2: \emph{roll-on, roll-off, centroid}.
+PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. 
 
 
 \subsection{Feature selection}
@@ -181,17 +177,6 @@ Two models are created for the target variable in classification with all 10 tem
 Confusion matrices for fault prediction and high severity anomaly are shown in Figure \ref{fig:design:KNN-confusion-matrix}. In this example, the number of k neighbors is 5, the distance metric is the Euclidian norm, and the algorithm for proximity queries is a k-d tree. The most inaccuracies in the temporal domain are between misalignment and bearing race faults. In the spectral domain, the model confuses imbalance and bearing faults because mass to unbalance is hung onto the shaft to cause bearing defects. 
 
 In anomaly prediction, the error of the first degree is 7 times more prevalent than the error of the second degree. False positives are preferable, since we do not want the machine to fail prematurely and not know about it. In all cases, spectral features maintain better prediction metrics than all temporal features because of less interdependency among features. Bearing B exhibits overall worse classification performance because of more noise in the original signal.
-
-%\begin{table}[h]
-%\centering
-%\renewcommand{\arraystretch}{1.2}
-%\begin{adjustbox}{width=\textwidth}
-%
-%\end{tabular}
-%\end{adjustbox}
-%\caption{k-NN model performance trained on all extracted features}
-%\label{tab:design:all-extracted-features}
-%\end{table}
 
 Accuracies and F1 scores in both bearing positions with all extracted features are shown in Table \ref{tab:design:all-extracted-features}. Models are overtrained, especially for temporal features, because of the substantial difference between accuracy on training and validation sets. Binary classification of anomalies is unsurprisingly more precise in general than the multi-class case. Defect-type detection with all features reaches accuracy on the testing set above 98\% for bearing A, and above 90\% for bearing B.
 
@@ -346,8 +331,7 @@ Accuracies after sequentially seeing all samples 96.78\% in temporal domain and 
 %    \label{fig:design:online-fault-delay-sliding}
 %\end{figure}
 	
-	
-The \textbf{tumbling window} simulates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once. In the final sample, the accuracies are 89.11\% \emph{(temporal)} and 90.38\% \emph{(spectral)} with immediate feedback, and 83.08\% \emph{(temporal)} and 85.01\% \emph{(spectral)} with window length of 250 samples (Fig.~\ref{fig:design:online-fault-delay-tumbling}). 
+In the final sample, the accuracies are 89.11\% \emph{(temporal)} and 90.38\% \emph{(spectral)} with immediate feedback, and 83.08\% \emph{(temporal)} and 85.01\% \emph{(spectral)} with window length of 250 samples (Fig.~\ref{fig:design:online-fault-delay-tumbling}). 
 
 %\begin{figure}[ht]
 %    \centering
@@ -366,7 +350,6 @@ The \textbf{tumbling window} simulates regular expert visits annotating observat
 
 A \textbf{tumbling window} is more accurate according to progressive valuation because the labeling delay decreases towards the window's end. Initial 0\% accuracy is caused by a warming-up period in data collection during the span of the first few windows. The true labels are unknown. After just a handful of windows in the beginning, accuracy jumps above 60\% and stabilizes after 1000 observations.
 
-Another common problem with online learning is \textbf{missing annotations} due to the size of the dataset. In the simulation of missing labels, the equal-length gaps are skipped before another observation is annotated. This approach of choosing samples to annotate without considering their representativeness results in severe harm to predictions. 
 
 %\begin{figure}[ht]
 %    \centering
@@ -393,8 +376,6 @@ We employ a slightly customized validation procedure that involves the selection
 
 \section{Sensor hardware and drivers}
 In preliminary exploratory vibration measurements of machines, the ADXL335 accelerometer is connected to BeagleBone Black microcontroller. The bandwidth, sensitivity, and sampling frequency of the makeshift solution do not appear to be adequate (Table~\ref{tab:design:hw-sensors}).
-
-
 
 The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches industrial standards for vibration monitoring. ESP32-PoE-ISO is chosen as a microcontroller development kit because it has an SD card slot connected via SD/MMC bus. It enables us to store all samples from FIFO. The accelerometer uses an SPI bus with a maximum speed of 10 MHz that can be connected to any physical GPIO pin. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
 
