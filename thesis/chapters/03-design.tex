@@ -227,7 +227,7 @@ The overwhelming majority of predictors are weakly correlated to rotational spee
     \label{fig:design:pca-complete-sets}
 \end{figure}
 
-The separability of fault groups into clusters is qualitatively analyzed by projecting normalized complete feature sets onto the plain utilizing two principal components. The transformed TD and FD sets are shown in Figure~\ref{fig:design:pca-complete-sets} with original labels and after low severities are assigned ``normal'' class. The decision boundaries that color the feature space around the data points are determined in 0.02x0.02 square areas by k-NN with five neighbours.
+The separability of fault groups into clusters is qualitatively analyzed by projecting normalized complete feature sets onto the plain utilizing two principal components. The transformed TD and FD sets are shown in Figure~\ref{fig:design:pca-complete-sets} with original labels and after low severities are assigned ``normal'' class. The decision boundaries that color the feature space around the data points are determined in 0.02x0.02 square areas by k-NN with five neighbours. We observe the inability to separate faults by linear boundaries in given feature spaces and the noncompactness of clusters.
 
 Shaft misalignment and bearing ball fault look quite lumped together, whereas imbalance is mixed with cage fault. The silhouette score quantifies the amount of cluster overlap which indicates a very weak clustering score with values around 0.08. The explained variance with two components is 84.7\% for TD and 86.5\% using original labels.
 
@@ -248,106 +248,146 @@ Shaft misalignment and bearing ball fault look quite lumped together, whereas im
 
 Loading plots of PCA (Fig.~\ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the time domain mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, clearance, zero-crossing rate}. The second PC focuses more on the amplitude range: \emph{rms, peak-to-peak, aac}. 
 
-However, the groups are not as clear-cut for frequency-domain features. Overall chaos in frequency spectra can be attributed to PC1: \emph{flux, entropy, negentropy, noisiness}, and the shape of frequency distribution to PC2: \emph{roll-on, roll-off}.
-
+However, the groups are not as clear-cut for frequency-domain features. Overall chaos in frequency spectra can be attributed to PC1: \emph{flux, entropy, negentropy, noisiness}, and the shape of frequency distribution to PC2: \emph{roll-on, roll-off}. PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. 
 
 \section{Accelerometer data logger}
-% Block diagram of device
+Data acquisition of vibrations from industrial machinery necessitates the assembly of the standalone data logger. The required hardware modules of the device include a sensor as a triaxial MEMS accelerometer, a fast persistent memory unit, and a microcontroller to control communication with both peripherals. The recording starts with a button press, and the indicator LED provides feedback about the operation in progress. 
 
-% HW parameters and mention temporary device
+More detailed specification according to standards creates demands especially on the accelerometer, in terms of bandwidth for linear response to at least 1 kHz, ideally more. The sampling rate should be greater than 2 kHz for each of the three axes (6 kSps). Out of the options available on the market, we opted for the accelerometers with digital communication bus with more than 12-bit sample resolution, high sensitivity, and low noise density.
+
 \begin{table}[h]
 \renewcommand{\arraystretch}{1.2}
 \centering
 \begin{tabular}{|l|l|l|}
 \hline
-\textbf{Accelerometer}                           & \textbf{IIS3DWB}   \\ \hline
-\textbf{Vendor}                                  & STMicroelectronics \\ \hline
-\textbf{Bus}                                     & SPI                \\ \hline
-\textbf{Axis}                                    & 1 or 3             \\ \hline
-\textbf{Range} (g)                               & $\pm$ 2 - 16      \\ \hline
-\textbf{Bandwidth} (kHz)                          & 5 - 6.3            \\ \hline
-\textbf{Sensitivity} (mg/LSB)                    & 0.06 - 0.49       \\ \hline
-\textbf{Noise density} ($\mu g / \sqrt{\mathrm{Hz}}$ rms) & 75                 \\ \hline
-\textbf{Microcontroller}                         & ESP32-PoE-ISO      \\ \hline
+\textbf{Accelerometer}                   & \textbf{IIS3DWB}   \\ \hline
+\textbf{Vendor}                          & STMicroelectronics \\ \hline
+\textbf{Bus}                             & SPI  (to 10 MHz)               \\ \hline
+\textbf{Axis}                            & 1 or 3             \\ \hline
+\textbf{Range}                           & $\pm$ 2 - 16 g (19 - 157 $\mathrm{m/s}^2$)   \\ \hline
+\textbf{Bandwidth}                       & 5 - 6.3 kHz           \\ \hline
+\textbf{Sensitivity}                     & 0.06 - 0.49 mg/LSB      \\ \hline
+\textbf{Noise density} & 75 $\mu \mathrm{g} / \sqrt{\mathrm{Hz}}$ rms                \\ \hline
+\textbf{Output data rate}               & 26.8 kHz             \\ \hline
+\textbf{Sample resolution}              & 16 bit                 \\ \hline
+\textbf{FIFO}                           & 3 kB (512 samples) \\ \hline
+\textbf{Microcontroller}                & \textbf{ESP32-PoE-ISO}      \\ \hline
 \textbf{CPU SoC}                                 & ESP32-WROOM-32     \\ \hline
-\textbf{Output data rate} (kHz)                  & 26.7               \\ \hline
-\textbf{ADC resolution} (bit)                    & 16                 \\ \hline
-\textbf{FIFO}                                    & 3 kB (512 samples) \\ \hline
+\textbf{CPU clock rate}                          & 80 MHz     \\ \hline
 \end{tabular}
 \caption{Hardware parameters of accelerometer data logger}
 \label{tab:design:hw-sensors}
 \end{table}
 
+The hardware configuration we arrived at for the data logger powered with a power bank via USB connector is in Table~\ref{tab:design:hw-sensors}. The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches industrial standards for vibration monitoring. The evaluation board for the accelerometer STEVAL-MKI208V1K is connected via a ribbon cable that enables proper attachment to designated places.
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.9\textwidth]{assets/design/hw-block-schematic.png}
-	\caption{Sensor unit hardware block diagram}
+	\caption{Data logger hardware block diagram}
 	\label{fig:design:block-diagram-hw}
-\end{figure}
+\end{figure} 
 
-% Task communication sequence diagram
-
-% Firmware
-% Timing is crutial 19ms.
-Activity diagrams describe three basic actions of firmware for logging accelerometer samples:
-
-\begin{itemize}
-\itemsep0pt
-\item begin new recording, 
-\item log block of samples into CSV file,
-\item finish recording.
-\end{itemize}
+ESP32-PoE-ISO is chosen as a microcontroller development kit because it has an SD card slot connected via an SD/MMC bus. It enables us to store all samples from FIFO. The accelerometer uses an SPI bus with a maximum speed of 10 MHz that can be connected to any physical GPIO pin. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
 
 \begin{figure}[h]
     \centering
 	\includegraphics[width=\textwidth]{assets/design/firmware-design.png}
-\end{figure} 
+	\caption{Activity diagram of data logger firmware functions}
+	\label{fig:design:firmware-activity}
+\end{figure}
 
+The firmware's role lies in coordinating hardware adapters and straightforward vibration acquisition for later analysis. The provided functionality is hence minimalistic. Two user-driven actions, one periodic event, and one timer-generated event satisfy these basic requirements. Activity diagrams outline the steps of the firmware actions~(Fig.~\ref{fig:design:firmware-activity}).
 
 \section{Industrial equipment}
 Three kinds of rotating machines are at disposal for vibration measurements. Those are a standing fan, scroll compressor, and water pump.
 
-\begin{figure}[ht]
+\begin{figure}[h]
     \centering
-    \begin{subfigure}[b]{0.17\textwidth}
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/standing-fan/fan-audio-speed-1.png}
+        \caption{Fan speed 1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/standing-fan/fan-audio-speed-2.png}
+        \caption{Fan speed 2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/standing-fan/fan-audio-speed-3.png}
+        \caption{Fan speed 3}
+    \end{subfigure}
+    \caption{Frequency spectrum of audio recorded in close proximity to the side of the standing fan}
+    \label{fig:design:fan-speed}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
     		\centering
-        \includegraphics[width=\textwidth]{assets/design/machine-fan.jpg}
+        \includegraphics[width=\textwidth]{assets/design/sensor/standing-fan.jpg}
         \caption{\footnotesize Fan}
         \label{fig:machine:fan}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.25\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
     		\centering
-        \includegraphics[width=\textwidth]{assets/design/sensor/copeland-compressor.jpg}
+        \includegraphics[width=\textwidth]{assets/design/sensor/compressor.jpg}
         \caption{\footnotesize Compressor}
         \label{fig:machine:compressor}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.31\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
     		\centering
         \includegraphics[width=\textwidth]{assets/design/sensor/ksb-pump.jpg}
         \caption{\footnotesize Water pump KSB}
         \label{fig:machine:pump-ksb}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.31\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
     		\centering
         \includegraphics[width=\textwidth]{assets/design/sensor/sigma-pump.jpg}
         \caption{\footnotesize Water pump Sigma}
         \label{fig:machine:pump-sigma}
     \end{subfigure}
     \caption{Machines dedicated for vibration measurements}
+    \label{fig:design:machines}
 \end{figure}
 
-\textbf{Standing fan} is model \emph{Kalorik~TKG~VT1037} (Fig.~\ref{fig:machine:fan}) and one unit is available to us. It serves as a test bed during the sensor unit development. The sensor is placed on the plastic casing at the back of the drive motor. The fan has a 45~cm diameter with 3~propellers and a power of 45~W (class~\rom{1}). It has a switch for 3 rotational speeds, which are approximately 18.5~Hz (1100~rpm), 20.4~Hz (1200~rpm), and 22~Hz (1300~rpm).
+\textbf{Standing fan} is model \emph{Kalorik~TKG~VT1037} (Fig.~\ref{fig:machine:fan}) and one unit is available to us. It serves as a test bed during the data logger development. The sensor is placed on the plastic casing at the back of the drive motor. The fan has a 45~cm diameter with 3~propellers and a power of 45~W (class~\rom{1}). It has a switch for 3 rotational speeds, which are approximately 19~Hz, 21~Hz, and 23~Hz ($\pm$ 0.18 Hz). Speed estimation was done by spectral analysis of audio (Fig.~\ref{fig:design:fan-speed}) in \emph{Spectroid} app and confirmed by 240 fps high-speed camera.
 
-\textbf{Scroll compressor} is model \emph{Copeland~ZR16} (Fig.~\ref{fig:machine:compressor}). Altogether, two units are available in two independent air conditioning units for the data center. The compressor has 9.7~kW of power (class~\rom{1}) and rotates at 2900 rpm (48.3 Hz). Two possible measurement locations are located on the sides on top of the bearings, just above the base and above the scroll.
+\textbf{Scroll compressor} is model \emph{Copeland~ZR16} (Fig.~\ref{fig:machine:compressor}). Altogether, two units are available in two independent air conditioning units for the data center. The compressor has 9.7~kW of power (class~\rom{1}) and rotates at 2900 rpm (48.3 Hz). Possible measurement locations are located on the sides of the compressor atop the bearings, just above the base and below the scroll. Steel casing is not in direct contact with the bearing which causes significant alteration to the signal.
 
-\textbf{Water pumps} are available as 3 units in municipal drinking water pumping station. The apparatus consists of a single-stage axially split volute casing pump and an attached electric induction motor. 
+\textbf{Water pumps} are available as three units in municipal drinking water pumping station. The apparatus consists of a single-stage axially split volute casing pump and an attached electric induction motor. The newer primary pumps with bundled wireless cloud monitoring are two units of \emph{KSB Omega~300-560} (Fig.~\ref{fig:machine:pump-ksb}). The pumps were commissioned in 2018, and they rotate at 1493 rpm (24.9 Hz). The motor \emph{WEG W50} provides 400~kW of power (class~\rom{3}). The bearing designations at numbered places for defect frequency  calculations are 6319-C3 (1), 6324-C3 (2), and 6317-2Z (3 \& 4)
 
-The newer primary pumps with bundled wireless cloud monitoring system are two units of \emph{KSB Omega~300-560} (Fig.~\ref{fig:machine:pump-ksb}). The pumps were commissioned in 2018, and they rotate at 1493 rpm (24.9 Hz). The electric motor provides 400~kW of power (class~\rom{3}).
+The secondary pump is one unit named \emph{Sigma~300-OVD-600} (Fig.~\ref{fig:machine:pump-sigma}) installed in 1986. It rotates at 1485 rpm (24.75 Hz), and its electric motor has a power of 450~kW (class~\rom{3}). Each pump and motor have two bearings, hence there are four measurement positions.
 
-The secondary pump is one unit named \emph{Sigma~300-OVD-600} (Fig.~\ref{fig:machine:pump-sigma}) installed in 1986. It rotates at 1485 rpm (24.75 Hz), and its electric motor has power of 450~kW (class~\rom{3}). Each pump and motor have 2 bearings. Therefore, there are 4 measurement positions in total.
+\section{Data collection methodology}
+Vibration measurement for one placement on the machine involves three trials (two for Sigma pump). After each trial, the sensor is detached and attached again to introduce ``noise''. The sensor is mounted to the machine on a flat surface with adhesive of thin double-sided carpet tape.
+
+Placements are numbered for simplicity (Fig.~\ref{fig:design:machines}) but the precise description follows the notation of MIMOSA convention from ISO~13373-1. The sensor is mounted on compressor's placem: \emph{SFTA001AT000TN} (1), \emph{SFTA002AT000TN} (2), on WEG motor's positions: \emph{MTRA001AT000TN} (1), \emph{MTRA002AT045TN} (2), and on KSB pump positions: \emph{PMPA003AT000TN} (3), \emph{PMPA004AT000TN} (4).
+
+\begin{table}[]
+\begin{tabular}{|l|c|c|ccccc|}
+\hline
+\multirow{2}{*}{\textbf{Machine}}           & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Facility code}}} & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Label}}} & \multicolumn{5}{l|}{\textbf{Date}}                                                                                                                                                                                   \\ \cline{4-8} 
+                                            & \multicolumn{1}{l|}{}                                           & \multicolumn{1}{l|}{}                                & \multicolumn{1}{l|}{\textbf{20/02/2024}} & \multicolumn{1}{l|}{\textbf{27/02/2024}} & \multicolumn{1}{l|}{\textbf{05/03/2024}} & \multicolumn{1}{l|}{\textbf{19/03/2024}} & \multicolumn{1}{l|}{\textbf{26/03/2024}} \\ \hline
+\multirow{2}{*}{\textbf{Scroll compressor}} & K3                                                              & C1                                                   & \multicolumn{1}{c|}{$\bigtimes$}         & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{$\bigtimes$}         & \multicolumn{1}{c|}{$\bigtimes$}         &                                          \\ \cline{2-8} 
+                                            & K5                                                              & C2                                                   & \multicolumn{1}{c|}{$\bigtimes$}         & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{$\bigtimes$}         & \multicolumn{1}{c|}{$\bigtimes$}         &                                          \\ \hline
+\multirow{2}{*}{\textbf{Water pump (KSB)}}  & no. 1                                                           & P1                                                   & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{$\bigtimes$}         & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{}                    & $\bigtimes$                              \\ \cline{2-8} 
+                                            & no. 7                                                           & P2                                                   & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{$\bigtimes$}         & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{}                    & $\bigtimes$                              \\ \hline
+\multirow{2}{*}{\textbf{Pump's motor}}      & no. 1                                                           & M1                                                   & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{$\bigtimes$}         & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{}                    & $\bigtimes$                              \\ \cline{2-8} 
+                                            & no. 7                                                           & M2                                                   & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{$\bigtimes$}         & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{}                    & $\bigtimes$                              \\ \hline
+\textbf{Pump (Sigma)}                       & no. 5                                                           & P3                                                   & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{}                    & $\bigtimes$                              \\ \hline
+\textbf{Motor (Sigma)}                      & no. 5                                                           & M3                                                   & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{}                    & \multicolumn{1}{c|}{}                    & $\bigtimes$                              \\ \hline
+\end{tabular}
+\caption{Data collection schedule}
+\label{fig:design:data-schedule}
+\end{table}
+
+The triaxial recording has a duration 60~s (at $f_s$ = 26.8~kHz) and a 16-bit resolution. One file has 24.6~MiB as a binary stream and 48~MiB in TSV format. 
+Measurements were executed and organized into folders according to schedule in Table~\ref{fig:design:data-schedule}. It should be noted that because of operational regulations, the second KSB pump was measured the day after the first. The estimated total space requirements for all 92 uncompressed raw recordings is 2.21~GiB and approximately 4.31~GiB as TSV files.
 
 \begin{figure}[h]
     \centering
@@ -360,26 +400,25 @@ The secondary pump is one unit named \emph{Sigma~300-OVD-600} (Fig.~\ref{fig:mac
     \begin{subfigure}[b]{0.49\textwidth}
     		\centering
         \includegraphics[width=\textwidth]{assets/design/ksb-guard-spectrum.png}
-        \caption{Vibration spectral analysis dashboard}
+        \caption{Vibration frequency analysis dashboard}
     \end{subfigure}
      \caption{KSB Guard cloud monitoring for pumps}
      \label{fig:design:ksb-guard}
 \end{figure}
 
-\textbf{Complete schedule} for planned vibration data gathering on the designated machines and measurement procedure is described in Appendix~\ref{appendix:technical-docs}. In addition, we are able to export the entire historical record at hourly intervals. Logs from \textbf{KSB Guard} cloud monitoring tool contain vibration rms velocities and frequency spectra for two monitored KSB water pumps (Figure~\ref{fig:design:ksb-guard}).
-
+Logs from \textbf{KSB Guard} cloud monitoring tool contain vibration rms velocities and frequency spectra for two monitored KSB water pumps (Figure~\ref{fig:design:ksb-guard}). We were able to export the historical log of vibration velocity for last year at hourly intervals and sample frequency spectra. 
 
 \section{Data volume savings}
-The apparent advantage of feature discovery is reducing the amount of data downstream. Data compression must occur on edge devices to enable the utilization of wireless low-power wide area networks (LPWAN). The protocol stack may differ, so goodput is compared without node configuration metadata and keepalive messages. 
+The apparent advantage of feature discovery is reducing the amount of data downstream. Data compression must occur on edge devices to enable the utilization of wireless low-power wide area networks (LPWAN). The protocol stack may differ, so goodput in this section is compared without node configuration metadata and keepalive messages. 
 
-The machinery monitoring system relies on determining several parameters:
+The machinery monitoring system relies on determining a few parameters:
 \begin{itemize}
 \itemsep0pt
-\item \textbf{Number of source channels} ($S$): comprises the number of monitored machines, measurement locations for sensors, and active sensor axes.
-\item \textbf{Sampling frequency} ($f_s$): is set based on the linear response of the accelerometer, the types of faults intended for detection, and how soon they should be noticed after they arise. The higher required sensitivity means a higher sampling rate derived according to the Nyquist theorem. At a minimum, it should be 15 kHz to 20 kHz.
-\item \textbf{Interval between successive measurements} ($T$): specifies the minimal response time to sudden failure. The more critical the machine is, the interval should be shorter. The bigger the machine parts, the slower the defect evolves.
-\item \textbf{Duration of valid recording} ($D$): is the captured snapshot of machine unaltered behavior associated with a timestamp. Duration should cover at least 3 windows for spectral estimation. The spectral resolution of 1 Hz amounts to 3 seconds of signal under such assumptions.
-\item \textbf{Number of extracted features} ($F$): are ideally key trend indicators pointing to symptoms of common malfunctions. We aim for a total of 6 features.
+\item \textbf{Number of source channels} ($S$) - comprises the number of monitored machines, measurement locations for sensors, and active sensor axes.
+\item \textbf{Sampling frequency} ($f_s$) - is set based on the linear response of the accelerometer, the types of faults intended for detection, and how soon they should be noticed after they arise. The higher required sensitivity means a higher sampling rate derived according to the Nyquist theorem. At a minimum, it should be 15 kHz to 20 kHz.
+\item \textbf{Interval between successive measurements} ($T$) - specifies the minimal response time to sudden failure. The more critical the machine is, the shorter the interval should be. The bigger the machine parts, the slower the defect evolves.
+\item \textbf{Duration of valid recording} ($D$) - is the captured snapshot of machine unaltered behavior associated with a timestamp. Duration should cover at least twelve windows for spectral estimation.
+\item \textbf{Number of extracted features} ($F$) - are ideally key trend indicators pointing to symptoms of common malfunctions. We aim for a total of six features.
 \end{itemize}
 
 Equation \ref{equ:compression-ratio-features} expresses the lossy compression ratio ($\mathcal{C}$) formula if trend indicators are stored instead of full recording. The number of raw channels ($S_{\mathrm{in}}$) can differ from those extracted in features ($S_{\mathrm{out}}$). Parameter $D = 0.5$ when we use frequency bins with 1 Hz resolution.
@@ -391,17 +430,8 @@ Equation \ref{equ:compression-ratio-features} expresses the lossy compression ra
 
 \textbf{Compression ratio} for MaFaulDa dataset compared to all 21 extracted features in 3 dimensions is 2381:1. If 6 features are kept, the compression is 25000:1, which is a saving of the original data by 99.996\%.
 
-As an example to approximate required network goodput and storage in practice, we consider continuous vibration \textbf{monitoring for municipal water pumping station}. The station has 3 pumps and 3 electric motors. 
+As an example to approximate required network goodput and storage in practice, we consider continuous vibration \textbf{monitoring for municipal water pumping station}. The station has three pumps and three electric motors. 
 
-A pump and motor pair have 4 bearings together for drive end and non-drive end positions. Each position has a sensor mounted in 3 directions that makes a total of \emph{36 source channels}. The sampling frequency at each position is set to \emph{20 kHz}. The recordings have \emph{duration of 5 seconds} and are triggered regularly every 1 hour (\emph{8760 times per year}).
+A pump and motor pair have four bearings together for drive end and non-drive end positions. Each position has a sensor mounted in three directions that makes a total of \emph{36 source channels}. The sampling frequency at each position is set to \emph{20 kHz}. The recordings have \emph{duration of five seconds} and are triggered regularly every 1 hour (\emph{8760 times per year}).
 
-In a year, the system gathers 31.54 Gs (gigasamples) which is 58.74 GiB with a 16-bit ADC resolution. Reasonably precise spectral estimation with 10 thousand bins needs 3.15 Gs per year. On the other hand, 6 features out of each channel keep only 1.89 Ms per year for a lossy compression ratio of 16667:1. Low data volumes potentially enable feature selection and models to be offloaded directly to edge devices. The entire machine's history can be kept in a small flash memory module.
-
-
-\section{Data collection methodology}
-% UML of experiment
-
-% Measurement plan (calendar and folders) - dataset schema
-
-
-
+In a year, the system gathers 31.54 Gs (gigasamples) which is 58.74 GiB with a 16-bit ADC resolution. Reasonably precise spectral estimation with 10 thousand bins needs 3.15 Gs per year. On the other hand, 6 features out of each channel keep only 1.89 Ms per year for a lossy compression ratio of 16667:1. Low data volumes potentially enable feature selection and models to be offloaded directly to edge devices. The entire history of the machine's health could be stored in a small flash memory module.

@@ -86,13 +86,6 @@ These vibration sensors are placed in two positions. The first placement is arou
 
 
 
-\subsection{Statistical tests}
-The statistical tests and visual checks are conducted to assess \textbf{normality and stationary} of time series. Half a second of amplitude samples are used from every sensor channel. These 25 thousand observations are downsampled tenfold to $2500$. 
-
-\textbf{Shapiro-Wilk's test} rejects the null hypothesis (${p < 0.05}$) that data is drawn from a normal distribution under most circumstances. The signal has normal distribution when it resembles pink noise lacking a regular pattern or weak exhibition of fault symptoms. \textbf{Quantile–quantile plots} confirm non-normal distribution because of the striking samples tilt to the diagonal line.
-
-\textbf{Augmented Dickey-Fuller test} rejects the null hypothesis of unit root (${p < 0.001}$). The same is confirmed with the \textbf{autocorrelation} function shape. It denotes that the stochastic process is stationary as the oscillation is bounded.
-
 \section{Feature relevance}
 Attributes described in section \ref{section:feature-extraction} are independently summarized from each sensor position and direction. Then similarity score of features is ascertained in relation to a predicted variable. The subset of the strongest predictors is chosen based on the order of their perceived importance.
 
@@ -101,56 +94,11 @@ Each file in the MaFaulDa contains six accelerometer channels. In the feature ex
 
 Signal chunks are converted afterward into \textbf{10 temporal and 11 spectral features}. Welch's method for spectrum density estimation averaging over $2^{14}$ long FFT segments after Hann windowing is the source for spectral features. The reference implementation of feature calculation is crafted according to mathematical formulas atop of Python packages \emph{SciPy}\footnote{SciPy: \url{https://scipy.org/}} and \emph{Time Series Feature Extraction Library} (TSFEL)\footnote{TSFEL: \url{https://tsfel.readthedocs.io/}}.
 
-The Euclidean norm of feature in the triaxial vector eliminates reliance on the direction of measurement. Value ranges are depicted in Figure~\ref{fig:design:feature-range}. 
 
 
-%\begin{figure}[ht]
-%    \centering
-%    \begin{subfigure}[b]{\textwidth}
-%        \includegraphics[width=\textwidth]{assets/design/feature-range-temporal.png}
-%        \caption{Time-domain features}
-%    \end{subfigure}
-%    \hfill
-%    \begin{subfigure}[b]{\textwidth}
-%        \includegraphics[width=\textwidth]{assets/design/feature-range-spectral.png}
-%        \caption{Frequency-domain features}
-%    \end{subfigure}
-%    \caption{Feature value ranges in inner bearing position (A)}
-%    \label{fig:design:feature-range}
-%\end{figure}
-
-Fault labels and their severities come from the directory structure within the dataset. The binary target variable indicating whether to initiate a warning is called an anomaly. Anomalies are labeled according to relative fault severity level. We decided to investigate two fault severities having levels above 0.6 and 0.9. The quantity of observation by fault and anomaly severity is shown in Table \ref{tab:observation-counts}. The dataset is substantially unbalanced.
 
 
-Pearson's correlation of features to rpm is very low in the whole dataset. In the temporal domain, the correlation coefficient is within an interval of -0.08 to 0.26. In the spectral domain, the correlation to rpm for all FFT window sizes from $2^8$ up to $2^{14}$ is mostly very low from -0.14 up to 0.26, except for the centroid being around 0.35.
 
- temporal domain that are present in these pairs (ordered from the most correlated): \{impulse, clearance\}, \{crest, impulse\}, \{crest, clearance\}, \{pp, rms\}. In the spectral domain set \{skewness, kurtosis\} has a strong correlation.
-
-%\begin{figure}[h!]
-%    \centering
-%    \includegraphics[width=0.8\textwidth]{assets/design/pca-explained-variance.png}
-%    \caption{Number of principal components to cumulative explained variance percentage in the inner bearing position}
-%    \label{fig:design:pca-explained-variance} 
-%\end{figure}
-
-The variables are also more inter-correlated in the temporal domain shown by principal component analysis. For 95\% of the explained variance of PCA 3 components (98.69\%) are needed in the temporal domain whereas 4 in the spectral domain (95.26\%). Figure \ref{fig:design:pca-explained-variance} visualizes cumulative explained variance with an increasing number of principal components. 
-
-%\begin{figure}[h!]
-%    \centering
-%    \begin{subfigure}[b]{0.49\textwidth}
-%        \includegraphics[width=\textwidth]{assets/design/pca-loading-plot-temporal.png}
-%        \caption{Temporal features}
-%    \end{subfigure}
-%    \hfill
-%    \begin{subfigure}[b]{0.49\textwidth}
-%        \includegraphics[width=\textwidth]{assets/design/pca-loading-plot-spectral.png}
-%        \caption{Spectral features}
-%    \end{subfigure}
-%    \caption{PCA loading plots for min-max scaled features from the inner bearing position}
-%    \label{fig:design:pca-loading-plot} 
-%\end{figure}
-
-PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. 
 
 
 \subsection{Feature selection}
@@ -230,25 +178,6 @@ The features picked using the rank product method are shown in Table \ref{tab:de
 \label{tab:design:best-3-features-KNN}
 \end{table}
 
-Lowering the number of attributes allows visualization of labels in planar scatter plots. The data points in 3-dimensional cross-sections are colored by true fault classes of all severities in Figure \ref{fig:design:feature-space-scatter}. We observe the inability to separate faults by linear boundaries in given feature spaces and the noncompactness of clusters. 
-
-Cluster overlaps of various defect types are also confirmed by silhouette scores around zero. Therefore, the k hyperparameter cannot be increased much, as it would cause the merge of mutually confused categories. Low-severity faults should be relabeled as a class without fault to watch out just for alert conditions.
-
-%\begin{figure}[ht]
-%    \centering
-%    \begin{subfigure}[b]{\textwidth}
-%        \includegraphics[width=\textwidth]{assets/design/best-features-scatter-fault-A-temporal.png}
-%        \caption{Temporal domain features}
-%    \end{subfigure}
-%    \hfill
-%    \begin{subfigure}[b]{\textwidth}
-%        \includegraphics[width=\textwidth]{assets/design/best-features-scatter-fault-A-spectral.png}
-%        \caption{Spectral domain features}
-%    \end{subfigure} 
-%    \caption{Cross sections of 3-dimensional feature spaces with ground truth labels for best attributes. Features are chosen by rank product method.}
-%    \label{fig:design:feature-space-scatter}
-%\end{figure}
-
 Model performance of the k-NN algorithm preceeded by a variety of feature selection methods is compared in Figure \ref{fig:design:KNN-accuracy-batch}. The best combination of 3 features always achieves better than when the model is trained on all features. This has to do with curse of dimensionality phenomenon. 
 
 %\begin{figure}[ht]
@@ -266,9 +195,6 @@ Model performance of the k-NN algorithm preceeded by a variety of feature select
 %    \label{fig:design:KNN-accuracy-batch}
 %\end{figure} 
 
-We suspected that the PCA property of maximizing variances in each of the few dimensions would support more separation of clustered groups and would be beneficial in classification. The bar chart supports this assumption. PCA always produces greater model accuracy than any other method of feature selection. The rank product of the three scoring techniques is not better every time, but it balances out aggregated methods to achieve more stable results across testing sets. 
-
-In every instance, a subset of spectral features is responsible for better accuracy than a subset of temporal features. Presumably, it is so because of many correlated pairs of attributes in the temporal domain. Further tests should be made to determine optimal feature subsets and the impact of altering the feature election process.
 
 \clearpage
 \subsection{Online models}
@@ -375,10 +301,6 @@ We employ a slightly customized validation procedure that involves the selection
 
 
 \section{Sensor hardware and drivers}
-In preliminary exploratory vibration measurements of machines, the ADXL335 accelerometer is connected to BeagleBone Black microcontroller. The bandwidth, sensitivity, and sampling frequency of the makeshift solution do not appear to be adequate (Table~\ref{tab:design:hw-sensors}).
-
-The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches industrial standards for vibration monitoring. ESP32-PoE-ISO is chosen as a microcontroller development kit because it has an SD card slot connected via SD/MMC bus. It enables us to store all samples from FIFO. The accelerometer uses an SPI bus with a maximum speed of 10 MHz that can be connected to any physical GPIO pin. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
-
 
 
 The drivers for necessary low-level interfaces and FAT32 filesystem are  implemented already in ESP-IDF SDK\footnote{ESP-IDF SDK: \url{https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html}}. The accelerometer driver is also made available by the vendor\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}. Activity diagrams of required firmware functionality are in Appendix~\ref{appendix:technical-docs}.
