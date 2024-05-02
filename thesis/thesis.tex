@@ -31,6 +31,7 @@
 \usepackage{ifthen}
 \usepackage{algorithm}
 \usepackage{mathabx}
+\usepackage{xurl}
 \usepackage{algpseudocode}
 \usepackage[super]{nth}
 
@@ -124,8 +125,8 @@
 \setlength{\headheight}{16pt}
 
 \renewcommand{\ttdefault}{pcr}
-\lstdefinestyle{cstyle}{
-    language=C,
+\lstdefinestyle{pythonstyle}{
+    language=Python,
 	basicstyle=\linespread{1.1}\ttfamily\footnotesize,
     numbers=left,
     numberstyle=\tiny,
@@ -138,7 +139,6 @@
 	framexleftmargin=15pt,
 	xleftmargin=5ex,
     xrightmargin=3.4pt,
-	morekeywords = {uint8_t,uint16_t,int16_t,uint32_t,int32_t,bool}
 }
 \lstdefinestyle{docs}{
     language=C,

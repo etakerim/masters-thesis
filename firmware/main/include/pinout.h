@@ -44,7 +44,7 @@
 
 // TIMER = 9 ms (1 sample = 1000 / 26667 = 0.0374 ms)
 // Half full FIFO (256 samples = 9.6 ms)
-// Resolution is 2g
+// Resolution is 4g
 #define SAMPLE_RATE             9000
 #define SPI_BUS                 SPI3_HOST
 #define AUTO_TURN_OFF_US        60000000

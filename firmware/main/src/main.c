@@ -112,6 +112,7 @@ void push_trigger(void *args)
                 // Stop recording
                 switch_disable();
                 // Stop recorder
+                esp_timer_stop(stop_timer);
                 esp_timer_stop(sampler_timer);
                 // wait for transactions to end
                 vTaskDelay(10 / portTICK_PERIOD_MS);
@@ -220,7 +221,7 @@ void app_main(void)
 
     switch_enable(true, isr_switch);
 
-    xTaskCreatePinnedToCore(push_trigger, "trigger", 4000, NULL, 4, &trigger_task, 1);
-    xTaskCreatePinnedToCore(write_card, "write", 32000, NULL, 2, NULL, 1);
+    xTaskCreatePinnedToCore(push_trigger, "trigger", 4000, NULL, 2, &trigger_task, 1);
+    xTaskCreatePinnedToCore(write_card, "write", 32000, NULL, 1, NULL, 1);
     xTaskCreatePinnedToCore(read_accelerometer, "read", 16000, NULL, 1, &sampler_task, 0);
 }

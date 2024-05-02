@@ -109,7 +109,10 @@ def lowpass_filter(
     return pd.Series(data=y, index=data.index)
 
 
-def lowpass_filter_extract(dataframes: List[pd.DataFrame], columns: List[str]) -> List[pd.DataFrame]:
+def lowpass_filter_extract(
+            dataframes: List[pd.DataFrame],
+            columns: List[str]
+        ) -> List[pd.DataFrame]:
     for df in dataframes:
         df[columns] = df[columns].apply(lowpass_filter)
     return dataframes
@@ -179,6 +182,7 @@ def get_classes(df: pd.DataFrame, bearing: str) -> pd.DataFrame:
         df['label'] = df.apply(lambda row: FAULTS[bearing].get(row['fault']), axis=1)
     df['label'] = df['label'].astype('category')
     return df
+
 
 def clean_columns(df: pd.DataFrame) -> pd.DataFrame:
     df = df.dropna()

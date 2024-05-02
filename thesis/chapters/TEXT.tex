@@ -1,6 +1,12 @@
 \chapter{Design} \label{chapter:design}
 
 
+
+
+
+
+
+
 \section{Návrh metód s MaFaulDa}
 Súbor údajov MaFaulDa používame ako smerodajný pri určovaní metód schopných nasadenia na senzorovú jednotku. MaFaulda obsahuje 1951 záznamov so vzorkovaciu frekvenciu 50 kHz a označenými simulovanými poruchami rôznej závažnosti. Nahrávky obsahujú časové rady z dvoch trojosích piezoelektrických akcelerometrov. Po úprave ponechávame 6 typov značiek: referenčný bezporuchový stav, dve poruchy hriadeľa (nevyváženosť, nesúososť) a tri poruchy ložísk (poruchy klietky, guľôčok, vonkajšieho krúžku). 
 
@@ -61,45 +67,6 @@ One representative recording is first selected in each available fault category.
 MaFaulda contains 1951 records labeled with inducted faults of increasing severity. The defects were set up on the machine simulator as is mentioned in the part about datasets. Time series of the triaxial piezoelectric accelerometers in separate files have a sampling frequency of 50 kHz. 
 
 These vibration sensors are placed in two positions. The first placement is around the inner underhang bearing named \emph{A} which is closer to the motor. The second location is around the outer overhang bearing denoted as \emph{B} position.
-
-\subsection{Fault annotations}
-
-\subsection{Signal filters}
-
-
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.44\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/Mafaulda-A-time-waveform.png}
-        \caption{Time domain waveforms}
-        \label{fig:design:fault-temporal-waveform}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.55\textwidth}
-        \includegraphics[width=\textwidth]{assets/design/Mafaulda-A-spectrum-Y-axis.png}
-        \caption{Spectra in radial direction}
-        \label{fig:design:fault-spectral-waveform}
-    \end{subfigure} 
-    \caption{}
-\end{figure}
-
-
-
-
-\section{Feature relevance}
-Attributes described in section \ref{section:feature-extraction} are independently summarized from each sensor position and direction. Then similarity score of features is ascertained in relation to a predicted variable. The subset of the strongest predictors is chosen based on the order of their perceived importance.
-
-\subsection{Feature extraction}
-Each file in the MaFaulDa contains six accelerometer channels. In the feature extraction process, the sequence of samples is split into five parts or 1-second intervals. The portions are passed through the same DC removal and low pass filters as previously. The rotational speed is derived from speedometer pulses within the chunk.
-
-Signal chunks are converted afterward into \textbf{10 temporal and 11 spectral features}. Welch's method for spectrum density estimation averaging over $2^{14}$ long FFT segments after Hann windowing is the source for spectral features. The reference implementation of feature calculation is crafted according to mathematical formulas atop of Python packages \emph{SciPy}\footnote{SciPy: \url{https://scipy.org/}} and \emph{Time Series Feature Extraction Library} (TSFEL)\footnote{TSFEL: \url{https://tsfel.readthedocs.io/}}.
-
-
-
-
-
-
-
 
 \subsection{Feature selection}
 The objective of feature selection is to find a subset of the most relevant predictors in each domain. As a starting point, the set consists of 3 non-correlated attributes under diverse conditions. Ultimately, a number of chosen features are to be tweaked to increase prediction accuracy. Four criteria are combined to put together 24 scenarios that filter rows from MaFaulDa:
@@ -294,16 +261,7 @@ A \textbf{tumbling window} is more accurate according to progressive valuation b
  
 Labeling just every \nth{5} sample (25\% of the total dataset) with a sliding window delay of 10 samples reduces accuracy for the model out of temporal features by 8.41\% to 80.39\%, and by 7.33\% for spectral features to accuracy of 82.01\% (Fig.~\ref{fig:design:online-label-skip}). Even if only 1\% of the dataset is annotated (every \nth{100} sample), the model out of spectral features retained an accuracy of 65.17\% that is 4.41\% better than for temporal features.  More missing labels require recording more observations before the equivalent accuracy is reached.
 
-\chapter{Implementation} \label{section:implementation} 
-The methodology applied so far for the dataset recorded in a laboratory is to be tested on vibration signals from the industrial environment. Established guidelines for introducing a monitoring system have been described in the section on technical standards (Section~\ref{section:technical-standards}). 
 
-We employ a slightly customized validation procedure that involves the selection of machines to be monitored, identifying positions for measurements according to technical specifications, taking preliminary readings, and developing a device capable of capturing the usual failure modes. The collection of the novel dataset is accompanied by an agreed upon schedule.
-
-
-\section{Sensor hardware and drivers}
-
-
-The drivers for necessary low-level interfaces and FAT32 filesystem are  implemented already in ESP-IDF SDK\footnote{ESP-IDF SDK: \url{https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html}}. The accelerometer driver is also made available by the vendor\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}. Activity diagrams of required firmware functionality are in Appendix~\ref{appendix:technical-docs}.
 
 
 

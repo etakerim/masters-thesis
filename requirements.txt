@@ -7,7 +7,6 @@ pandas
 jupyterlab
 graphviz
 
-padasip
 tsfel
 imbalanced-learn
 
@@ -29,14 +28,9 @@ kneed
 scikit-learn
 
 # Streaming algorithms
-pytest
 river
 # scikit-multiflow
 
 # Wavelets
 PyWavelets
-ewtpy
-ssqueezepy
-fcwt
-EMD-signal
-detecta
+
