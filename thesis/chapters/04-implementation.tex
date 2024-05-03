@@ -21,7 +21,7 @@ return ranks.apply(scipy.stats.gmean, axis=1).sort_values()
 
 \begin{lstlisting}[style=pythonstyle,caption=Leaderboard of feature importance metric scores,label={lst:feature-leaderboard},morekeywords={DataFrame,rank,set_index,sort_values,metric,gmean}]
 pandas.DataFrame(zip(X.columns, metric(X, Y)), 
-             columns=["feature", "score"])
+                 columns=["feature", "score"])
       .set_index("feature")
       .sort_values(by="score", ascending=False))
 \end{lstlisting}
@@ -62,24 +62,14 @@ The testing process of the firmware revealed two issues that were resolved subse
         \label{fig:implementation:tsv-format}
     \end{subfigure}
     \caption{Timing issue of writing samples to SD card captured on oscilloscope}
+    \label{fig:implementation:file-write}
 \end{figure}
 
-Other impedement presented the slow string formatting with \emph{printf} family of functions during the sampling of the accelerometer. Direct write of columns to TSV is not possible because the real time deadline could not be met due to high sampling rate. This is true even if the queue is utilized and the processing takes place in an another task. The hardware FIFO of 512 sample vectors fills up in 19.05 ms.
+Another impediment presented the slow string formatting with \emph{printf} family of functions during the accelerometer sampling. The readings cannot be written to TSV directly because the real-time (RT) deadline is not met due to the high sampling rate. It is true even if the queue is utilized and the processing takes place in another task. The binary files from the SD card are converted in bulk to TSV with custom Python command line script \verb|bin2tsv.py|.
 
+During debugging, the pin was set to change the output level immediately before the one buffer started file write and after its completion. The scopes in Figure~\ref{fig:implementation:file-write} show the time the write took for binary compared to the TSV format. In writing to TSV format, the relation of numbers of already processed buffers $x$ to those left to process $y$ is: $y = 3.7x$. It is a monotonically increasing function, so the system would eventually overrun any sized assigned queue.
 
-%TODO
-% After GPIO pin was set to change output level on one buffer write completion the TSV rows took around 70 ms to format and write out as evidenced by Figure~ref{fig:implementation:tsv-format}. This overextended the time 3.7 times.
-
-% Timing issue
-% $y = 3.7x$ is monotonically increasing function (y is buffers left to process and x is buffers already processed). At some point it surpasses the buffer of any size. real-time deadline must satisfy condition $t < 2 \cdot n_{FIFO} \cdot \frac{1}{f_s}$ which is 38.1 ms beyond which the samples get dropped.
-
-% tool for convert bin2csv
-
-
-%TODO
-% Sensor attached to machines with connector up and pressed gently towards the surface.
-
-%TODO - advise you have to store 5 seconds in memory or write binary then process on second pass in constrained system
+The hardware FIFO of 512 sample vectors fills up in 19.05 ms. The processing time $t$ has to satisfy inequality for deadline: $t \leq 2 \cdot \frac{1}{f_s} \cdot N_{FIFO} $. The RT deadline is 38.1 ms, beyond which the samples get dropped. In an embedded device, the short recoding burst (80.4 kSps) would need to be written temporarily in binary format to external memory and processed in two passes.
 
 \begin{figure}[h]
     \centering
@@ -93,4 +83,7 @@ Other impedement presented the slow string formatting with \emph{printf} family 
         \caption{Sensor on scroll compressor}
     \end{subfigure}
     \caption{Data logger on the machines in measurement positions}
+    \label{fig:implementation:sensor-on-machine}
 \end{figure}
+
+Measurement conditions in the industry and axis orientation of the accelerometer are depicted in Figure~\ref{fig:implementation:sensor-on-machine}. The sensor is attached in tape to machines with a connector facing up and is pressed gently toward the surface.
