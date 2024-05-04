@@ -4,7 +4,7 @@ The tools implemented include exploration of datasets using statistical overview
 \section{Data analysis}
 The data processing and data mining on the MaFaulDa and Pump dataset takes place in several \emph{JupyterLab} notebooks written in \emph{Python} language. The purpose of individual notebooks is described in detail in Appendix~\ref{appendix:technical-docs}. Utility functions are located in separate package \emph{vibrodiagnostics} so that the experiments can be realized under multiple conditions.
 
-The tabular data is handled using \emph{Pandas}dataframes that are training batch models from \emph{scikit-learn} library and \emph{imbalanced-learn}, or online models from \emph{RiverML}. The wide variety of graphs and other visualizations are stylized with \emph{Matplotlib} and \emph{Seaborn}. Feature calculation is crafted according to mathematical formulas atop libraries \emph{Numpy}, \emph{SciPy}, and \emph{Time Series Feature Extraction Library}~(TSFEL).
+The tabular data is handled using \emph{Pandas} dataframes that are training batch models from \emph{scikit-learn} library and \emph{imbalanced-learn}, or online models from \emph{RiverML}. The wide variety of graphs and other visualizations are stylized with \emph{Matplotlib} and \emph{Seaborn}. Feature calculation is crafted according to mathematical formulas atop libraries \emph{Numpy}, \emph{SciPy}, and \emph{Time Series Feature Extraction Library}~(TSFEL).
 
 \begin{lstlisting}[style=pythonstyle,caption=Rank product of feature matrix X to label column Y,label={lst:rank-product},morekeywords={DataFrame,rank,set_index,sort_values,gmean}]
 METRICS = {

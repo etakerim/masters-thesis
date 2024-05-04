@@ -491,6 +491,7 @@ def boxplot_enumerate_models_accuracy(results: pd.DataFrame, metric, plots_col: 
 
             boxplot_data = {}
             for k, models in domain.groupby(by=[inplot_col]):
+                print(fnum, k, models[metric].describe())
                 boxplot_data[k[0]] = models[metric].to_list()
 
             ax[i].boxplot(

@@ -44,29 +44,24 @@ def find_best_subset(
         X: pd.DataFrame,
         Y: pd.DataFrame,
         metric: str,
-        members: int = 3,
+        members: int,
         kfolds: int = 5
     ):
 
     kf = KFold(n_splits=kfolds, shuffle=True, random_state=10)
     elements = []
 
-    for train_idx, test_idx in kf.split(X, Y):
-        x_train, x_test, y_train, y_test = (
-            X.loc[train_idx].copy(), X.loc[test_idx].copy(),
-            Y.loc[train_idx].copy(), Y.loc[test_idx].copy()
-        )
-        ranks = ranking.batch_feature_ranking(x_train, y_train, metric)
-        if metric != 'rank':
-            synonyms = ranking.compute_correlations(x_train, corr_above=0.95)
-            subset = ranking.best_subset(ranks, synonyms, n=members)
-            output = subset
-        else:
-            output = ranks
-
-        output = list(output.reset_index().head(3)['feature'])
-
-    return output
+    train_idx, test_idx = next(kf.split(X, Y))
+    x_train, x_test, y_train, y_test = (
+        X.loc[train_idx].copy(), X.loc[test_idx].copy(),
+        Y.loc[train_idx].copy(), Y.loc[test_idx].copy()
+    )
+    ranks = ranking.batch_feature_ranking(x_train, y_train, metric)
+    # synonyms = ranking.compute_correlations(x_train, corr_above=0.95)
+    synonyms = set()
+    subset = ranking.best_subset(ranks, synonyms, n=members)
+    subset = subset[subset['rank'] == True].index.to_list()
+    return subset
 
 
 def kfold_accuracy(
@@ -105,7 +100,7 @@ def kfold_accuracy(
     
         # Train k-NN model on all features
         if model_name == 'knn':
-            model = KNeighborsClassifier(n_neighbors=k_neighbors, metric=knn_metric)   #, algorithm='kd_tree')
+            model = KNeighborsClassifier(n_neighbors=k_neighbors, metric=knn_metric)
         elif model_name == 'lda':
             model = LinearDiscriminantAnalysis()
         elif model_name == 'bayes':
@@ -225,8 +220,8 @@ def feature_selection_accuracies(
         Y: pd.DataFrame,
         domain: str,
         models_summary: pd.DataFrame,
-        k_neighbors: int = 5,
-        number_of_features: int = 3,
+        k_neighbors: int,
+        number_of_features: int,
         power_transform: bool = False) -> Dict[str, int]:
     
     MODEL_TYPE = 'knn'
@@ -265,7 +260,7 @@ def feature_selection_accuracies(
     )
     title = f'Best features'
     r = accuracies_to_table(domain, title, accuracy_distribution, y_best)
-    r['features'] = accuracy_distribution['features']
+    r['features'] = y_best['features']
     results.append(r)
 
     fsel_methods = [
@@ -275,7 +270,7 @@ def feature_selection_accuracies(
         ('mi', 'Mutual information')
     ]
     for pos, (name, title) in enumerate(fsel_methods):
-        features = find_best_subset(X, Y, name, members=number_of_features)   # TODO: fix
+        features = find_best_subset(X, Y, name, members=number_of_features)
         y_best = kfold_accuracy(
             X[list(features)], Y, k_neighbors, kfolds, MODEL_TYPE,
             power_transform=power_transform
