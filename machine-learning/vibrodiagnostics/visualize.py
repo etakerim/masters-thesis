@@ -485,9 +485,11 @@ def boxplot_enumerate_models_accuracy(results: pd.DataFrame, metric, plots_col: 
             domain_name = DOMAIN_TITLES[domain_name]
             
             if plots_col == 'k':
-                ax[i].set_title(f'K-neighbors: {fnum}, {domain_name}')
+                # ax[i].set_title(f'K-neighbors: {fnum}, {domain_name}')
+                print(f'K-neighbors: {fnum}, {domain_name}')
             if plots_col == 'f':
-                ax[i].set_title(f'Features: {fnum}, {domain_name}')
+                # ax[i].set_title(f'Features: {fnum}, {domain_name}')
+                print(f'Features: {fnum}, {domain_name}')
 
             boxplot_data = {}
             for k, models in domain.groupby(by=[inplot_col]):
@@ -500,6 +502,7 @@ def boxplot_enumerate_models_accuracy(results: pd.DataFrame, metric, plots_col: 
                 medianprops={'linewidth': 2, 'color': 'black'},
                 notch=True
             )
+            ax[i].set_ylim(0.5, 1)
             ax[i].set_ylabel('Accuracy')
             if plots_col == 'f':
                 ax[i].set_xlabel('K-neighbors')

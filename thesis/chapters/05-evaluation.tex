@@ -1,14 +1,11 @@
-\chapter{Evaluation} \label{chapter:evaluation} 
-% Accuracy of supervised learning using k-nearest neighbour classifier model targeted on fault indentification in MaFaulDa dataset. Performace of feature selection methods on very low memeber feature sets is compared to accuracies of all possible models with taht number of features
-% Data logger mearuremnt abilities are validated / is checked on a standing fan. Analysis of signals from our Pump dataset. Guide in fault labeling based on characteristic bearing frequencies.W
+\chapter{Evaluation} \label{chapter:evaluation}
+The verification of proposed solutions for machinery fault diagnostics is focused on two complementary activities, these are vibration measurement and defect identification. The accuracy of supervised learning using the k-nearest neighbour classifier is determined by the MaFaulDa dataset under various experiments. Data logger recording is compared to the known reference, and the collected Pump dataset is analyzed.
 
 \section{MaFaulDa in k-nearest neighbors}
-% Four types of experiments: on complete feature sets calculated in time or frequency domain, every combination is enumerated/listed of subsets with same number of features, feature selection techniques are emlored to choose features faster using heuristic/metric of similiarity and then compare the result with overall best. Simulate gradual label supply in incremental learning  without recreating it from scratch.
+The four outlined experiments involve testing sets of features with very few members to see the effects in predictions when reducing the information content about machine status to the minimum. First, the attributes are left in the complete count after extraction. Then, all of their combinations are enumerated, and the resulting accuracy distribution is matched against accuracy after feature selection with similarity metrics. 
 
 \subsection{Complete feature sets}
-% Confusion matrix
-% Knn with 5 neighbours and Euclidean metric
-% On original labels  and oversampled to most populous majority label testing set of 20\% from original dataset. for bearing A to see which classes are mistaken/interchanged in prediction. There is 598 observations. The label ``normal'' is not falsly attributeted to other class in either feature set. But aother classes are assigned to be normal. Most mistakes happen on predicting outer race fault which is confused with cage fault, imbalance, and less frequency with misaligment and vise vesa. Imbalance of shaft is used for generating bearing faults that is underlying natural reason on high error rate. (Fig.~\ref{fig:evaluation:all-features-confusion-matrix})
+The two full sets of features include ten extracted from time-domain and eleven from frequency-domain of the vibrations. The feature spaces can incorrectly interchange different fault labels and better separate out some groups than the others. 
 
 \begin{figure}[h]
     \centering
@@ -25,28 +22,10 @@
     \label{fig:evaluation:all-features-confusion-matrix}
 \end{figure}
 
-% Nearest neighbors - how many points have neighbourhood of same class A
-% e.g. we can say that less that 60\% of dataset neighbour with more than 20 taht majority of neighbouring points is in same class as the data point in question.
-% This similiarity tend to favor TD feature set whose curve decreases less quickly for both labelings of MaFaulDa
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/all-features/neighborhood.png}
-        \caption{No severity}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.49\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/all-features/neighborhood-severity.png}
-        \caption{Severity}
-    \end{subfigure}
-    \caption{Neighborhood with same label}
-\end{figure}
+The inner bearing observations are selected to train the k-NN with five neighbours and Euclidean distance metric. The attributes are normalized beforehand, rows are oversampled to a majority label, and data is split into training and testing sets with an 80:20 proportion. The 598 observation of validation data determines the confusion matrix (Fig.~\ref{fig:evaluation:all-features-confusion-matrix}). 
 
-% Accuracy based on scenario - validation set in k-fold validation
-% No optimal K - data is noisy - to get stable decision boundaries 
-% the features creating out of all three axis reach more accurate prediction that from only the axis of motion.
-% Chosen time-domain feature set is more accuracy which is observed in other experiments - probable explatations lays in large correlation among features in frequency-domain set.
-% Fastest drop between 1 to 5 neighbours - sometimes 10\% decrese
+The label ``normal'' is not falsely attributed to other classes in either feature set, but other classes can get assigned to be ``normal''. Most mistakes happen while predicting outer race fault, which is confused with cage fault, imbalance, and less frequency with misalignment. The shaft imbalance is used for simulating bearing faults, which is a natural reason for this high error rate.
+
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
@@ -68,245 +47,202 @@
         \includegraphics[width=\textwidth]{assets/results/all-features/FD-severity.png}
         \caption{Frequency-domain features (severity)}
     \end{subfigure} 
-    \caption{Accuracy dependency on k-value}
+    \caption{Accuracy on complete feature sets depending on the k-value}
+    \label{fig:evaluation:complete-set-k-value}
 \end{figure}
+
+The increasing number of neighbours used for classification in 5-fold cross-validated k-NN shows a substantial decrease in accuracy on validation sets (Fig.~\ref{fig:evaluation:complete-set-k-value}). The most prominent drop in performance of around 10\% occurs at the beginning until the k-value of nine, and then the accuracy curves slowly plateau.
+
+Under every circumstance, the magnitude of the triaxial feature vector reaches better accuracy than those from only the axis of motion for the same source domain and bearing. The model for inner bearing A is more accurate than outer bearing B. The TD set is generally better in predictions than the FD set for the equivalent k-value. The relabeled dataset for high severity has a steeper decrease in accuracy for the same value of neighbours.
 
 
 \subsection{Feature subset combinations}
-% Boxplots
-% More features - the greater accuracy - (how much) - two, three, four chosen because they can be reasonably visualized in spatial graphs or cross sections
-% Compare medians of boxplots - differences
-
-% The more neighbours less accuracy which is same as for all featues - stastically significant
-% Range between IQR is between 5 - 10\% and full domain from distribution is almost 20\%
-
-% Compare all features for bearing A to ranges of feature sets
-
-% Std around 6%
-% Maximum
-
-% Adding from 2 to 3 features inreses maximum acheivable accuracy more than adding forth feature. It is by one more for TD than FD. It is rounded to whole numbers 6\% and 3\% and after rebaleing 3\% to 2\%. For small feature sets the FD features are tad bit better average close to 1.92\% for k = 5 but for other values of k it is not not so. The fall in accuracy by raising the number of features slows down.
-% TD (no): FT: 2 (78.31), 3 (85.67), 4 (89.55)   | K: 3 (0.943316), 5 (0.917118), 11 (0.876470)
-% FD (no): FT: 2 (81.52), 3 (87.52), 4 (90.26)   | K: 3 (0.940833), 5 (0.921863), 11 (0.871503)
-% TD (yes): 2 (88.89), 3 (91.71), 4 (93.61)   | K: 3, 5, 11
-% FD (yes): 2 (89.45), 3 (92.18), 4 (93.76)   | K: 3, 5, 11
+The complete sets of predictors are even greatly shrunken to representation that could be presented in 3D plot or in perpendicular cross sections. These trend variables could be used in distingushing faults the same way as rms amplitude indicates their presence. Each possible combinations of pairs, triplets, and quadruplets constructs a separate k-NN model on which prediction accuracy is evaluated. 
 
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A-False-False-F3.png}
-        \caption{Time domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A-False-False-K5.png}
-        \caption{Time domain features}
+        \caption{Three time-domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A-False-False-F3.png}
-        \caption{Frequency domain features}
+        \caption{Three frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A-False-False-K5.png}
+        \caption{Five neighbours in time domain}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A-False-False-K5.png}
-        \caption{Frequency domain features}
+        \caption{Five neighbours in frequency domain}
     \end{subfigure}
-    \caption{Model accuracy distribution (Bearings A+B, Dim = 3, Severity False)}
+    \caption{Model accuracy distribution for bearing A and three axis features}
+    \label{fig:evaluation:model-accuracy}
 \end{figure}
-
 
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A-True-False-F3.png}
-        \caption{Time domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A-True-False-K5.png}
-        \caption{Time domain features}
+        \caption{Three time-domain features}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A-True-False-F3.png}
-        \caption{Frequency domain features}
+        \caption{Three frequency-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/TD-3-A-True-False-K5.png}
+        \caption{Five neighbours in time domain}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/FD-3-A-True-False-K5.png}
-        \caption{Frequency domain features}
+        \caption{Five neighbours in frequency domain}
     \end{subfigure}
-    \caption{Model accuracy distribution (Severity True)}
+    \caption{Model accuracy distribution from bearing A and three axis features after relabeling for high severity faults}
+    \label{fig:evaluation:model-accuracy-severity}
 \end{figure}
+
+The distribution of model accuracies is documented on features in both domains coined from three dimensions on bearing A with original and high-severity defect labels. The boxplots display the relation of the k-value to accuracy when three features are chosen, and the relation of a number of features to accuracy with five neighbours(Fig.~\ref{fig:evaluation:model-accuracy-severity} and \ref{fig:evaluation:model-accuracy-severity}).
+
+The decrease in accuracy with additional neighbours is apparent and similar to the trend in complete sets of features. We are interested in maximum accuracy in the distribution because that is the optimal model feature selection method to try to approach. Its reduction is more noticeable between three and five features 3 - 5\%, and almost the same amount between five and eleven neighbours. 
+
+The complete sets reach better accuracy than subsets when the number of features is at most three and simultaneously the number of neighbours is five or less. For more triaxial features and more neighbours, the complete set is only about 2\% percent worse at the most than subsets because the curse of dimensionality is not so substantial for ten dimensions.
+
+The spread in model accuracies in the interquartile range is from 5 to 10 \%, and measured between whiskers is at a maximum of 25\%. The standard deviation is about 7\%. Overall, the time-domain features are better than frequency-domain features for these specific feature spaces.
+
+The number of features has a direct proportionality effect on the optimal model accuracy. An increase from two to three features has more weight than allowing a fourth attribute. The contributions of adding features are around 6\% and 3\%, and the relabeled dataset has an increase of 3\% and 2\%. The absolute accuracies are consecutively for 2, 3, and 4 features when k is equal to 5: 78.31\%, 85.67\%, and 89.55\% for the time domain and 81.52\%, 87.52\%, 90.26\% in the frequency domain.
 
 
 \subsection{Feature selection techniques}
-% Accuracy tables
-% Compare linear complexity accuracy with whole distribution
+The predictors chosen with supervised selection strategies are compared in accuracy and location within the accuracy distribution of exhaustive combinations of same-sized sets and the performance of its source superset. The metrics for bivariate feature selection are correlation, F statistic, mutual information, and their ensemble by the rank product. The PCA of the complete feature set that retains the same number of features and selection methods serves as a benchmark to tell whether the linear combination or subset gets better performance on the MaFaulDa.
 
-% Comparing test accuracy to train accuracy - large difference - the model is likely overfitting, difference is more pronounced in one axis
+\begin{table}[h]
+\centering
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{|l|rr|rr|r|l|}
+\hline
+\multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}                                   & \multicolumn{2}{l|}{\textbf{Percentile}}                 & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Domain}}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
+                                      & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{}                               &                                         \\ \hline
+All features                          & \multicolumn{1}{r|}{96.03}          & 92.80                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & TD                                                   &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{91.20}          & 84.67                              & \multicolumn{1}{r|}{95.00}          & 93.33                              & TD                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{91.93}          & 85.47                              & \multicolumn{1}{r|}{100.00}         & 99.17                              & TD                                                   & zerocross, pp, skewness                 \\ \hline
+Rank product                          & \multicolumn{1}{r|}{91.21}          & 85.04                              & \multicolumn{1}{r|}{95.83}          & 97.50                              & TD                                                   & zerocross, shape, rms                   \\ \hline
+Correlation                           & \multicolumn{1}{r|}{91.21}          & 85.04                              & \multicolumn{1}{r|}{95.83}          & 97.50                              & TD                                                   & shape, zerocross, rms                   \\ \hline
+F statistic                           & \multicolumn{1}{r|}{90.59}          & 84.07                              & \multicolumn{1}{r|}{91.67}          & 90.00                              & TD                                                   & rms, pp, zerocross                      \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{88.24}          & 80.62                              & \multicolumn{1}{r|}{75.83}          & 76.67                              & TD                                                   & zerocross, shape, crest                 \\ \hline
+All features                          & \multicolumn{1}{r|}{93.67}          & 88.45                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & FD                                                  &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{86.76}          & 78.51                              & \multicolumn{1}{r|}{64.85}          & 70.91                              & FD                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{92.86}          & 87.52                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & FD                                                   & centroid, roll\_off, entropy            \\ \hline
+Rank product                          & \multicolumn{1}{r|}{85.79}          & 77.18                              & \multicolumn{1}{r|}{51.52}          & 57.58                              & FD                                                   & roll\_off, flux, skewness               \\ \hline
+Correlation                           & \multicolumn{1}{r|}{85.79}          & 77.18                              & \multicolumn{1}{r|}{51.52}          & 57.58                              & FD                                                   & roll\_off, skewness, flux               \\ \hline
+F statistic                           & \multicolumn{1}{r|}{85.79}          & 77.18                              & \multicolumn{1}{r|}{51.52}          & 57.58                              & FD                                                   & roll\_off, flux, skewness               \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{90.73}          & 83.60                              & \multicolumn{1}{r|}{94.55}          & 94.55                              & FD                                                   & roll\_off, entropy, noisiness           \\ \hline
+\end{tabular}
+\end{adjustbox}
+\caption{Feature selection method accuracy and percentile within accuracy distribution of all three member subsets. (bearing = A, dimension = 3, k=5)}
+\label{tab:evaluation:fsel}
+\end{table}
 
-% In all methods the norm of three axis are better than using a single one.
-% ACC set / all features / best  triplet / rank product
-% Percentile
+\begin{table}[h]
+\centering
+\begin{adjustbox}{width=\textwidth}
+\begin{tabular}{|l|rr|rr|r|l|}
+\hline
+\multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}                                   & \multicolumn{2}{l|}{\textbf{Percentile}}                 & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Domain}}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
+                                      & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{}                               &                                         \\ \hline
+All features                          & \multicolumn{1}{r|}{96.42}          & 94.76                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & TD                                                   &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{94.63}          & 92.07                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & TD                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{94.58}          & 91.71                              & \multicolumn{1}{r|}{100.00}         & 99.17                              & TD                                                   & zerocross, aac, shape                   \\ \hline
+Rank product                          & \multicolumn{1}{r|}{94.31}          & 91.40                              & \multicolumn{1}{r|}{98.33}          & 95.83                              & TD                                                   & zerocross, shape, rms                   \\ \hline
+Correlation                           & \multicolumn{1}{r|}{94.31}          & 91.40                              & \multicolumn{1}{r|}{98.33}          & 95.83                              & TD                                                   & zerocross, shape, rms                   \\ \hline
+F statistic                           & \multicolumn{1}{r|}{94.31}          & 91.40                              & \multicolumn{1}{r|}{98.33}          & 95.83                              & TD                                                   & shape, zerocross, rms                   \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{91.90}          & 88.51                              & \multicolumn{1}{r|}{72.50}          & 76.67                              & TD                                                   & zerocross, shape, clearance             \\ \hline
+All features                          & \multicolumn{1}{r|}{95.20}          & 93.20                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & FD                                                   &                                         \\ \hline
+PCA PC                                & \multicolumn{1}{r|}{92.14}          & 88.84                              & \multicolumn{1}{r|}{69.09}          & 73.94                              & FD                                                   &                                         \\ \hline
+Best features                         & \multicolumn{1}{r|}{94.64}          & 91.94                              & \multicolumn{1}{r|}{100.00}         & 99.39                              & FD                                                   & centroid, roll\_off, entropy            \\ \hline
+Rank product                          & \multicolumn{1}{r|}{93.89}          & 91.24                              & \multicolumn{1}{r|}{95.15}          & 97.58                              & FD                                                   & entropy, noisiness, centroid            \\ \hline
+Correlation                           & \multicolumn{1}{r|}{94.50}          & 92.19                              & \multicolumn{1}{r|}{99.39}          & 100.00                             & FD                                                   & entropy, centroid, flux                 \\ \hline
+F statistic                           & \multicolumn{1}{r|}{94.50}          & 92.19                              & \multicolumn{1}{r|}{99.39}          & 100.00                             & FD                                                   & entropy, flux, centroid                 \\ \hline
+Mutual information                    & \multicolumn{1}{r|}{93.32}          & 90.67                              & \multicolumn{1}{r|}{90.91}          & 91.52                              & FD                                                   & noisiness, roll\_off, entropy           \\ \hline
+\end{tabular}
+\end{adjustbox}
+\caption{Feature selection method accuracy and percentile within accuracy distribution of all three member subsets. (severity, bearing = A, dimension = 3, k=5)}
+\label{tab:evaluation:fsel-severity}
+\end{table}
 
-% Pecentile of best features in test is calculated against train distribution ACC: 84.07 / 99.17 in TD, ACC: 99.39 in FD. [relabel: ]
-% Rank product picks 90.00 in TD (zerocross, pp, rms), 96.36 percentile of accuracies in FD (entropy, centroid, flux) [95.83 (TD) zerocross, shape, rms; 100.00 (FD) entropy, centroid, flux]
-- 
+Table~\ref{tab:evaluation:fsel} compares the concrete case of choosing the three features from each domain on bearing A and k-NN with five neighbours. Table~\ref{tab:evaluation:fsel-severity} uses labels for high-severity faults. There is a significant difference in train and test accuracy, which means the model is likely overfitting. The percentile within the distribution is measured to its respective data, the train or validation set. However, the percentile of best features in the test is calculated against train distribution.
 
-% Most feature selection methods choose 
-% - rank product weeds up weaker method - it get overrulled
+Combining the rankings from several metrics is necessary to get consistent results. This is evidenced by the variability of the success of selected feature sets in final prediction performance under multiple conditions. The PCA with 3 components out of complete feature sets is comparable in accuracy to selection methods with original attributes.
 
-
-% Furure work - more features from one recoding - in windows
-% Different election methods and metrics
-% Combine feature selection with 
-% Find other ML model also suitable HoeffdingTreeClassifier - losing original data for labeling - mechnaism of transforming samples to model represntatin
+The triplet of variables with the best results is from TD set: zero-crossing rate, peak-to-peak, skewness, and from FD set: centroid, roll-off, and entropy. With high severity labels, the best attributes for FD stay the same, but average amplitude change and shape factor are preferred along the zero-crossing rate. The rank product picked up roll-off, flux, and skewness for the FD set, which is suboptimal. The two of the three methods in the ensemble arrive at the same set overruling the superior set produced by mutual information. In the TD set, the zero-crossing rate, shape, and rms, are chosen by rank product. 
 
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3-TD-train.png}
-        \caption{Time domain features (train)}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3-TD-test.png}
-        \caption{Time domain features (test)}
+        \caption{Time-domain features (train)}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3-FD-train.png}
-        \caption{Frequency domain features (train)}
+        \caption{Frequency-domain features (train)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3-TD-test.png}
+        \caption{Time-domain features (test)}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3-FD-test.png}
-        \caption{Frequency domain features (test)}
+        \caption{Frequency-domain features (test)}
     \end{subfigure}
-    \caption{Model distibution with feature selection methods (k = 5, f = 3)}
+    \caption{Model accuracy statistical distibutions with feature selection methods for three predictors (k = 5)}
+    \label{fig:evaluation:fsel-model-distr}
 \end{figure}
 
-
-
-
+The entire accuracy distribution for the training and testing set for original labels is drawn in the form of the histogram (Fig.~\ref{fig:evaluation:fsel-model-distr}). The results of the chosen predictors are mapped out onto the distribution as vertical lines that stack up near the maximum for the time domain or disperse slightly above the median for the frequency domain. The accuracy of all features is unreachable for three feature subsets. Another noticeable difference between distributions is their shift down and greater spread in testing compared to training sets.
 
 \begin{table}[h]
+\centering
 \begin{adjustbox}{width=\textwidth}
-\begin{tabular}{|l|rr|rr|r|l|}
+\begin{tabular}{|l|r|r|}
 \hline
-\multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}                                   & \multicolumn{2}{l|}{\textbf{Percentile}}                 & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Axis}}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
-                                      & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{}                               &                                         \\ \hline
-All features                          & \multicolumn{1}{r|}{92.52}          & 87.68                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{87.90}          & 79.42                              & \multicolumn{1}{r|}{96.67}          & 96.67                              & 1                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{89.70}          & 81.96                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   & zerocross, pp, skewness                 \\ \hline
-Rank product                          & \multicolumn{1}{r|}{87.51}          & 79.35                              & \multicolumn{1}{r|}{95.83}          & 96.67                              & 1                                                   & zerocross, shape, pp                    \\ \hline
-Correlation                           & \multicolumn{1}{r|}{87.51}          & 79.35                              & \multicolumn{1}{r|}{95.83}          & 96.67                              & 1                                                   & shape, zerocross, pp                    \\ \hline
-F statistic                           & \multicolumn{1}{r|}{87.51}          & 79.35                              & \multicolumn{1}{r|}{95.83}          & 96.67                              & 1                                                   & pp, zerocross, shape                    \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{86.98}          & 78.28                              & \multicolumn{1}{r|}{89.17}          & 94.17                              & 1                                                   & zerocross, shape, rms                   \\ \hline
-All features                          & \multicolumn{1}{r|}{96.03}          & 92.80                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{91.20}          & 84.67                              & \multicolumn{1}{r|}{95.00}          & 93.33                              & 3                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{91.93}          & 85.47                              & \multicolumn{1}{r|}{100.00}         & 99.17                              & 3                                                   & zerocross, pp, skewness                 \\ \hline
-Rank product                          & \multicolumn{1}{r|}{91.21}          & 85.04                              & \multicolumn{1}{r|}{95.83}          & 97.50                              & 3                                                   & zerocross, shape, rms                   \\ \hline
-Correlation                           & \multicolumn{1}{r|}{91.21}          & 85.04                              & \multicolumn{1}{r|}{95.83}          & 97.50                              & 3                                                   & shape, zerocross, rms                   \\ \hline
-F statistic                           & \multicolumn{1}{r|}{90.59}          & 84.07                              & \multicolumn{1}{r|}{91.67}          & 90.00                              & 3                                                   & rms, pp, zerocross                      \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{88.24}          & 80.62                              & \multicolumn{1}{r|}{75.83}          & 76.67                              & 3                                                   & zerocross, shape, crest                 \\ \hline
+\textbf{Method}    & \multicolumn{1}{l|}{\textbf{Median percentile {[}\%{]}}} & \multicolumn{1}{l|}{\textbf{Median accuracy {[}\%{]}}} \\ \hline
+Rank product       & 88.97                                                    & 79.82                                                 \\ \hline
+Mutual information & 91.81                                                    & 80.87                                                 \\ \hline
+F statistic        & 86.90                                                    & 79.63                                                 \\ \hline
+Correlation        & 84.49                                                    & 79.04                                                  \\ \hline
 \end{tabular}
 \end{adjustbox}
-\caption{k=5, f=3, bearing=A, severity=False, domain=TD}
+\caption{Feature selection methods evaluated in summary over all experimental conditions}
+\label{tab:evaluation:compare-fsel-accuracy}
 \end{table}
-
-
-
-
 
 \begin{table}[h]
+\centering
 \begin{adjustbox}{width=\textwidth}
-\begin{tabular}{|l|rr|rr|r|l|}
+\begin{tabular}{|l|r|r|r|}
 \hline
-\multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}                                   & \multicolumn{2}{l|}{\textbf{Percentile}}                 & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Axis}}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
-                                      & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{}                               &                                         \\ \hline
-All features                          & \multicolumn{1}{r|}{88.15}          & 79.99                              & \multicolumn{1}{r|}{99.39}          & 98.18                              & 1                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{83.83}          & 74.43                              & \multicolumn{1}{r|}{77.58}          & 83.03                              & 1                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{88.93}          & 81.86                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   & centroid, roll\_off, flux               \\ \hline
-Rank product                          & \multicolumn{1}{r|}{86.87}          & 77.51                              & \multicolumn{1}{r|}{95.76}          & 93.33                              & 1                                                   & roll\_off, entropy, flux                \\ \hline
-Correlation                           & \multicolumn{1}{r|}{80.54}          & 68.01                              & \multicolumn{1}{r|}{33.33}          & 31.52                              & 1                                                   & roll\_off, skewness, kurtosis           \\ \hline
-F statistic                           & \multicolumn{1}{r|}{86.87}          & 77.51                              & \multicolumn{1}{r|}{95.76}          & 93.33                              & 1                                                   & roll\_off, entropy, flux                \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{88.11}          & 80.96                              & \multicolumn{1}{r|}{99.39}          & 99.39                              & 1                                                   & roll\_off, entropy, centroid            \\ \hline
-All features                          & \multicolumn{1}{r|}{93.67}          & 88.45                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{86.76}          & 78.51                              & \multicolumn{1}{r|}{64.85}          & 70.91                              & 3                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{92.86}          & 87.52                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   & centroid, roll\_off, entropy            \\ \hline
-Rank product                          & \multicolumn{1}{r|}{85.79}          & 77.18                              & \multicolumn{1}{r|}{51.52}          & 57.58                              & 3                                                   & roll\_off, flux, skewness               \\ \hline
-Correlation                           & \multicolumn{1}{r|}{85.79}          & 77.18                              & \multicolumn{1}{r|}{51.52}          & 57.58                              & 3                                                   & roll\_off, skewness, flux               \\ \hline
-F statistic                           & \multicolumn{1}{r|}{85.79}          & 77.18                              & \multicolumn{1}{r|}{51.52}          & 57.58                              & 3                                                   & roll\_off, flux, skewness               \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{90.73}          & 83.60                              & \multicolumn{1}{r|}{94.55}          & 94.55                              & 3                                                   & roll\_off, entropy, noisiness           \\ \hline
+                            & \multicolumn{1}{l|}{\textbf{Best in scenarios}} & \multicolumn{1}{l|}{\textbf{Scenarios {[}\%{]}}} & \multicolumn{1}{l|}{\textbf{Mean percentile {[}\%{]}}} \\ \hline
+\textbf{Rank product}       & 94                                                     & 43.52                                            & 92.38 \\ \hline
+\textbf{Mutual information} & 87                                                      & 40.28                                            & 91.79 \\ \hline
+\textbf{Correlation}        & 26                                                      & 12.04                                             & 97.54 \\ \hline
+\textbf{F statistic}        & 9                                                       & 4.16                                             & 96.10 \\ \hline
+\textbf{$\Sigma$}           & 216                                                     & 100                                       & -                                                      \\ \hline
 \end{tabular}
 \end{adjustbox}
-\caption{k=5, f=3, bearing=A, severity=False, domain=FD}
+\caption{The experimental scenarios in which the method is found to be the best}
+\label{tab:evaluation:best-selection-method}
 \end{table}
 
-
-
-\begin{table}[h]
-\begin{adjustbox}{width=\textwidth}
-\begin{tabular}{|l|rr|rr|r|l|}
-\hline
-\multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}                                   & \multicolumn{2}{l|}{\textbf{Percentile}}                 & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Axis}}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
-                                      & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{}                               &                                         \\ \hline
-All features                          & \multicolumn{1}{r|}{94.99}          & 92.07                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{92.67}          & 89.20                              & \multicolumn{1}{r|}{84.17}          & 87.50                              & 1                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{93.99}          & 91.31                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   & zerocross, aac, kurtosis                \\ \hline
-Rank product                          & \multicolumn{1}{r|}{92.71}          & 88.55                              & \multicolumn{1}{r|}{85.00}          & 80.83                              & 1                                                   & zerocross, shape, rms                   \\ \hline
-Correlation                           & \multicolumn{1}{r|}{92.71}          & 88.55                              & \multicolumn{1}{r|}{85.00}          & 80.83                              & 1                                                   & zerocross, shape, rms                   \\ \hline
-F statistic                           & \multicolumn{1}{r|}{92.71}          & 88.55                              & \multicolumn{1}{r|}{85.00}          & 80.83                              & 1                                                   & zerocross, shape, rms                   \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{92.71}          & 88.55                              & \multicolumn{1}{r|}{85.00}          & 80.83                              & 1                                                   & zerocross, shape, rms                   \\ \hline
-All features                          & \multicolumn{1}{r|}{96.42}          & 94.76                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{94.63}          & 92.07                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{94.58}          & 91.71                              & \multicolumn{1}{r|}{100.00}         & 99.17                              & 3                                                   & zerocross, aac, shape                   \\ \hline
-Rank product                          & \multicolumn{1}{r|}{94.31}          & 91.40                              & \multicolumn{1}{r|}{98.33}          & 95.83                              & 3                                                   & zerocross, shape, rms                   \\ \hline
-Correlation                           & \multicolumn{1}{r|}{94.31}          & 91.40                              & \multicolumn{1}{r|}{98.33}          & 95.83                              & 3                                                   & zerocross, shape, rms                   \\ \hline
-F statistic                           & \multicolumn{1}{r|}{94.31}          & 91.40                              & \multicolumn{1}{r|}{98.33}          & 95.83                              & 3                                                   & shape, zerocross, rms                   \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{91.90}          & 88.51                              & \multicolumn{1}{r|}{72.50}          & 76.67                              & 3                                                   & zerocross, shape, clearance             \\ \hline
-\end{tabular}
-\end{adjustbox}
-\caption{k=5, f=3, bearing=A, severity=True, domain=TD}
-\end{table}
-
-
-
-\begin{table}[h]
-\begin{adjustbox}{width=\textwidth}
-\begin{tabular}{|l|rr|rr|r|l|}
-\hline
-\multirow{2}{*}{\textbf{Feature set}} & \multicolumn{2}{l|}{\textbf{Accuracy}}                                   & \multicolumn{2}{l|}{\textbf{Percentile}}                 & \multicolumn{1}{l|}{\multirow{2}{*}{\textbf{Axis}}} & \multirow{2}{*}{\textbf{Best features}} \\ \cline{2-5}
-                                      & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{\textbf{Train}} & \multicolumn{1}{l|}{\textbf{Test}} & \multicolumn{1}{l|}{}                               &                                         \\ \hline
-All features                          & \multicolumn{1}{r|}{94.17}          & 90.94                              & \multicolumn{1}{r|}{100.00}         & 99.39                              & 1                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{91.49}          & 87.78                              & \multicolumn{1}{r|}{80.00}          & 86.67                              & 1                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{94.13}          & 91.37                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 1                                                   & centroid, roll\_off, flux               \\ \hline
-Rank product                          & \multicolumn{1}{r|}{93.75}          & 90.29                              & \multicolumn{1}{r|}{99.39}          & 99.39                              & 1                                                   & entropy, centroid, flux                 \\ \hline
-Correlation                           & \multicolumn{1}{r|}{93.75}          & 90.29                              & \multicolumn{1}{r|}{99.39}          & 99.39                              & 1                                                   & entropy, flux, centroid                 \\ \hline
-F statistic                           & \multicolumn{1}{r|}{93.75}          & 90.29                              & \multicolumn{1}{r|}{99.39}          & 99.39                              & 1                                                   & entropy, flux, centroid                 \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{93.75}          & 90.29                              & \multicolumn{1}{r|}{99.39}          & 99.39                              & 1                                                   & centroid, entropy, flux                 \\ \hline
-All features                          & \multicolumn{1}{r|}{95.20}          & 93.20                              & \multicolumn{1}{r|}{100.00}         & 100.00                             & 3                                                   &                                         \\ \hline
-PCA PC                                & \multicolumn{1}{r|}{92.14}          & 88.84                              & \multicolumn{1}{r|}{69.09}          & 73.94                              & 3                                                   &                                         \\ \hline
-Best features                         & \multicolumn{1}{r|}{94.64}          & 91.94                              & \multicolumn{1}{r|}{100.00}         & 99.39                              & 3                                                   & centroid, roll\_off, entropy            \\ \hline
-Rank product                          & \multicolumn{1}{r|}{93.89}          & 91.24                              & \multicolumn{1}{r|}{95.15}          & 97.58                              & 3                                                   & entropy, noisiness, centroid            \\ \hline
-Correlation                           & \multicolumn{1}{r|}{94.50}          & 92.19                              & \multicolumn{1}{r|}{99.39}          & 100.00                             & 3                                                   & entropy, centroid, flux                 \\ \hline
-F statistic                           & \multicolumn{1}{r|}{94.50}          & 92.19                              & \multicolumn{1}{r|}{99.39}          & 100.00                             & 3                                                   & entropy, flux, centroid                 \\ \hline
-Mutual information                    & \multicolumn{1}{r|}{93.32}          & 90.67                              & \multicolumn{1}{r|}{90.91}          & 91.52                              & 3                                                   & noisiness, roll\_off, entropy           \\ \hline
-\end{tabular}
-\end{adjustbox}
-\caption{k=5, f=3, bearing=A, severity=True, domain=FD}
-\end{table}
-
-
-
-
-
-
-% compare percentiles
-% Feature combinations accuracy
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
@@ -318,84 +254,94 @@ Mutual information                    & \multicolumn{1}{r|}{93.32}          & 90
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/fsel-percentile.png}
         \caption{Percentile}
     \end{subfigure}
-    \caption{Feature selection method choices}
+    \caption{Quality of choice for feature selection methods}
+    \label{fig:evaluation:kde-fsel-perecentile}
 \end{figure}
 
-% In fsel percentile - mention median from notebook for each method - table
-\begin{table}[h]
-\centering
-\begin{tabular}{|l|r|r|}
-\hline
-\textbf{Method}    & \multicolumn{1}{l|}{\textbf{Median percentile {[}\%{]}}} & \multicolumn{1}{l|}{\textbf{Median accuracy {[}\%{]}}} \\ \hline
-Rank product       & 88.97                                                    & 79.82                                                 \\ \hline
-Mutual information & 91.81                                                    & 80.87                                                 \\ \hline
-F statistic        & 86.90                                                    & 79.63                                                 \\ \hline
-Correlation        & 84.49                                                    & 79.04                                                  \\ \hline
-\end{tabular}
-\end{table}
+Under 216 scenarios, the mutual information has better median accuracy (80.87\%) and distribution percentile (91.81\%) followed by rank product with an accuracy of 79.82\% of and percentile of 88.97\% (Tab.~\ref{tab:evaluation:compare-fsel-accuracy}). The scenarios are composed of 24 base dataset modifications and options for hyperparameters k-value and number of features. 
 
-% Best feature selection methods table (order by best count)
-\begin{table}[h]
-\centering
-\begin{tabular}{|l|r|r|r|}
-\hline
-                            & \multicolumn{1}{l|}{\textbf{Best in scenarios}} & \multicolumn{1}{l|}{\textbf{Scenarios {[}\%{]}}} & \multicolumn{1}{l|}{\textbf{Mean percentile {[}\%{]}}} \\ \hline
-\textbf{Rank product}       & 94                                                     & 43.52                                            & 92.38 \\ \hline
-\textbf{Mutual information} & 87                                                      & 40.28                                            & 91.79 \\ \hline
-\textbf{Correlation}        & 26                                                      & 12.04                                             & 97.54 \\ \hline
-\textbf{F statistic}        & 9                                                       & 4.16                                             & 96.10 \\ \hline
-\textbf{$\Sigma$}           & 216                                                     & 100                                       & -                                                      \\ \hline
-\end{tabular}
-\end{table}
+The rank product was the best method in the majority of 43.52\% scenarios. Mutual information comes second in 40.28\% cases, where it is deemed the best strategy (Tab.~\ref{tab:evaluation:best-selection-method}). The median accuracy in selected cases is also better for rank product 92.38\% compared to 91.79\% mutual information. 
 
-% 2d and 3d plots of best features
-\begin{figure}[ht]
+Kernel density estimate plot (Fig.~\ref{fig:evaluation:kde-fsel-perecentile}) shows the distribution of accuracies for the selection methods and percentiles for predictor subsets they chose. The feature selection usually picks variables so that they stay in the upper quartile of the distribution above the 75\% percentile. The median accuracy of all methods is around the vicinity of 80\%.
+
+\begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/labels/TD.png}
-        \caption{Time-domain features}
+        \caption{Time-domain features [89.05\%]}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/labels/FD.png}
-        \caption{Frequency-domain features}
+        \caption{Frequency-domain features [77.18\%]}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/labels/TD-severity.png}
-        \caption{Time-domain features (severity)}
+        \caption{Time-domain features (severity) [91.40\%]}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/labels/FD-severity.png}
-        \caption{Frequency-domain features (severity)}
+        \caption{Frequency-domain features (severity) [91.24\%]}
     \end{subfigure} 
-    \caption{3 Best features and their ranges}
+    \caption{Three features chosen by rank product, ranges of attributes, and prediction accuracy in brackets}
 \end{figure}
- 
-%%%%%%%%%%
-\clearpage
+
+The features chosen by rank product are visualized as a three-dimensional scatter plot. The colors of data points represent correct labels with ex marks for misses. The scales on graph axes are inverse transformed of the min-max scaler. The visualization of predicted groups suggests another transform should be applied to even out the distances and handle the outliers.
+
 
 \subsection{Incremental learning}
-% Ordering of severity
-\begin{figure}[ht]
+Online learning imitates hardened conditions for machinery diagnostics that appear in deployment. Delayed provision or omission of actual labels undoubtedly degrades the reliability of the classification. The question is how quickly the accuracy approaches the optimal one from the nearest neighbors trained in batch and what is the effect on the k-NN model from routine difficulties associated with the continous labeling process.
+
+\begin{figure}[h]
     \centering
-    \begin{subfigure}[b]{0.3\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/incremental-learning/order-natural.png}
-        \caption{Order by raising severity}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.3\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/incremental-learning/order-severity.png}
-        \caption{Order after relabeing normal class}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.3\textwidth}
+    \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{assets/results/incremental-learning/severity-levels.png}
-        \caption{Order of relative severity levels}
+        \caption{Relative severity levels}
+        \label{fig:design:online-count-severity-level}
     \end{subfigure}
-    \caption{Ordering of faults}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/order-natural.png}
+        \caption{Original labels}
+        \label{fig:design:online-event-order}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/incremental-learning/order-severity.png}
+        \caption{High severity labels}
+         \label{fig:design:online-event-order-severity}
+    \end{subfigure}
+    \caption{Ordering of faults in dataset according to relative severity levels}
 \end{figure}
+
+The k-NN models in incremental learning experiments learn on the same base training dataset as in batch learning for bearing A with complete sets of extracted features. In this manner, we can compare the training accuracies in the last sample for both models. Online learning metrics are evaluated by progressive valuation on a dataset that is left unbalanced.
+
+The \textbf{stream of events} is ordered by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}), which ensures steady increments in label counts throughout the simulation (Fig.~\ref{fig:design:online-event-order}). The same sorting approach is applied to the dataset where low-severity faults are annotated as baseline observations. During most of its lifespan, the machine simulator looks to be in a fine operating state. Near the end of the simulation, faults start to develop (Fig.~\ref{fig:design:online-event-order-severity}).  
+
+These artificially streamlined event sequences are a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine.
+
+
+%
+%Major breaking points in the stream are after 1171 observations out of 5751, where all 203 normal conditions are consumed in the training process. Counters of other faults show that model predictions are skewed towards more represented classes of imbalance and misalignement. The uneven evolution of category counts in a stream impacts the development of accuracy in the remaining experiments. The hold-out validation accuracies of comparable batch models are 97.36\% \emph{(temporal features)} and 98.36\% \emph{(spectral features)}.
+%	
+%During gradual learning, the correct label is supplied after a fixed period passes after its prediction. This \textbf{sliding window} simulation examines accuracy every 100 iterations. Wait times before revealing the actual class associated with the sample are 1, 50, 100, or 250 steps (Fig.~\ref{fig:design:online-fault-delay-sliding}). 
+%
+%
+%Accuracies after sequentially seeing all samples 96.78\% in temporal domain and 89.11\% in spectral domain when labels are shown instantly. Scatter plots in Figure~\ref{fig:design:scatter-plot-online} visualize mistakes in predictions projected onto two principal components. Labeling delay of 250 observations causes accuracy to drop to 83.94\% \emph{(temporal)} and 78.81\% \emph{(spectral)}.
+%
+%	
+%In the final sample, the accuracies are 89.11\% \emph{(temporal)} and 90.38\% \emph{(spectral)} with immediate feedback, and 83.08\% \emph{(temporal)} and 85.01\% \emph{(spectral)} with window length of 250 samples (Fig.~\ref{fig:design:online-fault-delay-tumbling}). 
+%
+%A \textbf{tumbling window} is more accurate according to progressive valuation because the labeling delay decreases towards the window's end. Initial 0\% accuracy is caused by a warming-up period in data collection during the span of the first few windows. The true labels are unknown. After just a handful of windows in the beginning, accuracy jumps above 60\% and stabilizes after 1000 observations.
+%
+% 
+%Labeling just every \nth{5} sample (25\% of the total dataset) with a sliding window delay of 10 samples reduces accuracy for the model out of temporal features by 8.41\% to 80.39\%, and by 7.33\% for spectral features to accuracy of 82.01\% (Fig.~\ref{fig:design:online-label-skip}). Even if only 1\% of the dataset is annotated (every \nth{100} sample), the model out of spectral features retained an accuracy of 65.17\% that is 4.41\% better than for temporal features.  More missing labels require recording more observations before the equivalent accuracy is reached.
+
+
+
+
 
 
 % Tumbling windows
