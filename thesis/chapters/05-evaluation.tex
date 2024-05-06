@@ -210,7 +210,7 @@ The triplet of variables with the best results is from TD set: zero-crossing rat
 
 The entire accuracy distribution for the training and testing set for original labels is drawn in the form of the histogram (Fig.~\ref{fig:evaluation:fsel-model-distr}). The results of the chosen predictors are mapped out onto the distribution as vertical lines that stack up near the maximum for the time domain or disperse slightly above the median for the frequency domain. The accuracy of all features is unreachable for three feature subsets. Another noticeable difference between distributions is their shift down and greater spread in testing compared to training sets.
 
-\begin{table}[h]
+\begin{table}[]
 \centering
 \begin{adjustbox}{width=\textwidth}
 \begin{tabular}{|l|r|r|}
@@ -226,7 +226,7 @@ Correlation        & 84.49                                                    & 
 \label{tab:evaluation:compare-fsel-accuracy}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[]
 \centering
 \begin{adjustbox}{width=\textwidth}
 \begin{tabular}{|l|r|r|r|}
@@ -243,7 +243,7 @@ Correlation        & 84.49                                                    & 
 \label{tab:evaluation:best-selection-method}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[t]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/fsel-accuracy.png}
@@ -252,11 +252,36 @@ Correlation        & 84.49                                                    & 
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/fsel-percentile.png}
-        \caption{Percentile}
+        \caption{Percentile in distribution of accuracies}
     \end{subfigure}
     \caption{Quality of choice for feature selection methods}
     \label{fig:evaluation:kde-fsel-perecentile}
 \end{figure}
+
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}[b]{0.24\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/TD.png}
+        \caption{TD [89.05\%]}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.24\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/FD.png}
+        \caption{FD [77.18\%]}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.24\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/TD-severity.png}
+        \caption{TD (s) [91.40\%]}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.24\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/labels/FD-severity.png}
+        \caption{FD (s) [91.24\%]}
+    \end{subfigure} 
+    \caption{Three features in both domains chosen by rank product with prediction accuracy in brackets. Relabeled dataset is marked with (s)}
+\end{figure}
+
 
 Under 216 scenarios, the mutual information has better median accuracy (80.87\%) and distribution percentile (91.81\%) followed by rank product with an accuracy of 79.82\% of and percentile of 88.97\% (Tab.~\ref{tab:evaluation:compare-fsel-accuracy}). The scenarios are composed of 24 base dataset modifications and options for hyperparameters k-value and number of features. 
 
@@ -264,37 +289,13 @@ The rank product was the best method in the majority of 43.52\% scenarios. Mutua
 
 Kernel density estimate plot (Fig.~\ref{fig:evaluation:kde-fsel-perecentile}) shows the distribution of accuracies for the selection methods and percentiles for predictor subsets they chose. The feature selection usually picks variables so that they stay in the upper quartile of the distribution above the 75\% percentile. The median accuracy of all methods is around the vicinity of 80\%.
 
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/labels/TD.png}
-        \caption{Time-domain features [89.05\%]}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/labels/FD.png}
-        \caption{Frequency-domain features [77.18\%]}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/labels/TD-severity.png}
-        \caption{Time-domain features (severity) [91.40\%]}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/labels/FD-severity.png}
-        \caption{Frequency-domain features (severity) [91.24\%]}
-    \end{subfigure} 
-    \caption{Three features chosen by rank product, ranges of attributes, and prediction accuracy in brackets}
-\end{figure}
-
 The features chosen by rank product are visualized as a three-dimensional scatter plot. The colors of data points represent correct labels with ex marks for misses. The scales on graph axes are inverse transformed of the min-max scaler. The visualization of predicted groups suggests another transform should be applied to even out the distances and handle the outliers.
 
 
 \subsection{Incremental learning}
-Online learning imitates hardened conditions for machinery diagnostics that appear in deployment. Delayed provision or omission of actual labels undoubtedly degrades the reliability of the classification. The question is how quickly the accuracy approaches the optimal one from the nearest neighbors trained in batch and what is the effect on the k-NN model from routine difficulties associated with the continous labeling process.
+Online learning imitates hardened conditions for machinery diagnostics that appear in deployment. Delayed provision or omission of actual labels undoubtedly degrades the reliability of the classification. The question is how quickly the accuracy approaches the optimal one from the nearest neighbors trained in batch and what is the effect on the classifier from routine difficulties associated with the continous labeling process.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{assets/results/incremental-learning/severity-levels.png}
@@ -318,34 +319,11 @@ Online learning imitates hardened conditions for machinery diagnostics that appe
 
 The k-NN models in incremental learning experiments learn on the same base training dataset as in batch learning for bearing A with complete sets of extracted features. In this manner, we can compare the training accuracies in the last sample for both models. Online learning metrics are evaluated by progressive valuation on a dataset that is left unbalanced.
 
-The \textbf{stream of events} is ordered by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}), which ensures steady increments in label counts throughout the simulation (Fig.~\ref{fig:design:online-event-order}). The same sorting approach is applied to the dataset where low-severity faults are annotated as baseline observations. During most of its lifespan, the machine simulator looks to be in a fine operating state. Near the end of the simulation, faults start to develop (Fig.~\ref{fig:design:online-event-order-severity}).  
+The \textbf{stream of events} is ordered by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}), which ensures steady increments in label counts throughout the simulation (Fig.~\ref{fig:design:online-event-order}). The same sorting approach is applied to the dataset where low-severity faults are annotated as baseline. During most of its lifespan, the machine simulator looks to be in a fine operating state. Near the end of the simulation, faults start to develop (Fig.~\ref{fig:design:online-event-order-severity}). These artificially streamed event sequences are a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine.
 
-These artificially streamlined event sequences are a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine.
+A significant change in the data stream occurs after 294 out of 1438 observations (or after 737 for high severity faults) when all 49 (or 737) normal conditions are consumed in the training process. Counters of other faults show that predictions are skewed towards more represented imbalance and misalignement. The uneven evolution of categories in a stream impacts the development of accuracy in the remaining experiments. The test accuracies of comparable batch models from the three best features are 85.47\% (TD), 87.52\% (FD), 91.71\% (TD severity), and 91.94\% (FD severity).
 
-
-%
-%Major breaking points in the stream are after 1171 observations out of 5751, where all 203 normal conditions are consumed in the training process. Counters of other faults show that model predictions are skewed towards more represented classes of imbalance and misalignement. The uneven evolution of category counts in a stream impacts the development of accuracy in the remaining experiments. The hold-out validation accuracies of comparable batch models are 97.36\% \emph{(temporal features)} and 98.36\% \emph{(spectral features)}.
-%	
-%During gradual learning, the correct label is supplied after a fixed period passes after its prediction. This \textbf{sliding window} simulation examines accuracy every 100 iterations. Wait times before revealing the actual class associated with the sample are 1, 50, 100, or 250 steps (Fig.~\ref{fig:design:online-fault-delay-sliding}). 
-%
-%
-%Accuracies after sequentially seeing all samples 96.78\% in temporal domain and 89.11\% in spectral domain when labels are shown instantly. Scatter plots in Figure~\ref{fig:design:scatter-plot-online} visualize mistakes in predictions projected onto two principal components. Labeling delay of 250 observations causes accuracy to drop to 83.94\% \emph{(temporal)} and 78.81\% \emph{(spectral)}.
-%
-%	
-%In the final sample, the accuracies are 89.11\% \emph{(temporal)} and 90.38\% \emph{(spectral)} with immediate feedback, and 83.08\% \emph{(temporal)} and 85.01\% \emph{(spectral)} with window length of 250 samples (Fig.~\ref{fig:design:online-fault-delay-tumbling}). 
-%
-%A \textbf{tumbling window} is more accurate according to progressive valuation because the labeling delay decreases towards the window's end. Initial 0\% accuracy is caused by a warming-up period in data collection during the span of the first few windows. The true labels are unknown. After just a handful of windows in the beginning, accuracy jumps above 60\% and stabilizes after 1000 observations.
-%
-% 
-%Labeling just every \nth{5} sample (25\% of the total dataset) with a sliding window delay of 10 samples reduces accuracy for the model out of temporal features by 8.41\% to 80.39\%, and by 7.33\% for spectral features to accuracy of 82.01\% (Fig.~\ref{fig:design:online-label-skip}). Even if only 1\% of the dataset is annotated (every \nth{100} sample), the model out of spectral features retained an accuracy of 65.17\% that is 4.41\% better than for temporal features.  More missing labels require recording more observations before the equivalent accuracy is reached.
-
-
-
-
-
-
-% Tumbling windows
-\begin{figure}[h]
+\begin{figure}[]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/incremental-learning/tumbling-TD.png}
@@ -366,37 +344,11 @@ These artificially streamlined event sequences are a bit unrealistic because all
         \includegraphics[width=\textwidth]{assets/results/incremental-learning/tumbling-FD-severity.png}
         \caption{Frequency-domain features (severity)}
     \end{subfigure} 
-    \caption{Tumbling window in incremental learning}
+    \caption{Tumbling window during incremental learning of lengths 1, 10, 100}
+    \label{fig:evaluation:tumbling-window-online}
 \end{figure}
 
-
-% % Label skips and parts of dataset
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/incremental-learning/all-features-TD-skip.png}
-        \caption{Time-domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/incremental-learning/all-features-FD-skip.png}
-        \caption{Frequency-domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-labels-TD.png}
-        \caption{Time-domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-labels-FD.png}
-        \caption{Frequency-domain features}
-    \end{subfigure} 
-    \caption{Skip labels in incremental learning}
-\end{figure}
-
-
-\begin{figure}[h]
+\begin{figure}[]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-label-TD.png}
@@ -417,11 +369,20 @@ These artificially streamlined event sequences are a bit unrealistic because all
         \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-label-FD-severity.png}
         \caption{Frequency-domain features (severity)}
     \end{subfigure} 
-    \caption{Skip labels in incremental learning with different sizes}
+    \caption{Omission of labels during incremental learning with tumbing window of length 10 and gaps of size 0, 10, and 50 samples}
+    \label{fig:evaluation:label-skips-online}
 \end{figure}
 
+During gradual learning, the correct labels are supplied in bulk at a fixed period. Labeling delay in \textbf{tumbling window} decreases towards the window's end. Figure~\ref{fig:evaluation:tumbling-window-online} plots the evolution of the k-NN model's distribution of accuracy for windows of size 1, 10, and 100 observations. The models consist of three predictors and use five neighbours for prediction. Each window length is described with three curves of identical colour. The median is drawn with a solid line, the maximum with a dash-dotted line, and the minimum with a dashed line.
+
+Initial zero accuracy is caused by a warming-up period in data collection during the span of the first few windows. The true labels are unknown at that point. After just a handful of windows in the beginning, accuracy jumps above 60\% for the best triplet of attributes and stabilizes after 400 observations. In an alternative labeling scheme, the accuracy for one class is 100\% and only after encountering other fault types, it decreases to a level above 75\% for the best set.
+
+The top accuracies after sequentially seeing samples in the longest tumbling windows of 100 observations are 75.71\% (TD), 76.98\% (FD), 76.98\% (TD severity), and 80.56\% (FD severity). The degradations in accuracy when compared to the batch model are by 9.76\% (TD), 10.54\% (FD), 14.73\% (TD severity), and 11.38\% (FD severity). The effect of severe performance hit could be attributed to unbalanced data based on the analysis chapter. The online multiclass oversampling method would need to be inserted into the pipeline to prove this hypothesis.
+
+Labeling every \nth{10} samples (to 10\% of the dataset) with a tumbling window of 10 samples reduces maximum accuracy for the three-predictor model compared to data points without gaps in labels. Time-domain features it is decreased by 9.9\% to 66.78\%, and by 14.93\% for frequency-domain features to 67.00\% (Fig.~\ref{fig:evaluation:label-skips-online}). More annotations can be scrapped in the case of a relabeled dataset where keeping just 0.02\% of the class labels produces a decrease by 13.7\% to 68.79\% for time domain attributes, and by 16.59\% to 66.25\% for frequency domain attributes.
 
 
+%TODO
 \section{Industrial dataset analysis}
 
 \subsection{Data logger validation}
