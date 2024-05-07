@@ -3,7 +3,32 @@
 \chapter{Digital medium}
 \pagenumbering{arabic}
 \renewcommand*{\thepage}{E-\arabic{page}}
-\par Evidenčné číslo práce v informačnom systéme: \RegNo
-\par Obsah digitálnej časti práce (archív ZIP):
-\par Názov odovzdaného archívu: 
+\par Registration number of thesis in AiS: \RegNo
+\par Contents of the digital medium:
+\par Name of submitted archive directory: DP\_MiroslavHajek.zip
+\par Notice: Digital medium has more than 1 GiB and is available to the thesis supervisor.
+\par The MaFaulDa dataset is publically available at: \url{https://www02.smt.ufrj.br/~offshore/mfs/database/mafaulda/full.zip}
 
+\begin{itemize}[noitemsep]
+\item[\textbf{>}] \textbf{datasets} - raw vibration data from machinery, and reports that took long to calculate.
+	\begin{itemize}[noitemsep]
+	\item[\textbf{>}] \textbf{FluidPump.zip} - custom recorded dataset of vibrations from air compressors and water pumps
+	\item[\textbf{>}] \emph{MAFAULDA.zip} - placeholder where the downloaded MaFaulDa dataset should be placed
+	\item[\textbf{>}] \textbf{best-subset} - the subset of features chosen to three-member subsets most frequently
+	\item[\textbf{>}] \textbf{features} - features extracted from datasets in multiple domains
+	\item[\textbf{>}] \textbf{ksb-cloud} - data exported from KSB cloud monitoring of vibration rms velocity and frequency waveform for chosen dates.
+	\item[\textbf{>}] \textbf{misc-fluid-pump} - other non-standard measurements from pumps such as during speed up, slow down, or noise.
+	\item[\textbf{>}] \textbf{knn-accuracy-distribution} - 
+	\item[\textbf{>}] \textbf{knn-incremental-accuracy} - The incremental k-NN model accuracy after each sample for various lengths of tumbling window and gaps between labels 
+	\item[\textbf{>}] \textbf{standing-fan} - audio for an estimate of fan rotational speed and measurements done in firmware verification on the back, side, and front of the fan.
+	\end{itemize}
+\item[\textbf{>}] \textbf{docs} - the documentation generated from source code comments  using automated tool
+	\begin{itemize}[noitemsep]
+	\item[\textbf{>}] \textbf{html-notebooks} - export of Jupyter notebooks for all basic configurations in HTML format
+	\item[\textbf{>}] \textbf{doxygen} - documentation of \emph{firmware} 
+	\item[\textbf{>}] \textbf{sphinx} - documentation of \emph{vibrodiagnostics} package
+	\end{itemize}
+\item[\textbf{>}] \textbf{firmware} - source code in \emph{main} directory for accelerometer data logger firmware written in C language with ESP-IDF SDK. The script \emph{bin2tsv.py} converts files saved to SD card in binary format to a tsv file.
+\item[\textbf{>}] \textbf{notebooks} - Jupyter notebooks for data exploration, data analysis, and machine learning on provided datasets
+\item[\textbf{>}] \textbf{vibrodiagnostics} - Python package of commonly used function in Jupyter notebooks for data processing
+\end{itemize}
