@@ -3,6 +3,7 @@
 build
 datasets
 **/.ipynb_checkpoints
+html-jupyter
 *.backup
 *.bak
 **/__pycache__
