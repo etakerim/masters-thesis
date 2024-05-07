@@ -73,7 +73,7 @@ One of the methods vibration experts utilize in the identification of the damage
 
 Because of inherent tolerances in machine manufacturing and assembly, the rotational frequency always manifests itself, even in baseline signature~\cite{davies_handbook_2012, noauthor_iso_2002}. In the most likely scenario, some faults appear as compared to rotational frequency solely in \textbf{synchronous, subsynchronous, or non-synchronous components}. The defects can occur in a predictable combination of the ones mentioned. Other common patterns experts look for are modulation sidebands typical for bearings and gears extractable with cepstrum analysis~\cite{ziaran_technicka_2013}. Procedures relying on elimination narrow down unrelated causes effectively.
 
-The mechanical properties of bearings are instrumental in identifying the characteristic frequencies of their components~\cite{mohanty_machinery_2015, ziaran_technicka_2013}. Bearings are composed of outer and inner circular races between which the rolling elements are held inside the cage to avoid mutual contact~(Fig.\ref{fig:bearing-parts}). The developing scratches or pits can appear as increases in amplitude around characteristic frequencies and their harmonics but sometimes this is not enough for accurate diagnostics~\cite{brito_fault_2021}. 
+The mechanical properties of bearings are instrumental in identifying the characteristic frequencies of their components~\cite{mohanty_machinery_2015, ziaran_technicka_2013}. Bearings are composed of outer and inner circular races between which the rolling elements are held inside the cage to avoid mutual contact~(Fig.\ref{fig:bearing-parts}). The developing scratches or pits can appear as increases in amplitude around characteristic frequencies and their harmonics but sometimes this is not enough for accurate diagnostics~\cite{brito_fault_2021}.
 
 \begin{figure}[h]
     \centering
@@ -89,13 +89,13 @@ The table \ref{tab:bearing-defect-features} provides formulas for rolling bearin
 \renewcommand{\arraystretch}{2}
 \begin{tabular}{|l|l|l|l|}
 \hline
-\textbf{Feature}            & \textbf{Equation}                                                                   
+\textbf{Feature}            & \textbf{Equation}
  \\ \hline
-\textit{Outer race fault frequency} & $ BPFO = f_s \cdot \frac{n}{2} \cdot \left(1 - \frac{d}{D}\cos \beta \right)$               
+\textit{Outer race fault frequency} & $ BPFO = f_s \cdot \frac{n}{2} \cdot \left(1 - \frac{d}{D}\cos \beta \right)$
 \\ \hline
 \textit{Inner race fault frequency} & $ BPFI = f_s \cdot \frac{n}{2} \cdot \left(1 + \frac{d}{D}\cos \beta \right)$
 \\ \hline
-\textit{Cage rotation frequency}    & $ FTF = f_s \cdot \frac{1}{2} \cdot \left(1 - \frac{d}{D}\cos \beta \right) $      
+\textit{Cage rotation frequency}    & $ FTF = f_s \cdot \frac{1}{2} \cdot \left(1 - \frac{d}{D}\cos \beta \right) $
 \\ \hline
 \textit{Ball defect frequencies} & $ BSF = f_s \cdot \frac{D}{d} \cdot \left(1 + \left(\frac{D}{d}\cos \beta\right)^2 \right) $
 \\ \hline
@@ -200,20 +200,20 @@ A steeper 3~dB attenuation band is achieved by increasing the order of the filte
 The finite impulse response (FIR) filter is not recommended for DC component removal because of the undesirable ripple effect with the small number of taps. Cascaded-integrator-comb (CIC) filters are proposed as an alternative instead~\cite{lyons_understanding_2011}.
 
 \subsection{Time synchronous averaging}
-Time synchronous averaging (TSA) diminishes the impact of vibration sources unrelated to the rotational frequency and its harmonics. TSA averages time-domain waveform over $N$ points and aligns it to a synchronization pulse with period $T$ (Equation~\ref{equ:tsa-average}). 
+Time synchronous averaging (TSA) diminishes the impact of vibration sources unrelated to the rotational frequency and its harmonics. TSA averages time-domain waveform over $N$ points and aligns it to a synchronization pulse with period $T$ (Equation~\ref{equ:tsa-average}).
 
 \myequations{Time synchronous averaging}
 \begin{ceqn}\begin{align}
 x_{TSA} = \frac{1}{N} \sum_{n = 0}^{N - 1}{x(t + nT)}
 \label{equ:tsa-average}
-\end{align}\end{ceqn} 
+\end{align}\end{ceqn}
 
 This technique has been successfully applied to the gearbox and bearing fault diagnosis~\cite{davies_handbook_2012,nandi_condition_2019}.
 
 \section{Feature extraction} \label{section:feature-extraction}
-After preprocessing, raw numerical vectors are merely low-level descriptors of the underlying physical phenomena. At first, these incomprehensible sequences of numbers are reduced to summary attributes called features in the process of feature extraction or feature discovery. Features can be hand-crafted (as is our case), learned implicitly within the model representation, or explicitly from an optimization problem solution. 
+After preprocessing, raw numerical vectors are merely low-level descriptors of the underlying physical phenomena. At first, these incomprehensible sequences of numbers are reduced to summary attributes called features in the process of feature extraction or feature discovery. Features can be hand-crafted (as is our case), learned implicitly within the model representation, or explicitly from an optimization problem solution.
 
-Predictive maintenance has ideal prerequisites for the application of feature engineering because the signal is usually pseudo-stationary, and the trend monitoring variables come out of extensive domain expertise in mechanics. The advantages of the add-in extraction effort as opposed to processing unmodified samples are to gain better classification precision and reduce computational burden and storage capacity downstream with dimensionality reduction~\cite{johnson_feature_2019}. 
+Predictive maintenance has ideal prerequisites for the application of feature engineering because the signal is usually pseudo-stationary, and the trend monitoring variables come out of extensive domain expertise in mechanics. The advantages of the add-in extraction effort as opposed to processing unmodified samples are to gain better classification precision and reduce computational burden and storage capacity downstream with dimensionality reduction~\cite{johnson_feature_2019}.
 
 It is important to note that the design of features is not a standalone step in the machine learning pipeline, but it should be performed iteratively to improve the target model. Signal features are computed in the time and frequency domain~\cite{brito_fault_2021}.
 
@@ -228,24 +228,24 @@ The other significant time-domain attributes are derived as ratios of previous s
 \begin{tabular}{|l|l|l|l|}
 \hline
 \textbf{Feature}            & \textbf{Equation}                                                                    \\ \hline
-\textit{Peak-to-peak}       & $ X_{ppv} = \max(x_i) - \min(x_i) $               
+\textit{Peak-to-peak}       & $ X_{ppv} = \max(x_i) - \min(x_i) $
 \\ \hline
 \textit{Zero-crossing rate} & $X_{zc} = \frac{1}{N}\sum_{i = 1}^{N}{\mathrm{sgn}(x_i \cdot x_{i-1})} $
 \\ \hline
-\textit{Root mean square}   & $ X_{rms} = \sqrt{\frac{1}{N}\sum_{i = 1}^{N}{x_i^2}} $ 
+\textit{Root mean square}   & $ X_{rms} = \sqrt{\frac{1}{N}\sum_{i = 1}^{N}{x_i^2}} $
 \\ \hline
-\textit{Skewness}           & $ X_{sv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^3}$      
+\textit{Skewness}           & $ X_{sv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^3}$
 \\ \hline
-\textit{Kurtosis}           & $ X_{kv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^4}$                                           
+\textit{Kurtosis}           & $ X_{kv} = \frac{1}{N}\sum_{i = 1}^{N}{\left(\frac{x_i - \bar{x}}{\sigma}\right)^4}$
 \\ \hline
-\textit{Shape factor}   & $ X_{sf} = \frac{X_{rms}}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}}$  
+\textit{Shape factor}   & $ X_{sf} = \frac{X_{rms}}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}}$
 \\ \hline
 \textit{Crest factor}   & $ X_{cf} = \frac{max(|x_i|)}{X_{rms}} $                           \\ \hline
-\textit{Impulse factor} & $ X_{if} = \frac{max(|x_i|)}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}} $                                                 
-\\ \hline       
-\textit{Clearance factor}  & $ X_{mf} = \frac{max(|x_i|)}{\left( \frac{1}{N} \sum_{i=1}^{N}{\sqrt{|x_i|}} \right)^2} $ 
+\textit{Impulse factor} & $ X_{if} = \frac{max(|x_i|)}{\frac{1}{N} \sum_{i=1}^{N}{|x_i|}} $
 \\ \hline
-\textit{Average Amplitude Change (AAC)}        & $ X_{AAC} = \frac{1}{N}\sum_{i = 1}^{N - 1}{|x_{i + 1} - x_i|} $                             \\ \hline                                                                                     
+\textit{Clearance factor}  & $ X_{mf} = \frac{max(|x_i|)}{\left( \frac{1}{N} \sum_{i=1}^{N}{\sqrt{|x_i|}} \right)^2} $
+\\ \hline
+\textit{Average Amplitude Change (AAC)}        & $ X_{AAC} = \frac{1}{N}\sum_{i = 1}^{N - 1}{|x_{i + 1} - x_i|} $                             \\ \hline
 \end{tabular}
 \caption{Time-domain features}
 \label{tab:td-features}
@@ -253,9 +253,9 @@ The other significant time-domain attributes are derived as ratios of previous s
 
 
 \subsection{Frequency-domain features}
-The mechanical faults present themselves as oscillatory patterns which are combinations of frequencies with various amplitudes. The Fourier transform is one of the most prominent strategies in power spectral density estimation. Experts on vibrodiagnostics utilize it as a primary signal processing technique for data analysis as it is recommended in ISO 13373-2 standard~\cite{noauthor_iso_2016_2}. 
+The mechanical faults present themselves as oscillatory patterns which are combinations of frequencies with various amplitudes. The Fourier transform is one of the most prominent strategies in power spectral density estimation. Experts on vibrodiagnostics utilize it as a primary signal processing technique for data analysis as it is recommended in ISO 13373-2 standard~\cite{noauthor_iso_2016_2}.
 
-The inherent symmetries in the Fourier matrix made it possible to implement the Fast Fourier transform (FFT) algorithm with time complexity $O(n \log n)$. The drawback of the plain spectral analysis is the lack of resolution for events that occurred at distant time instants, and so their spectral components might adversely blend in together. 
+The inherent symmetries in the Fourier matrix made it possible to implement the Fast Fourier transform (FFT) algorithm with time complexity $O(n \log n)$. The drawback of the plain spectral analysis is the lack of resolution for events that occurred at distant time instants, and so their spectral components might adversely blend in together.
 
 \begin{table}[ht]
 \renewcommand{\arraystretch}{2}
@@ -263,11 +263,11 @@ The inherent symmetries in the Fourier matrix made it possible to implement the 
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Feature}           & \textbf{Equation}                                                                                                  \\ \hline
-\textit{Spectral centroid} & $ X_{fc} = \frac{\sum_{i = 0}^{N - 1}{f_i \cdot a(f_i)}}{\sum_{i = 0}^{N - 1}{a(f_i)}}$                   \\ \hline 
+\textit{Spectral centroid} & $ X_{fc} = \frac{\sum_{i = 0}^{N - 1}{f_i \cdot a(f_i)}}{\sum_{i = 0}^{N - 1}{a(f_i)}}$                   \\ \hline
 \textit{Energy}            & $ E(N) = \sum_{i = 1}^{N} a^2(t) $                                                                    \\ \hline \textit{Energy ratio}                & $E_r = E_i \;/\; \sum_{i = 1}^{N}{E_i} $                                                        \\ \hline
-\textit{Spectral roll-on} & $ E(f_c) = 0.05 \cdot E(f_s / 2) $ \\ \hline                    
+\textit{Spectral roll-on} & $ E(f_c) = 0.05 \cdot E(f_s / 2) $ \\ \hline
 \textit{Spectral roll-off} & $ E(f_c) = 0.85 \cdot E(f_s / 2) $                                                   \\ \hline
-\textit{Spectral flux}     & $X_{\mathrm{flux}} = 1 - \mathrm{corr}(A_{t-1}, A_t)$ \\ \hline 
+\textit{Spectral flux}     & $X_{\mathrm{flux}} = 1 - \mathrm{corr}(A_{t-1}, A_t)$ \\ \hline
 \textit{Noisiness}                   & $X_{noise} = \mathrm{SNR}(X) = \mu \;/\; \sigma $                             \\ \hline
 \textit{Shannon entropy}      & $H(X) = - \sum_{i} P(X = x_i) \cdot \ln(P(X = x_i)) $                                                  \\ \hline
 \textit{Spectral negentropy}      & $\Delta I_E(f, \Delta f) = \sum_{k = 0}^{N - 1}{p \cdot \ln(p); p = \frac{\mathrm{SES}^2}{\frac{1}{N} \sum_{k=0}^{N-1} \mathrm{SES}^2}}$                                                \\ \hline
@@ -276,7 +276,7 @@ The inherent symmetries in the Fourier matrix made it possible to implement the 
 \label{tab:fd-features}
 \end{table}
 
-In the frequency domain, we can obtain the usual statistical properties of the distribution which are spectral centroid, skew, and kurtosis. Additionally, spectral roll-on and roll-off, fundamental frequency, entropy, negentropy, spectral flux, signal-to-noise ratio (noisiness), energy in frequency bands, and energy ratio are extracted (Tab.~\ref{tab:fd-features})~\cite{peeters_large_2004}. 
+In the frequency domain, we can obtain the usual statistical properties of the distribution which are spectral centroid, skew, and kurtosis. Additionally, spectral roll-on and roll-off, fundamental frequency, entropy, negentropy, spectral flux, signal-to-noise ratio (noisiness), energy in frequency bands, and energy ratio are extracted (Tab.~\ref{tab:fd-features})~\cite{peeters_large_2004}.
 
 In geometric terms, the spectral centroid represents the barycenter of the frequency magnitude plot. Spectral roll-off gives a notion about the spectral distribution because it identifies the frequency $f_c$ below which 85\% of the signal energy is contained. The roll-on frequency is chosen so that 5\% of the signal energy is below this value. According to the definition, spectral flux is normalized cross-correlation between two successive amplitude spectra. A flux value of one means the spectra are the most dissimilar.
 
@@ -300,7 +300,7 @@ A substantial improvement is a robust non-parametric peak identification named \
 \frac{a_{max} - a_{min}}{a_{max} \cdot 3 - S_3} = \frac{a_{max} - a_{mid}}{a_{max} \cdot 3 - S_3}
 \label{equ:mms-minima}
  \end{align}\end{ceqn}
- 
+
 \myequations{Harmonic series search criterion}
 \begin{ceqn}\begin{align}
 v_i^{(r)} = \frac{v_j}{\min{|v_j - r \cdot v_i|}}
@@ -351,7 +351,7 @@ W_{x(t)}(s, \tau) = \frac{1}{\sqrt{s}}\int x(t) \cdot \psi^*\left(\frac{t - \tau
 \label{equ:cwt-transform}
 \end{align}\end{ceqn}
 
-The CWT is computationally intensive when a highly detailed scale resolution is required because each wavelet scale convolves with the entire signal. The fCWT algorithm allows 100 times higher spectral resolution than previous implementations at the same speed. It increases performance 122 times compared to Wavelib and 34 times in comparison with PyWavelets~\cite{arts_fast_2022}. 
+The CWT is computationally intensive when a highly detailed scale resolution is required because each wavelet scale convolves with the entire signal. The fCWT algorithm allows 100 times higher spectral resolution than previous implementations at the same speed. It increases performance 122 times compared to Wavelib and 34 times in comparison with PyWavelets~\cite{arts_fast_2022}.
 
 The fast CWT algorithm reaches compelling improvement by applying Parseval's theorem to the wavelet transform formula that removes the dependence on the time offset parameter~\cite{arts_fast_2022}. The convolution takes place with the mother wavelet in the Fourier base. Then, the inverse FFT produces the coefficients for individual scales.
 
@@ -392,13 +392,13 @@ The spectrograms to illustrate the difference in the ability of the Fourier tran
     \label{fig:transforms}
 \end{figure}
 
-The dyadic filter bank is another signal decomposition technique that generates subbands at multiple granularity levels. The practical realization of the multiscale description is \textbf{Discrete Wavelet Transform} (DWT). The DWT behaves as a quadrature mirror filter and splits waveforms using a wavelet filter to detail coefficients (D1) and approximation coefficients (A1) (Fig.~\ref{fig:dwt-filter-bank})~\cite{nandi_condition_2019}. The low-pass filter $h(k)$ creates approximation coefficients further decomposed at the successive levels. Detail coefficients represent the result of the high-pass filter $g(k) = (-1)^k h(1 - k)$ after decimation by a factor of 2. 
+The dyadic filter bank is another signal decomposition technique that generates subbands at multiple granularity levels. The practical realization of the multiscale description is \textbf{Discrete Wavelet Transform} (DWT). The DWT behaves as a quadrature mirror filter and splits waveforms using a wavelet filter to detail coefficients (D1) and approximation coefficients (A1) (Fig.~\ref{fig:dwt-filter-bank})~\cite{nandi_condition_2019}. The low-pass filter $h(k)$ creates approximation coefficients further decomposed at the successive levels. Detail coefficients represent the result of the high-pass filter $g(k) = (-1)^k h(1 - k)$ after decimation by a factor of 2.
 
 The maximum depth of the decomposition tree is $\log_2{n}$ where $n$ is the number of input samples. Energy, energy ratio, and entropy are prevalent features that succinctly encode the wavelet coefficients. Otherwise, the additional extracted levels raise the total number of data dimensions.
 
 In washing machine status classification, the discrete wavelet transform with Daubechies wavelet (db4) and fifth-level decomposition provides features with a combination of approximation (cA5) and detail coefficients (cD1, \dots, cD5). Washing machines belong to three categories: no fault, electric motor clamping screws problem, and a loose or broken counterweight. Extracted measures were sample mean and sample variances over autocorrelation functions of coefficients (AcD$n$) and smoothed coefficients cD1, cD2 by moving average filter~\cite{goumas_classification_2002}.
 
-\textbf{Wavelet Packet Decomposition} (WPD) applies filters to split detail coefficients identically as approximation ones (Fig.~\ref{fig:wpd-filter-bank}) thus increasing the resolution in the high-frequency bands and providing uniform spectrum partitioning. 
+\textbf{Wavelet Packet Decomposition} (WPD) applies filters to split detail coefficients identically as approximation ones (Fig.~\ref{fig:wpd-filter-bank}) thus increasing the resolution in the high-frequency bands and providing uniform spectrum partitioning.
 
 \myequations{Wavelet packet coefficient}
 \begin{ceqn}\begin{align}
@@ -467,7 +467,7 @@ Highly correlated features generated from a relatively small original column spa
 \label{equ:svd}
 \end{align}\end{ceqn}
 
-PCA consists of taking the Singular Value Decomposition (SVD) (Equation~\ref{equ:svd}) of the mean-centered input matrix. The disadvantage of this method is the loss of explainability in transformed space though it generally outperforms the model working with hand-crafted features~\cite{brito_fault_2021}. The signal samples can be processed directly by PCA without going through an intermediate step of calculating statistical measures. 
+PCA consists of taking the Singular Value Decomposition (SVD) (Equation~\ref{equ:svd}) of the mean-centered input matrix. The disadvantage of this method is the loss of explainability in transformed space though it generally outperforms the model working with hand-crafted features~\cite{brito_fault_2021}. The signal samples can be processed directly by PCA without going through an intermediate step of calculating statistical measures.
 
 \section{Feature selection}
 Features do not contribute to the predictive power of the model with an even share. A certain subset can achieve better results than others. Choosing the optimal feature subset is the NP-hard combinatorial problem.
@@ -480,25 +480,25 @@ The general steps in selecting the appropriate predictors are as follows~\cite{n
 \begin{enumerate}
     \itemsep0pt
     \item \textbf{Subset generation} - sets of features are generated in different search directions and with various strategies. Attributes are either appended to an empty set or pruned away from a universal set, sequentially or randomly.
-    
+
     \item \textbf{Subset evaluation} - comparison of subset quality is assessed with relevance measures, some of which are discussed below.
 
     \item \textbf{Stopping criteria} - search is exhausted when the specified number of features has been found, subset metrics cannot be improved further, or satisfactory model performance is achieved. Subset generation and evaluation can be performed multiple times until the stopping criteria are met.
 
-    \item \textbf{Validation} - the resulting subset is tested for the specific model on synthetic and real-world datasets against well-known results. 
+    \item \textbf{Validation} - the resulting subset is tested for the specific model on synthetic and real-world datasets against well-known results.
 \end{enumerate}
 
-Filter-based feature selection is preprocessing step independent of model choice with small computational requirements. Measures of information, correlation, similarity, and interdependence output the relevancy rating. Predictors are rated individually or in interacting congregations. 
+Filter-based feature selection is preprocessing step independent of model choice with small computational requirements. Measures of information, correlation, similarity, and interdependence output the relevancy rating. Predictors are rated individually or in interacting congregations.
 
 \subsection{Feature importance ranking}
-Most of the scores are based on supervised learning, so they expect true class labels to apportion the measurements respectively. After the scores are assigned to the first $n$ features, those below a threshold are removed. 
+Most of the scores are based on supervised learning, so they expect true class labels to apportion the measurements respectively. After the scores are assigned to the first $n$ features, those below a threshold are removed.
 
-The frequently used scores upon which the feature relevance is ordered are~\cite{nandi_condition_2019}: 
+The frequently used scores upon which the feature relevance is ordered are~\cite{nandi_condition_2019}:
 
 \begin{itemize}
 \item \textbf{Variance threshold} - removes low-variance features below the set threshold.
 
-\item \textbf{Correlation coefficient} - expresses the linear relationship between two variables. The codependent variables are of three sorts: quantitative, ordinal, and nominal. The choice of coefficient calculation is determined by the type of variables under consideration as shown in Table \ref{tab:corr-coef}. 
+\item \textbf{Correlation coefficient} - expresses the linear relationship between two variables. The codependent variables are of three sorts: quantitative, ordinal, and nominal. The choice of coefficient calculation is determined by the type of variables under consideration as shown in Table \ref{tab:corr-coef}.
 
 
 \emph{Pearson correlation} coeficient expresses similarity between two quantitative features: $f_i$ and $f_j$. In the classification setting, the correlation of feature $f$ makes sense only with dichotomous target class label $c$ using \emph{point biserial coeficient}. Mathematically, this is equivalent to the Pearson coefficient. Rank correspondence is quantified with either Spearman rho or Kendall's Tau~\cite{calkins_more_2005}.
@@ -559,7 +559,7 @@ The measurements coming in the steaming fashion have to be processed in a single
 
 \textbf{DenStream} is a density-based algorithm adapted from DBSCAN to cluster streaming data of arbitrarily shaped groups. Samples it includes in the first step into coherent clusters are core data points in each other's neighbourhoods. Core points have at least \emph{MinPts} ($\mu$) points in their neighbourhood of radius \emph{Eps} ($\varepsilon$) units. Then non-core points in the proximity area of the core point are attached to the cluster containing it~\cite{aggarwal_data_2014}.
 
-Quality of clustering results is evaluated by \emph{Silhouette score} in the range [-1; 1]. It demands points within clusters to have high cohesion and at the same time to have large separation from other clusters. The low score indicates a too-small or too-large number of clusters~\cite{rousseeuw_rousseeuw_1987}. 
+Quality of clustering results is evaluated by \emph{Silhouette score} in the range [-1; 1]. It demands points within clusters to have high cohesion and at the same time to have large separation from other clusters. The low score indicates a too-small or too-large number of clusters~\cite{rousseeuw_rousseeuw_1987}.
 
 \begin{figure}[ht]
     \centering
@@ -615,7 +615,7 @@ The nearest-neighbour classifier has been successfully applied in machinery faul
 Comparison of SVM, KNN, and KLDA for the classification of three kinds of bearing faults reaches more than 95\% of data reduction decreasing the time complexity of the models. The test rig rotates at 800 rpm and is sampled at 40 kHz. Their approach uses feature sets of average, kurtosis, skewness, and standard deviation applied on vibration signal after the Fourier transform and its second derivatives over the moving window. The best accuracy was reached by 40 thousand \emph{PSD} set with 99.13\% with KLDA compared to 95.64\% with k-NN and Mahalanobis metric. The \emph{Statistical} set of 8 $\times$ 228 features has accuracy 98.27\% (KLDA) and 93.53\% (k-NN)~\cite{altaf_new_2022}.
 
 \subsection{Incremental learning}
-Online or incremental machine learning operates on the streaming data, updating the model parameters with each new incoming event or in mini-batches. This approach finds its use in big data processing when the whole dataset is not available in advance or cannot be processed at once because of memory limitations. 
+Online or incremental machine learning operates on the streaming data, updating the model parameters with each new incoming event or in mini-batches. This approach finds its use in big data processing when the whole dataset is not available in advance or cannot be processed at once because of memory limitations.
 
 There are some additional obstacles to watch out for with incremental learning in comparison to batch learning~\cite{gepperth_incremental_2016}:
 
@@ -639,17 +639,17 @@ There are some additional obstacles to watch out for with incremental learning i
     \includegraphics[width=\textwidth]{assets/analysis/incremental-learning.png}
     \caption{Incremental learning deployment architecture~\cite{gaia_online_2022}}
     \label{fig:online-learn-arch}
-\end{figure} 
+\end{figure}
 
 Deployment of an online machine learning model alongside supporting services is different from established MLOps processes. Model store and Inference service components are supplemented with Labelling and Learning service~\cite{gaia_online_2022}. Their goal is to tune model parameters gradually as additional ground truth labels are provided. Labels can be provided later in a scheme called ``log and wait'', but data features are stored until such time.
-  
+
 \section{Datasets of machinery faults} \label{section:evaluation-datasets}
 The experimentally designed features' relevancy is first proven in comparison to comprehensive benchmark datasets. There are a few standardized datasets used in the related work, e.g. \cite{ribeiro_rotating_2017}.
 
-\emph{MaFaulDa} dataset combines vibration and acoustic measurements of the shaft in deviating positions and bearing abnormalities. \emph{CWRU dataset} focuses solely on faults in ball bearings. Another less known dataset concerns shaft unbalance, but compared to the previous two, it demonstrates behavior during speed up.  
+\emph{MaFaulDa} dataset combines vibration and acoustic measurements of the shaft in deviating positions and bearing abnormalities. \emph{CWRU dataset} focuses solely on faults in ball bearings. Another less known dataset concerns shaft unbalance, but compared to the previous two, it demonstrates behavior during speed up.
 
 \subsection{Machinery Fault Database}
-MaFaulDa~\cite{mafaulda_dataset} is a collection of 1951 multivariate time series for 4 different operational conditions on rotor kit Alignment Balance Vibration Trainer (ABVT)~(Fig.~\ref{fig:mafaulda-simulator}). Each series has 5~seconds in duration and is captured at 50 kHz. Vibration signals were obtained with piezoelectric accelerometers with a linear response up to 10~kHz, amplitude range to $\pm$490 $\mathrm{m/s}^2$, and resolution step of 10.2~mV per $\mathrm{m/s}^2$. 
+MaFaulDa~\cite{mafaulda_dataset} is a collection of 1951 multivariate time series for 4 different operational conditions on rotor kit Alignment Balance Vibration Trainer (ABVT)~(Fig.~\ref{fig:mafaulda-simulator}). Each series has 5~seconds in duration and is captured at 50 kHz. Vibration signals were obtained with piezoelectric accelerometers with a linear response up to 10~kHz, amplitude range to $\pm$490 $\mathrm{m/s}^2$, and resolution step of 10.2~mV per $\mathrm{m/s}^2$.
 
 \begin{figure}[h]
 \centering
@@ -666,7 +666,7 @@ MaFaulDa~\cite{mafaulda_dataset} is a collection of 1951 multivariate time serie
 \label{fig:mafaulda-simulator}
 \end{figure}
 
-Observations were conducted on three cardinal axes simultaneously with 2 sets of accelerometers, each one associated with one bearing (inner and outer bearings)~(Fig.~\ref{fig:mafaulda-simulator}). Additionally, a magnetic speedometer produced a pulse on shaft turn. The cardioid condenser microphone recorded sound emissions at a frequency range 20~Hz - 20~kHz. Sensors were fed into a four-channel dynamic signal acquisition module. 
+Observations were conducted on three cardinal axes simultaneously with 2 sets of accelerometers, each one associated with one bearing (inner and outer bearings)~(Fig.~\ref{fig:mafaulda-simulator}). Additionally, a magnetic speedometer produced a pulse on shaft turn. The cardioid condenser microphone recorded sound emissions at a frequency range 20~Hz - 20~kHz. Sensors were fed into a four-channel dynamic signal acquisition module.
 
 Columns in the dataset are organized as depicted in table~\ref{tab:mafaulda-columns}. Machine rotational speeds were kept constant during a particular measurement, but covered a range from 737 to 3686~rpm with steps of approximately 60 rpm (equiv. 10~Hz - 60~Hz)~\cite{pestana-viana_influence_2016}. The maximal rotational frequency achieved with a high unbalance load is 3300 rpm.
 
@@ -690,9 +690,9 @@ This database contains normal operating conditions, faults out of unbalance, hor
 \begin{itemize}
 \itemsep0pt
 
-\item \textbf{Normal} conditions are baseline without the adverse effect of fault at 49 different rotation speeds. 
+\item \textbf{Normal} conditions are baseline without the adverse effect of fault at 49 different rotation speeds.
 
-\item \textbf{Unbalance} shaft time series uses 8 unbalancing weights from 6 to 35 grams and varying 45 - 49 speeds for each weight, adding to 333 mass unbalance loads. 
+\item \textbf{Unbalance} shaft time series uses 8 unbalancing weights from 6 to 35 grams and varying 45 - 49 speeds for each weight, adding to 333 mass unbalance loads.
 
 \item \textbf{Vertical misalignment} set comprises 50 signals each (or 51 in one instance) obtained under displacements: 0.51, 0.63, 1.40, 1.90, 1.27, 1.78 mm.
 
@@ -719,7 +719,7 @@ In Case Western Reserve University (CWRU) bearing dataset~\cite{cwru_dataset} re
 \label{fig:cwru-simulator}
 \end{figure}
 
-Single point defects were created with diameters of 0.007, 0.014, 0.021, 0.028, and 0.040 inches (equivalently 0.18, 0.36, 0.72, 1.02 mm). Fault locations on bearings are in the inner raceway, in the outer raceway directly and orthogonally relative to the load zone, and on rolling ball elements~(Fig.~\ref{fig:cwru-simulator})~\cite{jamil_feature-based_2021}. 
+Single point defects were created with diameters of 0.007, 0.014, 0.021, 0.028, and 0.040 inches (equivalently 0.18, 0.36, 0.72, 1.02 mm). Fault locations on bearings are in the inner raceway, in the outer raceway directly and orthogonally relative to the load zone, and on rolling ball elements~(Fig.~\ref{fig:cwru-simulator})~\cite{jamil_feature-based_2021}.
 
 \begin{table}[h]
 \centering
@@ -739,7 +739,7 @@ Single point defects were created with diameters of 0.007, 0.014, 0.021, 0.028, 
 The sampling frequency during baseline set, drive end, and fan end bearing capture is 12 kHz. For drive end bearings, samples were taken at 48 kHz. The duration of the time series varies from 5 to 40 seconds. Drive end and fan end bearing signals are measured in each experiment. Accelerometer was sometimes mounted on the supporting baseplate.
 
 \subsection{Unbalance of the rotating shaft}
-Unbalance Detection of a Rotating Shaft~\cite{unbalance_shaft} is a Kaggle dataset that simulates 4 different unbalance strengths. 
+Unbalance Detection of a Rotating Shaft~\cite{unbalance_shaft} is a Kaggle dataset that simulates 4 different unbalance strengths.
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.7\textwidth]{assets/analysis/rotating-shaft.jpg}
@@ -765,4 +765,4 @@ The setup is shown in Fig.~\ref{fig:rotating-shaft}. A mass of 3.28 grams (or 6.
 \end{table}
 
 The accelerometers used are piezoelectric and have a frequency range of up to 10 kHz, dynamic range of $\pm$490 $m/s^2$, and resolution step of 10.2~mV per $\mathrm{m/s}^2$. These sensor parameters are the same as in the case of MaFaulDa. In total, three different uniaxial accelerometers are mounted on the motor housing.
- 
+

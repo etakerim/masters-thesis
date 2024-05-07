@@ -2,7 +2,7 @@
 The verification of proposed solutions for machinery fault diagnostics is focused on two complementary activities, these are vibration measurement and defect identification. The accuracy of supervised learning using the k-nearest neighbour classifier is determined by the MaFaulDa dataset under various experiments. Data logger recording is compared to the known reference, and the collected Pump dataset is analyzed.
 
 \section{MaFaulDa in k-nearest neighbors}
-The four outlined experiments involve testing sets of features with very few members to see the effects in predictions when reducing the information content about machine status to the minimum. First, the attributes are left in the complete count after extraction. Then, all of their combinations are enumerated, and the resulting accuracy distribution is matched against accuracy after feature selection with similarity metrics. 
+The four outlined experiments on MaFaulDa involve testing sets of features with very few members to see the effects in predictions when reducing the information content about machine status to the minimum. First, the attributes are left in the complete count after extraction. Then, all of their combinations are enumerated, and the resulting accuracy distribution is matched against accuracy after feature selection with similarity metrics. 
 
 \subsection{Complete feature sets}
 The two full sets of features include ten extracted from time-domain and eleven from frequency-domain of the vibrations. The feature spaces can incorrectly interchange different fault labels and better separate out some groups than the others. 
@@ -379,50 +379,34 @@ Initial zero accuracy is caused by a warming-up period in data collection during
 
 The top accuracies after sequentially seeing samples in the longest tumbling windows of 100 observations are 75.71\% (TD), 76.98\% (FD), 76.98\% (TD severity), and 80.56\% (FD severity). The degradations in accuracy when compared to the batch model are by 9.76\% (TD), 10.54\% (FD), 14.73\% (TD severity), and 11.38\% (FD severity). The effect of severe performance hit could be attributed to unbalanced data based on the analysis chapter. The online multiclass oversampling method would need to be inserted into the pipeline to prove this hypothesis.
 
-Labeling every \nth{10} samples (to 10\% of the dataset) with a tumbling window of 10 samples reduces maximum accuracy for the three-predictor model compared to data points without gaps in labels. Time-domain features it is decreased by 9.9\% to 66.78\%, and by 14.93\% for frequency-domain features to 67.00\% (Fig.~\ref{fig:evaluation:label-skips-online}). More annotations can be scrapped in the case of a relabeled dataset where keeping just 0.02\% of the class labels produces a decrease by 13.7\% to 68.79\% for time domain attributes, and by 16.59\% to 66.25\% for frequency domain attributes.
+Labeling every \nth{10} sample (10\% of the dataset) with a tumbling window of 10 samples reduces maximum accuracy for the three-predictor model compared to data points without gaps in labels. Time-domain features it is decreased by 9.9\% to 66.78\%, and by 14.93\% for frequency-domain features to 67.00\% (Fig.~\ref{fig:evaluation:label-skips-online}). More annotations can be scrapped in the case of a relabeled dataset where keeping just 0.02\% of the class labels produces a decrease by 13.7\% to 68.79\% for time domain attributes, and by 16.59\% to 66.25\% for frequency domain attributes.
 
 
-%TODO
 \section{Industrial dataset analysis}
+The latter part of the solution evaluation focuses on signal properties of vibrations from air compressors, water pumps, and electric induction motors. At first, the accelerometer data logger functionality is tested, and its precision is checked up in the known situations. Our custom dataset is compiled from collected measurements during regular operations of machines. The behaviour of different machines is compared using static frequency estimation and a time-frequency spectrogram. The methodology is carried out to diagnose the current status of water pumps. The presence of fault is confronted with sensor logs from the pump vendor.
 
-\subsection{Data logger validation}
+\subsection{Data logger verification}
+Data logger capabilities were verified by capturing vibrations on the back of the plastic casing for the electric motor of the standing fan. The recording is able to run continuously for more than one minute without dropping any samples. The amplitude range after conversion is constrained in the expected range (Fig.~\ref{fig:evaluation:logger-waveform}). The same amplitudes were obtained previously on a proof-of-concept device using analog accelerometer ADXL335 on Beaglebone Black, albeit with lower sensitivity.
 
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/results/standing-fan/waveform.png}
         \caption{Time waveform}
+        \label{fig:evaluation:logger-waveform}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \includegraphics[width=\textwidth]{assets/results/standing-fan/standing-fan-accel.png}
         \caption{Estimation of rotation speed}
+        \label{fig:evaluation:logger-fan-speed}
     \end{subfigure}
-    \caption{Vibrations from the back of a standing fan in radial direction}
+    \caption{Vibrations from the back of a standing fan in the radial direction}
 \end{figure}
 
+Time waveform captures mostly regular patterns of oscillatory motion  (Fig.~\ref{fig:evaluation:logger-waveform}). At slower speeds, the vibrations are higher because the fan is less stable and wobbles around the support. Timestamps from the sensor calibrate the sampling frequency from the theoretical 26667 Hz to the actual 26866 Hz. The estimate of fan rotational speed (Fig.~\ref{fig:evaluation:logger-fan-speed}) is accurate within the margin of error.
 
-\subsection{Feature ranges}
-% Amplitude histograms - 20m/s^2, 40m/s^2, 150m/s^
-% Histograms of machinery measurements
-
-
-% Box plots of features
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-values/pumps-TD-dim-3.png}
-        \caption{Time-domain features}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/feature-values/pumps-FD-dim-3.png}
-        \caption{Frequency-domain features}
-    \end{subfigure}
-    \caption{Feature range in pumps}
-\end{figure}
-
-\subsection{Time-frequency waveforms}
+\subsection{Signal waveforms}
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.32\textwidth}
@@ -437,77 +421,37 @@ Labeling every \nth{10} samples (to 10\% of the dataset) with a tumbling window 
     \hfill
     \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{assets/results/eda/frequency-spectrum-compressors.png}
-        \caption{Compressor}
+        \caption{Compressors}
     \end{subfigure} 
-    \caption{Frequency domain}
+    \caption{Wideband frequency waveform of machinery vibartions in Pump dataset}
+    \label{fig:evaluation:wideband-frequencies}
 \end{figure}
 
+The overview of wideband vibration frequency spectra from various sensor placements shows clear distinctions among the machines. The recordings in Figure~\ref{fig:evaluation:wideband-frequencies} present consistent shapes of waveforms found during repeated trials. The spectra are Welch's average of 32768 long windows with 50\% overlap over minute of recording.
 
-% Time-frequency spectrum
+The electric motor signals are polluted by noise from the wind blowing out of a large cooling fan at the back of the motor. The M2 in place two compared to M1 has elevated amplitudes above 4 kHz. The pumps have richer signal content, likely due to the flow of water split into several frequency bands. The outer bearing (4) has a more attenuated amplitude above 1.5 kHz than the inner bearing (3). The P2 exhibits less vibration in comparable bands in general. The compressor casing produces a series of harmonics of rotational frequency, which are stronger near the scroll and suction valve than near the base.
 
-% Low frequencies (under 1KHz)
-
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/K3-z-STFT-1kHz.png}
-        \caption{K3}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/M1-2-z-STFT-1kHz.png}
-        \caption{M1-2}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P1-3-z-STFT-1kHz.png}
-        \caption{P1-3}
-    \end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P3-3-z-STFT-1kHz.png}
-        \caption{P3-3}
-    \end{subfigure}
-    \caption{Time frequency spectrum}
-\end{figure}
-
-
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P1-slow-down.png}
-        \caption{Pump P1 turns off}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P2-speed-up.png}
-        \caption{Pump P2 turn on}
-    \end{subfigure}
-\end{figure}
-
-\subsection{Bearing defect frequencies}
-% Domain expert analysis
-% Bearing frequencies table
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|r|r|r|}
 \hline
-\textbf{Placement}     & \multicolumn{1}{l|}{\textbf{Motor \#1}} & \multicolumn{1}{l|}{\textbf{Motor \#2}} & \multicolumn{1}{l|}{\textbf{Pump \#3 \& \#4}} \\ \hline
+\textbf{Placement}     & \multicolumn{1}{l|}{\textbf{M1}} & \multicolumn{1}{l|}{\textbf{M2}} & \multicolumn{1}{l|}{\textbf{P3, P4}} \\ \hline
 \textbf{Bearing}       & \multicolumn{1}{l|}{6319-C3}            & \multicolumn{1}{l|}{6324-C3}            & \multicolumn{1}{l|}{6317-2Z}                  \\ \hline
-\textbf{$n$}           & 8                                       & 8                                       & 8                                             \\ \hline
-\textbf{$f_s$}         & 1493                                    & 1493                                    & 1493                                          \\ \hline
-\textbf{$d$ {[}mm{]}}  & 33.12                                   & 41.28                                   & 30.00                                         \\ \hline
-\textbf{$D$ {[}mm{]}}  & 147.5                                   & 190.0                                   & 132.5                                         \\ \hline
-\textbf{$\beta$}       & 0                                       & 0                                       & 0                                             \\ \hline
+\textbf{Rolling elements $n$}           & 8                                       & 8                                       & 8                                             \\ \hline
+\textbf{Rotational speed $f_s$ {[}rpm{]}}         & 1493                                    & 1493                                    & 1493                                          \\ \hline
+\textbf{Inner diameter $d$ {[}mm{]}}  & 33.12                                   & 41.28                                   & 30.00                                         \\ \hline
+\textbf{Outer diameter$D$ {[}mm{]}}  & 147.5                                   & 190.0                                   & 132.5                                         \\ \hline
+\textbf{Contact angle $\beta$}       & 0                                       & 0                                       & 0                                             \\ \hline
 \textbf{RPM {[}Hz{]}}  & 24.88                                   & 24.88                                   & 24.88                                         \\ \hline
 \textbf{BPFO {[}Hz{]}} & 77.18                                   & 77.91                                   & 77.00                                         \\ \hline
 \textbf{BPFI {[}Hz{]}} & 121.88                                  & 121.16                                  & 122.07                                        \\ \hline
 \textbf{BSF {[}Hz{]}}  & 58.20                                   & 59.97                                   & 57.77                                         \\ \hline
 \textbf{FTF {[}Hz{]}}  & 9.65                                    & 9.74                                    & 9.63                                          \\ \hline
 \end{tabular}
+\caption{Bearing characteristic harmonic frequencies of pumps and their motors}
+\label{tab:evaluation:bearing-freq-pump}
 \end{table}
 
-% Bearing defect frequencies
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.24\textwidth}
@@ -528,12 +472,12 @@ Labeling every \nth{10} samples (to 10\% of the dataset) with a tumbling window 
         \includegraphics[width=\textwidth]{assets/results/defects/pumps-dB.png}
         \caption{Pumps dB}
     \end{subfigure}
+    \caption{Characteric bearing frequencies of pumps}
+    \label{fig:evaluation:bearing-freq}
 \end{figure}
 
+Domain experts recommended the procedure for fault identification by calculation of bearing characteristic frequencies (Tab.~\ref{tab:evaluation:bearing-freq-pump}), and then they approved the following results. Figure~\ref{fig:evaluation:bearing-freq} identifies harmonics of rotational speed and BPFO frequency in every machine and BPFI for M2-2. It can be assumed that those frequencies will be the reason for their damage in the future. The absolute acceleration is minuscule in current frequency bands and year-long sensor log of rms velocity (Fig~\ref{fig:evaluation:ksb-guard-rms-vibartions}).
 
-\subsection{Pump long-term monitoring}
-
-% Total vibration levels - challange - long-live span (5 years)
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
@@ -545,14 +489,70 @@ Labeling every \nth{10} samples (to 10\% of the dataset) with a tumbling window 
         \includegraphics[width=\textwidth]{assets/results/ksb-cloud/p2.png}
         \caption{Pump P2}
     \end{subfigure}
-    \caption{Vibration levels}
-\end{figure}
+    \caption{Vibration rms levels for a period over a year from KSB Guard}
+    \label{fig:evaluation:ksb-guard-rms-vibartions}
+\end{figure} 
 
-% Reverse engineer of spectra (low resolution)
+Therefore, the current results suggest that the bearings are in flawless condition. During the over five years the pump has been in service, there is not one instance of bearing fault due to rated lifespan and yearly prophylactic maintenance. This underscores the difficulty of the scarcity of non-faulty states in industrial environments. The monitoring is better suited for situations without preventive maintenance or with smaller machinery like the plunger pump BC~21/20S we considered during air conditioning inspections.
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{assets/results/ksb-cloud/spectrum.png}
-    \caption{Frequency spectrum}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/K3-z-STFT-1kHz.png}
+        \caption{C1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/M1-2-z-STFT-1kHz.png}
+        \caption{M1-2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P1-3-z-STFT-1kHz.png}
+        \caption{P1-3}
+    \end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P3-3-z-STFT-1kHz.png}
+        \caption{P3-3}
+    \end{subfigure}
+    \caption{Machinery vibration spectrograms ($f_s$ = 26.8~kHz, $w$ = 8~kS)}
+    \label{fig:evaluation:spectrograms}
+\end{figure}
+
+Spectrograms point out that under constant machine load, the significant frequencies stay more or less unchanged over time (Fig~\ref{fig:evaluation:spectrograms}). The resolution of the chart unit area is 306.95 ms and 3.26 Hz. Its magnitude is colored for decibel value. 
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P1-slow-down.png}
+        \caption{P1 turns off ($w$ = 4~kS)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/time-frequency-spectrum/P2-speed-up.png}
+        \caption{P2 turns on ($w$ = 32~kS)}
+        \label{fig:evaluation-sigma-pump-interference}
+    \end{subfigure}
+    \caption{Vibrations of water pumps during switch over ($f_s$ = 26.8~kHz)}
+    \label{fig:evaluation:pump-switch-over}
 \end{figure}
 
 
+The water pump switch on and off creates a fast change in shaft speed, which cannot be analyzed for resonance bands with enough time resolution by an automatic system at a chosen sampling rate. Due to inertia, slowing down takes about 10 seconds, whereas the speed up is half a second (Fig.~\ref{fig:evaluation:pump-switch-over}. The interference from excessive vibrations of the adjacent Sigma pump is picked up by the accelerometer on the KSB pump just before their switchover occurs (Fig~\ref{fig:evaluation-sigma-pump-interference}).
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/pumps-TD-dim-3.png}
+        \caption{Time-domain features}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{assets/results/feature-values/pumps-FD-dim-3.png}
+        \caption{Frequency-domain features}
+    \end{subfigure}
+    \caption{The atrribute value ranges of Pump dataset}
+\end{figure}
+
+The range of feature values for compressors and pumps are higher than in MaFaulDa despite most of them describing baseline status (Fig~\ref{fig:evaluation-sigma-pump-interference}). The increses can be seen for example on the interquartile range of rms (7.33 - 14.62 $\mathrm{m/s}^2$), centroid (3806 - 6003 Hz) or entropy (9.40 - 13.22 nats).
