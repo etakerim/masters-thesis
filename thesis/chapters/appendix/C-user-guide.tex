@@ -2,3 +2,59 @@
 \chapter{User Guide} \label{appendix:user-guide}
 \pagenumbering{arabic}
 \renewcommand*{\thepage}{C-\arabic{page}}
+
+\section{Installation guide}
+The development platform was Acer Aspire A515-47 laptop with Linux distribution \emph{Manjaro 23.1.4.} and kernel version 6.1. The installation process consists of getting the Python 3.11. packages for dataset analysis and development tools for building and flashing firmware for data logger. The paths are written relative to the root directory of the digital medium after unzipping.
+
+The dependencies for running Jupyter notebooks can be installed by simply executing the following command ideally under a Python virtual environment:
+\begin{lstlisting}[style=messages]
+$ pip install -r docs/requirements.txt
+\end{lstlisting}
+
+To run the Jupyter environment and view notebooks run:
+\begin{lstlisting}[style=messages]
+$ jupyter lab
+\end{lstlisting}
+
+Building and uploading firmware of the data logger demands the following to be installed:
+\begin{enumerate}
+\item {Install system prerequisites and download ESP-IDF:
+\begin{lstlisting}[style=messages]
+$ sudo pacman -S --needed gcc git make flex bison gperf python cmake ninja ccache dfu-util libusb
+$ mkdir -p ~/esp
+$ cd ~/esp
+$ git clone -b v5.2.1 --recursive https://github.com/espressif/esp-idf.git
+\end{lstlisting}}
+
+\item {Install the tools used by ESP-IDF which are compiler, debugger, etc:
+\begin{lstlisting}[style=messages]
+$ cd ~/esp/esp-idf
+$ ./install.sh esp32
+\end{lstlisting}}
+
+\item {
+Connect ESP32 microcontroller via USB and flash firmware onto the device:
+\begin{lstlisting}[style=messages]
+$ . ~/esp/esp-idf/esp-idf/export.sh
+$ cd firmware
+$ idf.py build
+$ idf.py -p /dev/ttyUSB0 flash
+\end{lstlisting}}
+
+\end{enumerate}
+
+
+\section{Data logger guide}
+To measure vibrations with a data logger follow these steps:
+
+\begin{enumerate}[noitemsep]
+\item insert empty microSD card to the data logger,
+\item attach the accelerometer sensor to the surface of measurement,
+\item press the button and watch the LED light up,
+\item when the light turns off sooner before the minute mark, the buffer was dropped, and the final file can be incomplete,
+\item wait until the LED turns off, the recording is saved to file numbered sequentially from \emph{1.tsv} upwards,
+\item {move files from microSD card to a separate directory e.g. \emph{abc} and run for conversion to tsv files:
+\begin{lstlisting}[style=messages]
+$ python bin2tsv.py abc 4
+\end{lstlisting}}
+\end{enumerate}
