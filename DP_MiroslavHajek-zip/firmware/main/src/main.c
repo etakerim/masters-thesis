@@ -1,26 +1,62 @@
 #include "pinout.h"
 
-// RTOS primitives
+/**
+ * @defgroup main Firmware Tasks
+ * @brief Main program of the firmware execution
+ *  @{
+ */
+
+/**
+ * @brief Task handler for notification of button press
+ */
 TaskHandle_t trigger_task;
+/**
+ * @brief Task handler for notification from sampling timer
+ */
 TaskHandle_t sampler_task;
+/**
+ * @brief Queue for sending samples from the sensor read task to the memory card write task
+ */
 QueueHandle_t samples;
 
-// HW device
+
+/**
+ * @brief SPI bus hanle
+ */
 spi_device_handle_t spi;
+/**
+ * @brief Accelerometer sensor device
+ */
 stmdev_ctx_t sensor;
+/**
+ * @brief SD memory card handle
+ */
 sdmmc_card_t *card = NULL;
 
-// File and its mutex
-SemaphoreHandle_t file_mutex;
-FILE *file = NULL;
 
-// Is recording flag
+/**
+ * @brief Currently opened file handle
+ */
+FILE *file = NULL;
+/**
+ * @brief Mutex to protect file handle
+ */
+SemaphoreHandle_t file_mutex;
+
+
+/**
+ * @brief Flag for active recording in progress
+ */
 bool is_recording = false;
-// Write only from read_accelerometer when sensor is enabled
+/**
+ * @brief Last seen accelerometer timestamp 
+ */
 int32_t sensor_timestamp = 0;
 
 
-// Sampler timer
+/**
+ * @brief Timer interrupt handler for reading samples from accelerometer
+ */
 static void isr_sample(void* args)
 {
     xTaskNotifyGive(sampler_task);
@@ -32,6 +68,9 @@ const esp_timer_create_args_t sampler_timer_conf = {
 esp_timer_handle_t sampler_timer;
 
 
+/**
+ * @brief Interrupt handler for button press
+ */
 static void IRAM_ATTR isr_switch(void *args)
 {
     BaseType_t higher_priority_woken = pdFALSE;
@@ -39,7 +78,9 @@ static void IRAM_ATTR isr_switch(void *args)
     portYIELD_FROM_ISR(higher_priority_woken);
 }
 
-// Stop timer
+/**
+ * @brief Action on stop recording
+ */
 static void stop_timer_run(void* args)
 {
     // Stop recording
@@ -66,13 +107,18 @@ static void stop_timer_run(void* args)
 }
 
 
-// Auto turn off timer
 const esp_timer_create_args_t stop_timer_conf = {
     .callback = &stop_timer_run
 };
+/**
+ * @brief Timer to stop recording after fixed amount of time
+ */
 esp_timer_handle_t stop_timer;
 
 
+/**
+ * @brief Task to start or stop recoding after siganl from button press
+ */
 void push_trigger(void *args)
 {
     char filename[MAX_FILENAME];
@@ -136,6 +182,10 @@ void push_trigger(void *args)
     }
 }
 
+
+/**
+ * @brief Task to read FIFO buffer of the accelerometer and write it to Queue
+ */
 void read_accelerometer(void *args)
 {
     Acceleration acc;
@@ -179,6 +229,9 @@ void read_accelerometer(void *args)
 }
 
 
+/**
+ * @brief Task to write accelerations vectors from Queue to the memory card
+ */
 void write_card(void *args)
 {
     Acceleration acc;
@@ -206,7 +259,9 @@ void write_card(void *args)
     }
 }
 
-
+/**
+ * @brief Entrypoint of firmware to setup hardware peripherals and run tasks
+ */
 void app_main(void)
 {
     file_mutex = xSemaphoreCreateMutex();
@@ -225,3 +280,5 @@ void app_main(void)
     xTaskCreatePinnedToCore(write_card, "write", 32000, NULL, 1, NULL, 1);
     xTaskCreatePinnedToCore(read_accelerometer, "read", 16000, NULL, 1, &sampler_task, 0);
 }
+
+/** @} */

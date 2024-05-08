@@ -318,13 +318,14 @@ def knn_online_learn(
         Y: pd.DataFrame,
         window_len: int = 1,
         learn_skip: int = 0,
-        clusters: int = False) -> pd.DataFrame:
+        clusters: int = False,
+        n_neighbors: int = 5) -> pd.DataFrame:
     # Buffer true samples for learning for later: simulate delayed annotation
     learning_window = []
 
     # Model consists of scaler to give approximately same weight to all features and kNN
     scaler = preprocessing.MinMaxScaler() 
-    knn = neighbors.KNNClassifier(n_neighbors=5)
+    knn = neighbors.KNNClassifier(n_neighbors=n_neighbors)
 
     scores = []                 # List of tuples with accuracy, precision and recall score on each iteration
     v_true = []                 # Append y true sample on each iteration

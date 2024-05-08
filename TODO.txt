@@ -3,4 +3,5 @@
 - [ ] Resume
 - [ ] Annotation fix
 - [ ] Abstract
-
+- [ ] Prezentácia na obhajobu
+Do 12.5.

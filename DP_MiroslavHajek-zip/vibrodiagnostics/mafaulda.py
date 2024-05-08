@@ -62,7 +62,12 @@ FAULTS = {
 }
 
 
-def bearing_frequencies(rpm: int) -> Dict[str, float]: 
+def bearing_frequencies(rpm: int) -> Dict[str, float]:
+    """Calculate bearring characteristic frequencies for MaFaulDa machine simulator
+
+    :param rpm: Rotational speed of the machine
+    :return: Bearing defect frequencies
+    """
     machine = {}
     rpm /= 60
     machine['RPM'] = rpm
@@ -74,6 +79,11 @@ def bearing_frequencies(rpm: int) -> Dict[str, float]:
 
 
 def parse_filename(filename: str) -> Tuple[str, str, str]:
+    """Split path of file within dataset structure to label the time series
+
+    :param filename: path to file inside of zip archive 
+    :return: fault type, severity conditions, and file number
+    """
     path = filename.split('/')
 
     if path[0].strip() in ('overhang', 'underhang'):
@@ -91,6 +101,11 @@ def parse_filename(filename: str) -> Tuple[str, str, str]:
 
 
 def rpm_calc(tachometer: pd.Series) -> float:
+    """Extract rotational speed in rpm units from tachometer pulse signal
+
+    :param tachometer: tachometer signal
+    :return: rotational speed in rpm
+    """
     t = tachometer.index.to_numpy()
     y = tachometer.to_numpy()
     peaks, _ = find_peaks(y, prominence=3, width=50)
@@ -103,6 +118,14 @@ def lowpass_filter(
         cutoff: int = SAMPLING_RATE // 5,
         fs: int = SAMPLING_RATE,
         order: int = 5) -> pd.Series:
+    """Low-pass filter of n-th order the input signal at the cutoff frequency
+
+    :param data: input signal
+    :param cutoff: cutoff frequency
+    :param fs: sampling frequency in Hz of the input signal
+    :param order: steps of the fileter
+    :return: output signal after filtering
+    """
     
     b, a = butter(order, cutoff, fs=fs, btype='lowpass')
     y = lfilter(b, a, data.to_numpy())
@@ -113,12 +136,24 @@ def lowpass_filter_extract(
             dataframes: List[pd.DataFrame],
             columns: List[str]
         ) -> List[pd.DataFrame]:
+    """Apply low-pass to columns in multiple dataframes
+
+    :param dataframes: list of input datafrmaes to which filter is applied to
+    :param columns: columns that filter is applied to
+    :return: list of dataframes after filtering
+    """
     for df in dataframes:
         df[columns] = df[columns].apply(lowpass_filter)
     return dataframes
 
 
 def csv_import(dataset: ZipFile, filename: str) -> pd.DataFrame:
+    """Open a CSV file from MaFaulda zip archive
+
+    :param dataset: ZIP archive of MaFaulDa dataset
+    :param filename: path to the file within dataset
+    :return: dataframe of the imported file
+    """
     columns = COLUMNS
     ts = pd.read_csv(dataset.open(filename), names=columns)
     T = 1 / SAMPLING_RATE
@@ -141,7 +176,19 @@ def features_by_domain(
         parts: int = 1,
         multirow: bool = False) -> pd.DataFrame:
 
-    # print(f'Processing: {filename}')
+    """Open a CSV file from MaFaulda zip archive
+
+    :param features_calc: callback feature extraction function that 
+        has parameters for dataframe, column to process in dataframe,
+        sampling frequency, window length of segment
+    :param dataset: ZIP archive of MaFaulDa dataset
+    :param filename: path to the file within dataset
+    :param window: length of window (usually for FFT)
+    :param parts: number of parts the input time series is split into
+    :param multirow: extracted features are in rows, not in columns
+    :return: row(s) of features extracted from the file
+    """
+
     fs = SAMPLING_RATE
     columns = BEARINGS_COLUMNS
 
@@ -174,6 +221,12 @@ def features_by_domain(
 
 
 def get_classes(df: pd.DataFrame, bearing: str) -> pd.DataFrame:
+    """Create column "label" in dataframe according to chosen bearing
+
+    :param df: dataframe after feature extraction with column "fault"
+    :param bearing: bearing to determine labels of fault types ("A" or "B")
+    :return: dataframe with "label" column
+    """
     if not bearing:
         faults = [f for f in FAULTS.values()]
         faults = {k: v for d in faults for k, v in d.items()}
@@ -185,6 +238,11 @@ def get_classes(df: pd.DataFrame, bearing: str) -> pd.DataFrame:
 
 
 def clean_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Remove excessive columns with metadata and drop rows without label
+
+    :param df: dataframe with excess labels
+    :return: dataframe that consists of columns with features and "label"
+    """
     df = df.dropna()
     df = df.drop(columns=LABEL_COLUMNS + ['severity_class', 'severity_level', 'severity_no'], errors='ignore')
     df = df.reset_index(drop=True)
@@ -192,13 +250,29 @@ def clean_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def assign_labels(df: pd.DataFrame, bearing: str, keep: bool = False) -> pd.DataFrame:
+    """Assign labels to fault types for bearing and optionally clean up dataframe to 
+    contain only annotated rows with faults
+
+    :param df: dataframe after feature extraction with column "fault"
+    :param bearing: bearing to determine labels of fault types ("A" or "B")
+    :param keep: do not remove metadata columns
+    :return: annotated dataframe 
+    """
     df = get_classes(df, bearing)
     if not keep:
         df = clean_columns(df)
     return df
 
 
-def mark_severity(df: pd.DataFrame, bearing: str, debug: bool = False):
+def mark_severity(df: pd.DataFrame, bearing: str, debug: bool = False) -> pd.DataFrame:
+    """Calculate relative severity levels for dataframe with original metadata columns
+
+    :param df: dataframe after feature extraction with column "fault" and "severity"
+    :param bearing: bearing to determine labels of fault types ("A" or "B")
+    :param debug: print relative severity levels
+    :return: dataframe with columns for absolute and relative fault severity levels
+    """
+
     df = get_classes(df, bearing)
     df = df.dropna()
     df = df.reset_index(drop=True)
@@ -230,7 +304,13 @@ def mark_severity(df: pd.DataFrame, bearing: str, debug: bool = False):
     return df
 
 
-def label_severity(df: pd.DataFrame, bearing: str, level: float, debug: bool = False, keep: bool = False) -> pd.DataFrame:
+def label_severity(
+            df: pd.DataFrame,
+            bearing: str,
+            level: float,
+            debug: bool = False,
+            keep: bool = False
+        ) -> pd.DataFrame:
     df = mark_severity(df, bearing, debug)
     df.loc[df['severity_level'] < level, 'label'] = 'normal'
     if not keep:

@@ -40,7 +40,6 @@ $ cd firmware
 $ idf.py build
 $ idf.py -p /dev/ttyUSB0 flash
 \end{lstlisting}}
-
 \end{enumerate}
 
 
@@ -57,4 +56,23 @@ To measure vibrations with a data logger follow these steps:
 \begin{lstlisting}[style=messages]
 $ python bin2tsv.py abc 4
 \end{lstlisting}}
+\end{enumerate}
+
+
+\section{Documentation guide}
+Built documentation is located in directory \emph{docs} of digital medium. It can be rebuild using documentation tools \emph{Doxygen} for firmware C source code and \emph{Sphinx} for data analysis Python code. The steps of generating documentation from souce codes are as follows:
+
+\begin{enumerate}[noitemsep]
+\item {install necessary documentation tools:
+\begin{lstlisting}[style=messages]
+$ sudo pacman -S doxygen
+$ pip install sphinx
+\end{lstlisting}}
+\item {rebuild the documentation using Doxygen and Sphinx:
+\begin{lstlisting}[style=messages]
+$ doxygen docs/firmware/doxygen.conf
+$ cd docs/vibrodiagnostics
+$ make html
+\end{lstlisting}}
+\item {View Doxygen docs in \emph{docs/firmware/html/topics.html} and Sphinx docs in \emph{docs/vibrodiagnostics/build/html/index.html}}
 \end{enumerate}

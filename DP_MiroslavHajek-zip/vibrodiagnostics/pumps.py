@@ -54,7 +54,6 @@ def features_by_domain(
         parts: int = None
     ):
 
-    # print(f'Processing: {filename}')
     fs = SAMPLING_RATE
     columns = BEARINGS_COLUMNS
 
@@ -87,7 +86,6 @@ def features_by_domain_no_metadata(
         parts: int = None
     ):
 
-    # print(f'Processing: {filename}')
     fs = SAMPLING_RATE
     columns = BEARINGS_COLUMNS
 

@@ -41,7 +41,7 @@ static esp_err_t spi_enable(spi_device_handle_t *spi_dev)
         .quadhd_io_num = -1,
         .max_transfer_sz = SENSOR_SPI_LENGTH
     };
-    err = spi_bus_initialize(SPI_BUS, &spi_bus, SPI_DMA_CH_AUTO); // SPI_DMA_DISABLED
+    err = spi_bus_initialize(SPI_BUS, &spi_bus, SPI_DMA_CH_AUTO);
     ESP_ERROR_CHECK(err);
     spi_device_interface_config_t spi_iface = {
         .clock_speed_hz=SPI_BUS_FREQUENCY,
@@ -80,10 +80,7 @@ int sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev)
     } while (rst);
 
     iis3dwb_block_data_update_set(dev, PROPERTY_ENABLE);
-
-    // Resolution: 4g
-    iis3dwb_xl_full_scale_set(dev, IIS3DWB_4g);
-    //iis3dwb_xl_full_scale_set(dev,  IIS3DWB_16g);
+    iis3dwb_xl_full_scale_set(dev, ACC_RESOLUTION);
 
     iis3dwb_fifo_watermark_set(dev, FIFO_WATERMARK);
     iis3dwb_fifo_xl_batch_set(dev, IIS3DWB_XL_BATCHED_AT_26k7Hz);

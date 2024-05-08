@@ -12,7 +12,7 @@
 sdmmc_card_t *storage_enable(const char *mount_point)
 {
     esp_vfs_fat_sdmmc_mount_config_t mount = {
-        .format_if_mount_failed = true,     // Set to false
+        .format_if_mount_failed = true,
         .max_files = 1,                     // Maximum number of opened files
         .allocation_unit_size = 16 * 1024   // Useful only for format
     };
