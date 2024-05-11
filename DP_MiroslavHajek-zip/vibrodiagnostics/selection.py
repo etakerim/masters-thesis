@@ -8,6 +8,8 @@ from scipy.stats import pointbiserialr
 
 
 class Correlation(stats.base.Bivariate):
+    """Online correlation to classes as dichotomous variables
+    """
 
     def __init__(self):
         self.labels = {}
@@ -31,6 +33,8 @@ class Correlation(stats.base.Bivariate):
 
 
 class FisherScore(stats.base.Bivariate):
+    """Online F statistic
+    """
 
     def __init__(self):
         self.mean_x = stats.Mean()
@@ -70,6 +74,8 @@ class FisherScore(stats.base.Bivariate):
 
 
 class MutualInformation(stats.base.Bivariate):
+    """Online Mutual information to binned labels
+    """
 
     def __init__(self):
         self.n = stats.Count()
@@ -116,7 +122,14 @@ class MutualInformation(stats.base.Bivariate):
         return score
 
 
-def corr_classif(X, y):
+def corr_classif(X: np.array, y: np.array) -> np.array:
+    """Calculate point-biserial correlations to features
+
+    :param X: matrix of features
+    :param y: labels of observations
+
+    :return: list of absolute value of correlations between classes and features
+    """
     X = pd.DataFrame(X)
     y_dummies = pd.get_dummies(y)
     scores = []

@@ -1,0 +1,116 @@
+\doxysubsection{Accelerometer Data logger}
+\hypertarget{group__datalogger}{}\label{group__datalogger}\index{Accelerometer Data logger@{Accelerometer Data logger}}
+
+
+Data flow control from the sensor to the memory card.  
+
+
+\doxysubsubsubsection*{Topics}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{group__sensor}{Accelerometer}}
+\begin{DoxyCompactList}\small\item\em Configuration of the accelerometer sensor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{group__storage}{Memory card}}
+\begin{DoxyCompactList}\small\item\em Filesystem operations of the SD card. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{group__button}{Button}}
+\begin{DoxyCompactList}\small\item\em Configuation of the recording button. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{group__led}{LED}}
+\begin{DoxyCompactList}\small\item\em Configuation of the indicator LED light. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{group__datalogger_gabe0ec333b60117063f9b9fd9f849cb08}\label{group__datalogger_gabe0ec333b60117063f9b9fd9f849cb08} 
+\#define {\bfseries MAX\+\_\+\+FILENAME}~256
+\begin{DoxyCompactList}\small\item\em Maximum length of the file name buffer. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_gaa085d60d609300a74cbf0b9aed796358}\label{group__datalogger_gaa085d60d609300a74cbf0b9aed796358} 
+\#define {\bfseries MOUNT\+\_\+\+POINT}~"{}/sd"{}
+\begin{DoxyCompactList}\small\item\em Directory in virtual file system (VFS) where micro\+SD card gets mounted. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga55d2d6d3e142179fde12db3235b28706}\label{group__datalogger_ga55d2d6d3e142179fde12db3235b28706} 
+\#define {\bfseries LOG\+\_\+\+FOLDER}~MOUNT\+\_\+\+POINT"{}/"{}
+\begin{DoxyCompactList}\small\item\em Path prefix of the directory where recordings are saved. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga3507cbe64443191d510ae7e093d37036}\label{group__datalogger_ga3507cbe64443191d510ae7e093d37036} 
+\#define {\bfseries NO\+\_\+\+WAIT}~10 / port\+TICK\+\_\+\+PERIOD\+\_\+\+MS
+\begin{DoxyCompactList}\small\item\em Minimal possible delay in milliseconds for using a synchronization primitive. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga89fca36db938a8ea9f4d82c6b8b7f053}\label{group__datalogger_ga89fca36db938a8ea9f4d82c6b8b7f053} 
+\#define {\bfseries SWITCH\+\_\+\+DEBOUNCE}~2000 / port\+TICK\+\_\+\+PERIOD\+\_\+\+MS
+\begin{DoxyCompactList}\small\item\em Period in milliseconds for which the button is disabled after the press to prevent the bouncing effect. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_gaf1e61d86b7a3eeca24be7bf31e0425cc}\label{group__datalogger_gaf1e61d86b7a3eeca24be7bf31e0425cc} 
+\#define {\bfseries CARD\+\_\+\+CLK\+\_\+\+PIN}~14
+\begin{DoxyCompactList}\small\item\em SD/\+MMC bus GPIO pin for CLK. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga53bd8075b5cff93003d075bfbf5be04a}\label{group__datalogger_ga53bd8075b5cff93003d075bfbf5be04a} 
+\#define {\bfseries CARD\+\_\+\+CMD\+\_\+\+PIN}~15
+\begin{DoxyCompactList}\small\item\em SD/\+MMC bus GPIO pin for CMD. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_gaff51dd2f233a4637cb10ac6ef51eb1b4}\label{group__datalogger_gaff51dd2f233a4637cb10ac6ef51eb1b4} 
+\#define {\bfseries CARD\+\_\+\+D0\+\_\+\+PIN}~2
+\begin{DoxyCompactList}\small\item\em SD/\+MMC bus GPIO pin for D0. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga56c3b62dd9b8045281b343e62880b0ca}\label{group__datalogger_ga56c3b62dd9b8045281b343e62880b0ca} 
+\#define {\bfseries RECORD\+\_\+\+SWITCH\+\_\+\+PIN}~34
+\begin{DoxyCompactList}\small\item\em GPIO pin for a button that starts and stops recording. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga63ef077ec9bea5b9b4bf1ea75170ab51}\label{group__datalogger_ga63ef077ec9bea5b9b4bf1ea75170ab51} 
+\#define {\bfseries RECORD\+\_\+\+LED\+\_\+\+PIN}~32
+\begin{DoxyCompactList}\small\item\em GPIO pin for the indicator LED. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga58d5dc1a48e87a9f69c3b9031fa887fb}\label{group__datalogger_ga58d5dc1a48e87a9f69c3b9031fa887fb} 
+\#define {\bfseries SENSOR\+\_\+\+MISO}~13
+\begin{DoxyCompactList}\small\item\em GPIO pin for accelerometer SPI Master In Slave Out. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_gaf3662b79560ba2a493a42be244ed3c8a}\label{group__datalogger_gaf3662b79560ba2a493a42be244ed3c8a} 
+\#define {\bfseries SENSOR\+\_\+\+MOSI}~16
+\begin{DoxyCompactList}\small\item\em GPIO pin for accelerometer SPI Master Out Slave In. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga33c8db114b90a3730e2c78abc505c6a5}\label{group__datalogger_ga33c8db114b90a3730e2c78abc505c6a5} 
+\#define {\bfseries SENSOR\+\_\+\+CLK}~4
+\begin{DoxyCompactList}\small\item\em GPIO pin for accelerometer SPI Clock. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_gab5c2fca97ed28557c495c7edc058653b}\label{group__datalogger_gab5c2fca97ed28557c495c7edc058653b} 
+\#define {\bfseries SENSOR\+\_\+\+CS}~5
+\begin{DoxyCompactList}\small\item\em GPIO pin for accelerometer SPI Chip Select. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga843d60b6b33b264cccf6adcfa5885c72}\label{group__datalogger_ga843d60b6b33b264cccf6adcfa5885c72} 
+\#define {\bfseries SENSOR\+\_\+\+INT1}~33
+\begin{DoxyCompactList}\small\item\em GPIO pin for accelerometer interrupt pin. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_gaebb434d5c5030f5655e4f74082c85bac}\label{group__datalogger_gaebb434d5c5030f5655e4f74082c85bac} 
+\#define {\bfseries SPI\+\_\+\+BUS\+\_\+\+FREQUENCY}~SPI\+\_\+\+MASTER\+\_\+\+FREQ\+\_\+8M
+\begin{DoxyCompactList}\small\item\em SPI master bus frequency. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_gaf759d6c69e76948f9933f3872d997adb}\label{group__datalogger_gaf759d6c69e76948f9933f3872d997adb} 
+\#define {\bfseries FIFO\+\_\+\+LENGTH}~512
+\begin{DoxyCompactList}\small\item\em Length of accelerometer FIFO buffer. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga47fb7049ab7d76ae664f360e90cfc680}\label{group__datalogger_ga47fb7049ab7d76ae664f360e90cfc680} 
+\#define {\bfseries FIFO\+\_\+\+WATERMARK}~\mbox{\hyperlink{group__datalogger_gaf759d6c69e76948f9933f3872d997adb}{FIFO\+\_\+\+LENGTH}} / 2
+\begin{DoxyCompactList}\small\item\em Half length of accelerometer FIFO buffer. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga5191aff7ba21d7863df87206a27d4013}\label{group__datalogger_ga5191aff7ba21d7863df87206a27d4013} 
+\#define {\bfseries NUM\+\_\+\+OF\+\_\+\+FIELDS}~4
+\begin{DoxyCompactList}\small\item\em Number of columns per acceleration vector. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga640ecdfbff5ebeda0889c24421c7688d}\label{group__datalogger_ga640ecdfbff5ebeda0889c24421c7688d} 
+\#define {\bfseries SENSOR\+\_\+\+SPI\+\_\+\+LENGTH}~\mbox{\hyperlink{group__datalogger_ga5191aff7ba21d7863df87206a27d4013}{NUM\+\_\+\+OF\+\_\+\+FIELDS}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{group__datalogger_gaf759d6c69e76948f9933f3872d997adb}{FIFO\+\_\+\+LENGTH}}
+\begin{DoxyCompactList}\small\item\em Length of buffer for SPI transaction. \end{DoxyCompactList}\item 
+\Hypertarget{group__datalogger_ga055729a37bf543876e2ce9d57b95ab7b}\label{group__datalogger_ga055729a37bf543876e2ce9d57b95ab7b} 
+\#define {\bfseries QUEUE\+\_\+\+LENGTH}~16
+\begin{DoxyCompactList}\small\item\em Number of FIFO buffers that can be pushed to Queue before file write. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group__datalogger_gae496e529dd495b07dfadcb591230220d}{panic}} (int delay)
+\begin{DoxyCompactList}\small\item\em Signal fatal error of system occuring by blinking indicator LED and halting execution. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsubsection{Detailed Description}
+Data flow control from the sensor to the memory card. 
+
+
+
+\doxysubsubsection{Function Documentation}
+\Hypertarget{group__datalogger_gae496e529dd495b07dfadcb591230220d}\label{group__datalogger_gae496e529dd495b07dfadcb591230220d} 
+\index{Accelerometer Data logger@{Accelerometer Data logger}!panic@{panic}}
+\index{panic@{panic}!Accelerometer Data logger@{Accelerometer Data logger}}
+\doxyparagraph{\texorpdfstring{panic()}{panic()}}
+{\footnotesize\ttfamily void panic (\begin{DoxyParamCaption}\item[{int}]{delay }\end{DoxyParamCaption})}
+
+
+
+Signal fatal error of system occuring by blinking indicator LED and halting execution. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em delay} & Interval in milliseconds for LED blink \\
+\hline
+\end{DoxyParams}
+\input{group__sensor}
+\input{group__storage}
+\input{group__button}
+\input{group__led}

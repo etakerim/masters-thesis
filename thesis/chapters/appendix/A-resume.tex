@@ -54,11 +54,19 @@ Cieľom tejto práce je poskytnúť odpovede na štyri výskumné otázky:
 \section{Návrh spracovania pre MaFaulDa}
 
 \section{Zber vibrácií v priemysle}
+Doteraz uplatnená metodika pre súbor údajov zaznamenaných v laboratóriu sa aplikuje na vibračných signáloch z priemyselného prostredia. Pri monitorovaní zužitkujeme mierne prispôsobený postup z noriem. Ten zahŕňa výber strojov určených na monitorovanie, identifikáciu pozícií na meranie podľa technických štandardov, predbežné merania a vývoj senzorovej jednotky.
+
+Na zber údajov boli vyčlenené dva špirálové kompresory ako súčasť klimatizačných jednotiek pre dátové centrum a tri čerpadlá s troma elektrometrami v prečerpávacej stanici na pitnú vodu. Dlhodobejšie merania uskutočníme vlastným vnoreným systémom na báze vývojovej dosky ESP32-PoE-ISO so slotom na SD kartu. Ako senzor vibrácii použijeme MEMS akcelerometer IIS3DWB. Vyznačuje sa vysokou šírkou pásma až 6.3 kHz, nízkym šumom, a vysokou výstupným dátovým tokom 26.7 kHz cez SPI zbernicu.
 
 \section{Vyhodnotenie presnosti diagnostiky}
 
 \section{Rozbor dátovej sady z priemyslu}
 
 \section{Záver}
+V diplomovej práci sme sa zamerali na výber trendových ukazovateľov pre riešenie monitorovania prevádzkového stavu a odhaľovanie porúch z vibračných signálov.  Extrahované premenné pochádzajú hlavne z popisných štatistík, z článkov o spracovaní zvukových signálov a technických noriem vibrodiagnostiky.
+
+Dosiahnuté stratové kompresné pomery pre MaFaulDa sú 2381:1 pre všetky atribúty a 25000:1 pre šesť atribútov. Výber atribútov metódou súčinu poradí zabezpečí väčšinou najlepšiu presnosť k-NN modelu oproti metrikám samostatne. Žiadny prístup však nedokázal nájsť trojicu prediktorov s presnosťou blízkou optimálnej, ktorá je až 98\%. Trénovanie k-NN na troch hlavných komponentoch prinieslo lepšiu presnosť ako výber atribútov. 
+
+Model postupného učenia k-NN dosahuje prinajlepšom 90\% presnosť s okamžitou spätnou väzbou, 85\% so značkami oneskorenými o 250 pozorovaní a 82\% s iba 25\% anotovaného súboru údajov. Porovnateľný model trénovaný v dávkach dosahuje presnosť 98\%.  
 
 \clearpage

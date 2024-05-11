@@ -1,4 +1,28 @@
 var searchData=
 [
-  ['queue_5flength_0',['QUEUE_LENGTH',['../group__datalogger.html#ga055729a37bf543876e2ce9d57b95ab7b',1,'pinout.h']]]
+  ['sample_5frate_0',['SAMPLE_RATE',['../group__sensor.html#ga4b76a0c2859cfd819a343a780070ee2b',1,'pinout.h']]],
+  ['sampler_5ftask_1',['sampler_task',['../group__main.html#ga768ac04522700fd0788f959b1c7510cb',1,'main.c']]],
+  ['sampler_5ftimer_2',['sampler_timer',['../group__main.html#ga5e17ddc2ef9d796aedaa59e618c49af1',1,'main.c']]],
+  ['samples_3',['samples',['../group__main.html#gaa6b473c01115f6c0fd05415b7ca3a287',1,'main.c']]],
+  ['sensor_4',['sensor',['../group__main.html#ga21408672a588f2b1db6f8f620eecbc59',1,'main.c']]],
+  ['sensor_5fclk_5',['SENSOR_CLK',['../group__datalogger.html#ga33c8db114b90a3730e2c78abc505c6a5',1,'pinout.h']]],
+  ['sensor_5fcs_6',['SENSOR_CS',['../group__datalogger.html#gab5c2fca97ed28557c495c7edc058653b',1,'pinout.h']]],
+  ['sensor_5fdisable_7',['sensor_disable',['../group__sensor.html#ga774ff5ef12bc72ef4d96e2ebef38d279',1,'sensor_disable(spi_device_handle_t spi_dev):&#160;sensor.c'],['../group__sensor.html#ga774ff5ef12bc72ef4d96e2ebef38d279',1,'sensor_disable(spi_device_handle_t spi_dev):&#160;sensor.c']]],
+  ['sensor_5fenable_8',['sensor_enable',['../group__sensor.html#ga844ea677736e4310ff9a9bee3935330a',1,'sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev):&#160;sensor.c'],['../group__sensor.html#ga844ea677736e4310ff9a9bee3935330a',1,'sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev):&#160;sensor.c']]],
+  ['sensor_5fevents_5fdisable_9',['sensor_events_disable',['../group__sensor.html#gafee0ba0827fd9f252c480faccdee0a97',1,'sensor_events_disable(stmdev_ctx_t *dev):&#160;sensor.c'],['../group__sensor.html#gafee0ba0827fd9f252c480faccdee0a97',1,'sensor_events_disable(stmdev_ctx_t *dev):&#160;sensor.c']]],
+  ['sensor_5fevents_5fenable_10',['sensor_events_enable',['../group__sensor.html#ga3a4369193c5acef70192d32950bd4db5',1,'sensor_events_enable(stmdev_ctx_t *dev):&#160;sensor.c'],['../group__sensor.html#ga3a4369193c5acef70192d32950bd4db5',1,'sensor_events_enable(stmdev_ctx_t *dev):&#160;sensor.c']]],
+  ['sensor_5fint1_11',['SENSOR_INT1',['../group__datalogger.html#ga843d60b6b33b264cccf6adcfa5885c72',1,'pinout.h']]],
+  ['sensor_5fmiso_12',['SENSOR_MISO',['../group__datalogger.html#ga58d5dc1a48e87a9f69c3b9031fa887fb',1,'pinout.h']]],
+  ['sensor_5fmosi_13',['SENSOR_MOSI',['../group__datalogger.html#gaf3662b79560ba2a493a42be244ed3c8a',1,'pinout.h']]],
+  ['sensor_5fspi_5flength_14',['SENSOR_SPI_LENGTH',['../group__datalogger.html#ga640ecdfbff5ebeda0889c24421c7688d',1,'pinout.h']]],
+  ['sensor_5ftimestamp_15',['sensor_timestamp',['../group__main.html#gad70a27ce9ba8cfa78153904f05e38c44',1,'main.c']]],
+  ['spi_16',['spi',['../group__main.html#gaf04b0de520c6e42f039c5edf47b13dc2',1,'main.c']]],
+  ['spi_5fbus_17',['SPI_BUS',['../group__sensor.html#gabc52a50e07f79a25a6de181238b9d9aa',1,'pinout.h']]],
+  ['spi_5fbus_5ffrequency_18',['SPI_BUS_FREQUENCY',['../group__datalogger.html#gaebb434d5c5030f5655e4f74082c85bac',1,'pinout.h']]],
+  ['stop_5ftimer_19',['stop_timer',['../group__main.html#gab1d567cca0836a894a9577ba45fac511',1,'main.c']]],
+  ['storage_5fdisable_20',['storage_disable',['../group__storage.html#ga29baf561c143b595123045253ab58f45',1,'storage_disable(sdmmc_card_t *card, const char *mount_point):&#160;storage.c'],['../group__storage.html#ga29baf561c143b595123045253ab58f45',1,'storage_disable(sdmmc_card_t *card, const char *mount_point):&#160;storage.c']]],
+  ['storage_5fenable_21',['storage_enable',['../group__storage.html#ga79585e9fc7f44b32f4e1a653de5bbe3d',1,'storage_enable(const char *mount_point):&#160;storage.c'],['../group__storage.html#ga79585e9fc7f44b32f4e1a653de5bbe3d',1,'storage_enable(const char *mount_point):&#160;storage.c']]],
+  ['switch_5fdebounce_22',['SWITCH_DEBOUNCE',['../group__datalogger.html#ga89fca36db938a8ea9f4d82c6b8b7f053',1,'pinout.h']]],
+  ['switch_5fdisable_23',['switch_disable',['../group__button.html#ga46afed7fc6e15a5c6d9475e46997b3da',1,'switch_disable(void):&#160;hid.c'],['../group__button.html#ga46afed7fc6e15a5c6d9475e46997b3da',1,'switch_disable(void):&#160;hid.c']]],
+  ['switch_5fenable_24',['switch_enable',['../group__button.html#ga6a537b9fc1207aed1c9c0a96b325f8c6',1,'switch_enable(bool on, gpio_isr_t isr_handler):&#160;hid.c'],['../group__button.html#ga6a537b9fc1207aed1c9c0a96b325f8c6',1,'switch_enable(bool on, gpio_isr_t isr_handler):&#160;hid.c']]]
 ];

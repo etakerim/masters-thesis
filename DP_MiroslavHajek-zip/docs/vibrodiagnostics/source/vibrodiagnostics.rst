@@ -1,76 +1,59 @@
-vibrodiagnostics package
+Vibrodiagnostics package
 ========================
 
-Submodules
-----------
 
-vibrodiagnostics.extraction module
+extraction module
 ----------------------------------
 
-.. automodule:: vibrodiagnostics.extraction
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. automodule:: extraction
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
+mafaulda module
+----------------------------------
 
-vibrodiagnostics.mafaulda module
---------------------------------
+.. automodule:: mafaulda
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-.. automodule:: vibrodiagnostics.mafaulda
-   :members:
-   :undoc-members:
-   :show-inheritance:
+models module
+----------------------------------
 
+.. automodule:: models
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-vibrodiagnostics.models module
-------------------------------
+pumps module
+----------------------------------
 
-.. automodule:: vibrodiagnostics.models
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. automodule:: pumps
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
+ranking module
+----------------------------------
 
-vibrodiagnostics.pumps module
------------------------------
+.. automodule:: ranking
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-.. automodule:: vibrodiagnostics.pumps
-   :members:
-   :undoc-members:
-   :show-inheritance:
+selection module
+----------------------------------
 
+.. automodule:: selection
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-vibrodiagnostics.ranking module
--------------------------------
+visualize module
+----------------------------------
 
-.. automodule:: vibrodiagnostics.ranking
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-vibrodiagnostics.selection module
----------------------------------
-
-.. automodule:: vibrodiagnostics.selection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-vibrodiagnostics.visualize module
----------------------------------
-
-.. automodule:: vibrodiagnostics.visualize
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: vibrodiagnostics
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. automodule:: visualize
+    :members:
+    :undoc-members:
+    :show-inheritance:

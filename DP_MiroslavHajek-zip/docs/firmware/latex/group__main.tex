@@ -1,0 +1,99 @@
+\doxysubsection{Firmware Tasks}
+\hypertarget{group__main}{}\label{group__main}\index{Firmware Tasks@{Firmware Tasks}}
+
+
+Main program of the firmware execution.  
+
+
+\doxysubsubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{group__main_ga0ec5d28752074ca54a70acc838f672e4}\label{group__main_ga0ec5d28752074ca54a70acc838f672e4} 
+void {\bfseries push\+\_\+trigger} (void \texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Task to start or stop recoding after siganl from button press. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_gac6ec22d4c97c0c96e99f3379d88cc6c0}\label{group__main_gac6ec22d4c97c0c96e99f3379d88cc6c0} 
+void {\bfseries read\+\_\+accelerometer} (void \texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Task to read FIFO buffer of the accelerometer and write it to Queue. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_gaeec34572dd8cb6da1ffaa4e74db0bca4}\label{group__main_gaeec34572dd8cb6da1ffaa4e74db0bca4} 
+void {\bfseries write\+\_\+card} (void \texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Task to write accelerations vectors from Queue to the memory card. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_ga630544a7f0a2cc40d8a7fefab7e2fe70}\label{group__main_ga630544a7f0a2cc40d8a7fefab7e2fe70} 
+void {\bfseries app\+\_\+main} (void)
+\begin{DoxyCompactList}\small\item\em Entrypoint of firmware to setup hardware peripherals and run tasks. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{group__main_ga4bfd79880585a6aa3c7110a75dc0c82a}\label{group__main_ga4bfd79880585a6aa3c7110a75dc0c82a} 
+Task\+Handle\+\_\+t {\bfseries trigger\+\_\+task}
+\begin{DoxyCompactList}\small\item\em Task handler for notification of button press. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_ga768ac04522700fd0788f959b1c7510cb}\label{group__main_ga768ac04522700fd0788f959b1c7510cb} 
+Task\+Handle\+\_\+t {\bfseries sampler\+\_\+task}
+\begin{DoxyCompactList}\small\item\em Task handler for notification from sampling timer. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_gaa6b473c01115f6c0fd05415b7ca3a287}\label{group__main_gaa6b473c01115f6c0fd05415b7ca3a287} 
+Queue\+Handle\+\_\+t {\bfseries samples}
+\begin{DoxyCompactList}\small\item\em Queue for sending samples from the sensor read task to the memory card write task. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_gaf04b0de520c6e42f039c5edf47b13dc2}\label{group__main_gaf04b0de520c6e42f039c5edf47b13dc2} 
+spi\+\_\+device\+\_\+handle\+\_\+t {\bfseries spi}
+\begin{DoxyCompactList}\small\item\em SPI bus handle. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_ga21408672a588f2b1db6f8f620eecbc59}\label{group__main_ga21408672a588f2b1db6f8f620eecbc59} 
+stmdev\+\_\+ctx\+\_\+t {\bfseries sensor}
+\begin{DoxyCompactList}\small\item\em Accelerometer sensor device. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_gad85cb86f6cbc94b88b09c3315c9028f1}\label{group__main_gad85cb86f6cbc94b88b09c3315c9028f1} 
+sdmmc\+\_\+card\+\_\+t \texorpdfstring{$\ast$}{*} {\bfseries card} = NULL
+\begin{DoxyCompactList}\small\item\em SD memory card handle. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_ga702945180aa732857b380a007a7e2a21}\label{group__main_ga702945180aa732857b380a007a7e2a21} 
+FILE \texorpdfstring{$\ast$}{*} {\bfseries file} = NULL
+\begin{DoxyCompactList}\small\item\em Currently opened file handle. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_ga94544252c41b06346dc45f70cbd48d63}\label{group__main_ga94544252c41b06346dc45f70cbd48d63} 
+Semaphore\+Handle\+\_\+t {\bfseries file\+\_\+mutex}
+\begin{DoxyCompactList}\small\item\em Mutex to protect file handle. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_gaf409115fcaa12619a90c9b581bafa64a}\label{group__main_gaf409115fcaa12619a90c9b581bafa64a} 
+bool {\bfseries is\+\_\+recording} = false
+\begin{DoxyCompactList}\small\item\em Flag for active recording in progress. \end{DoxyCompactList}\item 
+\Hypertarget{group__main_gad70a27ce9ba8cfa78153904f05e38c44}\label{group__main_gad70a27ce9ba8cfa78153904f05e38c44} 
+int32\+\_\+t {\bfseries sensor\+\_\+timestamp} = 0
+\begin{DoxyCompactList}\small\item\em Last seen accelerometer timestamp. \end{DoxyCompactList}\item 
+const esp\+\_\+timer\+\_\+create\+\_\+args\+\_\+t \mbox{\hyperlink{group__main_ga6bc19a77e2c149ca9b7e86d2ad25ef64}{sampler\+\_\+timer\+\_\+conf}}
+\item 
+\Hypertarget{group__main_ga5e17ddc2ef9d796aedaa59e618c49af1}\label{group__main_ga5e17ddc2ef9d796aedaa59e618c49af1} 
+esp\+\_\+timer\+\_\+handle\+\_\+t {\bfseries sampler\+\_\+timer}
+\begin{DoxyCompactList}\small\item\em Periodic timer to signal when to read FIFO buffer from accelerometer. \end{DoxyCompactList}\item 
+const esp\+\_\+timer\+\_\+create\+\_\+args\+\_\+t \mbox{\hyperlink{group__main_gacb077cf1ef581c961e7e5222a98f6897}{stop\+\_\+timer\+\_\+conf}}
+\item 
+\Hypertarget{group__main_gab1d567cca0836a894a9577ba45fac511}\label{group__main_gab1d567cca0836a894a9577ba45fac511} 
+esp\+\_\+timer\+\_\+handle\+\_\+t {\bfseries stop\+\_\+timer}
+\begin{DoxyCompactList}\small\item\em Timer to stop recording after fixed amount of time. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsubsection{Detailed Description}
+Main program of the firmware execution. 
+
+
+
+\doxysubsubsection{Variable Documentation}
+\Hypertarget{group__main_ga6bc19a77e2c149ca9b7e86d2ad25ef64}\label{group__main_ga6bc19a77e2c149ca9b7e86d2ad25ef64} 
+\index{Firmware Tasks@{Firmware Tasks}!sampler\_timer\_conf@{sampler\_timer\_conf}}
+\index{sampler\_timer\_conf@{sampler\_timer\_conf}!Firmware Tasks@{Firmware Tasks}}
+\doxyparagraph{\texorpdfstring{sampler\_timer\_conf}{sampler\_timer\_conf}}
+{\footnotesize\ttfamily const esp\+\_\+timer\+\_\+create\+\_\+args\+\_\+t sampler\+\_\+timer\+\_\+conf}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ .callback\ =\ \&isr\_sample}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\Hypertarget{group__main_gacb077cf1ef581c961e7e5222a98f6897}\label{group__main_gacb077cf1ef581c961e7e5222a98f6897} 
+\index{Firmware Tasks@{Firmware Tasks}!stop\_timer\_conf@{stop\_timer\_conf}}
+\index{stop\_timer\_conf@{stop\_timer\_conf}!Firmware Tasks@{Firmware Tasks}}
+\doxyparagraph{\texorpdfstring{stop\_timer\_conf}{stop\_timer\_conf}}
+{\footnotesize\ttfamily const esp\+\_\+timer\+\_\+create\+\_\+args\+\_\+t stop\+\_\+timer\+\_\+conf}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \{}
+\DoxyCodeLine{\ \ \ \ .callback\ =\ \&stop\_timer\_run}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}

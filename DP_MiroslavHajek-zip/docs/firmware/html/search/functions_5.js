@@ -1,4 +1,11 @@
 var searchData=
 [
-  ['read_5faccelerometer_0',['read_accelerometer',['../group__main.html#gac6ec22d4c97c0c96e99f3379d88cc6c0',1,'main.c']]]
+  ['sensor_5fdisable_0',['sensor_disable',['../group__sensor.html#ga774ff5ef12bc72ef4d96e2ebef38d279',1,'sensor_disable(spi_device_handle_t spi_dev):&#160;sensor.c'],['../group__sensor.html#ga774ff5ef12bc72ef4d96e2ebef38d279',1,'sensor_disable(spi_device_handle_t spi_dev):&#160;sensor.c']]],
+  ['sensor_5fenable_1',['sensor_enable',['../group__sensor.html#ga844ea677736e4310ff9a9bee3935330a',1,'sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev):&#160;sensor.c'],['../group__sensor.html#ga844ea677736e4310ff9a9bee3935330a',1,'sensor_enable(spi_device_handle_t *spi_dev, stmdev_ctx_t *dev):&#160;sensor.c']]],
+  ['sensor_5fevents_5fdisable_2',['sensor_events_disable',['../group__sensor.html#gafee0ba0827fd9f252c480faccdee0a97',1,'sensor_events_disable(stmdev_ctx_t *dev):&#160;sensor.c'],['../group__sensor.html#gafee0ba0827fd9f252c480faccdee0a97',1,'sensor_events_disable(stmdev_ctx_t *dev):&#160;sensor.c']]],
+  ['sensor_5fevents_5fenable_3',['sensor_events_enable',['../group__sensor.html#ga3a4369193c5acef70192d32950bd4db5',1,'sensor_events_enable(stmdev_ctx_t *dev):&#160;sensor.c'],['../group__sensor.html#ga3a4369193c5acef70192d32950bd4db5',1,'sensor_events_enable(stmdev_ctx_t *dev):&#160;sensor.c']]],
+  ['storage_5fdisable_4',['storage_disable',['../group__storage.html#ga29baf561c143b595123045253ab58f45',1,'storage_disable(sdmmc_card_t *card, const char *mount_point):&#160;storage.c'],['../group__storage.html#ga29baf561c143b595123045253ab58f45',1,'storage_disable(sdmmc_card_t *card, const char *mount_point):&#160;storage.c']]],
+  ['storage_5fenable_5',['storage_enable',['../group__storage.html#ga79585e9fc7f44b32f4e1a653de5bbe3d',1,'storage_enable(const char *mount_point):&#160;storage.c'],['../group__storage.html#ga79585e9fc7f44b32f4e1a653de5bbe3d',1,'storage_enable(const char *mount_point):&#160;storage.c']]],
+  ['switch_5fdisable_6',['switch_disable',['../group__button.html#ga46afed7fc6e15a5c6d9475e46997b3da',1,'switch_disable(void):&#160;hid.c'],['../group__button.html#ga46afed7fc6e15a5c6d9475e46997b3da',1,'switch_disable(void):&#160;hid.c']]],
+  ['switch_5fenable_7',['switch_enable',['../group__button.html#ga6a537b9fc1207aed1c9c0a96b325f8c6',1,'switch_enable(bool on, gpio_isr_t isr_handler):&#160;hid.c'],['../group__button.html#ga6a537b9fc1207aed1c9c0a96b325f8c6',1,'switch_enable(bool on, gpio_isr_t isr_handler):&#160;hid.c']]]
 ];

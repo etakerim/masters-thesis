@@ -1,0 +1,80 @@
+\doxysubsubsection{Memory card}
+\hypertarget{group__storage}{}\label{group__storage}\index{Memory card@{Memory card}}
+
+
+Filesystem operations of the SD card.  
+
+
+\doxysubsubsubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+sdmmc\+\_\+card\+\_\+t \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{group__storage_ga79585e9fc7f44b32f4e1a653de5bbe3d}{storage\+\_\+enable}} (const char \texorpdfstring{$\ast$}{*}mount\+\_\+point)
+\begin{DoxyCompactList}\small\item\em Configure SD/\+MMC bus and mount SD memory card to FAT filesystem. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__storage_ga29baf561c143b595123045253ab58f45}{storage\+\_\+disable}} (sdmmc\+\_\+card\+\_\+t \texorpdfstring{$\ast$}{*}\mbox{\hyperlink{group__main_gad85cb86f6cbc94b88b09c3315c9028f1}{card}}, const char \texorpdfstring{$\ast$}{*}mount\+\_\+point)
+\begin{DoxyCompactList}\small\item\em Disable and unmount SD memory card from FAT filesystem. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__storage_gae29b193e928219e1f41be6b1ac1abea5}{get\+\_\+recording\+\_\+filename}} (char \texorpdfstring{$\ast$}{*}filename, const char \texorpdfstring{$\ast$}{*}path)
+\begin{DoxyCompactList}\small\item\em Get file name for new recording with sequentially higher unused number. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsubsubsection{Detailed Description}
+Filesystem operations of the SD card. 
+
+
+
+\doxysubsubsubsection{Function Documentation}
+\Hypertarget{group__storage_gae29b193e928219e1f41be6b1ac1abea5}\label{group__storage_gae29b193e928219e1f41be6b1ac1abea5} 
+\index{Memory card@{Memory card}!get\_recording\_filename@{get\_recording\_filename}}
+\index{get\_recording\_filename@{get\_recording\_filename}!Memory card@{Memory card}}
+\doxyparagraph{\texorpdfstring{get\_recording\_filename()}{get\_recording\_filename()}}
+{\footnotesize\ttfamily void get\+\_\+recording\+\_\+filename (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{filename,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{path }\end{DoxyParamCaption})}
+
+
+
+Get file name for new recording with sequentially higher unused number. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ out}}  & {\em filename} & Available file name for new file \\
+\hline
+\mbox{\texttt{ in}}  & {\em path} & Base path prefix for saving the recording \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__storage_ga29baf561c143b595123045253ab58f45}\label{group__storage_ga29baf561c143b595123045253ab58f45} 
+\index{Memory card@{Memory card}!storage\_disable@{storage\_disable}}
+\index{storage\_disable@{storage\_disable}!Memory card@{Memory card}}
+\doxyparagraph{\texorpdfstring{storage\_disable()}{storage\_disable()}}
+{\footnotesize\ttfamily void storage\+\_\+disable (\begin{DoxyParamCaption}\item[{sdmmc\+\_\+card\+\_\+t \texorpdfstring{$\ast$}{*}}]{card,  }\item[{const char \texorpdfstring{$\ast$}{*}}]{mount\+\_\+point }\end{DoxyParamCaption})}
+
+
+
+Disable and unmount SD memory card from FAT filesystem. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em card} & SD/\+MMC card information structure \\
+\hline
+\mbox{\texttt{ in}}  & {\em mount\+\_\+point} & path where partition is registered\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+c 
+\end{DoxyReturn}
+\Hypertarget{group__storage_ga79585e9fc7f44b32f4e1a653de5bbe3d}\label{group__storage_ga79585e9fc7f44b32f4e1a653de5bbe3d} 
+\index{Memory card@{Memory card}!storage\_enable@{storage\_enable}}
+\index{storage\_enable@{storage\_enable}!Memory card@{Memory card}}
+\doxyparagraph{\texorpdfstring{storage\_enable()}{storage\_enable()}}
+{\footnotesize\ttfamily sdmmc\+\_\+card\+\_\+t \texorpdfstring{$\ast$}{*} storage\+\_\+enable (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{mount\+\_\+point }\end{DoxyParamCaption})}
+
+
+
+Configure SD/\+MMC bus and mount SD memory card to FAT filesystem. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em mount\+\_\+point} & path where the partition will be registered ~\newline
+\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+SD/\+MMC card information structure 
+\end{DoxyReturn}

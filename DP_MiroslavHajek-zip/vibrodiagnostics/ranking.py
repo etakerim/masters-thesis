@@ -28,6 +28,8 @@ from vibrodiagnostics import selection
 
 
 class ExperimentOutput(Enum):
+    """Types of experimental scenarios for feature selection techniques
+    """
     COUNTS = auto()
     BEST_SET = auto()
     RANKS = auto()
@@ -40,12 +42,25 @@ class ExperimentOutput(Enum):
 
 
 def silhouette_scores(
-        X_train: pd.DataFrame,
-        X_test: pd.DataFrame,
-        Y_train: pd.DataFrame,
-        Y_test: pd.DataFrame,
-        best_features: list,
-        pc: int) -> Dict[str, float]:
+            X_train: pd.DataFrame,
+            X_test: pd.DataFrame,
+            Y_train: pd.DataFrame,
+            Y_test: pd.DataFrame,
+            best_features: List[str],
+            pc: int
+        ) -> Dict[str, float]:
+    """Calculate silhouette score of data points after normalization
+    of training and testing set with and without the pricipal components analysis
+
+    :param X_train: data points of the training set
+    :param X_test: data points of the testing set
+    :param Y_train: labels for the training set
+    :param Y_test: labels for the testing set
+    :param best_features: list of chosen feature names
+    :param pc: number of principal components
+
+    :return: silhouette scores for data points
+    """
     Y_train = Y_train.reset_index(drop=True).astype('category')
     Y_test = Y_test.reset_index(drop=True).astype('category')
 
@@ -66,13 +81,36 @@ def silhouette_scores(
 
 
 def pca_explained_variances(X_train: pd.DataFrame, pc: int) -> Dict[str, float]:
+    """Explained variances of the principal components 
+
+    :param X_train: data points of the training set
+    :param pc: number of principal components
+
+    :return: dictionary of principal components and explained variances
+    """
     scaler = MinMaxScaler()
     X_train[X_train.columns] = scaler.fit_transform(X_train)
     model = PCA(n_components=pc).fit(X_train)    
-    return {f'PC{pc}': var for pc, var in enumerate(model.explained_variance_ratio_, start=1)}
+    return {
+        f'PC{pc}': var 
+        for pc, var in enumerate(model.explained_variance_ratio_, start=1)
+    }
 
 
-def batch_feature_ranking(X: pd.DataFrame, Y: pd.DataFrame, mode: str = 'rank') -> pd.DataFrame:
+def batch_feature_ranking(
+            X: pd.DataFrame,
+            Y: pd.Series,
+            mode: str = 'rank'
+        ) -> pd.DataFrame:
+    """Order features based on their importance
+
+    :param X: data frame that contains features
+    :param Y: labels for observations
+    :param mode: feature selection method,
+        options: "corr", "f_stat", "mi", "rank"
+
+    :return: Sorted features with their scores
+    """
     metric_ranks = pd.DataFrame()
     METRICS_OFFLINE = {
         'corr': selection.corr_classif, 
@@ -108,7 +146,20 @@ def batch_feature_ranking(X: pd.DataFrame, Y: pd.DataFrame, mode: str = 'rank') 
         return ranks.apply(gmean, axis=1).sort_values().to_frame(name='rank')
     
 
-def online_feature_ranking(X: pd.DataFrame, Y: pd.Series, mode: str = 'rank') -> pd.DataFrame:
+def online_feature_ranking(
+            X: pd.DataFrame,
+            Y: pd.Series,
+            mode: str = 'rank'
+        ) -> pd.DataFrame:
+    """Sort features by gradual process
+
+    :param X: data frame with sequence of events
+    :param Y: labels for observations
+    :param mode: feature selection method,
+        options: "corr", "f_stat", "mi", "rank"
+
+    :return: leaderboard of the features
+    """
     METRICS_ONLINE = {
         'corr': selection.Correlation, 
         'f_stat': selection.FisherScore,
@@ -155,6 +206,13 @@ def online_feature_ranking(X: pd.DataFrame, Y: pd.Series, mode: str = 'rank') ->
 
 
 def compute_correlations(X: pd.DataFrame, corr_above: float) -> Set[Tuple[str, str]]:
+    """Find pairs of features correlated more than the threshold 
+
+    :param X: data frame that contains features
+    :param corr_above: correlation threshold level
+
+    :return: pairs or correlated features
+    """
     corr = [
         {'feature_1': k[0], 'feature_2': k[1], 'corr': v}
         for k, v in X.corr().abs().stack().to_dict().items()
@@ -172,6 +230,14 @@ def compute_correlations(X: pd.DataFrame, corr_above: float) -> Set[Tuple[str, s
 
 
 def best_columns(ranks: pd.DataFrame, corr: Set[Tuple[str, str]], n: int) -> List[str]:
+    """Retain the best features that does not belong to correlated set
+
+    :param ranks: features with their scores
+    :param corr: set of pairs with high correlations
+    :param n: number of best features to keep
+
+    :return: list of best features
+    """
     columns = []
     for feature in ranks.index:
         # Make pairs with existing columns
@@ -189,6 +255,14 @@ def best_columns(ranks: pd.DataFrame, corr: Set[Tuple[str, str]], n: int) -> Lis
 
 
 def best_subset(ranks: pd.DataFrame, corr: Set[Tuple[str, str]], n: int) -> pd.DataFrame:
+    """Retain the best features
+
+    :param ranks: features with their scores
+    :param corr: set of pairs with high correlations
+    :param n: number of best features to keep
+
+    :return: best features
+    """
     columns = best_columns(ranks, corr, n)
     subset = ranks.copy()
     subset['rank'] = False

@@ -24,11 +24,16 @@ from vibrodiagnostics import extraction
 
 
 SAMPLING_RATE = 50000
+"""Sampling frequency in Hz of the sensors
+"""
 BEARING_A_COLUMNS = ['ax', 'ay', 'az']
 BEARING_B_COLUMNS = ['bx', 'by', 'bz']
 BEARINGS_COLUMNS = BEARING_A_COLUMNS + BEARING_B_COLUMNS
 COLUMNS = ['tachometer'] + BEARINGS_COLUMNS + ['mic']
 LABEL_COLUMNS = ['fault', 'severity', 'rpm']
+"""Metadata columns extracted from file path witin dataset
+"""
+
 
 BEARINGS = {
     'balls': 8,
@@ -39,6 +44,9 @@ BEARINGS = {
     'bsf_factor': 1.8710,
     'ftf_factor': 0.3750
 }
+"""Coeficients for bearing characteristic frequencies
+"""
+
 
 FAULTS = {
     'A': {
@@ -60,12 +68,15 @@ FAULTS = {
         'overhang-ball_fault': 'ball fault',
     }
 }
+"""Annotation of fault types by bearing placement
+"""
 
 
 def bearing_frequencies(rpm: int) -> Dict[str, float]:
-    """Calculate bearring characteristic frequencies for MaFaulDa machine simulator
+    """Calculate bearing characteristic frequencies for MaFaulDa machine simulator
 
     :param rpm: Rotational speed of the machine
+
     :return: Bearing defect frequencies
     """
     machine = {}
@@ -81,7 +92,8 @@ def bearing_frequencies(rpm: int) -> Dict[str, float]:
 def parse_filename(filename: str) -> Tuple[str, str, str]:
     """Split path of file within dataset structure to label the time series
 
-    :param filename: path to file inside of zip archive 
+    :param filename: path to file inside of zip archive
+
     :return: fault type, severity conditions, and file number
     """
     path = filename.split('/')
@@ -90,7 +102,7 @@ def parse_filename(filename: str) -> Tuple[str, str, str]:
         fault = f'{path[0]}-{path[1]}'
         severity = path[2]
         seq = path[3]
-    
+
     elif path[0].strip() == 'normal':
         fault, severity, seq = path[0], '0', path[1]
 
@@ -104,6 +116,7 @@ def rpm_calc(tachometer: pd.Series) -> float:
     """Extract rotational speed in rpm units from tachometer pulse signal
 
     :param tachometer: tachometer signal
+
     :return: rotational speed in rpm
     """
     t = tachometer.index.to_numpy()
@@ -123,10 +136,11 @@ def lowpass_filter(
     :param data: input signal
     :param cutoff: cutoff frequency
     :param fs: sampling frequency in Hz of the input signal
-    :param order: steps of the fileter
+    :param order: steps of the filter
+
     :return: output signal after filtering
     """
-    
+
     b, a = butter(order, cutoff, fs=fs, btype='lowpass')
     y = lfilter(b, a, data.to_numpy())
     return pd.Series(data=y, index=data.index)
@@ -136,11 +150,12 @@ def lowpass_filter_extract(
             dataframes: List[pd.DataFrame],
             columns: List[str]
         ) -> List[pd.DataFrame]:
-    """Apply low-pass to columns in multiple dataframes
+    """Apply low-pass to columns in multiple data frames
 
-    :param dataframes: list of input datafrmaes to which filter is applied to
+    :param data frames: list of input datafrmaes to which filter is applied to
     :param columns: columns that filter is applied to
-    :return: list of dataframes after filtering
+
+    :return: list of data frames after filtering
     """
     for df in dataframes:
         df[columns] = df[columns].apply(lowpass_filter)
@@ -152,7 +167,8 @@ def csv_import(dataset: ZipFile, filename: str) -> pd.DataFrame:
 
     :param dataset: ZIP archive of MaFaulDa dataset
     :param filename: path to the file within dataset
-    :return: dataframe of the imported file
+
+    :return: data frame of the imported file
     """
     columns = COLUMNS
     ts = pd.read_csv(dataset.open(filename), names=columns)
@@ -178,14 +194,15 @@ def features_by_domain(
 
     """Open a CSV file from MaFaulda zip archive
 
-    :param features_calc: callback feature extraction function that 
-        has parameters for dataframe, column to process in dataframe,
+    :param features_calc: callback feature extraction function that
+        has parameters for data frame, column to process in data frame,
         sampling frequency, window length of segment
     :param dataset: ZIP archive of MaFaulDa dataset
     :param filename: path to the file within dataset
     :param window: length of window (usually for FFT)
     :param parts: number of parts the input time series is split into
     :param multirow: extracted features are in rows, not in columns
+
     :return: row(s) of features extracted from the file
     """
 
@@ -215,17 +232,18 @@ def features_by_domain(
                     result.append(pd.DataFrame(row))
             else:
                 header.extend(features_calc(df, col, fs, window))
-                result.append(pd.DataFrame(dict(header))) 
+                result.append(pd.DataFrame(dict(header)))
 
     return pd.concat(result).reset_index(drop=True)
 
 
 def get_classes(df: pd.DataFrame, bearing: str) -> pd.DataFrame:
-    """Create column "label" in dataframe according to chosen bearing
+    """Create column "label" in data frame according to chosen bearing
 
-    :param df: dataframe after feature extraction with column "fault"
+    :param df: data frame after feature extraction with column "fault"
     :param bearing: bearing to determine labels of fault types ("A" or "B")
-    :return: dataframe with "label" column
+
+    :return: data frame with "label" column
     """
     if not bearing:
         faults = [f for f in FAULTS.values()]
@@ -240,8 +258,9 @@ def get_classes(df: pd.DataFrame, bearing: str) -> pd.DataFrame:
 def clean_columns(df: pd.DataFrame) -> pd.DataFrame:
     """Remove excessive columns with metadata and drop rows without label
 
-    :param df: dataframe with excess labels
-    :return: dataframe that consists of columns with features and "label"
+    :param df: data frame with excess labels
+
+    :return: data frame that consists of columns with features and "label"
     """
     df = df.dropna()
     df = df.drop(columns=LABEL_COLUMNS + ['severity_class', 'severity_level', 'severity_no'], errors='ignore')
@@ -250,13 +269,14 @@ def clean_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def assign_labels(df: pd.DataFrame, bearing: str, keep: bool = False) -> pd.DataFrame:
-    """Assign labels to fault types for bearing and optionally clean up dataframe to 
+    """Assign labels to fault types for bearing and optionally clean up data frame to
     contain only annotated rows with faults
 
-    :param df: dataframe after feature extraction with column "fault"
+    :param df: data frame after feature extraction with column "fault"
     :param bearing: bearing to determine labels of fault types ("A" or "B")
     :param keep: do not remove metadata columns
-    :return: annotated dataframe 
+
+    :return: annotated data frame
     """
     df = get_classes(df, bearing)
     if not keep:
@@ -265,12 +285,13 @@ def assign_labels(df: pd.DataFrame, bearing: str, keep: bool = False) -> pd.Data
 
 
 def mark_severity(df: pd.DataFrame, bearing: str, debug: bool = False) -> pd.DataFrame:
-    """Calculate relative severity levels for dataframe with original metadata columns
+    """Calculate relative severity levels for data frame with original metadata columns
 
-    :param df: dataframe after feature extraction with column "fault" and "severity"
+    :param df: data frame after feature extraction with column "fault" and "severity"
     :param bearing: bearing to determine labels of fault types ("A" or "B")
     :param debug: print relative severity levels
-    :return: dataframe with columns for absolute and relative fault severity levels
+
+    :return: data frame with columns for absolute and relative fault severity levels
     """
 
     df = get_classes(df, bearing)
@@ -281,7 +302,7 @@ def mark_severity(df: pd.DataFrame, bearing: str, debug: bool = False) -> pd.Dat
 
     for name, group in df.groupby(by=['label'], observed=True):
         group = group.sort_values(by='severity_no')
-                
+
         severities = group['severity_no'].astype('category').cat.codes.values.reshape(-1, 1)
         scale_severities = MinMaxScaler().fit_transform(severities)
 
@@ -292,7 +313,7 @@ def mark_severity(df: pd.DataFrame, bearing: str, debug: bool = False) -> pd.Dat
             sev_names = list(group['severity'].astype('category').cat.categories)
             sev = list(group['severity'].astype('category').cat.codes.astype('category').cat.categories)
             scale = [
-                float(f'{p:.2f}') 
+                float(f'{p:.2f}')
                 for p in pd.Series(scale_severities[:, 0]).astype('category').cat.categories
             ]
             print(
@@ -311,6 +332,15 @@ def label_severity(
             debug: bool = False,
             keep: bool = False
         ) -> pd.DataFrame:
+    """Relabel faults less than set relative severity level as "normal"
+
+    :param df: data frame after feature extraction with column "fault"
+    :param bearing: bearing to determine labels of fault types ("A" or "B")
+    :param debug: print relative severity levels
+    :param keep: do not remove metadata columns
+
+    :return: data frame with relabeled observations
+    """
     df = mark_severity(df, bearing, debug)
     df.loc[df['severity_level'] < level, 'label'] = 'normal'
     if not keep:
@@ -319,6 +349,15 @@ def label_severity(
 
 
 def load_source(domain: str, row: dict, train_size: float = 0.8) -> tuple:
+    """Load features according to domain and split the observations
+    into training and testing set
+
+    :param domain: complete feature set ("TD", "FD")
+    :param row: parameters for data filtering, e.g.: {"placement": "A", online: False}
+    :param train_size: ratio of traing set to testing set
+
+    :return: X_train, X_test, Y_train, Y_test
+    """
     PATH = '../datasets/'
     FEATURES_PATH = os.path.join(PATH, 'features')
     MAFAULDA_TEMPORAL = os.path.join(FEATURES_PATH, 'MAFAULDA_TD.csv')
@@ -362,7 +401,7 @@ def load_source(domain: str, row: dict, train_size: float = 0.8) -> tuple:
 
         X_train, X_test, Y_train, Y_test = train_test_split(
             X, Y, train_size=train_size, random_state=10
-        )   
+        )
         X_train, X_test, Y_train, Y_test = (
             X_train.sort_index(), X_test.sort_index(),
             Y_train.sort_index(), Y_test.sort_index()
@@ -383,22 +422,3 @@ def load_source(domain: str, row: dict, train_size: float = 0.8) -> tuple:
         X_test[X_test.columns] = scaler.transform(X_test)
 
     return X_train, X_test, Y_train, Y_test
-
-
-def get_features_list(domain: str):
-    PATH = '../datasets/'
-    FEATURES_PATH = os.path.join(PATH, 'features')
-    MAFAULDA_TEMPORAL = os.path.join(FEATURES_PATH, 'MAFAULDA_TD.csv')
-    MAFAULDA_SPECTRAL = os.path.join(FEATURES_PATH, 'MAFAULDA_FD.csv')
-
-    domains = {
-        'TD': MAFAULDA_TEMPORAL,
-        'FD': MAFAULDA_SPECTRAL,
-    }
-    features = {}
-    for dname, dataset in domains.items():
-        names = pd.read_csv(dataset)
-        names = names.columns.str.extract(r'([a-z]{2})_([a-z\_\-]+)')[1].unique()
-        features[dname] = names
-
-    return features[domain]

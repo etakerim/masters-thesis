@@ -1,0 +1,31 @@
+\indexentry{Accelerometer Data logger@{Accelerometer Data logger}|hyperpage}{1}
+\indexentry{Accelerometer Data logger@{Accelerometer Data logger}!panic@{panic}|hyperpage}{2}
+\indexentry{panic@{panic}!Accelerometer Data logger@{Accelerometer Data logger}|hyperpage}{2}
+\indexentry{Accelerometer@{Accelerometer}|hyperpage}{2}
+\indexentry{Accelerometer@{Accelerometer}!sensor\_disable@{sensor\_disable}|hyperpage}{3}
+\indexentry{sensor\_disable@{sensor\_disable}!Accelerometer@{Accelerometer}|hyperpage}{3}
+\indexentry{Accelerometer@{Accelerometer}!sensor\_enable@{sensor\_enable}|hyperpage}{3}
+\indexentry{sensor\_enable@{sensor\_enable}!Accelerometer@{Accelerometer}|hyperpage}{3}
+\indexentry{Accelerometer@{Accelerometer}!sensor\_events\_disable@{sensor\_events\_disable}|hyperpage}{4}
+\indexentry{sensor\_events\_disable@{sensor\_events\_disable}!Accelerometer@{Accelerometer}|hyperpage}{4}
+\indexentry{Accelerometer@{Accelerometer}!sensor\_events\_enable@{sensor\_events\_enable}|hyperpage}{4}
+\indexentry{sensor\_events\_enable@{sensor\_events\_enable}!Accelerometer@{Accelerometer}|hyperpage}{4}
+\indexentry{Memory card@{Memory card}|hyperpage}{4}
+\indexentry{Memory card@{Memory card}!get\_recording\_filename@{get\_recording\_filename}|hyperpage}{5}
+\indexentry{get\_recording\_filename@{get\_recording\_filename}!Memory card@{Memory card}|hyperpage}{5}
+\indexentry{Memory card@{Memory card}!storage\_disable@{storage\_disable}|hyperpage}{5}
+\indexentry{storage\_disable@{storage\_disable}!Memory card@{Memory card}|hyperpage}{5}
+\indexentry{Memory card@{Memory card}!storage\_enable@{storage\_enable}|hyperpage}{5}
+\indexentry{storage\_enable@{storage\_enable}!Memory card@{Memory card}|hyperpage}{5}
+\indexentry{Button@{Button}|hyperpage}{6}
+\indexentry{Button@{Button}!switch\_enable@{switch\_enable}|hyperpage}{6}
+\indexentry{switch\_enable@{switch\_enable}!Button@{Button}|hyperpage}{6}
+\indexentry{LED@{LED}|hyperpage}{6}
+\indexentry{LED@{LED}!led\_light@{led\_light}|hyperpage}{7}
+\indexentry{led\_light@{led\_light}!LED@{LED}|hyperpage}{7}
+\indexentry{Firmware Tasks@{Firmware Tasks}|hyperpage}{7}
+\indexentry{Firmware Tasks@{Firmware Tasks}!sampler\_timer\_conf@{sampler\_timer\_conf}|hyperpage}{8}
+\indexentry{sampler\_timer\_conf@{sampler\_timer\_conf}!Firmware Tasks@{Firmware Tasks}|hyperpage}{8}
+\indexentry{Firmware Tasks@{Firmware Tasks}!stop\_timer\_conf@{stop\_timer\_conf}|hyperpage}{8}
+\indexentry{stop\_timer\_conf@{stop\_timer\_conf}!Firmware Tasks@{Firmware Tasks}|hyperpage}{8}
+\indexentry{Acceleration@{Acceleration}|hyperpage}{8}

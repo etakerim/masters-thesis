@@ -1,0 +1,111 @@
+\doxysubsubsection{Accelerometer}
+\hypertarget{group__sensor}{}\label{group__sensor}\index{Accelerometer@{Accelerometer}}
+
+
+Configuration of the accelerometer sensor.  
+
+
+\doxysubsubsubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structAcceleration}{Acceleration}}
+\begin{DoxyCompactList}\small\item\em Unprocessed data packet for storing samples from accelerometer. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{group__sensor_ga4b76a0c2859cfd819a343a780070ee2b}\label{group__sensor_ga4b76a0c2859cfd819a343a780070ee2b} 
+\#define {\bfseries SAMPLE\+\_\+\+RATE}~9000
+\begin{DoxyCompactList}\small\item\em Interval of the periodic timer in milliseconds that reads out circa half of accelerometer FIFO. \end{DoxyCompactList}\item 
+\Hypertarget{group__sensor_gabc52a50e07f79a25a6de181238b9d9aa}\label{group__sensor_gabc52a50e07f79a25a6de181238b9d9aa} 
+\#define {\bfseries SPI\+\_\+\+BUS}~SPI3\+\_\+\+HOST
+\begin{DoxyCompactList}\small\item\em Hardware bus for accelerometer SPI interface. \end{DoxyCompactList}\item 
+\Hypertarget{group__sensor_ga0d440d9222595a142f2d3a4e9e69b11f}\label{group__sensor_ga0d440d9222595a142f2d3a4e9e69b11f} 
+\#define {\bfseries AUTO\+\_\+\+TURN\+\_\+\+OFF\+\_\+\+US}~60000000
+\begin{DoxyCompactList}\small\item\em Duration of recoding in microseconds (60 s) \end{DoxyCompactList}\item 
+\Hypertarget{group__sensor_gac637c5a9d90797796a32b29b70e3a691}\label{group__sensor_gac637c5a9d90797796a32b29b70e3a691} 
+\#define {\bfseries ACC\+\_\+\+RESOLUTION}~IIS3\+DWB\+\_\+4g
+\begin{DoxyCompactList}\small\item\em Resolution of the accelerometer in a unit of g. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{group__sensor_ga844ea677736e4310ff9a9bee3935330a}{sensor\+\_\+enable}} (spi\+\_\+device\+\_\+handle\+\_\+t \texorpdfstring{$\ast$}{*}spi\+\_\+dev, stmdev\+\_\+ctx\+\_\+t \texorpdfstring{$\ast$}{*}dev)
+\begin{DoxyCompactList}\small\item\em Configure SPI bus and set accelerometer to required parameters. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__sensor_ga774ff5ef12bc72ef4d96e2ebef38d279}{sensor\+\_\+disable}} (spi\+\_\+device\+\_\+handle\+\_\+t spi\+\_\+dev)
+\begin{DoxyCompactList}\small\item\em Remove accelerometer from the SPI bus and disable it. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__sensor_ga3a4369193c5acef70192d32950bd4db5}{sensor\+\_\+events\+\_\+enable}} (stmdev\+\_\+ctx\+\_\+t \texorpdfstring{$\ast$}{*}dev)
+\begin{DoxyCompactList}\small\item\em Enable accelerometer interrupts. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__sensor_gafee0ba0827fd9f252c480faccdee0a97}{sensor\+\_\+events\+\_\+disable}} (stmdev\+\_\+ctx\+\_\+t \texorpdfstring{$\ast$}{*}dev)
+\begin{DoxyCompactList}\small\item\em Disable accelerometer interrupts. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsubsubsection{Detailed Description}
+Configuration of the accelerometer sensor. 
+
+
+
+\doxysubsubsubsection{Function Documentation}
+\Hypertarget{group__sensor_ga774ff5ef12bc72ef4d96e2ebef38d279}\label{group__sensor_ga774ff5ef12bc72ef4d96e2ebef38d279} 
+\index{Accelerometer@{Accelerometer}!sensor\_disable@{sensor\_disable}}
+\index{sensor\_disable@{sensor\_disable}!Accelerometer@{Accelerometer}}
+\doxyparagraph{\texorpdfstring{sensor\_disable()}{sensor\_disable()}}
+{\footnotesize\ttfamily void sensor\+\_\+disable (\begin{DoxyParamCaption}\item[{spi\+\_\+device\+\_\+handle\+\_\+t}]{spi\+\_\+dev }\end{DoxyParamCaption})}
+
+
+
+Remove accelerometer from the SPI bus and disable it. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em spi\+\_\+dev} & SPI bus \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__sensor_ga844ea677736e4310ff9a9bee3935330a}\label{group__sensor_ga844ea677736e4310ff9a9bee3935330a} 
+\index{Accelerometer@{Accelerometer}!sensor\_enable@{sensor\_enable}}
+\index{sensor\_enable@{sensor\_enable}!Accelerometer@{Accelerometer}}
+\doxyparagraph{\texorpdfstring{sensor\_enable()}{sensor\_enable()}}
+{\footnotesize\ttfamily int sensor\+\_\+enable (\begin{DoxyParamCaption}\item[{spi\+\_\+device\+\_\+handle\+\_\+t \texorpdfstring{$\ast$}{*}}]{spi\+\_\+dev,  }\item[{stmdev\+\_\+ctx\+\_\+t \texorpdfstring{$\ast$}{*}}]{dev }\end{DoxyParamCaption})}
+
+
+
+Configure SPI bus and set accelerometer to required parameters. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em spi\+\_\+dev} & SPI bus \\
+\hline
+\mbox{\texttt{ in}}  & {\em dev} & Accelerometer sensor\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Status code of successful setup 
+\end{DoxyReturn}
+\Hypertarget{group__sensor_gafee0ba0827fd9f252c480faccdee0a97}\label{group__sensor_gafee0ba0827fd9f252c480faccdee0a97} 
+\index{Accelerometer@{Accelerometer}!sensor\_events\_disable@{sensor\_events\_disable}}
+\index{sensor\_events\_disable@{sensor\_events\_disable}!Accelerometer@{Accelerometer}}
+\doxyparagraph{\texorpdfstring{sensor\_events\_disable()}{sensor\_events\_disable()}}
+{\footnotesize\ttfamily void sensor\+\_\+events\+\_\+disable (\begin{DoxyParamCaption}\item[{stmdev\+\_\+ctx\+\_\+t \texorpdfstring{$\ast$}{*}}]{dev }\end{DoxyParamCaption})}
+
+
+
+Disable accelerometer interrupts. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & Accelerometer sensor \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__sensor_ga3a4369193c5acef70192d32950bd4db5}\label{group__sensor_ga3a4369193c5acef70192d32950bd4db5} 
+\index{Accelerometer@{Accelerometer}!sensor\_events\_enable@{sensor\_events\_enable}}
+\index{sensor\_events\_enable@{sensor\_events\_enable}!Accelerometer@{Accelerometer}}
+\doxyparagraph{\texorpdfstring{sensor\_events\_enable()}{sensor\_events\_enable()}}
+{\footnotesize\ttfamily void sensor\+\_\+events\+\_\+enable (\begin{DoxyParamCaption}\item[{stmdev\+\_\+ctx\+\_\+t \texorpdfstring{$\ast$}{*}}]{dev }\end{DoxyParamCaption})}
+
+
+
+Enable accelerometer interrupts. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em dev} & Accelerometer sensor \\
+\hline
+\end{DoxyParams}

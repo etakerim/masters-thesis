@@ -30,7 +30,13 @@ from river import preprocessing
 from river import neighbors, utils, evaluate, stream
 
 
-def transform_to_pca(X, n):
+def transform_to_pca(X: pd.DataFrame, n: int) -> pd.DataFrame:
+    """Transform features to their principal components after normalization
+
+    :param dataset: data frame with columns only for predictors
+    :param n: number of principal components
+    :return: data frames with rows of features replaced for principal components
+    """
     scaler = MinMaxScaler()
     X[X.columns] = scaler.fit_transform(X)
 
@@ -41,12 +47,21 @@ def transform_to_pca(X, n):
 
 
 def find_best_subset(
-        X: pd.DataFrame,
-        Y: pd.DataFrame,
-        metric: str,
-        members: int,
-        kfolds: int = 5
-    ):
+            X: pd.DataFrame,
+            Y: pd.Series,
+            metric: str,
+            members: int,
+            kfolds: int = 5
+        ) -> List[str]:
+    """Find the best subset of features based on supplied feature selection metric name
+
+    :param X: data frame of predictor features
+    :param Y: column of labels
+    :param metric: name of the bivariate similarity metric to compute for each feature and label
+    :param members: number of features in the subset
+    :param kfolds: number of splits for k-fold cross validation
+    :return: list of the best features according to feature selection metric
+    """
 
     kf = KFold(n_splits=kfolds, shuffle=True, random_state=10)
     elements = []
@@ -65,13 +80,30 @@ def find_best_subset(
 
 
 def kfold_accuracy(
-        X: pd.DataFrame,
-        Y: pd.DataFrame,
-        k_neighbors: int,
-        kfolds: int,
-        model_name: str, 
-        power_transform: bool = True,
-        knn_metric='euclidean') -> Dict[str, float]:
+            X: pd.DataFrame,
+            Y: pd.Series,
+            k_neighbors: int,
+            kfolds: int,
+            model_name: str = 'knn', 
+            power_transform: bool = True,
+            knn_metric='euclidean'
+        ) -> Dict[str, float]:
+
+    """Evaluate classifier accuracy in k-fold validation on a data frame of features after
+    oversampling to the majority class
+
+    :param X: data frame of predictor features
+    :param Y: column of labels
+    :param k_neighbors: number of neighbours for k-nearest neighbours model
+    :param model_name: name of the machine learning model to evaluate. 
+        Options are: "knn", "lda", "bayes", "svm"
+    :param kfolds: number of splits for k-fold cross-validation
+    :param power_transform: apply power transform of features in preprocessing instead 
+        of normalization
+    :param knn_metric: distance metric name for k-nearest neighbours model
+
+    :return: average accuracy of model over k-folds in training and testing sets
+    """
 
     # Class balancing
     oversample = RandomOverSampler(sampling_strategy='not majority', random_state=10)
@@ -122,19 +154,33 @@ def kfold_accuracy(
 
 
 def all_features(
-        X: pd.DataFrame,
-        Y: pd.DataFrame,
-        model: str = 'knn',
-        power_transform: bool = False,
-        k_neighbors: list = list(range(1, 40, 4)),
-        kfold_param: int = 5) -> dict:
+            X: pd.DataFrame,
+            Y: pd.Series,
+            model_name: str = 'knn',
+            power_transform: bool = False,
+            k_neighbors: list = list(range(1, 40, 4)),
+            kfolds: int = 5
+        ) -> Dict[str, float]:
+    """Evaluate complete feature sets in k-nearest neighbours classifier
+        with various k-value parameter
 
+    :param X: data frame of predictor features
+    :param Y: column of labels
+    :param model_name: name of the machine learning model to evaluate. 
+        Options are: "knn", "lda", "bayes", "svm"
+    :param power_transform: apply power transform of features in preprocessing instead 
+        of normalization
+    :param k_neighbors: number of neighbours for k-nearest neighbours model
+    :param kfolds: number of splits for k-fold cross-validation
+    
+    :return: training and testing accuracy for each value of k-neighbours
+    """
     train_accuracy = []
     test_accuracy = []
 
     for k in k_neighbors:
         accuracy = kfold_accuracy(
-            X, Y, k, kfold_param, model,
+            X, Y, k, kfolds, model_name,
             power_transform=power_transform
         )
         train_accuracy.append(accuracy['train'])
@@ -148,15 +194,30 @@ def all_features(
 
 
 def feature_combinations(
-        X: pd.DataFrame,
-        Y: pd.DataFrame,
-        k_neighbors: int,
-        num_of_features: int,
-        kfolds: int,
-        domain: str,
-        model: str,
-        power_transform: bool = False) -> List[dict]:
+            X: pd.DataFrame,
+            Y: pd.DataFrame,
+            k_neighbors: int,
+            num_of_features: int,
+            kfolds: int,
+            domain: str,
+            model: str,
+            power_transform: bool = False
+        ) -> List[dict]:
+    """Evaluate all combinations of feature subsets of given size out of complete sets 
+
+    :param X: data frame of predictor features
+    :param Y: column of labels
+    :param k_neighbors: number of neighbours for k-nearest neighbours model
+    :param num_of_features: number of features in the subset
+    :param kfolds: number of splits for k-fold cross-validation
+    :param domain: source domain from which the features are extracted
+    :param model_: name of the machine learning model to evaluate. 
+        Options are: "knn", "lda", "bayes", "svm"
+    :param power_transform: apply power transform of features in preprocessing instead 
+        of normalization
     
+    :return: training and testing accuracy for each combination of features
+    """
     results = []
     for features in tqdm(list(itertools.combinations(X.columns, r=num_of_features))):
         r = kfold_accuracy(
@@ -174,15 +235,32 @@ def feature_combinations(
 
 
 def enumerate_models(
-        X: pd.DataFrame,
-        Y: pd.DataFrame,
-        domain: str,
-        k_neighbors: Tuple[int] = (3, 5, 11, 15),
-        num_of_features: Tuple[int] = (2, 3, 4, 5), 
-        kfolds=5,
-        power_transform: bool = False,
-        model='knn') -> pd.DataFrame:
+            X: pd.DataFrame,
+            Y: pd.DataFrame,
+            domain: str,
+            k_neighbors: Tuple[int] = (3, 5, 11, 15),
+            num_of_features: Tuple[int] = (2, 3, 4, 5), 
+            kfolds: int =5,
+            power_transform: bool = False,
+            model='knn'
+        ) -> pd.DataFrame:
+    """Grid search of parameters k-nearest neighbours classifier 
+    with feature subset combinations 
 
+    :param X: data frame of predictor features
+    :param Y: column of labels
+    :param domain: source domain from which the features are extracted ("TD" or "FD")
+    :param k_neighbors: neighbours for k-nearest neighbours model to search in
+    :param num_of_features: number of features in the subset to search in
+    :param kfolds: number of splits for k-fold cross-validation
+    :param power_transform: apply power transform of features in preprocessing instead 
+        of normalization
+    :param model: name of the machine learning model to evaluate. 
+        Options are: "knn", "lda", "bayes", "svm"
+    
+    :return: training and testing accuracy for each 
+        hyperparameter and feature set combination
+    """
     models = []
     for fnum in num_of_features:
         for k in k_neighbors:
@@ -196,10 +274,21 @@ def enumerate_models(
 
 
 def accuracies_to_table(
-        domain: str,
-        set: str,
-        distribution: pd.DataFrame,
-        accuracy: pd.DataFrame) -> dict:
+            domain: str,
+            set: str,
+            distribution: pd.DataFrame,
+            accuracy: pd.DataFrame
+        ) -> dict:
+    """Format accuracy to a row with meatadata about hyperparamater and compute
+    percentiles in the model accuracy distribution
+
+    :param domain: source domain from which the features are extracted ("TD" or "FD")
+    :param set: Title for the feature set or selection method
+    :param distribution: accuracy distribution of the model
+    :param accuracy: accuracy of the model in training and testing set
+
+    :return: formatted structure for row of accuracies and percentiles
+    """
 
     train_accuracy = accuracy['train']
     test_accuracy = accuracy['test']
@@ -216,13 +305,29 @@ def accuracies_to_table(
 
 
 def feature_selection_accuracies(
-        X: pd.DataFrame,
-        Y: pd.DataFrame,
-        domain: str,
-        models_summary: pd.DataFrame,
-        k_neighbors: int,
-        number_of_features: int,
-        power_transform: bool = False) -> Dict[str, int]:
+            X: pd.DataFrame,
+            Y: pd.DataFrame,
+            domain: str,
+            models_summary: pd.DataFrame,
+            k_neighbors: int,
+            number_of_features: int,
+            power_transform: bool = False
+        ) -> List[Dict[str, int]]:
+
+    """Apply feature selection methods and evaluate accuracies for chosen number
+    of neighbours and number of features
+
+    :param X: data frame of predictor features
+    :param Y: column of labels
+    :param domain: source domain from which the features are extracted ("TD" or "FD")
+    :params model_summary: accuracies from all feature subset combinations
+    :param k_neighbors: neighbours for k-nearest neighbours model
+    :param number_of_features: number of features in the subset
+    :param power_transform: apply power transform of features in preprocessing instead 
+        of normalization
+
+    :return: accuracies and percentiles for all tested feature selection methods
+    """
     
     MODEL_TYPE = 'knn'
     kfolds = 5
@@ -249,7 +354,7 @@ def feature_selection_accuracies(
         Y, k_neighbors, kfolds, MODEL_TYPE,
         power_transform=power_transform
     )
-    title = f'PCA PC'
+    title = 'PCA PC'
     r = accuracies_to_table(domain, title, accuracy_distribution, y_best)
     results.append(r)
 
@@ -258,7 +363,7 @@ def feature_selection_accuracies(
         .head(1)
         .to_dict('records')[0]
     )
-    title = f'Best features'
+    title = 'Best features'
     r = accuracies_to_table(domain, title, accuracy_distribution, y_best)
     r['features'] = y_best['features']
     results.append(r)
@@ -282,7 +387,26 @@ def feature_selection_accuracies(
     return results
 
 
-def model_boundaries(X, Y, n=5, model_name='knn', knn_metric='euclidean'):
+def model_boundaries(
+            X: pd.DataFrame,
+            Y: pd.DataFrame,
+            n: int = 5,
+            model_name: str = 'knn',
+            knn_metric: str = 'euclidean'
+        ):
+    """Train k-nearest neighbours classifier to be used in determining
+    its decision boundaries
+
+    :param X: data frame of predictor features
+    :param Y: column of labels
+    :param n: number of neighbours for k-nearest neighbours model
+    :param model_name: name of the machine learning model to evaluate. 
+        Options are: "knn", "lda", "bayes", "svm"
+    :param knn_metric: distance metric name for k-nearest neighbours model
+
+    :return: model fitted with training data of 80% from the original dataset
+    """
+
     # Class balancing
     oversample = RandomOverSampler(sampling_strategy='not majority', random_state=10)
     X, Y = oversample.fit_resample(X, Y.to_numpy())
@@ -309,17 +433,31 @@ def model_boundaries(X, Y, n=5, model_name='knn', knn_metric='euclidean'):
         model = LinearSVC()
 
     model.fit(x_train, y_train)
-
     return model
 
 
 def knn_online_learn(
-        X: pd.DataFrame,
-        Y: pd.DataFrame,
-        window_len: int = 1,
-        learn_skip: int = 0,
-        clusters: int = False,
-        n_neighbors: int = 5) -> pd.DataFrame:
+            X: pd.DataFrame,
+            Y: pd.DataFrame,
+            window_len: int = 1,
+            learn_skip: int = 0,
+            clusters: int = False,
+            n_neighbors: int = 5
+        ) -> pd.DataFrame:
+
+    """Progressive valuation of k-nearest neighbours classifier trained
+    with increamental learning 
+
+    :param X: data frame of predictor features
+    :param Y: column of labels
+    :param window_len: Length of the tumbling window
+    :param learn_skip: Gap of labeled observations in amount of samples 
+    :param clusters: return data points instead of valuation
+    :param n_neighbors: number of neighbours for k-nearest neighbours model
+
+    :return: performance of the model in progresive valuation over all generations
+    """
+
     # Buffer true samples for learning for later: simulate delayed annotation
     learning_window = []
 

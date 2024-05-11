@@ -1,3 +1,8 @@
+/**
+ * @file
+ * Application setup
+ */
+
 #include "pinout.h"
 
 /**
@@ -21,7 +26,7 @@ QueueHandle_t samples;
 
 
 /**
- * @brief SPI bus hanle
+ * @brief SPI bus handle
  */
 spi_device_handle_t spi;
 /**
@@ -65,6 +70,9 @@ static void isr_sample(void* args)
 const esp_timer_create_args_t sampler_timer_conf = {
         .callback = &isr_sample
 };
+/**
+ * @brief Periodic timer to signal when to read FIFO buffer from accelerometer
+ */
 esp_timer_handle_t sampler_timer;
 
 

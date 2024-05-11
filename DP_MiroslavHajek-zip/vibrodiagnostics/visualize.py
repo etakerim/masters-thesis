@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 import numpy as np
 import pandas as pd
 
@@ -22,10 +22,16 @@ DOMAIN_TITLES = {
     'FD': 'Frequency domain',
     'TD+FD': 'Time and Frequency domain'
 }
-
+"""
+Titles for signal source domain abbreviation
+"""
 
 
 def evolution_of_severity_levels(df: pd.DataFrame):
+    """Line chart of the amount of observations at relative severity levels
+
+    :param df: data frame with sorted "severity" level column 
+    """
     fig, ax = plt.subplots(1, 1, figsize=(10, 5))
     ax.plot(np.arange(0, len(df)), df['severity_level'], color='red')
     ax.set_xlabel('Observations')
@@ -34,7 +40,12 @@ def evolution_of_severity_levels(df: pd.DataFrame):
     plt.show()
 
 
-def plot_models_performance_bar(results: pd.DataFrame) -> pd.DataFrame:
+def plot_models_performance_bar(results: pd.DataFrame):
+    """Bar chart of feature selection accuracy comparison
+
+    :param results: training and testing accuracies of seven feature
+        selection methods in both source domains
+    """
     if len(results['domain'].unique()) == 1:
         fig, ax = plt.subplots(1, 1, figsize=(8, 6))
         ax = [ax]
@@ -68,9 +79,22 @@ def scatter_features_3d(
         Y: pd.DataFrame,
         features: list,
         size: tuple = (15, 5),
-        boundary=False,
-        model_name='knn',
+        boundary: bool = False,
+        model_name: str = 'knn',
         power_transform: bool = False):
+    """Scatter plot of data points in 3D feature space shown 
+    in planar cross-sections through coordinate axes 
+
+    :param X: data frame of features
+    :param Y: labels of observations
+    :param features: names of three features to display
+    :param size: figure size
+    :param boundary: show decision boundary for k-NN model with 5 neighbours
+    :param model_name: name of the machine learning model to evaluate. 
+        Options are: "knn", "lda", "bayes", "svm"
+    :param power_transform: apply power transform of features in preprocessing instead 
+        of normalization
+    """
 
     if power_transform is True:
         scaler = PowerTransformer(method='yeo-johnson', standardize=True)
@@ -131,9 +155,21 @@ def scatter_features_3d_plot(
         Y: pd.DataFrame,
         features: list,
         size: tuple = (8, 8),
-        model_name: str ='knn',
         boundary: bool = False,
+        model_name: str ='knn',
         power_transform: bool = False):
+    """Three dimensional scatter plot of data points in feature space
+
+    :param X: data frame of features
+    :param Y: labels of observations
+    :param features: names of three features to display
+    :param size: figure size
+    :param boundary: show decision boundary for k-NN model with 5 neighbours
+    :param model_name: name of the machine learning model to evaluate. 
+        Options are: "knn", "lda", "bayes", "svm"
+    :param power_transform: apply power transform of features in preprocessing instead 
+        of normalization
+    """
 
     if power_transform is True:
         scaler = PowerTransformer(method='yeo-johnson', standardize=True)
@@ -187,6 +223,16 @@ def project_classes(
         boundary: bool = False,
         model_name: str = 'knn',
         pc: int = None):
+    """Scatter plot of two principal components of data points in feature space
+
+    :param X: data frame of features
+    :param Y: labels of observations
+    :param size: figure size
+    :param boundary: show decision boundary for k-NN model with 5 neighbours
+    :param model_name: name of the machine learning model to evaluate. 
+        Options are: "knn", "lda", "bayes", "svm"
+    :param pc: number of principal components
+    """
 
     scaler = MinMaxScaler()
     X[X.columns] = scaler.fit_transform(X)
@@ -204,8 +250,6 @@ def project_classes(
     fig, ax = plt.subplots(1, 1, figsize=size)
 
     i, j = (0, 1) if pc is None else pc
-
-    # KNN model
     if boundary:
         h = .02
         model = models.model_boundaries(X_pca, Y.cat.codes, model_name=model_name)
@@ -239,7 +283,14 @@ def project_classes(
     plt.show()
 
 
-def project_classes_3d(X: pd.DataFrame, Y: pd.DataFrame, size=(15, 6)):
+def project_classes_3d(X: pd.DataFrame, Y: pd.DataFrame, size: tuple = (15, 6)):
+    """Scatter plot of three principal components of data points in feature space
+    shown in planar cross-sections through coordinate axes 
+
+    :param X: data frame of features
+    :param Y: labels of observations
+    :param size: figure size
+    """
     scaler = MinMaxScaler()
     X[X.columns] = scaler.fit_transform(X)
 
@@ -271,34 +322,14 @@ def project_classes_3d(X: pd.DataFrame, Y: pd.DataFrame, size=(15, 6)):
     plt.show()
 
 
-def cross_cuts_3d(X_train: pd.DataFrame, y_train: pd.DataFrame, ylim=None):
-    fig, ax = plt.subplots(1, 3, figsize=(20, 5))
-    labels = np.unique(y_train.to_numpy())
-    colors = sb.color_palette('hls', len(labels))
+def cross_cuts_3d_cluster(X_train: pd.DataFrame, cluster: str, title: str):
+    """Scatter plot of clusters in 3D feature space shown 
+    in planar cross-sections through coordinate axes 
 
-    for i, axes in enumerate(((0, 1), (0, 2), (1, 2))):
-        a, b = axes
-
-        for label, color in zip(labels, colors):
-            x = X_train.loc[
-                list(y_train[y_train == label].index), 
-                X_train.columns[a]
-            ]
-            y = X_train.loc[
-                list(y_train[y_train == label].index),
-                X_train.columns[b]
-            ]
-            ax[i].scatter(x, y, s=1, color=color, label=label)
-            if ylim is not None:
-                ax[i].set_ylim(ylim)
-            
-        ax[i].set_xlabel(X_train.columns[a])
-        ax[i].set_ylabel(X_train.columns[b])
-        ax[i].grid()
-        ax[i].legend()
-
-
-def cross_cuts_3d_cluster(X_train, cluster, title):
+    :param X_train: data frame of features
+    :param cluster: clusters that observations belong to
+    :param title: figure title
+    """
     df = X_train.copy()
     df['cluster'] = cluster
     df['cluster'] = df['cluster'].astype('category')
@@ -323,7 +354,20 @@ def cross_cuts_3d_cluster(X_train, cluster, title):
         ax[i].legend()
 
 
-def scatter_classif(X, y_label, categories, colors, ax):
+def scatter_classif(
+            X: pd.DataFrame,
+            y_label: pd.Series,
+            categories: List[str],
+            colors: List[str],
+            ax):
+    """Scatter plot of data points with color based on their labels
+
+    :param X: data frame of features
+    :param y_label: labels of observations
+    :param categories: list of unique clasess
+    :param colors: list of colors for clasess
+    :param ax: subplot axis
+    """
     for label, color in zip(categories, colors):
             rows = list(y_label[y_label == label].index)
             x = X.loc[rows, 0]
@@ -331,7 +375,14 @@ def scatter_classif(X, y_label, categories, colors, ax):
             ax.scatter(x, y, s=2, color=color, label=label)
 
 
-def project_classifier_map_plot(X, y_true, y_predict): 
+def project_classifier_map_plot(X: pd.DataFrame, y_true: pd.Series, y_predict: pd.Series):
+    """Scatter plots of two prinicipal components from data points that shows mistakes
+    in prediction versus true labels
+
+    :param X: data frame of features
+    :param y_true: true labels of observations
+    :param y_predict: predicted labels of observations
+    """
     y_true = y_true.astype('category') 
     y_predict = y_predict.astype('category')
 
@@ -342,7 +393,6 @@ def project_classifier_map_plot(X, y_true, y_predict):
     categories = y_true.cat.categories
     colors = sb.color_palette('hls', len(categories))
 
-    # Plot
     fig, ax = plt.subplots(1, 3, figsize=(20, 5))
 
     scatter_classif(X_pca, y_true, categories, colors, ax[0])
@@ -365,38 +415,13 @@ def project_classifier_map_plot(X, y_true, y_predict):
     return bad
 
 
-def project_anomaly_map_plot(X, y_true, y_score, threshold=7):
-    pca = PCA(n_components=2)
-    X_pca = pca.fit_transform(X)
-    X_pca = pd.DataFrame(X_pca)
-
-    y_true = y_true.astype('category')
-    categories = y_true.cat.categories
-    colors = sb.color_palette('hls', len(categories))
-
-    fig, ax = plt.subplots(1, 3, figsize=(20, 5))
-    scatter_classif(X_pca, y_true, categories, colors, ax[0])
-    anomaly_colors = sb.color_palette('Blues', 10).as_hex()
-    
-    scaler = MinMaxScaler(feature_range=(0, 9))
-    scores = scaler.fit_transform(y_score.reshape(-1, 1))
-    scores = scores.reshape(1, -1)[0]
-
-    for x, y, score in zip(X_pca[0], X_pca[1], scores):
-        ax[1].plot(x, y, '.', color=anomaly_colors[int(score)], markersize=2)
-
-    for x, y, score in zip(X_pca[0], X_pca[1], scores):
-        color = "red" if int(score) >= threshold else "green"
-        ax[2].plot(x, y, '.', color=color, markersize=2)
-    
-    for i in range(3):
-        ax[i].set_xlabel(f'PC1')
-        ax[i].set_ylabel(f'PC2')
-        ax[i].grid()
-        ax[i].legend()
-
-
 def plot_cumulative_explained_variance(td_variance: np.array, fd_variance: np.array):
+    """Line chart of relationship of number of principal components 
+    to total explained variance
+
+    :param td_variance: Explained variances for time-domain features
+    :param fd_variance: Explained variances for frequency-domain features
+    """
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.plot(
         np.arange(1, len(td_variance) + 1),
@@ -416,6 +441,14 @@ def plot_cumulative_explained_variance(td_variance: np.array, fd_variance: np.ar
 
 
 def loading_plot(loadings: list, feature_names: List[str], bottom: float, top: float):
+    """Loading plot of features
+
+    :param loadings: Relation of features to coordinates that are 
+        created by two principal components
+    :param feature_names: list of feature names corresponding to their loadings
+    :param bottom: lower limit of graph coordinates in x and y axes
+    :param top: upper limit of graph coordinates in x and y axes
+    """
     xs = loadings[0]
     ys = loadings[1]
 
@@ -439,10 +472,16 @@ def loading_plot(loadings: list, feature_names: List[str], bottom: float, top: f
     plt.ylim(bottom, top)
     plt.grid()
     plt.show()
-    
 
 
-def plot_all_knn(td_results: dict, fd_results: dict):
+def plot_all_knn(td_results: Dict[str, float], fd_results: Dict[str, float]):
+    """Line chart of relationship of k-value to k-NN classifier accuracy 
+
+    :param td_results: lists of k-values and accuracies for time-domain features
+        in training and testing set
+    :param fd_results: lists of k-values and accuracies for frquency-domain features
+        in training and testing set
+    """
     fig, ax = plt.subplots(1, 1, figsize=(8, 5))
     ax.plot(td_results['k'], td_results['train'], marker='x', color='darkblue', label='train - temporal')
     ax.plot(td_results['k'], td_results['test'], marker='x', color='blue', label='test - temporal')
@@ -450,7 +489,7 @@ def plot_all_knn(td_results: dict, fd_results: dict):
     ax.plot(fd_results['k'], fd_results['train'], marker='x', color='darkgreen', label='train - spectral')
     ax.plot(fd_results['k'], fd_results['test'], marker='x', color='green', label='test - spectral')
 
-    ax.set_ylabel(f'Accuracy')
+    ax.set_ylabel('Accuracy')
     ax.set_xlabel('K-neighbors')
     ax.set_xticks(td_results['k'])
     ax.grid(True)
@@ -458,20 +497,20 @@ def plot_all_knn(td_results: dict, fd_results: dict):
     plt.show()
 
 
-def plot_all_knn_simple(results: dict):
-    fig, ax = plt.subplots(1, 1, figsize=(8, 5))
-    ax.plot(results['k'], results['train'], marker='x', color='darkblue', label='training set')
-    ax.plot(results['k'], results['test'], marker='x', color='blue', label='testing set')
+def boxplot_enumerate_models_accuracy(
+        results: pd.DataFrame,
+        metric: str,
+        plots_col: str,
+        inplot_col: str):
+    """Boxplot of model accuracy distributions for various 
+        number of features or neighbours
 
-    ax.set_ylabel(f'Accuracy')
-    ax.set_xlabel('K-neighbors')
-    ax.set_xticks(results['k'])
-    ax.grid(True)
-    ax.legend()
-    plt.show()
-
-
-def boxplot_enumerate_models_accuracy(results: pd.DataFrame, metric, plots_col: str, inplot_col: str):
+    :param results: model accuracy distributions
+    :param metric: column of values to show in values for accuracy
+    :param plots_col: constant parameter for subplot ("f" or "k")
+    :param inplot_col: comparison of different values for the parameter 
+        within subplot ("f" or "k")
+    """
     for fnum, features in results.groupby(by=plots_col):
         if len(features['domain'].unique()) == 1:
             fig, ax = plt.subplots(1, 1, figsize=(5, 4))
@@ -511,7 +550,11 @@ def boxplot_enumerate_models_accuracy(results: pd.DataFrame, metric, plots_col: 
     plt.show()
 
 
-def plot_label_occurences(y):
+def plot_label_occurences(y: pd.Series):
+    """Line chart of counters for classes in incremental learning
+
+    :param y: sorted labels of observations
+    """
     observations = []
     columns = list(y.astype('category').cat.categories)
     empty = dict(zip(columns, len(columns) * [0]))
@@ -522,14 +565,10 @@ def plot_label_occurences(y):
         observations.append(sample)
 
     class_occurences = pd.DataFrame.from_records(observations).cumsum()
-    ax = class_occurences.plot(grid=True, figsize=(10, 5), xlabel='Observations', ylabel='Label occurences')
+    ax = class_occurences.plot(
+        grid=True,
+        figsize=(10, 5),
+        xlabel='Observations',
+        ylabel='Label occurences'
+    )
     return ax, class_occurences
-
-
-def plot_filter_response(b, a, title=''):
-    w, h = freqz(b, a, fs=50000)
-    fig, ax = plt.subplots()
-    ax.plot(w, 20 * np.log10(abs(h)), 'b')
-    ax.set_xlabel('Frequency [Hz]')
-    ax.set_ylabel('Amplitude [dB]')
-    ax.set_title(title)

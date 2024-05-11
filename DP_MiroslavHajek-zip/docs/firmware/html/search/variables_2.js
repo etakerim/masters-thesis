@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['handle_0',['handle',['../structstmdev__ctx__t.html#ac6505025bc53574ad09d46597f8475a6',1,'stmdev_ctx_t']]]
+  ['is_5frecording_0',['is_recording',['../group__main.html#gaf409115fcaa12619a90c9b581bafa64a',1,'main.c']]]
 ];

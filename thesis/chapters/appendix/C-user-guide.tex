@@ -42,17 +42,16 @@ $ idf.py -p /dev/ttyUSB0 flash
 \end{lstlisting}}
 \end{enumerate}
 
-
 \section{Data logger guide}
-To measure vibrations with a data logger follow these steps:
+To measure vibrations with a data logger follow these steps.
 
 \begin{enumerate}[noitemsep]
-\item insert empty microSD card to the data logger,
-\item attach the accelerometer sensor to the surface of measurement,
-\item press the button and watch the LED light up,
-\item when the light turns off sooner before the minute mark, the buffer was dropped, and the final file can be incomplete,
-\item wait until the LED turns off, the recording is saved to file numbered sequentially from \emph{1.tsv} upwards,
-\item {move files from microSD card to a separate directory e.g. \emph{abc} and run for conversion to tsv files:
+\item Insert empty microSD card to the data logger.
+\item Attach the accelerometer sensor to the surface of measurement.
+\item Press the button and watch the LED light up.
+\item When the light turns off sooner before the minute mark, the buffer was dropped, and the final file can be incomplete.
+\item Wait until the LED turns off, the recording is saved to file numbered sequentially from \emph{1.tsv} upwards.
+\item {Move files from microSD card to a separate directory e.g. \emph{abc} and run for conversion to tsv files:
 \begin{lstlisting}[style=messages]
 $ python bin2tsv.py abc 4
 \end{lstlisting}}
@@ -60,15 +59,15 @@ $ python bin2tsv.py abc 4
 
 
 \section{Documentation guide}
-Built documentation is located in directory \emph{docs} of digital medium. It can be rebuild using documentation tools \emph{Doxygen} for firmware C source code and \emph{Sphinx} for data analysis Python code. The steps of generating documentation from souce codes are as follows:
+Built documentation is located in directory \emph{docs} of the digital medium. It can be rebuild using documentation tools \emph{Doxygen} for firmware C source code and \emph{Sphinx} for data analysis Python code. The steps of generating documentation from souce codes are as follows.
 
 \begin{enumerate}[noitemsep]
-\item {install necessary documentation tools:
+\item {Install necessary documentation tools:
 \begin{lstlisting}[style=messages]
 $ sudo pacman -S doxygen
-$ pip install sphinx
+$ pip install sphinx sphinx-rtd-theme sphinx_autodoc_defaultargs
 \end{lstlisting}}
-\item {rebuild the documentation using Doxygen and Sphinx:
+\item {Rebuild the documentation using Doxygen and Sphinx:
 \begin{lstlisting}[style=messages]
 $ doxygen docs/firmware/doxygen.conf
 $ cd docs/vibrodiagnostics

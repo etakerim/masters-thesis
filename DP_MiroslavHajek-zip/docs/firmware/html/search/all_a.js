@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['no_5fwait_0',['NO_WAIT',['../group__datalogger.html#ga3507cbe64443191d510ae7e093d37036',1,'pinout.h']]],
-  ['num_5fof_5ffields_1',['NUM_OF_FIELDS',['../group__datalogger.html#ga5191aff7ba21d7863df87206a27d4013',1,'pinout.h']]]
+  ['panic_0',['panic',['../group__datalogger.html#gae496e529dd495b07dfadcb591230220d',1,'panic(int delay):&#160;hid.c'],['../group__datalogger.html#gae496e529dd495b07dfadcb591230220d',1,'panic(int delay):&#160;hid.c']]],
+  ['push_5ftrigger_1',['push_trigger',['../group__main.html#ga0ec5d28752074ca54a70acc838f672e4',1,'main.c']]]
 ];

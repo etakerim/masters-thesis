@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['mdelay_0',['mdelay',['../structstmdev__ctx__t.html#a83f67a90a785e471d4cd1c5a67a37a4c',1,'stmdev_ctx_t']]]
+  ['t_0',['t',['../structAcceleration.html#ab7a417b34f3fc19dc3ae14fa5ac4c0b6',1,'Acceleration']]],
+  ['trigger_5ftask_1',['trigger_task',['../group__main.html#ga4bfd79880585a6aa3c7110a75dc0c82a',1,'main.c']]]
 ];

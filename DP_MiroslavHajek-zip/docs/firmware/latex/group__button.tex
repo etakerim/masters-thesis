@@ -1,0 +1,40 @@
+\doxysubsubsection{Button}
+\hypertarget{group__button}{}\label{group__button}\index{Button@{Button}}
+
+
+Configuation of the recording button.  
+
+
+\doxysubsubsubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group__button_ga6a537b9fc1207aed1c9c0a96b325f8c6}{switch\+\_\+enable}} (bool on, gpio\+\_\+isr\+\_\+t isr\+\_\+handler)
+\begin{DoxyCompactList}\small\item\em Configure GPIO input pin and interrupt handler for button press. \end{DoxyCompactList}\item 
+\Hypertarget{group__button_ga46afed7fc6e15a5c6d9475e46997b3da}\label{group__button_ga46afed7fc6e15a5c6d9475e46997b3da} 
+void {\bfseries switch\+\_\+disable} (void)
+\begin{DoxyCompactList}\small\item\em Remove interrupt handler for button press. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsubsubsection{Detailed Description}
+Configuation of the recording button. 
+
+
+
+\doxysubsubsubsection{Function Documentation}
+\Hypertarget{group__button_ga6a537b9fc1207aed1c9c0a96b325f8c6}\label{group__button_ga6a537b9fc1207aed1c9c0a96b325f8c6} 
+\index{Button@{Button}!switch\_enable@{switch\_enable}}
+\index{switch\_enable@{switch\_enable}!Button@{Button}}
+\doxyparagraph{\texorpdfstring{switch\_enable()}{switch\_enable()}}
+{\footnotesize\ttfamily void switch\+\_\+enable (\begin{DoxyParamCaption}\item[{bool}]{on,  }\item[{gpio\+\_\+isr\+\_\+t}]{isr\+\_\+handler }\end{DoxyParamCaption})}
+
+
+
+Configure GPIO input pin and interrupt handler for button press. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em on} & decides whether the button is enabled or disabled \\
+\hline
+\mbox{\texttt{ in}}  & {\em isr\+\_\+handler} & handler function for button press in interrupt context \\
+\hline
+\end{DoxyParams}

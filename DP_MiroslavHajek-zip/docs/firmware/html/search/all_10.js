@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['t_0',['t',['../structAcceleration.html#ab7a417b34f3fc19dc3ae14fa5ac4c0b6',1,'Acceleration']]],
-  ['tasks_1',['Firmware Tasks',['../group__main.html',1,'']]],
-  ['trigger_5ftask_2',['trigger_task',['../group__main.html#ga4bfd79880585a6aa3c7110a75dc0c82a',1,'main.c']]],
-  ['types_3',['sensors common types',['../group__STMicroelectronics.html',1,'']]]
+  ['x_0',['x',['../structAcceleration.html#a4744bf8f88deaa5ae9f2e58ebb244dc7',1,'Acceleration']]]
 ];

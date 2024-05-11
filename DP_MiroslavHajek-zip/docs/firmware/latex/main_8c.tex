@@ -1,0 +1,49 @@
+\doxysubsection{firmware/main/src/main.c File Reference}
+\hypertarget{main_8c}{}\label{main_8c}\index{firmware/main/src/main.c@{firmware/main/src/main.c}}
+{\ttfamily \#include "{}pinout.\+h"{}}\newline
+\doxysubsubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries push\+\_\+trigger} (void \texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Task to start or stop recoding after siganl from button press. \end{DoxyCompactList}\item 
+void {\bfseries read\+\_\+accelerometer} (void \texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Task to read FIFO buffer of the accelerometer and write it to Queue. \end{DoxyCompactList}\item 
+void {\bfseries write\+\_\+card} (void \texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Task to write accelerations vectors from Queue to the memory card. \end{DoxyCompactList}\item 
+void {\bfseries app\+\_\+main} (void)
+\begin{DoxyCompactList}\small\item\em Entrypoint of firmware to setup hardware peripherals and run tasks. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+Task\+Handle\+\_\+t {\bfseries trigger\+\_\+task}
+\begin{DoxyCompactList}\small\item\em Task handler for notification of button press. \end{DoxyCompactList}\item 
+Task\+Handle\+\_\+t {\bfseries sampler\+\_\+task}
+\begin{DoxyCompactList}\small\item\em Task handler for notification from sampling timer. \end{DoxyCompactList}\item 
+Queue\+Handle\+\_\+t {\bfseries samples}
+\begin{DoxyCompactList}\small\item\em Queue for sending samples from the sensor read task to the memory card write task. \end{DoxyCompactList}\item 
+spi\+\_\+device\+\_\+handle\+\_\+t {\bfseries spi}
+\begin{DoxyCompactList}\small\item\em SPI bus handle. \end{DoxyCompactList}\item 
+stmdev\+\_\+ctx\+\_\+t {\bfseries sensor}
+\begin{DoxyCompactList}\small\item\em Accelerometer sensor device. \end{DoxyCompactList}\item 
+sdmmc\+\_\+card\+\_\+t \texorpdfstring{$\ast$}{*} {\bfseries card} = NULL
+\begin{DoxyCompactList}\small\item\em SD memory card handle. \end{DoxyCompactList}\item 
+FILE \texorpdfstring{$\ast$}{*} {\bfseries file} = NULL
+\begin{DoxyCompactList}\small\item\em Currently opened file handle. \end{DoxyCompactList}\item 
+Semaphore\+Handle\+\_\+t {\bfseries file\+\_\+mutex}
+\begin{DoxyCompactList}\small\item\em Mutex to protect file handle. \end{DoxyCompactList}\item 
+bool {\bfseries is\+\_\+recording} = false
+\begin{DoxyCompactList}\small\item\em Flag for active recording in progress. \end{DoxyCompactList}\item 
+int32\+\_\+t {\bfseries sensor\+\_\+timestamp} = 0
+\begin{DoxyCompactList}\small\item\em Last seen accelerometer timestamp. \end{DoxyCompactList}\item 
+const esp\+\_\+timer\+\_\+create\+\_\+args\+\_\+t \mbox{\hyperlink{group__main_ga6bc19a77e2c149ca9b7e86d2ad25ef64}{sampler\+\_\+timer\+\_\+conf}}
+\item 
+esp\+\_\+timer\+\_\+handle\+\_\+t {\bfseries sampler\+\_\+timer}
+\begin{DoxyCompactList}\small\item\em Periodic timer to signal when to read FIFO buffer from accelerometer. \end{DoxyCompactList}\item 
+const esp\+\_\+timer\+\_\+create\+\_\+args\+\_\+t \mbox{\hyperlink{group__main_gacb077cf1ef581c961e7e5222a98f6897}{stop\+\_\+timer\+\_\+conf}}
+\item 
+esp\+\_\+timer\+\_\+handle\+\_\+t {\bfseries stop\+\_\+timer}
+\begin{DoxyCompactList}\small\item\em Timer to stop recording after fixed amount of time. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsubsection{Detailed Description}
+Application setup 

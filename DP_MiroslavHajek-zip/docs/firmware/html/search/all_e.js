@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['read_5faccelerometer_0',['read_accelerometer',['../group__main.html#gac6ec22d4c97c0c96e99f3379d88cc6c0',1,'main.c']]],
-  ['record_5fled_5fpin_1',['RECORD_LED_PIN',['../group__datalogger.html#ga63ef077ec9bea5b9b4bf1ea75170ab51',1,'pinout.h']]],
-  ['record_5fswitch_5fpin_2',['RECORD_SWITCH_PIN',['../group__datalogger.html#ga56c3b62dd9b8045281b343e62880b0ca',1,'pinout.h']]]
+  ['t_0',['t',['../structAcceleration.html#ab7a417b34f3fc19dc3ae14fa5ac4c0b6',1,'Acceleration']]],
+  ['tasks_1',['Firmware Tasks',['../group__main.html',1,'']]],
+  ['trigger_5ftask_2',['trigger_task',['../group__main.html#ga4bfd79880585a6aa3c7110a75dc0c82a',1,'main.c']]]
 ];

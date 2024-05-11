@@ -15,10 +15,11 @@ sys.path.append(os.path.abspath(
     os.path.join(__file__, '../../../../vibrodiagnostics')
 ))
 
-project = 'Machinery vibrodiagnostics with the IIOT'
+project = 'vibrodiagnostics'
 copyright = '2024, Miroslav Hájek'
 author = 'Miroslav Hájek'
 release = '1.0'
+
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -28,14 +29,30 @@ extensions = [
     'sphinx.ext.autosummary',  # Create neat summary tables
 ]
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
+
 autodoc_typehints = 'description'
+
 
 templates_path = ['_templates']
 exclude_patterns = []
+
+latex_elements = {
+'papersize': 'a4paper',
+'pointsize': '10pt',
+'fontpkg': r"""
+\PassOptionsToPackage{bookmarksnumbered}{hyperref}
+""",
+# Additional stuff for the LaTeX preamble.
+'preamble': r"""
+\usepackage{setspace}
+""",
+
+'maketitle': "",
+}
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
