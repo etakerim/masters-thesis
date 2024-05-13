@@ -31,7 +31,7 @@ BEARING_B_COLUMNS = ['bx', 'by', 'bz']
 BEARINGS_COLUMNS = BEARING_A_COLUMNS + BEARING_B_COLUMNS
 COLUMNS = ['tachometer'] + BEARINGS_COLUMNS + ['mic']
 LABEL_COLUMNS = ['fault', 'severity', 'rpm']
-"""Metadata columns extracted from file path witin dataset
+"""Metadata columns extracted from file path within dataset
 """
 
 
@@ -44,7 +44,7 @@ BEARINGS = {
     'bsf_factor': 1.8710,
     'ftf_factor': 0.3750
 }
-"""Coeficients for bearing characteristic frequencies
+"""Coefficients for bearing characteristic frequencies
 """
 
 
@@ -150,7 +150,7 @@ def lowpass_filter_extract(
             dataframes: List[pd.DataFrame],
             columns: List[str]
         ) -> List[pd.DataFrame]:
-    """Apply low-pass to columns in multiple data frames
+    """Apply low-pass filter to columns in multiple data frames
 
     :param data frames: list of input datafrmaes to which filter is applied to
     :param columns: columns that filter is applied to
@@ -354,7 +354,7 @@ def load_source(domain: str, row: dict, train_size: float = 0.8) -> tuple:
 
     :param domain: complete feature set ("TD", "FD")
     :param row: parameters for data filtering, e.g.: {"placement": "A", online: False}
-    :param train_size: ratio of traing set to testing set
+    :param train_size: ratio of training set to testing set
 
     :return: X_train, X_test, Y_train, Y_test
     """

@@ -19,7 +19,7 @@ SAMPLING_RATE = 26866
 BEARINGS_COLUMNS = ['x', 'y', 'z']
 COLUMNS = ['t'] +  BEARINGS_COLUMNS
 LABEL_COLUMNS = ['date', 'device', 'position']
-"""Metadata columns extracted from file path witin dataset
+"""Metadata columns extracted from file path within dataset
 """
 G_CONSTANT = 9.80665
 
@@ -156,7 +156,7 @@ def get_classes(df: pd.DataFrame, labels: Dict[str, dict], keep: bool = False) -
 
 
 def assign_labels(df: pd.DataFrame) -> pd.DataFrame:
-    """Assign labels to fault types into "label" column based on meaurement placement
+    """Assign labels to fault types into "label" column based on measurement placement
 
     :param df: data frame after feature extraction with column "fault"
 

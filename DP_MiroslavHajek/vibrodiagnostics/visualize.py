@@ -30,7 +30,7 @@ Titles for signal source domain abbreviation
 def evolution_of_severity_levels(df: pd.DataFrame):
     """Line chart of the amount of observations at relative severity levels
 
-    :param df: data frame with sorted "severity" level column 
+    :param df: data frame with sorted "severity" level column
     """
     fig, ax = plt.subplots(1, 1, figsize=(10, 5))
     ax.plot(np.arange(0, len(df)), df['severity_level'], color='red')
@@ -82,17 +82,17 @@ def scatter_features_3d(
         boundary: bool = False,
         model_name: str = 'knn',
         power_transform: bool = False):
-    """Scatter plot of data points in 3D feature space shown 
-    in planar cross-sections through coordinate axes 
+    """Scatter plot of data points in 3D feature space shown
+    in planar cross-sections through coordinate axes
 
     :param X: data frame of features
     :param Y: labels of observations
     :param features: names of three features to display
     :param size: figure size
     :param boundary: show decision boundary for k-NN model with 5 neighbours
-    :param model_name: name of the machine learning model to evaluate. 
+    :param model_name: name of the machine learning model to evaluate.
         Options are: "knn", "lda", "bayes", "svm"
-    :param power_transform: apply power transform of features in preprocessing instead 
+    :param power_transform: apply power transform of features in preprocessing instead
         of normalization
     """
 
@@ -115,7 +115,7 @@ def scatter_features_3d(
         a, b = dims
         columns = [features[a], features[b]]
         p, q = X[columns[0]], X[columns[1]]
- 
+
         if boundary:
             h = .02
             model = models.model_boundaries(X[columns], Y.cat.codes, model_name=model_name)
@@ -165,9 +165,9 @@ def scatter_features_3d_plot(
     :param features: names of three features to display
     :param size: figure size
     :param boundary: show decision boundary for k-NN model with 5 neighbours
-    :param model_name: name of the machine learning model to evaluate. 
+    :param model_name: name of the machine learning model to evaluate.
         Options are: "knn", "lda", "bayes", "svm"
-    :param power_transform: apply power transform of features in preprocessing instead 
+    :param power_transform: apply power transform of features in preprocessing instead
         of normalization
     """
 
@@ -189,7 +189,7 @@ def scatter_features_3d_plot(
     model = models.model_boundaries(X_scaled[columns], Y, model_name=model_name)
     Y_predict = Y.to_frame('true')
     Y_predict['predict'] = pd.Series(model.predict(X_scaled[columns]))
-    
+
     Y_good = Y_predict.loc[Y_predict['true'] == Y_predict['predict']]
     X_good = X[X.index.isin(Y_good.index)]
     xs, ys, zs = X_good[columns[0]], X_good[columns[1]], X_good[columns[2]]
@@ -229,7 +229,7 @@ def project_classes(
     :param Y: labels of observations
     :param size: figure size
     :param boundary: show decision boundary for k-NN model with 5 neighbours
-    :param model_name: name of the machine learning model to evaluate. 
+    :param model_name: name of the machine learning model to evaluate.
         Options are: "knn", "lda", "bayes", "svm"
     :param pc: number of principal components
     """
@@ -285,7 +285,7 @@ def project_classes(
 
 def project_classes_3d(X: pd.DataFrame, Y: pd.DataFrame, size: tuple = (15, 6)):
     """Scatter plot of three principal components of data points in feature space
-    shown in planar cross-sections through coordinate axes 
+    shown in planar cross-sections through coordinate axes
 
     :param X: data frame of features
     :param Y: labels of observations
@@ -323,8 +323,8 @@ def project_classes_3d(X: pd.DataFrame, Y: pd.DataFrame, size: tuple = (15, 6)):
 
 
 def cross_cuts_3d_cluster(X_train: pd.DataFrame, cluster: str, title: str):
-    """Scatter plot of clusters in 3D feature space shown 
-    in planar cross-sections through coordinate axes 
+    """Scatter plot of clusters in 3D feature space shown
+    in planar cross-sections through coordinate axes
 
     :param X_train: data frame of features
     :param cluster: clusters that observations belong to
@@ -341,7 +341,7 @@ def cross_cuts_3d_cluster(X_train: pd.DataFrame, cluster: str, title: str):
 
     for i, axes in enumerate(((0, 1), (0, 2), (1, 2))):
         a, b = axes
-         
+
         for label, color in zip(categories, colors):
             rows = list(df[df['cluster'] == label].index)
             x = df.loc[rows, df.columns[a]]
@@ -376,14 +376,14 @@ def scatter_classif(
 
 
 def project_classifier_map_plot(X: pd.DataFrame, y_true: pd.Series, y_predict: pd.Series):
-    """Scatter plots of two prinicipal components from data points that shows mistakes
-    in prediction versus true labels
+    """Scatter plots of two principal components from data points that
+    shows mistakes in prediction versus true labels
 
     :param X: data frame of features
     :param y_true: true labels of observations
     :param y_predict: predicted labels of observations
     """
-    y_true = y_true.astype('category') 
+    y_true = y_true.astype('category')
     y_predict = y_predict.astype('category')
 
     pca = PCA(n_components=2)
@@ -404,7 +404,7 @@ def project_classifier_map_plot(X: pd.DataFrame, y_true: pd.Series, y_predict: p
 
     ax[2].scatter(X_pca[0].loc[good], X_pca[1].loc[good], s=2, color='green', label='Good')
     ax[2].scatter(X_pca[0].loc[bad], X_pca[1].loc[bad], s=2, color='red', label='Bad')
-    
+
     var = 100 * pca.explained_variance_ratio_
     for i in range(3):
         ax[i].set_xlabel(f'PC1 ({var[0]:.2f} %)')
@@ -416,7 +416,7 @@ def project_classifier_map_plot(X: pd.DataFrame, y_true: pd.Series, y_predict: p
 
 
 def plot_cumulative_explained_variance(td_variance: np.array, fd_variance: np.array):
-    """Line chart of relationship of number of principal components 
+    """Line chart of relationship of number of principal components
     to total explained variance
 
     :param td_variance: Explained variances for time-domain features
@@ -425,11 +425,11 @@ def plot_cumulative_explained_variance(td_variance: np.array, fd_variance: np.ar
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.plot(
         np.arange(1, len(td_variance) + 1),
-        100 * np.cumsum(td_variance), 
+        100 * np.cumsum(td_variance),
         marker='s', label='Features in time domain'
     )
     ax.plot(
-        np.arange(1, len(fd_variance) + 1), 
+        np.arange(1, len(fd_variance) + 1),
         100 * np.cumsum(fd_variance),
         marker='s', label='Features in frequency domain'
     )
@@ -443,7 +443,7 @@ def plot_cumulative_explained_variance(td_variance: np.array, fd_variance: np.ar
 def loading_plot(loadings: list, feature_names: List[str], bottom: float, top: float):
     """Loading plot of features
 
-    :param loadings: Relation of features to coordinates that are 
+    :param loadings: Relation of features to coordinates that are
         created by two principal components
     :param feature_names: list of feature names corresponding to their loadings
     :param bottom: lower limit of graph coordinates in x and y axes
@@ -459,7 +459,7 @@ def loading_plot(loadings: list, feature_names: List[str], bottom: float, top: f
             0, 0,   # coordinates of arrow base
             xs[i],  # length of the arrow along x
             ys[i],  # length of the arrow along y
-            color='r', 
+            color='r',
             head_width=0.01
         )
         texts.append(plt.text(xs[i], ys[i], varnames))
@@ -475,7 +475,7 @@ def loading_plot(loadings: list, feature_names: List[str], bottom: float, top: f
 
 
 def plot_all_knn(td_results: Dict[str, float], fd_results: Dict[str, float]):
-    """Line chart of relationship of k-value to k-NN classifier accuracy 
+    """Line chart of relationship of k-value to k-NN classifier accuracy
 
     :param td_results: lists of k-values and accuracies for time-domain features
         in training and testing set
@@ -502,13 +502,13 @@ def boxplot_enumerate_models_accuracy(
         metric: str,
         plots_col: str,
         inplot_col: str):
-    """Boxplot of model accuracy distributions for various 
+    """Boxplot of model accuracy distributions for various
         number of features or neighbours
 
     :param results: model accuracy distributions
     :param metric: column of values to show in values for accuracy
     :param plots_col: constant parameter for subplot ("f" or "k")
-    :param inplot_col: comparison of different values for the parameter 
+    :param inplot_col: comparison of different values for the parameter
         within subplot ("f" or "k")
     """
     for fnum, features in results.groupby(by=plots_col):
@@ -517,12 +517,12 @@ def boxplot_enumerate_models_accuracy(
             ax = [ax]
         else:
             fig, ax = plt.subplots(1, 2, figsize=(10, 4), sharey=True)
-    
+
         for i, group in enumerate(features.groupby(by='domain', sort=False)):
-            domain_name, domain = group 
+            domain_name, domain = group
             ax[i].grid()
             domain_name = DOMAIN_TITLES[domain_name]
-            
+
             if plots_col == 'k':
                 # ax[i].set_title(f'K-neighbors: {fnum}, {domain_name}')
                 print(f'K-neighbors: {fnum}, {domain_name}')
@@ -569,6 +569,6 @@ def plot_label_occurences(y: pd.Series):
         grid=True,
         figsize=(10, 5),
         xlabel='Observations',
-        ylabel='Label occurences'
+        ylabel='Label occurrences'
     )
     return ax, class_occurences

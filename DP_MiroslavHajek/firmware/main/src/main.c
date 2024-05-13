@@ -54,7 +54,7 @@ SemaphoreHandle_t file_mutex;
  */
 bool is_recording = false;
 /**
- * @brief Last seen accelerometer timestamp 
+ * @brief Last seen accelerometer timestamp
  */
 int32_t sensor_timestamp = 0;
 

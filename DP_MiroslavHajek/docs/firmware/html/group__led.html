@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.10.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Machinery Vibrodiagnostics with the IIOT: Topics</title>
+<title>Machinery Vibrodiagnostics with the IIOT: LED</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -71,19 +71,53 @@ $(function() {
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">Topics</div></div>
+  <div class="summary">
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">LED<div class="ingroups"><a class="el" href="group__datalogger.html">Accelerometer Data logger</a></div></div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock">Here is a list of all topics with brief descriptions:</div><div class="directory">
-<div class="levels">[detail level <span onclick="javascript:dynsection.toggleLevel(1);">1</span><span onclick="javascript:dynsection.toggleLevel(2);">2</span>]</div><table class="directory">
-<tr id="row_0_" class="even"><td class="entry"><span style="width:0px;display:inline-block;">&#160;</span><span id="arr_0_" class="arrow" onclick="dynsection.toggleFolder('0_')">&#9660;</span><a class="el" href="group__datalogger.html" target="_self">Accelerometer Data logger</a></td><td class="desc">Data flow control from the sensor to the memory card </td></tr>
-<tr id="row_0_0_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a class="el" href="group__sensor.html" target="_self">Accelerometer</a></td><td class="desc">Configuration of the accelerometer sensor </td></tr>
-<tr id="row_0_1_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a class="el" href="group__storage.html" target="_self">Memory card</a></td><td class="desc">Filesystem operations of the SD card </td></tr>
-<tr id="row_0_2_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a class="el" href="group__button.html" target="_self">Button</a></td><td class="desc">Configuation of the recording button </td></tr>
-<tr id="row_0_3_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a class="el" href="group__led.html" target="_self">LED</a></td><td class="desc">Configuation of the indicator LED light </td></tr>
-<tr id="row_1_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group__main.html" target="_self">Firmware Tasks</a></td><td class="desc">Main program of the firmware execution </td></tr>
+
+<p>Configuration of the indicator LED light.  
+<a href="#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:gaf7f119ca34573b73818f4acfed6d97f6" id="r_gaf7f119ca34573b73818f4acfed6d97f6"><td class="memItemLeft" align="right" valign="top"><a id="gaf7f119ca34573b73818f4acfed6d97f6" name="gaf7f119ca34573b73818f4acfed6d97f6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>led_enable</b> (void)</td></tr>
+<tr class="memdesc:gaf7f119ca34573b73818f4acfed6d97f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure GPIO for LED to output mode. <br /></td></tr>
+<tr class="separator:gaf7f119ca34573b73818f4acfed6d97f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf3828ebdb3bbb5daebe93e79689fa36b" id="r_gaf3828ebdb3bbb5daebe93e79689fa36b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gaf3828ebdb3bbb5daebe93e79689fa36b">led_light</a> (bool on)</td></tr>
+<tr class="memdesc:gaf3828ebdb3bbb5daebe93e79689fa36b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the LED state.  <br /></td></tr>
+<tr class="separator:gaf3828ebdb3bbb5daebe93e79689fa36b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- directory -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<p>Configuration of the indicator LED light. </p>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="gaf3828ebdb3bbb5daebe93e79689fa36b" name="gaf3828ebdb3bbb5daebe93e79689fa36b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf3828ebdb3bbb5daebe93e79689fa36b">&#9670;&#160;</a></span>led_light()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void led_light </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>on</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the LED state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">on</td><td>turns LED light to be either on or off </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

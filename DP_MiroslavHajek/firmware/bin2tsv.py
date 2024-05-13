@@ -8,7 +8,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('path', type=str, help='Folder with .bin files')
 # Default resolution in firmware is 4g
-parser.add_argument('res', type=int, help='Resolution in g') 
+parser.add_argument('res', type=int, help='Resolution in g')
 args = parser.parse_args()
 print(f'Path: "{args.path}"')
 

@@ -50,7 +50,7 @@ def silhouette_scores(
             pc: int
         ) -> Dict[str, float]:
     """Calculate silhouette score of data points after normalization
-    of training and testing set with and without the pricipal components analysis
+    of training and testing set with and without the principal components analysis
 
     :param X_train: data points of the training set
     :param X_test: data points of the testing set
@@ -66,7 +66,7 @@ def silhouette_scores(
 
     scaler = MinMaxScaler()
     X_train[X_train.columns] = scaler.fit_transform(X_train)
-    X_test[X_test.columns] = scaler.transform(X_test)    
+    X_test[X_test.columns] = scaler.transform(X_test)
 
     model = PCA(n_components=pc).fit(X_train)
     X_train_pca = pd.DataFrame(model.transform(X_train))
@@ -81,7 +81,7 @@ def silhouette_scores(
 
 
 def pca_explained_variances(X_train: pd.DataFrame, pc: int) -> Dict[str, float]:
-    """Explained variances of the principal components 
+    """Explained variances of the principal components
 
     :param X_train: data points of the training set
     :param pc: number of principal components
@@ -90,9 +90,9 @@ def pca_explained_variances(X_train: pd.DataFrame, pc: int) -> Dict[str, float]:
     """
     scaler = MinMaxScaler()
     X_train[X_train.columns] = scaler.fit_transform(X_train)
-    model = PCA(n_components=pc).fit(X_train)    
+    model = PCA(n_components=pc).fit(X_train)
     return {
-        f'PC{pc}': var 
+        f'PC{pc}': var
         for pc, var in enumerate(model.explained_variance_ratio_, start=1)
     }
 
@@ -113,7 +113,7 @@ def batch_feature_ranking(
     """
     metric_ranks = pd.DataFrame()
     METRICS_OFFLINE = {
-        'corr': selection.corr_classif, 
+        'corr': selection.corr_classif,
         'f_stat': f_classif,
         'mi': mutual_info_classif
     }
@@ -141,10 +141,10 @@ def batch_feature_ranking(
                 .sort_values(by='score', ascending=False)
             )
             metric_ranks[metric_name] = leaderboard
-        
+
         ranks = metric_ranks.rank(axis='rows', method='first', ascending=False)
         return ranks.apply(gmean, axis=1).sort_values().to_frame(name='rank')
-    
+
 
 def online_feature_ranking(
             X: pd.DataFrame,
@@ -161,7 +161,7 @@ def online_feature_ranking(
     :return: leaderboard of the features
     """
     METRICS_ONLINE = {
-        'corr': selection.Correlation, 
+        'corr': selection.Correlation,
         'f_stat': selection.FisherScore,
         'mi': selection.MutualInformation
     }
@@ -190,7 +190,7 @@ def online_feature_ranking(
             scores = pd.DataFrame.from_records(scores).T
             ranks = scores.rank(axis='rows', method='first', ascending=False)
             ranks = ranks.apply(gmean, axis=1).to_dict()   # Smallest rank is the best
-            best.append(ranks)   
+            best.append(ranks)
 
         features = pd.DataFrame.from_records(best)
 
@@ -206,7 +206,7 @@ def online_feature_ranking(
 
 
 def compute_correlations(X: pd.DataFrame, corr_above: float) -> Set[Tuple[str, str]]:
-    """Find pairs of features correlated more than the threshold 
+    """Find pairs of features correlated more than the threshold
 
     :param X: data frame that contains features
     :param corr_above: correlation threshold level
@@ -242,9 +242,9 @@ def best_columns(ranks: pd.DataFrame, corr: Set[Tuple[str, str]], n: int) -> Lis
     for feature in ranks.index:
         # Make pairs with existing columns
         candidates = [
-            col for col in columns 
+            col for col in columns
             if (feature, col) in corr
-        ]        
+        ]
         # Append only if not correlation detected
         if len(candidates) == 0:
             columns.append(feature)

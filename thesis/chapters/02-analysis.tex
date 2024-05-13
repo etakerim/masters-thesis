@@ -436,9 +436,9 @@ Wavelet domain features and associated spectral segmentation appear to be a powe
 Numerical features from the feature extraction phase have non-normal distributions and span wide ranges. Broad differences among features skew the spread on a particular axis. Inevitably, it can degrade the discernment of fault diagnostics models that map input onto a smooth function as regression does~\cite{zheng_feature_2018}. The feature scaling, power transform, and principal component analysis modify attribute values to gain more meaningful predictors, but one must be cautious in model interpretation.
 
 \subsection{Feature normalization}
-Vibrations are measured with an accelerometer in the form of 3D vectors where each axis has its own component. Models have to be resilient to any slight inclination or sensor orientation. To satisfy this prerequisite, feature $f$ extracted from all three dimensions is first composed into a single vector and the Euclidian norm is computed~\cite{kamminga_robust_2018}.
+Vibrations are measured with an accelerometer in the form of 3D vectors where each axis has its own component. Models have to be resilient to any slight inclination or sensor orientation. To satisfy this prerequisite, feature $f$ extracted from all three dimensions is first composed into a single vector and the Euclidean norm is computed~\cite{kamminga_robust_2018}.
 
-\myequations{Feature euclidian norm}
+\myequations{Feature euclidean norm}
 \begin{ceqn}\begin{align}
 \widetilde{f} = \sqrt{f_x^2 + f_y^2 + f_z^2}
 \end{align}\end{ceqn}
@@ -501,7 +501,7 @@ The frequently used scores upon which the feature relevance is ordered are~\cite
 \item \textbf{Correlation coefficient} - expresses the linear relationship between two variables. The codependent variables are of three sorts: quantitative, ordinal, and nominal. The choice of coefficient calculation is determined by the type of variables under consideration as shown in Table \ref{tab:corr-coef}.
 
 
-\emph{Pearson correlation} coeficient expresses similarity between two quantitative features: $f_i$ and $f_j$. In the classification setting, the correlation of feature $f$ makes sense only with dichotomous target class label $c$ using \emph{point biserial coeficient}. Mathematically, this is equivalent to the Pearson coefficient. Rank correspondence is quantified with either Spearman rho or Kendall's Tau~\cite{calkins_more_2005}.
+\emph{Pearson correlation} coefficient expresses similarity between two quantitative features: $f_i$ and $f_j$. In the classification setting, the correlation of feature $f$ makes sense only with dichotomous target class label $c$ using \emph{point biserial coefficient}. Mathematically, this is equivalent to the Pearson coefficient. Rank correspondence is quantified with either Spearman rho or Kendall's Tau~\cite{calkins_more_2005}.
 
 \begin{table}[ht]
 \renewcommand{\arraystretch}{1.5}
@@ -514,7 +514,7 @@ The frequently used scores upon which the feature relevance is ordered are~\cite
 \textbf{Nominal Y}                   & Point Biserial $r_{pb}$                       & Rank Bisereal $r_{rb}$                  & Phi, L, C, Lambda                       \\ \hline
 \end{tabular}
 \end{adjustbox}
-\caption{Correlation coeficients}
+\caption{Correlation coefficients}
 \label{tab:corr-coef}
 \end{table}
 
@@ -534,11 +534,11 @@ r(i) = \frac{\mathrm{cov}(f, c)}{\sqrt{\mathrm{var}(f) \cdot \mathrm{var}(c)}}
 \label{equ:fisher-score}
 \end{align}\end{ceqn}
 
-\item \textbf{Mutal information} - quantifies the dependence between features, or between features and class labels. It is almost identical to Information Gain. The probability distribution of proximity of variables derives from the relative entropy known as the Kullback-Leibler distance. Mutual information presumes variables are discrete. In the case of quantitative variables, mutual information is estimated by binning or nearest neighbours methods~\cite{ross_mutual_2014}.
+\item \textbf{Mutual information} - quantifies the dependence between features, or between features and class labels. It is almost identical to Information Gain. The probability distribution of proximity of variables derives from the relative entropy known as the Kullback-Leibler distance. Mutual information presumes variables are discrete. In the case of quantitative variables, mutual information is estimated by binning or nearest neighbours methods~\cite{ross_mutual_2014}.
 
 Probabilities $P(x)$, $P(y)$, $P(x, y)$ are estimated in the contingency table from event occurrence count to all sample population $|x|\;/\;N$. Joint probability $P(x, y)$ represents samples of feature $x$ simultaneously in class $y$.
 
-\myequations{Mutal information}
+\myequations{Mutual information}
 \begin{ceqn}\begin{align}
 \mathrm{MI}(X, Y) = \sum_{y \in Y} \sum_{x \in X} P(x, y) \cdot \log\left(\frac{P(x, y)}{P(x)P(y)}\right)
 \end{align}\end{ceqn}
@@ -594,7 +594,7 @@ The performance of classification is estimated by several metrics on the validat
     \caption{Nearest neighbours classification algorithm~\cite{chen_skyline_2009}}
 \end{figure}
 
-The meaning of distance between feature vectors $\mathbf{x}$, $\mathbf{y}$ have to be defined, so several metrics are available like \emph{Euclidian distance}, \emph{Mahalanobis distance}, \emph{Manhatann distance} etc. (Tab.~\ref{tab:KNN-distance})~\cite{sheng_review_2020, abu_alfeilat_effects_2019}. The optimal $k$ parameter is set by supervised learning according to the breaking point in the elbow curve that plots choices of $k$ against the error rate. The demanding neighbourhood queries are sped up using spatial indexes in databases that utilize search trees such as kd-tree, R-tree, or M-tree.
+The meaning of distance between feature vectors $\mathbf{x}$, $\mathbf{y}$ have to be defined, so several metrics are available like \emph{Euclidean distance}, \emph{Mahalanobis distance}, \emph{Manhatann distance} etc. (Tab.~\ref{tab:KNN-distance})~\cite{sheng_review_2020, abu_alfeilat_effects_2019}. The optimal $k$ parameter is set by supervised learning according to the breaking point in the elbow curve that plots choices of $k$ against the error rate. The demanding neighbourhood queries are sped up using spatial indexes in databases that utilize search trees such as kd-tree, R-tree, or M-tree.
 
 \begin{table}[ht]
 \centering
@@ -603,7 +603,7 @@ The meaning of distance between feature vectors $\mathbf{x}$, $\mathbf{y}$ have 
 \hline
 \textbf{Distance}     & \textbf{$d(\mathbf{x}, \mathbf{y})$}                                   \\ \hline
 Manhattan distance	 & $ |x_i - y_i| $													   \\ \hline
-Euclidian distance    & $ \sqrt{\sum_{i = 1}^{n}(x_i - y_i)^2} $                               \\ \hline
+Euclidean distance    & $ \sqrt{\sum_{i = 1}^{n}(x_i - y_i)^2} $                               \\ \hline
 Mahalanobis distance  & $ (\mathbf{x} - \mathbf{y})^T C^{-1} (\mathbf{x} - \mathbf{y}) $       \\ \hline
 \end{tabular}
 \caption{Distance metrics for k-NN}

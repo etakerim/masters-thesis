@@ -36,7 +36,7 @@ def energy(x: np.array) -> float:
 
     :param x: input signal
 
-    :return: energy of the signal 
+    :return: energy of the signal
     """
     return np.sum(x ** 2)
 
@@ -46,7 +46,7 @@ def negentropy(x: np.array) -> float:
 
     :param x: input signal
 
-    :return: negentropy of the signal 
+    :return: negentropy of the signal
     """
     if len(x) == 0:
         return np.nan
@@ -59,7 +59,7 @@ def signal_to_noise(x: np.array) -> float:
 
     :param x: input signal
 
-    :return: SNR of the signal 
+    :return: SNR of the signal
     """
     m = np.mean(x)
     sd = np.std(x)
@@ -67,7 +67,7 @@ def signal_to_noise(x: np.array) -> float:
 
 
 def spectral_roll_off_frequency(f: np.array, pxx: np.array, percentage: float) -> float:
-    """Calculate roll-off frequency. Cumulative sum of energy in spectral bins 
+    """Calculate roll-off frequency. Cumulative sum of energy in spectral bins
     below roll-off frequency is percentage of total energy
 
     :param f: array of frequency bins
@@ -108,7 +108,7 @@ def envelope_signal(f: np.array, pxx: np.array) -> np.array:
     :param f: array of frequency bins
     :param pxx: array of amplitudes at frequency bins
 
-    :return: envelope of the amplitudes 
+    :return: envelope of the amplitudes
     """
     # peaks = mms_peak_finder(pxx)
     peaks, _ = find_peaks(pxx)
@@ -130,7 +130,7 @@ def spectral_transform(x: pd.Series, window: int, fs: int) -> Tuple[np.array, np
     :param window: length of Hann FFT window
     :param fs: sampling frequency in Hz of the input signal
 
-    :return: envelope of the amplitudes 
+    :return: envelope of the amplitudes
     """
     overlap = 0.5
     step = int(window * overlap)
@@ -195,7 +195,7 @@ def frequency_features_calc(
     :param fs: sampling frequency in Hz of the time series
     :param window: length of FFT window
 
-    :return: list of frequency-domain features in pairs of feature name 
+    :return: list of frequency-domain features in pairs of feature name
         with column prefix and its value
     """
     f, pxx = spectral_transform(df[col], window, fs)
@@ -224,8 +224,8 @@ def wavelet_features_calc(
             fs: int,
             window: int
         ) -> List[Tuple[str, pd.DataFrame]]:
-    """Extract wavelet coeficients for Meyer wavelet and six levels deep. 
-    Each wavelet coeficient
+    """Extract wavelet coefficients for Meyer wavelet and six levels deep.
+    Each wavelet coefficient
     produces four features (energy, energy ratio, kurtosis, negentropy)
 
     :param df: data frame with input time series in columns
@@ -236,7 +236,7 @@ def wavelet_features_calc(
     :return: list of wavelet-domain features in pairs of feature name
         with column prefix and its value
     """
-    
+
     max_level = 6
     wavelet = 'dmey'
     ordering = 'freq'
@@ -323,7 +323,7 @@ def load_files_split(
             parts: int = 1,
             cores: int = 4
         ) -> pd.DataFrame:
-    """Load files from the dataset in ZIP archive and process them with callback funtion
+    """Load files from the dataset in ZIP archive and process them with callback function
 
     :param dataset: dataset in zip archive
     :param func: callback for file processing that takes dataset, filename, and number of parts
@@ -331,7 +331,7 @@ def load_files_split(
     :param parts: number of partitions to split each file into
     :param cores: number of cores to use in workload parallelization
 
-    :return: data frame with extraced features and associated annotations for row
+    :return: data frame with extracted features and associated annotations for row
     """
     pool = ThreadPool(processes=cores)
     filenames = list_files(dataset)
@@ -365,7 +365,7 @@ def detrending_filter(
             dataframes: List[pd.DataFrame],
             columns: List[str]
         ) -> List[pd.DataFrame]:
-    """Subtract average from each value in columns of muliple data frames
+    """Subtract average from each value in columns of multiple data frames
 
     :param dataframes: list of data frames
     :param columns: attributes from which mean is removed
@@ -385,7 +385,7 @@ def load_features(
     """
     Load features from csv file and aggregate values from chosen directions of movement
 
-    :param filename: File path where extraced features are found
+    :param filename: File path where extracted features are found
     :param axis: Elements to combine one feature from
     :param label_columns: Columns that are not features and are not processed just copied
 
@@ -410,12 +410,12 @@ def load_features(
 def mms_peak_finder(x: np.array, win_len: int = 3) -> np.array:
     """Robust non-parametric peak identification MMS algorithm
     according to description in paper: "Non-Parametric Local Maxima and Minima
-    Finder with Filtering Techniques for Bioprocess" 
+    Finder with Filtering Techniques for Bioprocess"
     (https://doi.org/10.4236/jsip.2016.74018)
 
     :param x: time series
     :param win_len: window length of points compared in peak finding
- 
+
     :return: array of indexes where peaks are in the time series
     """
     a = sliding_window_view(x, window_shape=win_len)
@@ -449,8 +449,8 @@ def downsample(x: np.array, k: int, fs_reduced: int, fs: int) -> np.array:
     """Downsample the time series by a factor
 
     :param x: time series
-    :param k: factor for downsamling (when it is None the factor is calculated as a ratio of sampling rates)
-    :param fs_reduced: desired sampling frequency 
+    :param k: factor for downsampling (when it is None, the factor is calculated as a ratio of sampling rates)
+    :param fs_reduced: desired sampling frequency
     :param fs: original sampling frequency of the time series
     :return: downsampled time series
     """
@@ -466,7 +466,7 @@ def harmonic_series_detection(
             fft_window: int
         ) -> List[List[Tuple[int, float]]]:
     """Find all series of harmonic frequencies in the frequency spectrum according to paper:
-    "Identification of harmonics and sidebands in a finite set of spectral components" 
+    "Identification of harmonics and sidebands in a finite set of spectral components"
     (https://hal.science/hal-00845120v2/document)
 
     :param f: array of frequency bins

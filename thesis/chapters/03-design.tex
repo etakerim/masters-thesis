@@ -1,23 +1,24 @@
 \chapter{Design} \label{chapter:design}
-During the design stage, we set out research questions and detail the steps of the machine learning pipeline for diagnosing fault types in the MaFaulDa dataset. The explanatory analysis of MaFaulDa hints at the underlying dependencies with feature sets that can degrade the machine learning model of choice. We adapt the methodology for measurements from standards and apply it to data logger requirements and data acquisition from industrial equipment.
+During the design stage, we set out research questions and detail the steps of the machine learning pipeline for diagnosing fault types in the MaFaulDa dataset. The explanatory analysis of MaFaulDa hints at the underlying dependencies within feature sets that can degrade the machine learning model of choice. We apply the methodology for vibration measurements from standards to the data logger requirements and data acquisition from industrial equipment.
 
 \section{Research questions}
-The thesis aims to provide answers to four research questions. The focus is primarily on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
+The thesis aims to provide answers to five research questions. The main focus is on making data flow more efficient in an industrial sensor network that monitors rotating machines. The \textbf{research questions} are:
 \begin{enumerate}[label=RQ\arabic*., font=\bfseries]
     \itemsep0pt
-	\item Which temporal and spectral features can be extracted from vibration signals to provide the most accurate record of machinery faults?
-	\item What is the reduction in transmission goodput when chosen signal features are used?
-	\item What accuracy of prediction models can be achieved with various feature subsets?
-	\item How can machinery faults be continuously identified and predicted based upon collected events?
+	\item Which time-domain and frequency-domain features are extractable from vibrations to provide the most accurate record of machinery faults?
+	\item What is the reduction in transmission goodput with signal features?
+	\item What accuracies of fault classification are achievable with tiny feature subsets?
+	\item How do the vibration signals collected on the industrial machinery behave?
+	\item How can machinery faults be identified over time from collected events?
 \end{enumerate}
 
-\noindent In accomplishing the objectives of our research we propose several \textbf{goals}:
+\noindent In accomplishing the objectives of our research, we propose several \textbf{goals}:
 \begin{todolist}
     \itemsep0pt
     \item Statistically and visually describe vibration signals from the Machinery fault database (MauFaulDa).
-    \item Establish a list of conditions that should be later investigated in the experimental setting.
-    \item Prepare dataset to be used in conjunction with machine learning models, namely by identifying labels and balancing classes.
-    \item Find the best subsets of features in the time and frequnecy domain with previously analyzed feature extraction and selection methods.
+    \item Establish a list of conditions that will be investigated later in the experimental setting.
+    \item Prepare the dataset to be used in conjunction with machine learning models namely by identifying labels and balancing classes.
+    \item Find the best subsets of features in the time and frequency domain with previously analyzed feature extraction and selection methods.
     \item Evaluate the performance of models described in the diagnostics section with a significant focus on the k-nearest neighbor algorithm.
     \item Acquire measurements of vibrations from machines in the real environment to form a novel dataset of machinery behavior.
     \item Develop hardware and implement its firmware to obtain such measurements of the quality demanded by vibrodiagnostics standards.
@@ -36,31 +37,31 @@ The similar data processing framework we adopt can be found elsewhere in the lit
 
 \textbf{In preprocessing step}, the signals stored in columns of CSV files within the MaFaulDa ZIP archive are first associated with metadata according to the file's path in the directory structure. The hierarchically topmost folder describes the simulated defect. There is directory for \emph{normal}, \emph{imbalance}, \emph{horizontal-misalignment}, \emph{vertical-misalignment}, \emph{overhang} (outer bearing), \emph{underhang} (inner bearing). Each bearing has an additional folder layer for dividing bearing faults: \emph{ball\_fault}, \emph{cage\_fault}, \emph{outer\_race}. Each fault category except the normal class contains various fault severities with units of grams or millimeters. The severities in turn consist of individual files with different rpm speeds. 
 
-We neglect the acceleration sensor orientation, therefore, the labels for shaft misalignment in vertical and horizontal directions are merged into the same group. In the end, that leaves \textbf{6 types of labels}: baseline, two shaft faults are imbalance and misalignment, and three bearing faults are cage fault, ball fault, and outer race fault.  
+We neglect the \textbf{acceleration sensor orientation}, therefore, the labels for shaft misalignment in vertical and horizontal directions are merged into the same group. In the end, that leaves \textbf{6 types of labels}: baseline, two shaft faults are imbalance and misalignment, and three bearing faults are cage fault, ball fault, and outer race fault.  
 
-Depending on the chosen bearing position, only time series associated with that bearing are retained because the standards demand each bearing be assessed separately. Fault classification concerns bearing in direct contact and shaft mechanically passing through it.
+Depending on the \textbf{chosen bearing position}, only time series associated with that bearing are retained because the standards demand each bearing be assessed separately. Fault classification concerns bearing in direct contact and shaft mechanically passing through it.
 
 The strength of the recorded response to the underlying defect is dependent on the shaft \textbf{rotational speed}. Speed in units of rpm is calculated from pulsed speedometer output. It is the average distance between two successive rising edges:
 \begin{ceqn}\begin{align}
 \mathrm{rpm} = 60 \;/\; \overline{\Delta t}
 \end{align}\end{ceqn}
 
-The final \textbf{file description} is the triplet of \textbf{fault}, \textbf{severity}, and \textbf{rpm}.
+\textbf{File description} is the triplet of \textbf{fault}, \textbf{severity}, and \textbf{rpm}.
 
-After labeling we insert a step to split the time series into parts when the duration is long enough to introduce more observations artificially. This assumption is not met for MaFaulDa because, for the desired frequency resolution for features of close to 1~Hz, we need a window size of 32768 samples. Variation reduction in spectral estimation brings the necessity to average at least 12 overlapping windows. The full length of 5 seconds provides 15 whole overlapping windows. 
+After labeling we insert a step to split the time series into parts when the duration is long enough to introduce more observations artificially. This assumption for splitting is not met for MaFaulDa because, for the desired frequency resolution for features of close to 1~Hz, we need a window size of 32768 samples. Variation reduction in spectral estimation brings the necessity to average at least 12 overlapping windows. The full length of 5 seconds provides 15 whole overlapping windows. 
 
-The DC component in the three-dimensional vibration signal is removed by subtracting the global mean. Immediately follows a digital IIR Butterworth low pass filter of \nth{5} order with cutoff frequency 10 kHz at -3 dB. Before the usage of a low pass filter, the peak at 20 kHz with a sideband was present as an unwanted artifact. It could not have been reliably recorded due to the linear frequency response of the sensor up to 10 kHz. At the same time, such a frequency is outside the range of any feasible MEMS accelerometer.
+The \textbf{DC component} in the three-dimensional vibration signal is removed by subtracting the global mean. Immediately follows a digital IIR Butterworth low pass filter of \nth{5} order with cutoff frequency 10 kHz at -3 dB. Before the usage of a low pass filter, the peak at 20 kHz with a sideband was present as an unwanted artifact. It could not have been reliably recorded due to the linear frequency response of the sensor up to 10 kHz. At the same time, such a frequency is outside the range of any feasible MEMS accelerometer.
 
-Initial labels can be exchanged for a label of fault-free state when the severity is low. The count of severity levels is not identical in every group. The numerical amounts for each level are sorted in ascending order within each fault and then these levels are normalized using a min-max scaler.
+\textbf{Initial labels can be exchanged} for a label of fault-free state when the severity is low. The count of severity levels is not identical in every group. The numerical amounts for each level are sorted in ascending order within each fault and then these levels are normalized using a min-max scaler.
 
-The preprocessed signal from each axis of accelerometer is packed up to two base feature sets in time domain (TD) and frequency domain (FD). The feature extraction formulas are is identical with formulas presented in the section \ref{section:feature-extraction} of analysis chapter. The frequency transform is Welch's method averaging FFT vectors from 32768 samples after Hann windowing and 50\% overlap. The feature sets are:
+The preprocessed signal from each axis of accelerometer is packed up to \textbf{two base feature sets} in time domain (TD) and frequency domain (FD). The feature extraction formulas are is identical with formulas presented in the section \ref{section:feature-extraction} of analysis chapter. The frequency transform is Welch's method averaging FFT vectors from 32768 samples after Hann windowing and 50\% overlap. The feature sets are:
 \begin{itemize}
 \itemsep0pt
 \item \textbf{TD has 10 time-domain features} - peak-to-peak amplitude (\emph{pp}), zero-crossing rate (\emph{zerocross}), root mean square (\emph{rms}), skewness, kurtosis, shape factor, crest factor, impulse factor, clearance factor, average amplitude change (aac), 
 \item \textbf{FD has 11 frequency-domain features} - spectral centroid, standard deviation (\emph{std}), skewness, kurtosis, roll-on frequency, roll-off frequency, spectral flux, noisiness, spectral negentropy, energy, entropy.
 \end{itemize}
  
-The four conditions are applied in the instance of the pipeline to filter observations with calculated features to create 24 scenarios:
+The four conditions are applied in the instance of the pipeline to filter observations with calculated features to create \textbf{24 scenarios}:
 \begin{itemize}
 \itemsep0pt
 \item \textbf{Source bearings} - samples and fault labels are left in either just for the inner bearing (A), for only the outer bearing (B), or for both bearings (A+B).
@@ -69,9 +70,9 @@ The four conditions are applied in the instance of the pipeline to filter observ
 \item \textbf{High severity faults} - to more precisely simulate fault frequencies found in real environment the low severity defects can be considered as normal operation (Yes or No).
 \end{itemize}
 
-The fault classification performance metrics are evaluated after balancing classes feature normalization, and 5-fold cross-validation validation on the k-nearest neighbor classifier with Euclidean distance metric. The population of classes is evened out with random oversampling using a strategy to resample all but the majority class. In the multi-class classification, the micro-averaged performance metrics of accuracy, precision, and recall result in the same number. Therefore, accuracy is only one on the output. 
+The \textbf{fault classification} performance metrics are evaluated after balancing classes feature normalization, and 5-fold cross-validation validation on the k-nearest neighbor classifier with Euclidean distance metric. The population of classes is evened out with random oversampling using a strategy to resample all but the majority class. In the multi-class classification, the micro-averaged performance metrics of accuracy, precision, and recall result in the same number. Therefore, accuracy is only one on the output. 
 
-The hyperparameter of k-neighbours and a subset of features are tweaked, and results are compared under different preprocessing conditions and in multiple experiments:
+The hyperparameter of k-neighbours and a feature subset size are tweaked, and results are compared under different preprocessing conditions and in multiple experiments:
 
 \begin{itemize}
 \itemsep0pt
@@ -97,7 +98,7 @@ The experimental design involves the filter conditions that create 24 forms of t
 \section{Exploratory data analysis of MaFaulDa}
 A better explanation for model behavior is arranged by examining the number of observations per fault category, spatial separability of the distinguished groups, and scales of the attributes and their interdependencies.
 
-Out of the 1951 time series, the inner bearing (A) has 1438, and the outer bearing (B) has 1393~(Tab.~\ref{tab:design:label-count}). Sorce bearing A+B just concatanes observations from both postions so the column sums their counts together. The observations for shaft defects are shared regardless of the bearing. 
+Out of the 1951 time series, the inner bearing (A) has 1438, and the outer bearing (B) has 1393~(Tab.~\ref{tab:design:label-count}). Source bearing A+B just concatanes observations from both postions so the column sums their counts together. The observations for shaft defects are shared regardless of the bearing. 
 \begin{table}[h]
 \renewcommand{\arraystretch}{1.2}
 \centering

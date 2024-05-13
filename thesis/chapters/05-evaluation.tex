@@ -1,7 +1,7 @@
 \chapter{Evaluation} \label{chapter:evaluation}
-The verification of proposed solutions for machinery fault diagnostics is focused on two complementary activities, these are vibration measurement and defect identification. The accuracy of supervised learning using the k-nearest neighbour classifier is determined by the MaFaulDa dataset under various experiments. Data logger recording is compared to the known reference, and the collected Pump dataset is analyzed.
+The verification of proposed solutions for machinery fault diagnostics is focused on two activities, these are vibration measurement and defect identification. The accuracy of supervised learning using the k-nearest neighbour classifier is determined by the MaFaulDa dataset under various experiments. Data logger recording is compared to the known reference, and the collected Pump dataset is analyzed.
 
-\section{MaFaulDa in k-nearest neighbors}
+\section{Fault classifiction in MaFaulDa}
 The four outlined experiments on MaFaulDa involve testing sets of features with very few members to see the effects in predictions when reducing the information content about machine status to the minimum. First, the attributes are left in the complete count after extraction. Then, all of their combinations are enumerated, and the resulting accuracy distribution is matched against accuracy after feature selection with similarity metrics. 
 
 \subsection{Complete feature sets}
@@ -24,7 +24,7 @@ The two full sets of features include ten extracted from time-domain and eleven 
 
 The inner bearing observations are selected to train the k-NN with five neighbours and Euclidean distance metric. The attributes are normalized beforehand, rows are oversampled to a majority label, and data is split into training and testing sets with an 80:20 proportion. The 598 observation of validation data determines the confusion matrix (Fig.~\ref{fig:evaluation:all-features-confusion-matrix}). 
 
-The label ``normal'' is not falsely attributed to other classes in either feature set, but other classes can get assigned to be ``normal''. Most mistakes happen while predicting outer race fault, which is confused with cage fault, imbalance, and less frequency with misalignment. The shaft imbalance is used for simulating bearing faults, which is a natural reason for this high error rate.
+The label ``normal'' is not falsely attributed to other classes in either feature set, but other classes can get assigned to be ``normal''. Most mistakes happen while predicting outer race fault, which is confused with cage fault, imbalance, and less often with misalignment. The shaft imbalance is used for simulating bearing faults, which is a natural reason for this high error rate.
 
 \begin{figure}[h]
     \centering
@@ -53,11 +53,10 @@ The label ``normal'' is not falsely attributed to other classes in either featur
 
 The increasing number of neighbours used for classification in 5-fold cross-validated k-NN shows a substantial decrease in accuracy on validation sets (Fig.~\ref{fig:evaluation:complete-set-k-value}). The most prominent drop in performance of around 10\% occurs at the beginning until the k-value of nine, and then the accuracy curves slowly plateau.
 
-Under every circumstance, the magnitude of the triaxial feature vector reaches better accuracy than those from only the axis of motion for the same source domain and bearing. The model for inner bearing A is more accurate than outer bearing B. The TD set is generally better in predictions than the FD set for the equivalent k-value. The relabeled dataset for high severity has a steeper decrease in accuracy for the same value of neighbours.
-
+Under every circumstance, the magnitude of the triaxial feature vector reaches better accuracy than those from only the axis of motion for the same source domain and bearing. The model for inner bearing A is more accurate than outer bearing B. The TD set is generally better in predictions than the FD set for the equivalent k-value. The relabeled dataset for high severity has a steeper decrease in accuracy for the same number of neighbours.
 
 \subsection{Feature subset combinations}
-The complete sets of predictors are even greatly shrunken to representation that could be presented in 3D plot or in perpendicular cross sections. These trend variables could be used in distingushing faults the same way as rms amplitude indicates their presence. Each possible combinations of pairs, triplets, and quadruplets constructs a separate k-NN model on which prediction accuracy is evaluated. 
+The complete sets of predictors are even greatly shrunken to representation that could be presented in 3D plot or in perpendicular cross sections. These trend variables could be used in distinguishing faults the same way as rms amplitude indicates their presence. Each possible combinations of pairs, triplets, and quadruplets constructs a separate k-NN model on which prediction accuracy is evaluated. 
 
 \begin{figure}[h]
     \centering
@@ -111,14 +110,13 @@ The complete sets of predictors are even greatly shrunken to representation that
 
 The distribution of model accuracies is documented on features in both domains coined from three dimensions on bearing A with original and high-severity defect labels. The boxplots display the relation of the k-value to accuracy when three features are chosen, and the relation of a number of features to accuracy with five neighbours(Fig.~\ref{fig:evaluation:model-accuracy-severity} and \ref{fig:evaluation:model-accuracy-severity}).
 
-The decrease in accuracy with additional neighbours is apparent and similar to the trend in complete sets of features. We are interested in maximum accuracy in the distribution because that is the optimal model feature selection method to try to approach. Its reduction is more noticeable between three and five features 3 - 5\%, and almost the same amount between five and eleven neighbours. 
+The decrease in accuracy with additional neighbours is apparent and similar to the trend in complete sets of features. We are interested in comparing maximum accuracies of the accuracy distribution because the optimal feature selection method tries to approach them. The reduction in maximal accuracy is more noticeable between three and five features 3 - 5\%, and almost the same amount between five and eleven neighbours. 
 
 The complete sets reach better accuracy than subsets when the number of features is at most three and simultaneously the number of neighbours is five or less. For more triaxial features and more neighbours, the complete set is only about 2\% percent worse at the most than subsets because the curse of dimensionality is not so substantial for ten dimensions.
 
 The spread in model accuracies in the interquartile range is from 5 to 10 \%, and measured between whiskers is at a maximum of 25\%. The standard deviation is about 7\%. Overall, the time-domain features are better than frequency-domain features for these specific feature spaces.
 
 The number of features has a direct proportionality effect on the optimal model accuracy. An increase from two to three features has more weight than allowing a fourth attribute. The contributions of adding features are around 6\% and 3\%, and the relabeled dataset has an increase of 3\% and 2\%. The absolute accuracies are consecutively for 2, 3, and 4 features when k is equal to 5: 78.31\%, 85.67\%, and 89.55\% for the time domain and 81.52\%, 87.52\%, 90.26\% in the frequency domain.
-
 
 \subsection{Feature selection techniques}
 The predictors chosen with supervised selection strategies are compared in accuracy and location within the accuracy distribution of exhaustive combinations of same-sized sets and the performance of its source superset. The metrics for bivariate feature selection are correlation, F statistic, mutual information, and their ensemble by the rank product. The PCA of the complete feature set that retains the same number of features and selection methods serves as a benchmark to tell whether the linear combination or subset gets better performance on the MaFaulDa.
@@ -177,9 +175,9 @@ Mutual information                    & \multicolumn{1}{r|}{93.32}          & 90
 \label{tab:evaluation:fsel-severity}
 \end{table}
 
-Table~\ref{tab:evaluation:fsel} compares the concrete case of choosing the three features from each domain on bearing A and k-NN with five neighbours. Table~\ref{tab:evaluation:fsel-severity} uses labels for high-severity faults. There is a significant difference in train and test accuracy, which means the model is likely overfitting. The percentile within the distribution is measured to its respective data, the train or validation set. However, the percentile of best features in the test is calculated against train distribution.
+Table~\ref{tab:evaluation:fsel} compares the concrete case of choosing the three features from each domain on bearing A and k-NN with five neighbours. Table~\ref{tab:evaluation:fsel-severity} uses labels for high-severity faults. There is a significant difference in train and test accuracy, which means the model is likely overfitting. The percentile within the distribution is measured to its respective data, the train or validation set. However, the percentile of best features in the test data is calculated against train distribution.
 
-Combining the rankings from several metrics is necessary to get consistent results. This is evidenced by the variability of the success of selected feature sets in final prediction performance under multiple conditions. The PCA with 3 components out of complete feature sets is comparable in accuracy to selection methods with original attributes.
+Combining the rankings from several metrics is necessary to get consistent results. This is evidenced by the variability of the success of selected feature sets in final prediction performance under multiple conditions. The PCA with 3 components transformed from the complete feature sets is comparable in accuracy to selection methods with original attributes.
 
 The triplet of variables with the best results is from TD set: zero-crossing rate, peak-to-peak, skewness, and from FD set: centroid, roll-off, and entropy. With high severity labels, the best attributes for FD stay the same, but average amplitude change and shape factor are preferred along the zero-crossing rate. The rank product picked up roll-off, flux, and skewness for the FD set, which is suboptimal. The two of the three methods in the ensemble arrive at the same set overruling the superior set produced by mutual information. In the TD set, the zero-crossing rate, shape, and rms, are chosen by rank product. 
 
@@ -204,7 +202,7 @@ The triplet of variables with the best results is from TD set: zero-crossing rat
         \includegraphics[width=\textwidth]{assets/results/feature-combinations/model-distr-fsel-k5-f3-FD-test.png}
         \caption{Frequency-domain features (test)}
     \end{subfigure}
-    \caption{Model accuracy statistical distibutions with feature selection methods for three predictors (k = 5)}
+    \caption{Model accuracy statistical distributions with feature selection methods for three predictors (k = 5)}
     \label{fig:evaluation:fsel-model-distr}
 \end{figure}
 
@@ -283,9 +281,9 @@ Correlation        & 84.49                                                    & 
 \end{figure}
 
 
-Under 216 scenarios, the mutual information has better median accuracy (80.87\%) and distribution percentile (91.81\%) followed by rank product with an accuracy of 79.82\% of and percentile of 88.97\% (Tab.~\ref{tab:evaluation:compare-fsel-accuracy}). The scenarios are composed of 24 base dataset modifications and options for hyperparameters k-value and number of features. 
+In 216 scenarios, the mutual information has better median accuracy (80.87\%) and distribution percentile (91.81\%) followed by rank product with an accuracy of 79.82\% of and percentile of 88.97\% (Tab.~\ref{tab:evaluation:compare-fsel-accuracy}). The scenarios are composed of 24 base dataset modifications and options for hyperparameters k-value and number of features. 
 
-The rank product was the best method in the majority of 43.52\% scenarios. Mutual information comes second in 40.28\% cases, where it is deemed the best strategy (Tab.~\ref{tab:evaluation:best-selection-method}). The median accuracy in selected cases is also better for rank product 92.38\% compared to 91.79\% mutual information. 
+The rank product is the best method in the majority of 43.52\% scenarios. Mutual information comes second in 40.28\% cases, where it is deemed the best strategy (Tab.~\ref{tab:evaluation:best-selection-method}). The median accuracy, in cases where they are the best method, is also better for rank product 92.38\% compared to 91.79\% mutual information. 
 
 Kernel density estimate plot (Fig.~\ref{fig:evaluation:kde-fsel-perecentile}) shows the distribution of accuracies for the selection methods and percentiles for predictor subsets they chose. The feature selection usually picks variables so that they stay in the upper quartile of the distribution above the 75\% percentile. The median accuracy of all methods is around the vicinity of 80\%.
 
@@ -293,7 +291,7 @@ The features chosen by rank product are visualized as a three-dimensional scatte
 
 
 \subsection{Incremental learning}
-Online learning imitates hardened conditions for machinery diagnostics that appear in deployment. Delayed provision or omission of actual labels undoubtedly degrades the reliability of the classification. The question is how quickly the accuracy approaches the optimal one from the nearest neighbors trained in batch and what is the effect on the classifier from routine difficulties associated with the continous labeling process.
+Online learning imitates hardened conditions for machinery diagnostics that appear in deployment. Delayed provision or omission of actual labels undoubtedly degrades the reliability of the classification. The question is how quickly the accuracy approaches the optimal one from the nearest neighbors trained in batch and what is the effect on the classifier from routine difficulties associated with the continuous labeling process.
 
 \begin{figure}[ht]
     \centering
@@ -317,11 +315,11 @@ Online learning imitates hardened conditions for machinery diagnostics that appe
     \caption{Ordering of faults in dataset according to relative severity levels}
 \end{figure}
 
-The k-NN models in incremental learning experiments learn on the same base training dataset as in batch learning for bearing A with complete sets of extracted features. In this manner, we can compare the training accuracies in the last sample for both models. Online learning metrics are evaluated by progressive valuation on a dataset that is left unbalanced.
+The k-NN models in incremental learning experiments learn on the same base training dataset as in batch learning for bearing A. Online learning metrics are evaluated by progressive valuation on a dataset that is left unbalanced. In this manner, we can compare the training accuracies in the last sample of online models to their batch counterparts.
 
 The \textbf{stream of events} is ordered by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}), which ensures steady increments in label counts throughout the simulation (Fig.~\ref{fig:design:online-event-order}). The same sorting approach is applied to the dataset where low-severity faults are annotated as baseline. During most of its lifespan, the machine simulator looks to be in a fine operating state. Near the end of the simulation, faults start to develop (Fig.~\ref{fig:design:online-event-order-severity}). These artificially streamed event sequences are a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine.
 
-A significant change in the data stream occurs after 294 out of 1438 observations (or after 737 for high severity faults) when all 49 (or 737) normal conditions are consumed in the training process. Counters of other faults show that predictions are skewed towards more represented imbalance and misalignement. The uneven evolution of categories in a stream impacts the development of accuracy in the remaining experiments. The test accuracies of comparable batch models from the three best features are 85.47\% (TD), 87.52\% (FD), 91.71\% (TD severity), and 91.94\% (FD severity).
+A significant change in the data stream occurs after 294 out of 1438 observations (or after 737 for high severity faults) when all 49 (or 737) normal conditions are consumed in the training process. Counters of other faults show that predictions are skewed towards more represented imbalance and misalignment. The uneven evolution of categories in a stream impacts the development of accuracy in the remaining experiments. The test accuracies of comparable batch models from the three best features are 85.47\% (TD), 87.52\% (FD), 91.71\% (TD severity), and 91.94\% (FD severity).
 
 \begin{figure}[]
     \centering
@@ -383,7 +381,7 @@ Labeling every \nth{10} sample (10\% of the dataset) with a tumbling window of 1
 
 
 \section{Industrial dataset analysis}
-The latter part of the solution evaluation focuses on signal properties of vibrations from air compressors, water pumps, and electric induction motors. At first, the accelerometer data logger functionality is tested, and its precision is checked up in the known situations. Our custom dataset is compiled from collected measurements during regular operations of machines. The behaviour of different machines is compared using static frequency estimation and a time-frequency spectrogram. The methodology is carried out to diagnose the current status of water pumps. The presence of fault is confronted with sensor logs from the pump vendor.
+The latter part of the solution evaluation focuses on signal properties of vibrations from air compressors, water pumps, and electric induction motors. At first, the accelerometer data logger functionality is tested, and its precision is checked up in the known situations. Our custom dataset is compiled from collected measurements during regular operations of machines. The behaviour of different machines is compared using static frequency estimation and a time-frequency spectrogram. The domain expert methodology is carried out to diagnose the current status of water pumps. The presence of fault is confronted with sensor logs from the pump vendor.
 
 \subsection{Data logger verification}
 Data logger capabilities were verified by capturing vibrations on the back of the plastic casing for the electric motor of the standing fan. The recording is able to run continuously for more than one minute without dropping any samples. The amplitude range after conversion is constrained in the expected range (Fig.~\ref{fig:evaluation:logger-waveform}). The same amplitudes were obtained previously on a proof-of-concept device using analog accelerometer ADXL335 on Beaglebone Black, albeit with lower sensitivity.
@@ -429,7 +427,7 @@ Time waveform captures mostly regular patterns of oscillatory motion  (Fig.~\ref
 
 The overview of wideband vibration frequency spectra from various sensor placements shows clear distinctions among the machines. The recordings in Figure~\ref{fig:evaluation:wideband-frequencies} present consistent shapes of waveforms found during repeated trials. The spectra are Welch's average of 32768 long windows with 50\% overlap over minute of recording.
 
-The electric motor signals are polluted by noise from the wind blowing out of a large cooling fan at the back of the motor. The M2 in place two compared to M1 has elevated amplitudes above 4 kHz. The pumps have richer signal content, likely due to the flow of water split into several frequency bands. The outer bearing (4) has a more attenuated amplitude above 1.5 kHz than the inner bearing (3). The P2 exhibits less vibration in comparable bands in general. The compressor casing produces a series of harmonics of rotational frequency, which are stronger near the scroll and suction valve than near the base.
+The electric motor signals are polluted by noise from the wind blowing out of a large cooling fan at the back of the motor. The M2 in place two compared to M1 has elevated amplitudes above 4 kHz. The pumps have richer signal content than motors split into several frequency bands, likely due to the flow of water. The outer bearing (4) has a more attenuated amplitude above 1.5 kHz than the inner bearing (3). The P2 exhibits less vibration in comparable bands in general. The compressor casing produces a series of harmonics of rotational frequency, which are stronger near the scroll and suction valve than near the base.
 
 \begin{table}[h]
 \centering
@@ -476,7 +474,7 @@ The electric motor signals are polluted by noise from the wind blowing out of a 
     \label{fig:evaluation:bearing-freq}
 \end{figure}
 
-Domain experts recommended the procedure for fault identification by calculation of bearing characteristic frequencies (Tab.~\ref{tab:evaluation:bearing-freq-pump}), and then they approved the following results. Figure~\ref{fig:evaluation:bearing-freq} identifies harmonics of rotational speed and BPFO frequency in every machine and BPFI for M2-2. It can be assumed that those frequencies will be the reason for their damage in the future. The absolute acceleration is minuscule in current frequency bands and year-long sensor log of rms velocity (Fig~\ref{fig:evaluation:ksb-guard-rms-vibartions}).
+Domain experts recommended the procedure for fault identification by calculation of bearing characteristic frequencies (Tab.~\ref{tab:evaluation:bearing-freq-pump}), and they approved the following results. Figure~\ref{fig:evaluation:bearing-freq} identifies harmonics of rotational speed and BPFO frequency in every machine and BPFI for M2-2. It can be assumed that those frequencies will be the reason for their damage in the future. The absolute acceleration is minuscule in current frequency bands and year-long sensor log of rms velocity (Fig~\ref{fig:evaluation:ksb-guard-rms-vibartions}).
 
 \begin{figure}[h]
     \centering
@@ -493,7 +491,7 @@ Domain experts recommended the procedure for fault identification by calculation
     \label{fig:evaluation:ksb-guard-rms-vibartions}
 \end{figure} 
 
-Therefore, the current results suggest that the bearings are in flawless condition. During the over five years the pump has been in service, there is not one instance of bearing fault due to rated lifespan and yearly prophylactic maintenance. This underscores the difficulty of the scarcity of non-faulty states in industrial environments. The monitoring is better suited for situations without preventive maintenance or with smaller machinery like the plunger pump BC~21/20S we considered during air conditioning inspections.
+Therefore, the current results suggest that the bearings are in flawless condition. During the over five years the pump has been in service, there is not one instance of bearing fault due to rated lifespan and yearly prophylactic maintenance. This underscores the scarcity of recording faulty states in industrial environments. The monitoring is better suited for situations without preventive maintenance or with smaller machinery like the plunger pump BC~21/20S we considered during air conditioning inspections.
 
 \begin{figure}[h]
     \centering
@@ -552,7 +550,7 @@ The water pump switch on and off creates a fast change in shaft speed, which can
         \includegraphics[width=\textwidth]{assets/results/feature-values/pumps-FD-dim-3.png}
         \caption{Frequency-domain features}
     \end{subfigure}
-    \caption{The atrribute value ranges of Pump dataset}
+    \caption{The attribute value ranges of Pump dataset}
 \end{figure}
 
-The range of feature values for compressors and pumps are higher than in MaFaulDa despite most of them describing baseline status (Fig~\ref{fig:evaluation-sigma-pump-interference}). The increses can be seen for example on the interquartile range of rms (7.33 - 14.62 $\mathrm{m/s}^2$), centroid (3806 - 6003 Hz) or entropy (9.40 - 13.22 nats).
+The range of feature values for compressors and pumps are higher than in MaFaulDa despite most of them describing baseline status (Fig~\ref{fig:evaluation-sigma-pump-interference}). The increases can be seen for example on the interquartile range of rms (7.33 - 14.62 $\mathrm{m/s}^2$), centroid (3806 - 6003 Hz) or entropy (9.40 - 13.22 nats).

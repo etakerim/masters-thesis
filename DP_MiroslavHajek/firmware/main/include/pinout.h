@@ -107,7 +107,7 @@
  */
 #define SENSOR_SPI_LENGTH       NUM_OF_FIELDS * FIFO_LENGTH
 /**
- * @brief Number of FIFO buffers that can be pushed to Queue before file write 
+ * @brief Number of FIFO buffers that can be pushed to Queue before file write
  */
 #define QUEUE_LENGTH            16
 
@@ -182,7 +182,7 @@ void sensor_events_disable(stmdev_ctx_t *dev);
 
 
 /**
- * @brief Signal fatal error of system occuring by blinking indicator LED and halting execution
+ * @brief Signal fatal error of system indiacted by blinking LED and halting execution
  *
  * @param[in]   delay   Interval in milliseconds for LED blink
  */
@@ -198,24 +198,24 @@ void panic(int delay);
 /**
  * @brief Configure SD/MMC bus and mount SD memory card to FAT filesystem
  *
- * @param[in]   mount_point     path where the partition will be registered    
+ * @param[in]   mount_point     path where the partition will be registered
  *
  * @return SD/MMC card information structure
  */
 sdmmc_card_t *storage_enable(const char *mount_point);
 
 /**
- * @brief Disable and unmount SD memory card from FAT filesystem 
+ * @brief Disable and unmount SD memory card from FAT filesystem
  *
  * @param[in]   card             SD/MMC card information structure
- * @param[in]   mount_point      path where partition is registered 
+ * @param[in]   mount_point      path where partition is registered
  *
  * @return c
  */
 void storage_disable(sdmmc_card_t *card, const char *mount_point);
 
 /**
- * @brief Get file name for new recording with sequentially higher unused number 
+ * @brief Get file name for new recording with sequentially higher unused number
  *
  * @param[out]  filename   Available file name for new file
  * @param[in]   path       Base path prefix for saving the recording
@@ -227,7 +227,7 @@ void get_recording_filename(char *filename, const char *path);
 
 /**
  * @defgroup button Button
- * @brief Configuation of the recording button
+ * @brief Configuration of the recording button
  *  @{
  */
 
@@ -249,7 +249,7 @@ void switch_disable(void);
 
 /**
  * @defgroup led LED
- * @brief Configuation of the indicator LED light
+ * @brief Configuration of the indicator LED light
  *  @{
  */
 

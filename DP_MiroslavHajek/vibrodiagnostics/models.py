@@ -84,7 +84,7 @@ def kfold_accuracy(
             Y: pd.Series,
             k_neighbors: int,
             kfolds: int,
-            model_name: str = 'knn', 
+            model_name: str = 'knn',
             power_transform: bool = True,
             knn_metric='euclidean'
         ) -> Dict[str, float]:
@@ -95,10 +95,10 @@ def kfold_accuracy(
     :param X: data frame of predictor features
     :param Y: column of labels
     :param k_neighbors: number of neighbours for k-nearest neighbours model
-    :param model_name: name of the machine learning model to evaluate. 
+    :param model_name: name of the machine learning model to evaluate.
         Options are: "knn", "lda", "bayes", "svm"
     :param kfolds: number of splits for k-fold cross-validation
-    :param power_transform: apply power transform of features in preprocessing instead 
+    :param power_transform: apply power transform of features in preprocessing instead
         of normalization
     :param knn_metric: distance metric name for k-nearest neighbours model
 
@@ -129,7 +129,7 @@ def kfold_accuracy(
 
         x_train[x_train.columns] = transform.fit_transform(x_train)
         x_test[x_test.columns] = transform.transform(x_test)
-    
+
         # Train k-NN model on all features
         if model_name == 'knn':
             model = KNeighborsClassifier(n_neighbors=k_neighbors, metric=knn_metric)
@@ -146,7 +146,7 @@ def kfold_accuracy(
 
         round_train_acc.append(skmetrics.accuracy_score(y_train, y_predict_train))
         round_test_acc.append(skmetrics.accuracy_score(y_test, y_predict_test))
-    
+
     return {
         'train': np.array(round_train_acc).mean(),
         'test': np.array(round_test_acc).mean()
@@ -166,13 +166,13 @@ def all_features(
 
     :param X: data frame of predictor features
     :param Y: column of labels
-    :param model_name: name of the machine learning model to evaluate. 
+    :param model_name: name of the machine learning model to evaluate.
         Options are: "knn", "lda", "bayes", "svm"
-    :param power_transform: apply power transform of features in preprocessing instead 
+    :param power_transform: apply power transform of features in preprocessing instead
         of normalization
     :param k_neighbors: number of neighbours for k-nearest neighbours model
     :param kfolds: number of splits for k-fold cross-validation
-    
+
     :return: training and testing accuracy for each value of k-neighbours
     """
     train_accuracy = []
@@ -203,7 +203,7 @@ def feature_combinations(
             model: str,
             power_transform: bool = False
         ) -> List[dict]:
-    """Evaluate all combinations of feature subsets of given size out of complete sets 
+    """Evaluate all combinations of feature subsets of given size out of complete sets
 
     :param X: data frame of predictor features
     :param Y: column of labels
@@ -211,11 +211,11 @@ def feature_combinations(
     :param num_of_features: number of features in the subset
     :param kfolds: number of splits for k-fold cross-validation
     :param domain: source domain from which the features are extracted
-    :param model_: name of the machine learning model to evaluate. 
+    :param model_: name of the machine learning model to evaluate.
         Options are: "knn", "lda", "bayes", "svm"
-    :param power_transform: apply power transform of features in preprocessing instead 
+    :param power_transform: apply power transform of features in preprocessing instead
         of normalization
-    
+
     :return: training and testing accuracy for each combination of features
     """
     results = []
@@ -239,13 +239,13 @@ def enumerate_models(
             Y: pd.DataFrame,
             domain: str,
             k_neighbors: Tuple[int] = (3, 5, 11, 15),
-            num_of_features: Tuple[int] = (2, 3, 4, 5), 
+            num_of_features: Tuple[int] = (2, 3, 4, 5),
             kfolds: int =5,
             power_transform: bool = False,
             model='knn'
         ) -> pd.DataFrame:
-    """Grid search of parameters k-nearest neighbours classifier 
-    with feature subset combinations 
+    """Grid search of parameters k-nearest neighbours classifier
+    with feature subset combinations
 
     :param X: data frame of predictor features
     :param Y: column of labels
@@ -253,12 +253,12 @@ def enumerate_models(
     :param k_neighbors: neighbours for k-nearest neighbours model to search in
     :param num_of_features: number of features in the subset to search in
     :param kfolds: number of splits for k-fold cross-validation
-    :param power_transform: apply power transform of features in preprocessing instead 
+    :param power_transform: apply power transform of features in preprocessing instead
         of normalization
-    :param model: name of the machine learning model to evaluate. 
+    :param model: name of the machine learning model to evaluate.
         Options are: "knn", "lda", "bayes", "svm"
-    
-    :return: training and testing accuracy for each 
+
+    :return: training and testing accuracy for each
         hyperparameter and feature set combination
     """
     models = []
@@ -269,7 +269,7 @@ def enumerate_models(
                 power_transform=power_transform
             )
             models.extend(result)
-                
+
     return pd.DataFrame.from_records(models)
 
 
@@ -279,7 +279,7 @@ def accuracies_to_table(
             distribution: pd.DataFrame,
             accuracy: pd.DataFrame
         ) -> dict:
-    """Format accuracy to a row with meatadata about hyperparamater and compute
+    """Format accuracy to a row with metadata about hyperparamater and compute
     percentiles in the model accuracy distribution
 
     :param domain: source domain from which the features are extracted ("TD" or "FD")
@@ -296,11 +296,11 @@ def accuracies_to_table(
     test_score = percentileofscore(distribution['test'].to_numpy(), test_accuracy)
     return {
         'domain': domain,
-        'set': set, 
+        'set': set,
         'train_accuracy': train_accuracy,
-        'test_accuracy': test_accuracy, 
+        'test_accuracy': test_accuracy,
         'train_percentile': train_score,
-        'test_percentile': test_score 
+        'test_percentile': test_score
     }
 
 
@@ -323,19 +323,19 @@ def feature_selection_accuracies(
     :params model_summary: accuracies from all feature subset combinations
     :param k_neighbors: neighbours for k-nearest neighbours model
     :param number_of_features: number of features in the subset
-    :param power_transform: apply power transform of features in preprocessing instead 
+    :param power_transform: apply power transform of features in preprocessing instead
         of normalization
 
     :return: accuracies and percentiles for all tested feature selection methods
     """
-    
+
     MODEL_TYPE = 'knn'
     kfolds = 5
     results = []
 
     accuracy_distribution = models_summary[
         (models_summary['domain'] == domain) &
-        (models_summary['k'] == k_neighbors) & 
+        (models_summary['k'] == k_neighbors) &
         (models_summary['f'] == number_of_features)
     ].sort_values(by='train', ascending=False)
 
@@ -350,7 +350,7 @@ def feature_selection_accuracies(
     results.append(r)
 
     y_best = kfold_accuracy(
-        transform_to_pca(X, n=number_of_features), 
+        transform_to_pca(X, n=number_of_features),
         Y, k_neighbors, kfolds, MODEL_TYPE,
         power_transform=power_transform
     )
@@ -400,7 +400,7 @@ def model_boundaries(
     :param X: data frame of predictor features
     :param Y: column of labels
     :param n: number of neighbours for k-nearest neighbours model
-    :param model_name: name of the machine learning model to evaluate. 
+    :param model_name: name of the machine learning model to evaluate.
         Options are: "knn", "lda", "bayes", "svm"
     :param knn_metric: distance metric name for k-nearest neighbours model
 
@@ -446,23 +446,23 @@ def knn_online_learn(
         ) -> pd.DataFrame:
 
     """Progressive valuation of k-nearest neighbours classifier trained
-    with increamental learning 
+    with increamental learning
 
     :param X: data frame of predictor features
     :param Y: column of labels
     :param window_len: Length of the tumbling window
-    :param learn_skip: Gap of labeled observations in amount of samples 
+    :param learn_skip: Gap of labeled observations in amount of samples
     :param clusters: return data points instead of valuation
     :param n_neighbors: number of neighbours for k-nearest neighbours model
 
-    :return: performance of the model in progresive valuation over all generations
+    :return: performance of the model in progressive valuation over all generations
     """
 
     # Buffer true samples for learning for later: simulate delayed annotation
     learning_window = []
 
     # Model consists of scaler to give approximately same weight to all features and kNN
-    scaler = preprocessing.MinMaxScaler() 
+    scaler = preprocessing.MinMaxScaler()
     knn = neighbors.KNNClassifier(n_neighbors=n_neighbors)
 
     scores = []                 # List of tuples with accuracy, precision and recall score on each iteration
@@ -508,5 +508,5 @@ def knn_online_learn(
 
     if clusters:
         return pd.Series(v_predict, index=order_saved)
-        
+
     return pd.DataFrame(scores, columns=['step', 'accuracy', 'precision', 'recall'])

@@ -421,12 +421,12 @@ int32_t iis3dwb_xl_axis_selection_get(stmdev_ctx_t *ctx,
 {
   iis3dwb_ctrl4_c_t ctrl4_c;
   iis3dwb_ctrl6_c_t ctrl6_c;
- 
+
   *val = IIS3DWB_ENABLE_ALL;
 
   int32_t ret = iis3dwb_read_reg(ctx, IIS3DWB_CTRL4_C, (uint8_t *)&ctrl4_c, 1);
   if (ret != 0) { return ret; }
-  
+
   ret = iis3dwb_read_reg(ctx, IIS3DWB_CTRL6_C, (uint8_t *)&ctrl6_c, 1);
   if (ret != 0) { return ret; }
 
@@ -555,7 +555,7 @@ int32_t iis3dwb_temp_flag_data_ready_get(stmdev_ctx_t *ctx,
 }
 
 /**
-  * @brief  Enables the accelerometer user offset correction block, can be enabled 
+  * @brief  Enables the accelerometer user offset correction block, can be enabled
   * by setting the USR_OFF_ON_OUT bit of the CTRL7_C register.[set]
   *
   * @param  ctx    Read / write interface definitions.(ptr)
@@ -579,7 +579,7 @@ int32_t iis3dwb_usr_offset_block_set(stmdev_ctx_t *ctx, uint8_t val)
 }
 
 /**
-  * @brief  Enables the accelerometer user offset correction block, can be enabled 
+  * @brief  Enables the accelerometer user offset correction block, can be enabled
   * by setting the USR_OFF_ON_OUT bit of the CTRL7_C register.[get]
   *
   * @param  ctx    Read / write interface definitions.(ptr)
@@ -1415,10 +1415,10 @@ int32_t iis3dwb_xl_filt_path_on_out_get(stmdev_ctx_t *ctx,
   iis3dwb_ctrl8_xl_t ctrl8_xl;
 
   *val = IIS3DWB_HP_REF_MODE;
-  
+
   int32_t ret = iis3dwb_read_reg(ctx, IIS3DWB_CTRL1_XL, (uint8_t *)&ctrl1_xl, 1);
   if (ret != 0) { return ret; }
-  
+
   ret = iis3dwb_read_reg(ctx, IIS3DWB_CTRL8_XL, (uint8_t *)&ctrl8_xl, 1);
   if (ret != 0) { return ret; }
 
@@ -1540,7 +1540,7 @@ int32_t iis3dwb_xl_fast_settling_set(stmdev_ctx_t *ctx, uint8_t val)
 int32_t iis3dwb_xl_fast_settling_get(stmdev_ctx_t *ctx, uint8_t *val)
 {
   iis3dwb_ctrl8_xl_t ctrl8_xl;
- 
+
   const int32_t ret = iis3dwb_read_reg(ctx, IIS3DWB_CTRL8_XL, (uint8_t *)&ctrl8_xl, 1);
   *val = ctrl8_xl.fastsettl_mode_xl;
 
@@ -1819,7 +1819,7 @@ int32_t iis3dwb_pin_int1_route_set(stmdev_ctx_t *ctx,
 
   int32_t ret = iis3dwb_read_reg(ctx, IIS3DWB_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
   if (ret != 0) { return ret; }
-  
+
   ret = iis3dwb_read_reg(ctx, IIS3DWB_MD1_CFG, (uint8_t *)&md1_cfg, 1);
   if (ret != 0) { return ret; }
 
@@ -1863,10 +1863,10 @@ int32_t iis3dwb_pin_int1_route_get(stmdev_ctx_t *ctx,
   iis3dwb_md1_cfg_t            md1_cfg;
 
   memset(val, 0, sizeof(iis3dwb_pin_int1_route_t));
-  
+
   int32_t ret = iis3dwb_read_reg(ctx, IIS3DWB_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
   if (ret != 0) { return ret; }
-  
+
   ret = iis3dwb_read_reg(ctx, IIS3DWB_MD1_CFG, (uint8_t *)&md1_cfg, 1);
   if (ret != 0) { return ret; }
 
@@ -1912,7 +1912,7 @@ int32_t iis3dwb_pin_int2_route_set(stmdev_ctx_t *ctx,
 
   int32_t ret = iis3dwb_read_reg(ctx, IIS3DWB_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
   if (ret != 0) { return ret; }
-  
+
   ret = iis3dwb_read_reg(ctx, IIS3DWB_MD2_CFG, (uint8_t *)&md2_cfg, 1);
   if (ret != 0) { return ret; }
 
@@ -1955,12 +1955,12 @@ int32_t iis3dwb_pin_int2_route_get(stmdev_ctx_t *ctx,
   iis3dwb_int2_ctrl_t          int2_ctrl;
   iis3dwb_slope_en_t           slope_en;
   iis3dwb_md2_cfg_t            md2_cfg;
- 
+
   memset(val, 0, sizeof(iis3dwb_pin_int2_route_t));
 
   int32_t ret = iis3dwb_read_reg(ctx, IIS3DWB_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
   if (ret != 0) { return ret; }
-  
+
   ret = iis3dwb_read_reg(ctx, IIS3DWB_MD2_CFG, (uint8_t *)&md2_cfg, 1);
   if (ret != 0) { return ret; }
 
@@ -2545,11 +2545,11 @@ int32_t iis3dwb_fifo_watermark_get(stmdev_ctx_t *ctx, uint16_t *val)
   iis3dwb_fifo_ctrl2_t fifo_ctrl2;
 
   *val = 0;
- 
+
   int32_t ret = iis3dwb_read_reg(ctx, IIS3DWB_FIFO_CTRL2,
                          (uint8_t *)&fifo_ctrl2, 1);
   if (ret != 0) { return ret; }
-  
+
   ret = iis3dwb_read_reg(ctx, IIS3DWB_FIFO_CTRL1,
                            (uint8_t *)&fifo_ctrl1, 1);
 
@@ -2976,11 +2976,11 @@ int32_t iis3dwb_batch_counter_threshold_get(stmdev_ctx_t *ctx,
   iis3dwb_counter_bdr_reg2_t counter_bdr_reg2;
 
   *val = 0;
- 
+
   int32_t ret = iis3dwb_read_reg(ctx, IIS3DWB_COUNTER_BDR_REG1,
                          (uint8_t *)&counter_bdr_reg1, 1);
   if (ret != 0) { return ret; }
-  
+
   ret = iis3dwb_read_reg(ctx, IIS3DWB_COUNTER_BDR_REG2,
                            (uint8_t *)&counter_bdr_reg2, 1);
   if (ret != 0) { return ret; }

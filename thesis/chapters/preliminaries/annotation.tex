@@ -16,9 +16,9 @@
 
 Master's thesis focuses on condition monitoring and predictive maintenance of rotating machinery by employing feature discovery and statistical classification. 
 
-Trend indicators are derived from vibration signals to form summarizing numerical attributes. The similarity of features to a dependent variable describing fault types is assessed by supervised feature selection metrics individually and in the ensemble. The accuracy of fault detection using the k-nearest neighbor is evaluated on the best feature subsets to conserve data rates of the monitoring solution. The incremental learning model is compared to its batch counterpart when truthful labels are delayed or missing. 
+Trend indicators are derived from vibration signals to form summarizing numerical attributes. The similarity of features to a dependent variable describing fault types is assessed by supervised feature selection metrics individually and in the ensemble. The accuracy of fault detection using the k-nearest neighbor is evaluated on the best feature subsets to conserve the data rates of the monitoring solution. The incremental learning models are compared to their batch counterparts when truthful labels are delayed or missing. An extendible software toolkit of vibrodiagnostics is implemented as a Python package.
 
-Based on the MaFaulDa dataset, classification metrics are evaluated in several scenarios, and lossy compression ratios are expressed. The measurement plan and sensor device are designed to enable collection of novel dataset of machinery behavior for compressors and pumps. The contribution of this work lies in identifying the viability of using a few quantities to describe not just the presence of the machine defect but also its cause.
+Classification metrics are evaluated in scenarios of the MaFaulDa dataset, and lossy compression ratios are expressed. Our accelerometer data logger collects a novel dataset of machinery behavior for compressors and pumps in the industrial environment. The contribution of this work lies in identifying the viability of using a few quantities to describe not just the presence of the machine defect but its cause, too.
 \emptypage 
 
 \thispagestyle{empty}
@@ -39,7 +39,8 @@ Based on the MaFaulDa dataset, classification metrics are evaluated in several s
 
 Diplomová práca sa zaoberá monitorovaním stavu rotačných strojov a ich prediktívnou údržbou prostredníctvom techník výberu atribútov a štatistickej klasifikácie.
 
-Z vibračných signálov sú odvodené trendové indikátory a tak vytvárajú sumarizujúce číselné atribúty. Podobnosť atribútov so závislou premennou popisujúcou typy porúch sa posudzuje metrikami výberu atribútov v učení s učiteľom. Metriky sú hodnotené individuálne a súborovo. Presnosť detekcie porúch algoritmom k-najbližších susedov sa vyhodnocuje na podmnožinách najlepších atribútov. Tým sa znížia požiadavky na objem prenosu dát v monitorovacom riešení. Model prírastkového učenia sa porovnáva s učením v dávkach, v situáciach kedy je expertné označenie prevádzkového stavu oneskorené alebo chýbajúce.
+Z vibračných signálov sú odvodené trendové indikátory a tak vytvárajú sumarizujúce číselné atribúty. Podobnosť atribútov so závislou premennou popisujúcou typy porúch sa posudzuje individuálne a súborovými metrikami výberu atribútov v učení s učiteľom.  Presnosť detekcie porúch algoritmom k-najbližších susedov sa vyhodnocuje na podmnožinách najlepších atribútov. Tým sa znížia požiadavky na objem prenosu dát v monitorovacom riešení. Modely prírastkového učenia sú porované s učením v dávkach, v situáciach kedy je expertné označenie prevádzkového stavu oneskorené alebo chýbajúce. Rozšíriteľná sada funkcií pre vibrodiagnostiku je implementovaná ako balík v jazyku Python.
 
-Na základe súboru údajov MaFaulDa sú klasifikačné metriky vyhodnotené podľa viacerých scenárov a tiež sú vyjdrené stratové kompresné pomery. Plán merania a senzorové zariadenie sú navrhnuté na zber nového súboru údajov o správaní sa strojov ako sú kompresory a čerpadlá. Prínos tejto práce spočíva v identifikácii možnosti použitia iba pár veličín na opis nielen prítomnosti poruchy, ale aj jej príčiny.
+Metriky kladifikácie sú vyhodnotené v scenároch na dátovej sade MaFaulDa a tiež sú vyjdrené stratové kompresné pomery Náš záznamník údajov akcelerometra zhromažďuje nový súbor údajov o správaní sa strojov pre kompresory a čerpadlá v priemyselnom prostredí. Prínos tejto práce spočíva v identifikácii možnosti použitia iba pár veličín na opis nielen prítomnosti poruchy, ale aj jej príčiny.
 \emptypage
+

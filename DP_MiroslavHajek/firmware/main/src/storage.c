@@ -35,20 +35,20 @@ sdmmc_card_t *storage_enable(const char *mount_point)
     return card;
 }
 
-void storage_disable(sdmmc_card_t *card, const char *mount_point) 
+void storage_disable(sdmmc_card_t *card, const char *mount_point)
 {
     esp_vfs_fat_sdcard_unmount(mount_point, card);
 }
 
-static unsigned long get_new_recording_name(const char *path) 
+static unsigned long get_new_recording_name(const char *path)
 {
     uint32_t seq = 0;
     char filename[MAX_FILENAME];
 
     DIR *folder = opendir(path);        // Needs trailing slash
-    if (folder == NULL) 
+    if (folder == NULL)
         return seq;
-    
+
     struct dirent *entry;
 
     while ((entry = readdir(folder)) != NULL) {
@@ -63,7 +63,7 @@ static unsigned long get_new_recording_name(const char *path)
         if (name > seq)
             seq = name;
     }
-        
+
     closedir(folder);
     return seq + 1;
 }
