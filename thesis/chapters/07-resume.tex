@@ -1,0 +1,112 @@
+\chapter{Resumé}
+
+\section{Úvod}
+Vzostup priemyslu 4.0 so sebou prináša väčšiu mieru automatizácie s cieľom dosiahnuť optimálne využitie dostupných zdrojov. Na základe nepretržitého sledovania opotrebenia zariadení v reálnom čase sa majú zabezpečiť nápravné opatrenia na opravu alebo výmenu súčiastok včas, v reakcii na trendové ukazovatele. 
+
+Cieľom je zachovať požadovanú bezpečnosť a efektivitu výroby a zároveň predĺžiť životnosť rotujúcich komponentov. Proaktívna diagnostika porúch je nevyhnutná na začatie opráv bez nadbytočných nákladov. Vibrácie predstavujú nerušivý spôsob, ako zistiť a zaznamenať prípadne fatálne zlyhania hneď v zárodku. Hlavným problémom pri monitorovaní veľa strojov s vibráciami, je to, že vzniká množstvo záznamov, ktoré nie sú priamo užitočné pre operátora výrobnej linky. Väčšina signálov sa zobrazí maximálne raz, preto je zbytočné ich ukladať alebo prenášať vcelku. 
+
+Zároveň na dosiahnutie maximálnej presnosti detekcie musí byť model strojového učenia trénovaný pre cieľové prostredie. Poruchy sú navyše pomerne zriedkavé udalosti, ktoré sa zvyčajne vyskytujú s odstupom niekoľkých mesiacov. Za týchto okolností je ťažké rýchlo získať dostatočne veľkú vzorku poruchových udalostí.
+
+\section{Sledovanie prevádzkového stavu}
+Existujú tri rôzne prístupy k údržbe strojov: reaktívny, preventívny a prediktívny.
+Pri reaktívnej údržbe beží stroj až do úplného zlyhania a je prijateľná vtedy, keď je možná úplná a rýchla výmena pokazeného stroja za záložný. Preventívna údržba prebieha v pravidelných intervaloch odvodených od vopred určeného rozvrhu v alebo strednej doby medzi poruchami. Prediktívna údržba zlepšuje predvídateľnosť oproti reaktívnej údržbe a eliminuje plytvanie voči príliš obozretnej prevencii. Odstávka stroja je naplánovaná po zistení kritických hodnôt a po odhalení problematických komponentov.
+
+Mechanické problémy počas prevádzky strojov spôsobujú v mnohých prípadoch vibrácie. Vibroakustická diagnostika sa preto považuje za jednu z najdôležitejších metód pri včasnej identifikácii porúch komponentov. Najbežnejšie sa vyskytujúcimi poruchami sú nevyváženosť, nesúosovosť, vôľa, excentricita, deformácia, trhlina a nadmerné trenie. 
+
+Symptómy porúch rotačných strojov sa prejavujú rôznymi frekvenčnými pásmami, ale väčšina je závislá od rotačnej rýchlosti súčiastky. Nevyváženosť, nesúosovosť a vôľa sa bežne objavujú v frekvenciách do 300 Hz. Poruchy ložísk a prevodovky v neskorých štádiách vývoja sa prejavujú v rozsahu medzi 300 Hz a 1 kHz. Vyššie frekvencie do 10 kHz pomáhajú odhaliť poruchy ložísk v skorších štádiách rozvoja.
+
+Postupy monitorovania stavu založené na vibráciách musia byť v súlade s normatívnymi smernicami ISO 20816 a ISO 13373. Normy sa týkajú umiestnenia meracích zariadení, zberu údajov, konvencií nastavenia úrovní závažnosti porúch. 
+
+\section{Extrakcia a výber atribútov}
+Prediktívna údržba má ideálne predpoklady na využitie extrakcie atribútov, pretože signál je zvyčajne stacionárny a trendové premenné v časovej a frekvenčnej oblasti vychádzajú z expertných znalostí v oblasti mechaniky. Výhody dodatočného úsilia v porovnaní so spracovaním pôvodných vzoriek spočívajú v dosahovaní lepšej presnosti klasifikácie, znížení výpočtovej záťaže a znížení potreby úložnej kapacity. Výber atribútov nie je samostatným krokom v procese strojového učenia, ale mal by sa vykonávať iteratívne na zlepšenie výsledného modelu.
+
+Najrozšírenejšími používanými atribútmi sú štatistické miery centrálneho momentu: priemer, rozptyl, štandardná odchýlka, šikmosť a špicatosť. Charakteristiky amplitúdy zahŕňajú kvadratický priemer (rms), vzdialenosť špička-špička, maximum, absolútnu zmenu amplitúdy (aac), a početnosť prechodov nulou. Ostatné významné atribúty časovej oblasti sú odvodené ako pomery a sú nim: faktor výkyvu, faktor rozpätia, faktor impulzu a faktor tvaru.  
+
+Vo frekvenčnej oblasti sú získané obvyklé štatistické vlastnosti distribúcie, ktorými sú spektrálne ťažisko, šikmosť a špicatosť. Okrem toho sa extrahujú frekvencie roll-on a roll-off, fundamentálna frekvencia, entropia, negentropia, vzájomná korelácia spektier, pomer signálu k šum, a energia vo frekvenčných pásmach.
+
+Atribúty neprispievajú k prediktívnej sile modelu s rovnakým podielom. Výber ich optimálnej podmnožiny je NP-ťažký kombinatorický problém. Kroky všeobecného postupu pri výbere atribútov metódou filtrovania sú generovanie podmnožín, vyhodnotenie podmnožín, ukončovacie kritérium hľadania, a validácia.
+
+Hodnotenie relevancie atribútov je založené na skórovaní podobnosti s predikovanou premennou. Často používané spôsoby zoraďovania dôležitosti atribútov sú prah rozptylu, koeficienty korelácie, ANOVA F štatistika, a vzájomná informácia. Viaceré podmnožiny prediktorov produkovaných každou z výberových metrík môžu slúžiť na trénovanie viacerých variantov klasifikačného modelu. Množiny atribútov je možné kombinovať do súboru volebným systémom ako sú väčšinové hlasovanie alebo súčin poradí.
+
+\section{Diagnostické prístupy}
+Identifikácia porúch rotujúcich strojoch je binárny alebo viac-triedny klasifikačný problém, ktorý pracuje na princípe učenia čiastočne s učiteľom, pretože označenia pre degradované stavy stroja sú v praxi zriedkavé. Ciele automatizácie monitorovania možno rozdeliť na detekciu anomálií a rozpoznanie typu poruchy.
+
+Detekcia anomálií, novostí alebo odľahlých hodnôt určuje, či sa prevádzkový stav stroja výrazne odchyľuje od normálu. Po upozornení môže zasiahnuť odborník a stroj diagnostikovať. Odľahlé hodnoty sú odvodzované na základe neparametrických štatistických modelov, zhlukovania podľa najbližších susedov a prístupov založených na izolácii anomálnych vzoriek. DenStream je algoritmus zhlukovania založený na hustote prispôsobený z DBSCAN na zhlukovanie prúdových dát do ľubovoľne tvarovaných skupín.
+
+Presná viac-triedna klasifikácia príčin porúch stroja podľa vopred známych charakteristík je oveľa náročnejšia úloha ako objavenie anomálií. Algoritmus k-najbližších susedov (k-NN) priradí pozorovanie triede, do ktorej patrí väčšina $k$ bodov v blízkom okolí podľa použitej miery vzdialenosti. Nachádza uplatnenie aj v učení čiastočne s učiteľom, pretože dokáže odvodiť označenia len zo znalosti niekoľkých anotácií.
+
+Ďalším prístupom je online alebo postupné učenie, ktoré aktualizuje parametre modelu s každou novou prichádzajúcou udalosťou. Tento prístup je užitočný pri spracovaní veľkých dát, kedy celý súbor údajov nie je k dispozícii vopred alebo ho nemožno spracovať naraz z dôvodu pamäťových obmedzení.
+
+\section{Výskumné otázky}
+Cieľom tejto práce je poskytnúť odpovede na päť výskumných otázok:
+\begin{enumerate}
+\itemsep0pt
+\item Aké atribúty dokážeme extrahovať z vibračných signálov?
+\item Akú úsporu dát dosiahneme výberom atribútov?
+\item Aké budú presnosti diagnostiky porúch s rôznymi sadami atribútov?
+\item Ako sa správajú vibračné signály zozbierané na priemyselných strojoch?
+\item Ako môžeme priebežne označovať poruchové stavy?
+\end{enumerate}
+
+\section{Návrh spracovania pre MaFaulDa}
+Vo všeobecnosti pozostáva spracovanie signálov vibrácií zo získavania signálu, extrakcie atribútov, redukcie rozmerov a rozpoznávania vzorov alebo detekcie porúch. Realizácia uvedeného postupu je dekomponovaná podľa štruktúry dát a parametrov jednotlivých fáz. 
+
+Predspracovanie najskôr priradí metadáta časovým radom v CSV súboroch z MaFaulDa podľa ich cesty v adresárovej štruktúre. Na základe pôvodného označenia porúch a polohy ložiska je ponechaných šesť tried: bezporuchový stav, nevyváženosť, nesúosovosť, porucha klietky, guľôčok a vonkajšej dráhy ložiska. Každé ložisko sa posudzuje zvlášť. Každú nahrávku popisuje trojica typu poruchy, závažnosti a rýchlosti otáčok. 
+
+Nasleduje rozdelenie časových radov na menšie časti, ak je ich trvanie dlhšie ako dvanásť okien a majú rozlíšenie okolo 1 Hz, čo však neplatí pre MaFaulDa. Jednosmerná zložka a frekvencie nad 10 kHz sú odfiltrované z pôvodných signálov vibrácií. Pôvodne priradené triedy porúch sú pri niektorých experimentoch vymenené za bezporuchový stav, keď je závažnosť poruchy nízka. 
+
+Z predspracovaného signálu v každej osi akcelerometra sú vypočítané dve základné sady atribútov v časovej (TD) a frekvenčnej doméne (FD). Na filtrovanie pozorovaní sa používajú štyri podmienky: umiestnenie ložiska (A alebo B), doména základnej sady atribútov (TD alebo FD), osi akcelerometra použité na výpočet atribútu (jedna alebo tri), ponechanie označení iba pre poruchy vyššej závažnosti (áno alebo nie). Uvedené podmienky vytvárajú dohromady 24 scenárov. 
+
+Úspešnosť klasifikácie porúch strojov sa vyhodnocuje po normalizácii atribútov, vyvážení mohutnosti tried a päťnásobnej krížovej validácii na klasifikátore k-najbližších susedov s euklidovskou metrikou vzdialenosti. Presnosti sa porovnávajú pre rôzne hodnoty hyperparametrov k-susedov a veľkostí podmnožiny atribútov podľa uvedených scenárov.
+
+Návrh experimentov zahŕňa popísané filtračné podmienky, ktoré upravia MaFaulDa do 24 podôb. Navyše v postupnom učení sa porovnávajú dĺžka oneskorovania anotácii a ich vynechávanie. Štyri hlavné experimenty pre porovnanie výberu podmnožiny atribútov zahŕňajú klasifikáciu porúch na základných sád atribútov, na všetkých kombinácií podmnožín prediktorov s určitou veľkosťou, na najlepších atribútoch vybraných cez metriky podobnosti s cieľovou premennou a pomocou modeloch postupného učenia s sťaženým prístupom k pravdivým označeniam tried.  
+
+\section{Zber vibrácií v priemysle}
+Metodiku uplatnenú na súbore údajov MaFaulDa z laboratórneho prostredia aplikujeme na vibrácie z priemyslu. Pri monitorovaní je zužitkovaný postup z technických noriem. Ten zahŕňa výber strojov určených na monitorovanie, identifikáciu pozícií na meranie, predbežné merania a vývoj senzorovej jednotky. 
+
+Na zber údajov boli vyčlenené dva špirálové kompresory ako súčasť klimatizačných jednotiek pre dátové centrum a tri čerpadlá s troma elektromotormi v prečerpávacej stanici na pitnú vodu. Merania sú uskutočnené s mesačným rozostupom vlastným data loggerom na báze vývojovej dosky ESP32-PoE-ISO so slotom na SD kartu. Ako senzor vibrácii je použitý MEMS akcelerometer ST IIS3DWB. Vyznačuje sa vysokou šírkou pásma až 6.3 kHz, nízkym šumom, a vysokou výstupným dátovým tokom 26.7 kHz cez SPI zbernicu. 
+
+Meranie vibrácií na jednom ložisku stroja zahŕňa tri pokusy s nahrávkou o dĺžke 60 sekúnd. Po každom zázname je akcelerometer znova pripevnený na meraciu pozíciu. Snímač je pripevnený k stroju na rovnom povrchu obojstrannou kobercovou páskou.
+
+\section{Vyhodnotenie presnosti diagnostiky}
+Overovanie navrhovaných riešení diagnostiky porúch strojov sa zameriava na dve činnosti, ktorými sú meranie vibrácií a identifikácia porúch.
+
+Väčšinu zámen pri odhaľovaní porúch spraví model pri poruche vonkajšieho krúžku ložiska, ktorú označuje za poruchu klietky ložiska alebo nerovnováhu hriadeľa a menej často za nesúosovosť. Nevyváženosť hriadeľa zabezpečuje v laboratóriu simuláciu porúch ložísk, čiže tam nastáva prirodzene k značnej zámene týchto porúch.
+
+Zvyšujúci sa počet susedov použitých na klasifikáciu s k-NN ukazuje podstatné zníženie presnosti na testovacích dátach. Najvýraznejší pokles o približne 10\% nastáva po deväť susedov. Atribúty vytvorené z trojosového vektora dosahujú lepšiu presnosť ako tie výhradne z osi pohybu pre rovnakú zdrojovú doménu a ložisko. Model pre vnútorné ložisko A je presnejší ako vonkajšie ložisko B. Sada TD je lepšia v identifikácií porúch ako sada FD pre ekvivalentnú hodnotu k. Dátová sada s anotáciami pre poruchy vysokej závažnosti má prudšie zníženie presnosti pre rovnaký počet susedov.
+
+Základné sady prediktorov sú ešte značne zmenšené na reprezentáciu, ktorá by mohla byť prezentovaná v 3D grafe alebo v rovinných rezoch. Každá možná kombinácia párov, trojíc a štvoríc natrénuje samostatný k-NN model, na ktorom sa hodnotí presnosť klasifikácie. Zníženie presnosti so zvzšujúcim sa počtom susedov je zrejmé a podobné trendu v základných sadách atribútov. Zníženie maximálnej presnosti je výraznejšie medzi tromi a piatimi susedmi a takmer o rovnaké množstvo sa degraduje model medzi piatimi a jedenástimi susedmi. 
+
+Ak je počet atribútov je najviac tri a súčasne počet susedov je päť alebo menej, základné množiny atribútov dosahujú lepšiu presnosť ako ich podmnožiny.
+Počet prediktorov má priamy úmerný vplyv na presnosť optimálneho modelu. Presun z dvoch na tri atribúty má väčšiu váhu ako pridanie štvrtého prediktora. 
+
+Prediktory vybrané pomocou výberových metód sú porovnané s presnosťou klasifikácie kombinácií skupín atribútov rovnakej veľkosti a s presnosťou ich zdrojovej nadmnožiny. Na získanie konzistentnej presnosti je potrebné kombinovať hodnotenia z niekoľkých metrík výberu atribútov. PCA o troch komponentoch transformovaných zo základných sád atribútov je presnosťou porovnateľná s metódami výberu s pôvodnými atribútmi. Trojica prediktorov s najlepšími výsledkami zo sady TD sú: početnosť prechodov nulou, vzdialenosť špička-špička, šikmosť a zo sady FD: spektrálne ťažisko, roll-off frekvencia a entropia.
+
+Metrika vzájomnej informácie dosahuje lepšiu strednú presnosť (80,87\%) a percentil v distribúcii presností (91,81\%). Nasledovaná je súčinom poradí s presnosťou 79,82\% a percentilom 88,97\% Súčin poradí je považovaný za najlepšiu stratégiu v 43,52\% prípadov. Vzájomná informácia je na druhom mieste s 40,28\% prípadov. Stredná presnosť vo sitáciach, kde je zvolená metóda výberu najlepšia, je tiež lepšia pre súčin poradí s 92,38\% v porovnaní s 91,79\% pri vzájomnej informácii. Výber atribútov zvyčajne vyberá premenné tak, že ich presnosť objaví v hornom kvartile distribúcie.
+
+Postupné učenie napodobňuje sprísnené podmienky pre diagnostiku strojov, ktoré sa objavujú pri nasadení v praxi. Oneskorené poskytnutie alebo vynechanie skutočných označení nepochybne znižuje spoľahlivosť klasifikácie. Modely k-NN v experimentoch s postupným učením sa učia na rovnakom základnom súbore trénovacích údajov ako pri dávkovom učení pre ložisko A. Metriky online vzdelávania sa vyhodnocujú progresívnym vyhodnotením na nevyváženom súbore údajov. Presnosti klasifikácie medzi postupným a dávkovým učením sú porovnané na finálnej presnosti online modelu. 
+
+Udalosti sú usporiadané podľa stúpajúcej úrovne relatívnej závažnosti, čím simulujeme postupnú celkovú degradáciu stroja. Presnosť testov porovnateľných dávkových modelov z troch najlepších vlastností je 85,47\% (TD), 87,52\% (FD), 91,71\% (TD, závažnosť) a 91,94\% (FD, závažnosť). Najvyššie presnosti po postupnom zhliadnutí vzoriek v najdlhších posuvných oknách s dĺžkou 100 pozorovaní sú znížené v porovnaní s dávkovým modelom o 9,76\% (TD), 10,54\% (FD), 14,73\% (TD, závažnosť) a 11,38\% (FD, závažnosť). Ponechanie 10\% anotácií ich rovnomerným vynechávaním a trénovanie modelu s oknom 10 vzoriek zníži maximálnu presnosť modelu s tromi prediktormi v časovej doméne o 9,9\% na 66,78\% a o 14,93\% na 67,00\% vo frekvenčnej doméne.
+
+\section{Rozbor dátovej sady z priemyslu}
+Správanie sa rôznych strojov je porovnané vo frekvenčnej doméne a cez časovo-frekvenčné spektrogramy. Aktuálny stav čerpadiel nameraný vlastným data loggerom je obohatený o záznamy zo senzora vibrácií od výrobcu. Potenciálne poruchy sú diagnostikované podľa postupu od doménových expertov. 
+
+Motor M2 na pozícii dva má zvýšené amplitúdy nad 4 kHz v porovnaní s motorom M1. Čerpadlá majú bohatší frekvenčný signál ako motory, pravdepodobne v dôsledku toku vody. Vonkajšie ložisko čerpadla (4) vykazuje nižšiu amplitúdu vibrácií nad 1,5 kHz ako vnútorné ložisko (3). Čerpadlo P2 vo všeobecnosti vykazuje menšie vibrácie v porovnateľných pásmach. Skriňa kompresora vytvára sériu harmonických frekvencií, ktoré sú silnejšie v blízkosti sacieho ventilu ako v blízkosti základne.
+
+Doménoví experti odporučili postup identifikácie porúch výpočtom charakteristických frekvencií ložísk. Vo frekvenciách sú viditeľné harmonické frekvencie rýchlosti rotácie frekvencie BPFO pri každom stroji a BPFI pre M2-2. Dá sa predpokladať, že práve tieto frekvencie budú v budúcnosti dôvodom poškodenia týchto strojov.
+
+Aktuálne výsledky naznačujú, že ložiská sú v bezchybnom stave. Počas viac ako piatich rokov prevádzky čerpadla sa nevyskytol ani jeden prípad poruchy ložiska v dôsledku ich dlhej životnosti a každoročnej profylaktickej údržby. To podčiarkuje náročnosť záznamu poruchových stavov v priemyselnom prostredí. 
+
+\section{Záver}
+V diplomovej práci sme sa zamerali na výber trendových ukazovateľov pre monitorovanie prevádzkového stavu rotačných strojov a odhaľovanie porúch z vibračných signálov.  Extrahované premenné pochádzajú hlavne z popisných štatistík, z odborných článkov o spracovaní zvukových signálov, mechanických vlastností ložísk a technických noriem vibrodiagnostiky.
+
+Dosiahnuté stratové kompresné pomery pre MaFaulDa sú 2381:1 pre všetky atribúty a 25000:1 pre šesť atribútov. Podarilo sa nám dosiahnuť úsporu dát o viac ako 99,995\%. Zistili sme, že nami použitá základaná sada atribútov z časovej domény dosahuje vyššiu presnosť ako sada frekvenčnej domény kvôli menším vzájomným koreláciám. Zvýšenie počtu susedov pre k-NN vedie k menšej presnosti modelu. Prediktory agregované z trojosového záznamu dosiahli lepšie výsledky v klasifikácii ako prediktory z jednej osi. 
+
+Metódy výberu prvkov vo väčšine prípadov sú schopné vybrať skupinu s presnosťou nad horným kvartilom rozdelenia presnosti z každej kombinácie atribútov rovnakej mohutnosti. Súčin poradí troch metód na výber atribútov je najlepší v 44\% experimentálnych prípadov, nasledovaný metrikou vzájomnej informácie. Súčin poradí dosiahol percentil 97,50\% v štatistickom rozdelení presnosti na trojprvkových množinách prediktorov.
+
+Algoritmus inkrementálneho učenia k-NN na nevyváženej množine údajov trojíc atribútov dosahuje presnosť prinajlepšom 77\% so anotáciami, ktoré prichádzajú v posuvných oknách s dĺžkou sto pozorovaní. Presnosť 67\% dosahuje online k-NN model, keď len 10\% pozorovaní zostane označených. Porovnateľný model trénovaný v dávkach dosahuje presnosť 88\%.
+
+Analýza zhromaždených dátových súborov potvrdila stacionárnosť spektra signálu pri konštantnej záťaži a dĺžku päť-sekundových časových radov ako vyhovujúcu pre extrakciu atribútov. Potvrdila sa tiež náročnosť získavania pozorovaní porúch častí stroja bez zámerného poškodenia ložísk a vychýlenia hriadeľa.
+
+Ďalším rozšírením diplomovej práce je potvrdenie platnosti výsledkov aj v iných verejne dostupných dátových sadách porúch strojov, napr. v CWRU. Ďalej je možné použitie rôznych počiatočných základných sád atribútov. Súborové metódy inšpirované volebnými systémami je možné využiť pri úlohe výberu prediktorov. Data logger môže byť skombinovaný s modelom klasifikátora a mechanizmom na anotáciu pozorovania buď automaticky v závislosti od celkovej úrovne vibrácií, alebo manuálne počas údržby alebo po neočakávanej poruche.
+\clearpage

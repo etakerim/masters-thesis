@@ -319,7 +319,7 @@ The k-NN models in incremental learning experiments learn on the same base train
 
 The \textbf{stream of events} is ordered by rising severity levels (Fig.~\ref{fig:design:online-count-severity-level}), which ensures steady increments in label counts throughout the simulation (Fig.~\ref{fig:design:online-event-order}). The same sorting approach is applied to the dataset where low-severity faults are annotated as baseline. During most of its lifespan, the machine simulator looks to be in a fine operating state. Near the end of the simulation, faults start to develop (Fig.~\ref{fig:design:online-event-order-severity}). These artificially streamed event sequences are a bit unrealistic because all types of faults never begin to appear simultaneously with equal strengths. It is meant to approximate the gradual overall degradation of the machine.
 
-A significant change in the data stream occurs after 294 out of 1438 observations (or after 737 for high severity faults) when all 49 (or 737) normal conditions are consumed in the training process. Counters of other faults show that predictions are skewed towards more represented imbalance and misalignment. The uneven evolution of categories in a stream impacts the development of accuracy in the remaining experiments. The test accuracies of comparable batch models from the three best features are 85.47\% (TD), 87.52\% (FD), 91.71\% (TD severity), and 91.94\% (FD severity).
+A significant change in the data stream occurs after 294 out of 1438 observations (or after 737 for high severity faults) when all 49 (or 737) normal conditions are consumed in the training process. Counters of other faults show that predictions are skewed towards more represented classes of imbalance and misalignment. The uneven evolution of categories in a stream impacts the development of accuracy in the remaining experiments. The test accuracies of comparable batch models from the three best features are 85.47\% (TD), 87.52\% (FD), 91.71\% (TD severity), and 91.94\% (FD severity).
 
 \begin{figure}[]
     \centering
@@ -367,7 +367,7 @@ A significant change in the data stream occurs after 294 out of 1438 observation
         \includegraphics[width=\textwidth]{assets/results/incremental-learning/skip-label-FD-severity.png}
         \caption{Frequency-domain features (severity)}
     \end{subfigure} 
-    \caption{Omission of labels during incremental learning with tumbing window of length 10 and gaps of size 0, 10, and 50 samples}
+    \caption{Omission of labels during incremental learning with tumbling window of length 10 and gaps of size 0, 10, and 50 samples}
     \label{fig:evaluation:label-skips-online}
 \end{figure}
 
@@ -459,22 +459,22 @@ The electric motor signals are polluted by noise from the wind blowing out of a 
     \hfill
     \begin{subfigure}[b]{0.24\textwidth}
         \includegraphics[width=\textwidth]{assets/results/defects/motors-dB.png}
-        \caption{Pumps}
+        \caption{Motors (dB)}
     \end{subfigure}
     \begin{subfigure}[b]{0.24\textwidth}
         \includegraphics[width=\textwidth]{assets/results/defects/pumps.png}
-        \caption{Motors}
+        \caption{Pumps}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.24\textwidth}
         \includegraphics[width=\textwidth]{assets/results/defects/pumps-dB.png}
-        \caption{Pumps dB}
+        \caption{Pumps (dB)}
     \end{subfigure}
     \caption{Characteric bearing frequencies of pumps}
     \label{fig:evaluation:bearing-freq}
 \end{figure}
 
-Domain experts recommended the procedure for fault identification by calculation of bearing characteristic frequencies (Tab.~\ref{tab:evaluation:bearing-freq-pump}), and they approved the following results. Figure~\ref{fig:evaluation:bearing-freq} identifies harmonics of rotational speed and BPFO frequency in every machine and BPFI for M2-2. It can be assumed that those frequencies will be the reason for their damage in the future. The absolute acceleration is minuscule in current frequency bands and year-long sensor log of rms velocity (Fig~\ref{fig:evaluation:ksb-guard-rms-vibartions}).
+Domain experts recommended the procedure for fault identification by calculation of bearing characteristic frequencies (Tab.~\ref{tab:evaluation:bearing-freq-pump}), and they approved the following results. Figure~\ref{fig:evaluation:bearing-freq} identifies harmonics of rotational speed and BPFO frequency in every machine and BPFI for M2-2. It can be assumed that those frequencies will be the reason for damage in the future. The absolute acceleration is minuscule in current frequency bands and year-long sensor log of rms velocity (Fig~\ref{fig:evaluation:ksb-guard-rms-vibartions}).
 
 \begin{figure}[h]
     \centering

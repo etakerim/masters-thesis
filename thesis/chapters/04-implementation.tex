@@ -1,5 +1,5 @@
 \chapter{Implementation} \label{chapter:implementation}
-The tools implemented include exploration of datasets using statistical overviews and visualizations, experiments of feature selection which involve machine learning pipeline, and firmware for data logger's hardware. 
+The tools we implement include the exploration of datasets using statistical overviews and visualizations, feature selection experiments that involve a machine learning pipeline, and firmware for the data logger's hardware.
 
 \section{Data analysis}
 The data processing and data mining on the MaFaulDa and Pump dataset takes place in several \emph{JupyterLab} notebooks written in \emph{Python} language. The purpose of individual notebooks is described in detail in Appendix~\ref{appendix:technical-docs}. Utility functions are located in separate package \emph{vibrodiagnostics} so that the experiments can be realized under multiple conditions.
@@ -29,7 +29,7 @@ pandas.DataFrame(zip(X.columns, metric(X, Y)),
 Since the central focus of this work targets feature selection, the source code listing~\ref{lst:rank-product} and \ref{lst:rank-product} demonstrates the ranking scores calculated for features in data frame X. Leaderboards are united by geometric mean to produce rank product ordering.
 
 \section{Firmware}
-The drivers for low-level interfaces of ESP32 microcontroller and FAT32 filesystem are already available in Espressif ESP-IDF SDK. The accelerometer driver is made available by the vendor\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}. The entry routine of the firmware mounts the SD card, sets up GPIO pins for LED and button, and executes three \emph{FreeRTOS} tasks. Procedures in firmware are described in Appendix~\ref{appendix:technical-docs}. The hardware (Fig.~\ref{fig:hw-data-logger}) was built by the thesis consultant based on the complete specification supplied by the author.
+The drivers for low-level interfaces of ESP32 microcontroller and FAT32 filesystem are already available in Espressif ESP-IDF SDK. The accelerometer driver is made available by the vendor\footnote{IIS3DWB driver: \url{https://github.com/STMicroelectronics/iis3dwb-pid}}. The entry routine of the firmware mounts the SD card, sets up GPIO pins for LED and button, and executes three \emph{FreeRTOS} tasks. Procedures in firmware are described in Appendix~\ref{appendix:technical-docs}. The hardware (Fig.~\ref{fig:hw-data-logger}) was built by the thesis consultant based on the detailed specification supplied by the author.
 
 \begin{figure}[h]
     \centering
@@ -65,9 +65,9 @@ The testing process of the firmware revealed two issues that were resolved subse
     \label{fig:implementation:file-write}
 \end{figure}
 
-Another impediment presented the slow string formatting with \emph{printf} family of functions during the accelerometer sampling. The readings cannot be written to TSV directly because the real-time (RT) deadline is not met due to the high sampling rate. It is true even if the queue is utilized and the processing takes place in another task. The binary files from the SD card are converted in bulk to TSV with custom Python command line script \verb|bin2tsv.py|.
+Slow string formatting with \emph{printf} family of functions during the accelerometer sampling presented another impediment. The readings cannot be written to TSV directly because the real-time (RT) deadline is not met due to the high sampling rate. This is true even if the queue is utilized and the processing takes place in another task. The binary files from the SD card are converted in bulk to TSV with custom Python script \verb|bin2tsv.py|.
 
-During debugging, the pin was set to change the output level immediately before the one buffer started file write and after its completion. The scopes in Figure~\ref{fig:implementation:file-write} show the time the write took for binary compared to the TSV format. In writing to TSV format, the relation of numbers of already processed buffers $x$ to those left to process $y$ is: $y = 3.7x$. It is a monotonically increasing function, so the system would eventually overrun any sized assigned queue.
+During debugging, the pin was set to change the output level immediately before the one buffer started file write and after its completion. Waveforms in Figure~\ref{fig:implementation:file-write} show the time it took to write in binary format compared to the TSV format. The relation of already processed buffers $x$ to those left to process $y$ is $y = 3.7x$ for TSV format. It is a monotonically increasing function, so the system would eventually overrun queue of any size.
 
 The hardware FIFO of 512 sample vectors fills up in 19.05 ms. The processing time $t$ has to satisfy inequality for deadline: $t \leq 2 \cdot \frac{1}{f_s} \cdot N_{FIFO} $. The RT deadline is 38.1 ms, beyond which the samples get dropped. In an embedded device, the short recoding burst (80.4 kSps) would need to be written temporarily in binary format to external memory and processed in two passes.
 
