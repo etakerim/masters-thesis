@@ -22,7 +22,7 @@ The two full sets of features include ten extracted from time-domain and eleven 
     \label{fig:evaluation:all-features-confusion-matrix}
 \end{figure}
 
-The inner bearing observations are selected to train the k-NN with five neighbours and Euclidean distance metric. The attributes are normalized beforehand, rows are oversampled to a majority label, and data is split into training and testing sets with an 80:20 proportion. The 598 observation of validation data determines the confusion matrix (Fig.~\ref{fig:evaluation:all-features-confusion-matrix}). 
+The inner bearing observations are selected to train the k-NN with five neighbours and Euclidean distance metric. The attributes are normalized beforehand, rows are oversampled to a majority label, and data is split into training and testing sets with an 80:20 proportion. The 598 observations of validation data determines the confusion matrix (Fig.~\ref{fig:evaluation:all-features-confusion-matrix}). 
 
 The label ``normal'' is not falsely attributed to other classes in either feature set, but other classes can get assigned to be ``normal''. Most mistakes happen while predicting outer race fault, which gets confused with cage fault, imbalance, and less often with misalignment. The shaft imbalance is applied to simulate bearing faults, which is a natural reason for this high error rate.
 
