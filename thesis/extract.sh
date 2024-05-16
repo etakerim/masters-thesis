@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-pdftk thesis.pdf cat 3-85 output BP_MiroslavHajek.pdf  
-pdftk thesis.pdf cat 86-127 output BP_prilohy_MiroslavHajek.pdf
+pdftk build/thesis.pdf cat 1-126 output DP_MiroslavHajek.pdf
+pdftk build/thesis.pdf cat 127-180 output DP_prilohy_MiroslavHajek.pdf
  

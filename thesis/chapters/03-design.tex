@@ -25,7 +25,7 @@ The thesis aims to provide answers to five research questions. The main focus is
 \end{todolist}
 
 \section{Machine learning pipeline}
-We adopt a similar data processing framework found also elsewhere in the literature. It generally consists of signal acquisition, feature extraction, dimensionality reduction, and pattern recognition or fault detection~\cite{wang_bearing_2015}. However, the realization of the steps must be decomposed closer to suit the dataset structure, desired processing goals, and investigated parameters. The entire design of the data flow is in Figure~\ref{fig:design:ml-pipeline}.
+We adopt a similar data processing framework found also elsewhere in the literature. It generally consists of signal acquisition, feature extraction, dimensionality reduction, and pattern recognition or fault detection~\cite{wang_bearing_2015}. However, the realization of the steps must be decomposed closer to suit the dataset structure, desired processing goals, and investigated parameters. The design of the data flow is in Figure~\ref{fig:design:ml-pipeline}.
 
 \begin{figure}[h]
     \centering
@@ -35,24 +35,24 @@ We adopt a similar data processing framework found also elsewhere in the literat
 \end{figure}
 \afterpage{\clearpage}
 
-The signals are in columns of CSV files within the MaFaulDa ZIP archive. \textbf{In preprocessing step}, they are first associated with metadata according to their file's path in the directory structure. The hierarchically topmost folder describes the simulated defect. There is directory for \emph{normal}, \emph{imbalance}, \emph{horizontal-misalignment}, \emph{vertical-misalignment}, \emph{overhang} (outer bearing), \emph{underhang} (inner bearing). Each bearing has an additional folder layer for dividing up bearing faults: \emph{ball\_fault}, \emph{cage\_fault}, \emph{outer\_race}. Fault categories, except the normal class, contain various fault severities marked with units of grams or millimeters. Severities, in turn, consist of individual files with different rpm speeds. 
+The signals are in columns of CSV files within the MaFaulDa ZIP archive. \textbf{In preprocessing step}, they are first associated with metadata according to their file's path in the directory structure. The hierarchically topmost folder describes the simulated defect. There are directories for \emph{normal}, \emph{imbalance}, \emph{horizontal-misalignment}, \emph{vertical-misalignment}, \emph{overhang} (outer bearing), \emph{underhang} (inner bearing). Each bearing has an additional folder layer for dividing up bearing faults: \emph{ball\_fault}, \emph{cage\_fault}, \emph{outer\_race}. Fault categories, except the normal class, contain various fault severities marked with in grams or millimeters. Fault severities, in turn, consist of individual files with different rpm speeds. 
 
-The labels for shaft misalignment in vertical and horizontal directions are merged into the same group because we neglect the \textbf{acceleration sensor orientation}. In the end, that leaves \textbf{six types of labels}: baseline, two shaft faults are imbalance and misalignment, and three bearing faults are cage fault, ball fault, and outer race fault.  
+The labels for shaft misalignment in vertical and horizontal directions are merged into the same group because we neglect the \textbf{accelerometer spatial orientation}. This merging leaves \textbf{six types of labels}: baseline, two shaft faults are imbalance and misalignment, and three bearing faults are cage fault, ball fault, and outer race fault.
 
-Depending on the \textbf{chosen bearing position}, only time series associated with that bearing are retained because the standards demand each bearing be assessed separately. Fault classification concerns with bearing in direct contact and shaft mechanically passing through it.
+Depending on the \textbf{chosen bearing position}, only time series associated with that bearing are retained because the standards demand that bearings are assessed separately. Fault classification is concerned with bearing in direct contact and the shaft mechanically passing through it.
 
-The strength of the recorded response to the underlying defect is dependent on the shaft \textbf{rotational speed}. Speed in units of rpm is calculated from pulsed speedometer output. It is the average distance between two successive rising edges:
+The strength of the vibrations in response to the defect is dependent on the shaft's \textbf{rotational speed}. Speed in units of rpm is calculated from pulsed speedometer output. It is an average distance between two successive rising edges:
 \begin{ceqn}\begin{align}
 \mathrm{rpm} = 60 \;/\; \overline{\Delta t}
 \end{align}\end{ceqn}
 
-\textbf{File description} is the triplet of \textbf{fault}, \textbf{severity}, and \textbf{rpm}. After labeling, we insert a step to split the time series into parts when the duration is long enough to introduce more observations artificially. This assumption for splitting is not met for MaFaulDa because, for the desired frequency resolution for features of close to 1~Hz, we need a window size of 32768 samples. Variation reduction in spectral estimation necessitates averaging at least twelve overlapping windows. The full length of five seconds provides fifteen complete windows.
+\textbf{File description} is the triplet of \textbf{fault}, \textbf{severity}, and \textbf{rpm}. After labeling, we insert a step to split the time series into parts when the duration is long enough to introduce more rows artificially. This assumption for splitting is not met for MaFaulDa because, for the desired frequency resolution for features of close to 1~Hz, we need a window size of 32768 samples. Variation reduction in spectral estimation necessitates averaging at least twelve overlapping windows. The full length of five seconds provides fifteen complete windows.
 
-The \textbf{DC component} in the three-dimensional vibration signal is removed by subtracting the global mean. Immediately follows a digital IIR Butterworth low pass filter of \nth{5} order with cutoff frequency 10 kHz at -3 dB. Before the usage of a low pass filter, the peak at 20 kHz with a sideband was present as an unwanted artifact. It could not have been reliably recorded due to the linear frequency response of the sensor up to 10 kHz. At the same time, such a frequency is outside the range of any feasible MEMS accelerometer.
+The \textbf{DC component} in the three-dimensional vibration signal is removed by subtracting the global mean. Digital IIR Butterworth low pass filter of \nth{5} order immediately follows with cutoff frequency 10 kHz at -3 dB. Before its use, the peak appeared at 20 kHz with a sideband as an unwanted artifact. It could not have been reliably recorded due to the linear frequency response of the sensor up to 10 kHz. At the same time, such a frequency is outside the range of any feasible MEMS accelerometer.
 
-\textbf{Initial labels can be exchanged} for a label of fault-free state when the severity is low. The count of severity levels is not identical in every group. The numerical amounts for each level are sorted in ascending order within each fault and then these levels are normalized using a min-max scaler.
+\textbf{Initial labels can be exchanged} for a label of fault-free condition when the defect severity is low. The severity levels are not identical in every group. The numerical amounts for each level are sorted in ascending order within each fault group, and then these levels are normalized using a min-max scaler.
 
-The preprocessed signal from each axis of accelerometer is packed up to \textbf{two base feature sets} in time domain (TD) and frequency domain (FD). The feature extraction formulas are identical with formulas presented in the section \ref{section:feature-extraction} of analysis chapter. The frequency transform is Welch's method averaging of FFT vectors from 32768 samples after Hann windowing and 50\% overlap. The feature sets are:
+The preprocessed signal from each axis of accelerometer is packed up to \textbf{two base feature sets} in time domain (TD) and frequency domain (FD). The feature extraction formulas are identical with formulas presented in the section \ref{section:feature-extraction} of analysis chapter. The frequency transform is Welch's method on FFT vectors from 32768 samples after Hann windowing and 50\% overlap. The feature sets are:
 \begin{itemize}
 \itemsep0pt
 \item \textbf{TD has 10 time-domain features} - peak-to-peak amplitude (\emph{pp}), zero-crossing rate (\emph{zerocross}), root mean square (\emph{rms}), skewness, kurtosis, shape factor, crest factor, impulse factor, clearance factor, average amplitude change (aac), 
@@ -64,37 +64,33 @@ The four conditions are applied in each instance of the pipeline to filter obser
 \itemsep0pt
 \item \textbf{Source bearings} - samples and fault labels are left in either just for the inner bearing (A), for only the outer bearing (B), or for both bearings (A+B).
 \item \textbf{Feature domain} - the set of extracted features as an input to downstream models is changed either to TD or FD set,
-\item \textbf{Accelerometer axis} - Either one principal direction of motion or all three dimensions are aggregated under same feature name (1 or 3),
-\item \textbf{High severity faults} - to more precisely simulate fault frequencies found in real environment the low severity defects can be considered as normal operation (Yes or No).
+\item \textbf{Accelerometer axis} - either one principal direction of motion or all three dimensions are aggregated under the same feature name (1 or 3),
+\item \textbf{High severity faults} - to more precisely simulate fault frequencies found in the real environment, the low severity defects can be considered as normal machine operation (Yes or No).
 \end{itemize}
 
-The \textbf{fault classification} performance metrics are evaluated after balancing classes feature normalization, and 5-fold cross-validation validation on the k-nearest neighbor classifier with Euclidean distance metric. The population of classes is evened out with random oversampling using a strategy to resample all but the majority class. In the multi-class classification, the micro-averaged performance metrics of accuracy, precision, and recall result in the same number. Therefore, accuracy is only one on the output. 
+The \textbf{fault classification} performance metrics are evaluated after balancing classes, feature normalization, and 5-fold cross-validation in the k-nearest neighbour classifier with Euclidean distance metric. The population of classes is evened out with random oversampling of all but the majority class. In the multi-class classification, the micro-averaged performance metrics of accuracy, precision, and recall give the same number. Therefore, accuracy is only one on the output. 
 
-The hyperparameter of k-neighbours and a feature subset size are tweaked, and results are compared under different preprocessing conditions and in multiple experiments:
+The hyperparameter of k-neighbours and a feature subset size are tweaked. The results are compared under different preprocessing conditions and in multiple experiments:
 
 \begin{itemize}
 \itemsep0pt
-\item \textbf{Complete feature sets}: compare the accuracy of the k-NN model in relation to the k-value as an odd number in the range from 1 to 37 on the dataset under different conditions. The TD and FD sets are treated separately.
+\item \textbf{Complete feature sets}: compare an accuracy of the k-NN model with k-value as an odd number in the range from 1 to 37 on the dataset under different conditions. The TD and FD sets are treated separately.
 
-\item \textbf{Feature combinations} - every combination of feature subsets with 2, 3, and 4 members are evaluated to obtain the statistical distribution of all possible k-NN models. The k-value is sequentially increased from options 3, 5, and 11 neighbours. The single k-value generates $\sum_{j=2}^{4}{\binom{n}{j}}$ where $n$ is number of members in complete feature set. In total 375 models for TD and 550 models for FD are tested under identical conditions. 
+\item \textbf{Feature combinations} - every combination of feature subsets is evaluated with 2, 3, and 4 members to obtain the statistical distribution of all possible k-NN models. The most informative attributes for defect identification are found by brute force in the distribution. The k-value is chosen from options of 3, 5, and 11 neighbours sequentially. The single k-value generates $\sum_{j=2}^{4}{\binom{n}{j}}$ combinations where $n$ is cardinality of complete feature set. In total 375 models for TD and 550 models for FD are tested under identical conditions. The observed effect is a decrease in accuracy while shrinking the number of features to the bare minimum. 
 
-The observed effect is a rate of decrease in accuracy while shrinking the number of features to the bare minimum. The side product is finding the global optimum by brute force of the most informative attributes in predicting the defect.
+\item \textbf{Feature selection methods} - the choice of feature subset is performed in linear time complexity as opposed to exponential in combinatorial case. The dimensionality reduction with \textbf{principal components analysis} (PCA) does further extraction and retains only the components that the best explain the variance. The disadvantage is that the resulting linear combination cannot be interpreted easily. 
 
-\item \textbf{Feature selection methods} - the choice of feature subset is performed in linear time complexity as opposed to exponential in combinatorial case. The dimensionality reduction using \textbf{principal components analysis} (PCA) does further extraction and retains only the components that best explain the variance. The disadvantage is that the resulting linear combination cannot be interpreted easily. 
+The best feature subset from complete sets is picked after ranking the features according to their importance. The bivariate scores for ranking are the mean of point biserial \textbf{correlation} to every class label as a dichotomous variable, \textbf{Fisher score} (ANOVA F statistic), and \textbf{Mutual information}. The rank product combines the three latter scores into the ensemble. The accuracy comparison of the feature selection strategies is made in relation to the entire model accuracy distribution. 
 
-The best feature subset from complete sets is picked after ranking the features according to their importance. The bivariate scores for ranking are the mean of point biserial \textbf{correlation} to every class label as a dichotomous variable, \textbf{Fisher score} (F statistic), and \textbf{Mutual information}. The correlation among features can reduce model's prediction power. The rank product combines the three latter scores into the ensemble. The comparison for the accuracy of the feature selection strategy is made in relation to the entire model accuracy distribution. 
+\item \textbf{Incremental learning} - the order of samples simulates the gradually worsening state of the machine and the delayed annotation of defects. Observations are sorted based on increasing relative severity. The faults within severity levels are shuffled randomly.
 
-\item \textbf{Incremental learning} - the order of samples tries to simulate the gradually worsening state of the machine and delayed annotation of defects. Observations are sorted based on increasing relative severity. The faults within levels are shuffled randomly. 
-
-The \textbf{tumbling window} of lengths 1, 10, 100 measurements imitates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once.
-
-Another common problem with online learning is \textbf{missing annotations} due to the size of the dataset. The equal-length gaps of 0, 2, 10, and 50 labels are skipped before another observation is annotated. This approach of skipping samples without considering their representativeness can harm the predictions. 
+The \textbf{tumbling window} of lengths 1, 10, 100 measurements imitates regular expert visits annotating observations recorded until that moment. Labels for the whole previous window are supplied at once. Another common problem with online learning is \textbf{missing annotations} due to the size of the dataset. The equal-length gaps of 0, 2, 10, and 50 labels are skipped before another observation is annotated. This approach of skipping samples without considering their representativeness can harm the predictions.
 \end{itemize}
 
-The experimental design involves the filter conditions that create 24 forms of the original MaFaulDa. The four main experiments test hyperparameters on each dataset variation. Those are k-neighbors, a number and kind of features in batch learning tumbling windows, and label skips in incremental learning.
+The experimental design involves the filtering conditions that create 24 forms of the original MaFaulDa. The four main experiments test hyperparameters on each dataset variation. Those are k-neighbors, a number and kind of features in batch learning tumbling windows, and label skips in incremental learning.
 
 \section{Exploratory data analysis of MaFaulDa}
-A better explanation for model behavior is arranged by examining the number of observations per fault category, spatial separability of the distinguished groups, and scales of the attributes and their interdependencies.
+A better rationale for future models behaviour is given by examining the number of observations per fault category, spatial separability of the categories, scales of the attributes and their interdependencies.
 
 Out of the 1951 time series, the inner bearing (A) has 1438, and the outer bearing (B) has 1393~(Tab.~\ref{tab:design:label-count}). Source bearing A+B just concatanes observations from both postions so the column sums their counts together. The observations for shaft defects are shared regardless of the bearing. 
 \begin{table}[h]
@@ -116,10 +112,9 @@ Out of the 1951 time series, the inner bearing (A) has 1438, and the outer beari
 \label{tab:design:label-count}
 \end{table}
 
-The fusion of vertical and horizontal misalignment gives rise to the label that occurs the most at 34.63\%. The baseline class is the least populous at 3.4\% for the inner bearing. After relacing low severity faults with the normal status it became the largest with 51.32\%. The imbalance ratio as a proportion of the largest to the smallest classes is 10.16 for original labels and 8.58 after relabeling.
+The fusion of vertical and horizontal misalignment gives rise to the label that occurs the most at 34.63\%. The baseline class is the least populous at 3.4\% for the inner bearing. After relacing low severity faults, the normal status became the largest group with 51.32\%. The imbalance ratio as a proportion of the largest to the smallest classes is 10.16 for original labels and 8.58 after relabeling.
 
-Exemplary waveforms from each fault class illustrate their
-superficial differences in oscillatory behavior. The files with the highest severity levels and around an average rotational speed of 2500 rpm (42 Hz) are displayed to discern patterns.
+Exemplary waveforms from each fault class illustrate their superficial differences in oscillatory behavior. The files with the highest severity levels and around rotational speed of 2500 rpm (42 Hz) are displayed to discern patterns.
 \begin{figure}[h]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
@@ -136,11 +131,11 @@ superficial differences in oscillatory behavior. The files with the highest seve
     \caption{Vibrations from inner bearing (A) for every fault class with the highest fault severity at 2500 rpm}
 \end{figure}
 
-Time-domain waveforms of the 300 ms signal slice are shown in the graphs in Figure \ref{fig:design:fault-temporal-waveform}. Subplots for radial, tangential, and axial directions are in columns from left to right. Amplitudes vary with limits from $\pm 3\; \mathrm{m/s}^2$ in baseline and misalignment time series up to $\pm 11\;\mathrm{m/s}^2$ in case of severe bearing faults. 
+Time-domain waveforms of the 300 ms signal slice are shown in the graphs in Figure \ref{fig:design:fault-temporal-waveform}. Subplots for radial, tangential, and axial directions are in columns from left to right. Amplitudes vary with limits from $\pm 3\; \mathrm{m/s}^2$ for normal condition and misalignment, up to $\pm 11\;\mathrm{m/s}^2$ in case of severe bearing faults.
 
-The frequency spectrum in Figure \ref{fig:design:fault-spectral-waveform} is obtained by FFT and Hann window of 16384 samples. The signal chunk represents an uncertainty box with a duration of approximately 328 ms and a spectral resolution of little over 3 Hz. The graph has been cropped in variables to make the most important peaks visible.
+The frequency spectrum in Figure \ref{fig:design:fault-spectral-waveform} is obtained by FFT and Hann window of 16384 samples. The signal chunk represents an uncertainty box with a duration of approximately 328 ms and a spectral resolution of little over 3 Hz. The graph is cropped to make the most important peaks visible.
 
-The numeric scale of distinct attributes calculated out of signals for bearing A widely differs ~(Fig.~\ref{fig:design:feature-range}). The magnitude of three spatial dimensions stretches the scale towards larger values or introduces more outliers. Many of the indicators used for fault detection are dimensionless numbers but for others, the information about units of measurement is still attainable. 
+The numeric scales of distinct attributes calculated from inner bearing signals differ widely (Fig.~\ref{fig:design:feature-range}). The magnitude of three spatial dimensions stretches the scale towards larger values or introduces more outliers. Many of the indicators used for fault detection are dimensionless numbers, but for others, the information about units of measurement is still attainable.
 
 \begin{figure}[h]
     \centering
@@ -166,9 +161,9 @@ The numeric scale of distinct attributes calculated out of signals for bearing A
     \label{fig:design:feature-range}
 \end{figure}
 
-Inside the interquartile range of three axis features the peak-to-peak is between 4.89 - 11.39 $\mathrm{m/s}^2$, root-mean-square is 0.56 - 1.31 $\mathrm{m/s}^2$, average amplitude change represents 0.08 - 0.23 $\mathrm{m/s}^2$ of amplitude change in 20 $\mu\mathrm{s}$. In the frequency domain, the spectral centroid is in range of 1575 - 4175 Hz, roll-off frequencies arise above 246 and below 4476 Hz, roll-on frequencies are from 50 to 207 Hz, and entropy occurs from 7.57 to 10.94 nats.
+Inside the interquartile range of three axis features, the peak-to-peak is between 4.89 - 11.39 $\mathrm{m/s}^2$, root-mean-square is 0.56 - 1.31 $\mathrm{m/s}^2$, average amplitude change represents 0.08 - 0.23 $\mathrm{m/s}^2$ of level jump in 20 $\mu\mathrm{s}$. In the frequency domain, the spectral centroid is in the range of 1575 - 4175 Hz, roll-off frequencies arise above 246 and below 4476 Hz, roll-on frequencies are from 50 to 207 Hz, and entropy occurs from 7.57 to 10.94 nats.
 
-Despite the differences in ranges in some instances by several orders of magnitude, there are still dependencies among variables in the complete feature sets. The TD set~(Fig.~\ref{fig:design:corr-td}) appears to have less strongly correlated pairs than the FD set~(Fig.~\ref{fig:design:corr-fd}) in terms of Pearson correlation coefficient. 
+Despite the differences in scales, in some instances by several orders of magnitude, there are still dependencies among variables in the complete feature sets. The TD set~(Fig.~\ref{fig:design:corr-td}) appears to have less strongly correlated pairs than the FD set~(Fig.~\ref{fig:design:corr-fd}) in terms of Pearson correlation coefficient. 
 
 \begin{figure}[h]
     \centering
@@ -186,7 +181,7 @@ Despite the differences in ranges in some instances by several orders of magnitu
     \caption{Pearson correlations of variables from inner bearing (A) in feature sets aggregated out of 3 axes}
 \end{figure}
 
-Crest, impulse, and clearance in TD have correlations of 100\%. Other very strongly positively correlated variables are peak-to-peak to root-mean-square at 95\% and average amplitude change at 83\%. Kurtosis is strongly correlated with skewness at 72\% and with crest, impulse, and clearance at 66\%. Shape and zero-crossing rate are also correlated at 72\%. In the FD set the roll-on frequency, energy, and standard deviation are the most uncorrelated to all other variables. However, the energy and std are highly correlated to each other. Skewness and kurtosis of the frequency spectrum have a strong association of 99\%. The rest of the attributes have an absolute value of correlation greater than 68\% in pairs amongst themselves.
+Crest, impulse, and clearance have correlations of 100\% in TD. Other very strongly positively correlated variables are peak-to-peak to root-mean-square at 95\% and average amplitude change at 83\%. Kurtosis is strongly correlated with skewness at 72\% and with crest, impulse, and clearance at 66\%. Shape and zero-crossing rate are also correlated at 72\%. In the FD set, the roll-on frequency, energy, and standard deviation are the most uncorrelated to all other variables. However, the energy and standard deviation are highly correlated to each other. Skewness and kurtosis of the frequency spectrum have a strong association of 99\%. The rest of the attributes have an absolute value of correlation greater than 68\% in pairs amongst themselves.
 
 \begin{figure}[h]
     \centering
@@ -195,9 +190,9 @@ Crest, impulse, and clearance in TD have correlations of 100\%. Other very stron
     \label{fig:design:rpm-corr}
 \end{figure}
 
-The faults in the MaFaulDa were measured at several rotational speeds. This increases the robustness of the machine-learning model. In practice, if the model is trained only at one speed and then the speed alters, the features tied to rpm could inhibit the prediction accuracy. The distribution of correlations of each predictor to rpm under all experimental conditions is shown in Figure~\ref{fig:design:rpm-corr}. 
+The faults in the MaFaulDa are observed at several rotational speeds. This increases the robustness of the machine-learning model. In practice, if the model is trained only at one speed and then the speed alters, the features tied to rpm could inhibit the prediction accuracy. The statistical distribution for correlations between predictors and rpm under all experimental conditions is in Figure~\ref{fig:design:rpm-corr}.
 
-The overwhelming majority of predictors are weakly correlated to rotational speed. The moderate correlation appears for average amplitude change with the median of 54\% and peak-to-peak with median of 31\%. These two features are less suited for idenfifying fault types in variable speed situations.
+An overwhelming majority of predictors are weakly correlated to rotational speed. The moderate correlation appears for average amplitude change with a median of 54\% and peak-to-peak with a median of 31\%. These two features are less suited for identifying fault types in variable speed situations.
 
 \begin{figure}[h]
     \centering
@@ -220,13 +215,13 @@ The overwhelming majority of predictors are weakly correlated to rotational spee
         \includegraphics[width=\textwidth]{assets/results/labels/PCA-FD-severity.png}
         \caption{Frequency-domain features (severity)}
     \end{subfigure} 
-    \caption{PCA of complete feature set into two principal components (bearing A and 3 axis}
+    \caption{PCA of complete feature set into two principal components (bearing A and three axes}
     \label{fig:design:pca-complete-sets}
 \end{figure}
 
-The separability of fault groups into clusters is qualitatively analyzed by projecting normalized complete feature sets onto the plain utilizing two principal components. The transformed TD and FD sets are shown in Figure~\ref{fig:design:pca-complete-sets} with original labels and after low severities are assigned ``normal'' class. The decision boundaries that color the feature space around the data points are determined in 0.02x0.02 square areas by k-NN with five neighbours. We observe the inability to separate faults by linear boundaries in given feature spaces and the noncompactness of clusters.
+Fault group separability into clusters is qualitatively analyzed by projecting normalized complete feature sets onto the plain utilizing two principal components. The transformed TD and FD sets are in Figure~\ref{fig:design:pca-complete-sets} with original labels and after low severities are assigned the normal class. The decision boundaries that color the feature space around the data points are determined in 0.02 $times$0.02 square areas by k-NN with five neighbours. We observe the inability to separate faults by linear boundaries in given feature spaces and the noncompactness of clusters.
 
-Shaft misalignment and bearing ball fault look quite lumped together, whereas imbalance is mixed with cage fault. The silhouette score quantifies the amount of cluster overlap which indicates a very weak clustering score with values around 0.08. The explained variance with two components is 84.7\% for TD and 86.5\% using original labels.
+Shaft misalignment and ball bearing fault look lumped together, whereas imbalance is interweaved with cage fault. The silhouette score quantifies the cluster overlap by a weak score of around 0.08. The explained variance with two principal components is 84.7\% for TD and 86.5\% with original labels.
 
 \begin{figure}[h]
     \centering
@@ -243,14 +238,14 @@ Shaft misalignment and bearing ball fault look quite lumped together, whereas im
     \label{fig:design:pca-loading-plot}
 \end{figure}
 
-Loading plots of PCA (Fig.~\ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the time domain mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, clearance, zero-crossing rate}. The second PC focuses more on the amplitude range: \emph{rms, peak-to-peak, aac}. 
+The PCA loading plots (Fig.~\ref{fig:design:pca-loading-plot}) illustrate correlations of features to two principal components. The first PC in the time domain mainly describes the impulsiveness of the waveform: \emph{shape, impulse, crest, clearance, zero-crossing rate}. The second PC focuses more on the amplitude range: \emph{rms, peak-to-peak, aac}. 
 
-However, the groups are not as clear-cut for frequency-domain features. Overall chaos in frequency spectra can be attributed to PC1: \emph{flux, entropy, negentropy, noisiness}, and the shape of frequency distribution to PC2: \emph{roll-on, roll-off}. PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. 
+However, the groups are not as clear-cut for frequency-domain features. Overall chaos in the frequency spectrum can be attributed to PC1: \emph{flux, entropy, negentropy, noisiness}, and the shape of frequency distribution to PC2: \emph{roll-on, roll-off}. PCA efficiently expresses attributes in less dimensional space, but the resulting linear combination is hard to comprehend for explaining decisions. 
 
 \section{Accelerometer data logger}
-Data acquisition of vibrations from industrial machinery necessitates the assembly of the standalone data logger. The required hardware modules of the device include a sensor as a triaxial MEMS accelerometer, a fast persistent memory unit, and a microcontroller to control communication with both peripherals. The recording starts with a button press, and the indicator LED provides feedback about the operation in progress. 
+Data acquisition of vibrations from industrial machinery necessitates the assembly of the standalone data logger. The required hardware modules of the device include a triaxial MEMS accelerometer as a sensor, a fast persistent memory unit, and a microcontroller to control communication with both peripherals. The recording starts after a button press, and the indicator LED provides feedback that the device is recording.
 
-More detailed specification according to standards creates demands especially on the accelerometer, in terms of bandwidth for linear response to at least 1 kHz, ideally more. The sampling rate should be greater than 2 kHz for each of the three axes (6 kSps). Out of the options available on the market, we opted for the accelerometers with digital communication bus with more than 12-bit sample resolution, high sensitivity, and low noise density.
+Detailed specification according to standards makes demands especially on the accelerometer, in terms of bandwidth for linear response to at least 1 kHz, ideally more. The sampling rate should be greater than 2 kHz for each of the three directions (6 kSps). Out of the options available on the market, we opted for the accelerometers with digital communication bus, more than 12-bit sample resolution, high sensitivity, and low noise density.
 
 \begin{table}[h]
 \renewcommand{\arraystretch}{1.2}
@@ -276,7 +271,7 @@ More detailed specification according to standards creates demands especially on
 \label{tab:design:hw-sensors}
 \end{table}
 
-The hardware configuration we arrived at for the data logger powered with a power bank via USB connector is in Table~\ref{tab:design:hw-sensors}. The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches industrial standards for vibration monitoring. The evaluation board for the accelerometer STEVAL-MKI208V1K is connected via a ribbon cable that enables proper attachment to designated places.
+The hardware configuration we arrived at for the data logger is in Table~\ref{tab:design:hw-sensors}. The power bank powers the device via a MicroUSB connector. The IIS3DWB accelerometer is a cheap enough MEMS accelerometer that approaches industrial standards for vibration monitoring. The evaluation board STEVAL-MKI208V1K with the SMD accelerometer is connected via a ribbon cable to the microcontroller. This enables proper attachment of the sensor to designated places.
 
 \begin{figure}[h]
 	\centering
@@ -285,7 +280,7 @@ The hardware configuration we arrived at for the data logger powered with a powe
 	\label{fig:design:block-diagram-hw}
 \end{figure} 
 
-ESP32-PoE-ISO is chosen as a microcontroller development kit because it has an SD card slot connected via an SD/MMC bus. It enables us to store all samples from FIFO. The accelerometer uses an SPI bus with a maximum speed of 10 MHz that can be connected to any physical GPIO pin. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
+ESP32-PoE-ISO is chosen as a microcontroller development kit because it has an SD card slot connected via an SD/MMC bus. The accelerometer uses an SPI bus with a maximum speed of 10 MHz that can be connected to any physical GPIO pin. The block diagram of the designed hardware device is in Figure~\ref{fig:design:block-diagram-hw}.
 
 \begin{figure}[h]
     \centering
@@ -294,10 +289,10 @@ ESP32-PoE-ISO is chosen as a microcontroller development kit because it has an S
 	\label{fig:design:firmware-activity}
 \end{figure}
 
-The firmware's role lies in coordinating hardware adapters and straightforward vibration acquisition for later analysis. The provided functionality is hence minimalistic. Two user-driven actions, one periodic event, and one timer-generated event satisfy these basic requirements. Activity diagrams outline the steps of the firmware actions~(Fig.~\ref{fig:design:firmware-activity}).
+The firmware acts as a coordinator of hardware adapters and aids in straightforward vibration acquisition for later analysis. The provided functionality is consequently minimalistic. Two user-driven actions, one periodic event, and one timer-generated event satisfy these basic requirements. Activity diagrams outline the functionality of the firmware actions~(Fig.~\ref{fig:design:firmware-activity}).
 
 \section{Industrial equipment}
-Three kinds of rotating machines are at disposal for vibration measurements. Those are a standing fan, scroll compressor, and water pump.
+Three kinds of rotating machines are at our disposal for vibration measurements. Those are a standing fan, scroll compressor, and water pump.
 
 \begin{figure}[h]
     \centering
@@ -352,18 +347,18 @@ Three kinds of rotating machines are at disposal for vibration measurements. Tho
     \label{fig:design:machines}
 \end{figure}
 
-\textbf{Standing fan} is model \emph{Kalorik~TKG~VT1037} (Fig.~\ref{fig:machine:fan}) and one unit is available to us. It serves as a test bed during the data logger development. The sensor is placed on the plastic casing at the back of the drive motor. The fan has a 45~cm diameter with 3~propellers and a power of 45~W (class~\rom{1}). It has a switch for 3 rotational speeds, which are approximately 19~Hz, 21~Hz, and 22.7~Hz ($\Delta f$ = 0.18 Hz). Speed estimation was done by spectral analysis of audio (Fig.~\ref{fig:design:fan-speed}) in \emph{Spectroid} app and confirmed by 240 fps high-speed camera.
+\textbf{Standing fan} is model \emph{Kalorik~TKG~VT1037} (Fig.~\ref{fig:machine:fan}) and one unit is available to us. It serves as a test bed during the data logger development. The accelerometer is glued to the plastic casing at the back of the drive motor. The fan blades have a 45~cm diameter with 3~propellers and a power of 45~W (class~\rom{1}). It has a switch for three rotational speeds of approximately 19~Hz, 21~Hz, and 22.7~Hz ($\Delta f$ = 0.18 Hz). Speed was estimated by spectral analysis of audio (Fig.~\ref{fig:design:fan-speed}) in \emph{Spectroid} app and confirmed by 240 fps high-speed camera.
 
-\textbf{Scroll compressor} is model \emph{Copeland~ZR16} (Fig.~\ref{fig:machine:compressor}). Altogether, two units are available in two independent air conditioning units for the data center. The compressor has 9.7~kW of power (class~\rom{1}) and rotates at 2900 rpm (48.3 Hz). Possible measurement locations are located on the sides of the compressor atop the bearings, just above the base and below the scroll. Steel casing is not in direct contact with the bearing which causes significant alteration to the signal.
+\textbf{Scroll compressor} is model \emph{Copeland~ZR16} (Fig.~\ref{fig:machine:compressor}). In the data center,  two units are part of independent air conditioning units. The compressor has 9.7~kW of power (class~\rom{1}) and rotates at 2900 rpm (48.3 Hz). Possible measurement placements are located on the sides of the compressor atop the bearings, just above the base and below the scroll. Steel casing is not in direct contact with the bearing, which causes significant alteration to the signal.
 
-\textbf{Water pumps} are available as three units in municipal drinking water pumping station. The apparatus consists of a single-stage axially split volute casing pump and an attached electric induction motor. The newer primary pumps with bundled wireless cloud monitoring are two units of \emph{KSB Omega~300-560} (Fig.~\ref{fig:machine:pump-ksb}). The pumps were commissioned in 2018, and they rotate at 1493 rpm (24.9 Hz). The motor \emph{WEG W50} provides 400~kW of power (class~\rom{3}). The bearing designations at numbered places for defect frequency  calculations are 6319-C3 (1), 6324-C3 (2), and 6317-2Z (3 \& 4)
+\textbf{Water pumps} are available as three units in municipal drinking water pumping station. The apparatus consists of a single-stage axially split volute casing pump and an attached electric induction motor. The pump and motor have each two bearings, hence there are four measurement positions.
 
-The secondary pump is one unit named \emph{Sigma~300-OVD-600} (Fig.~\ref{fig:machine:pump-sigma}) installed in 1986. It rotates at 1485 rpm (24.75 Hz), and its electric motor has a power of 450~kW (class~\rom{3}). Each pump and motor have two bearings, hence there are four measurement positions.
+The newer primary pumps, commissioned in 2018, with bundled wireless cloud monitoring are two units of \emph{KSB Omega~300-560} (Fig.~\ref{fig:machine:pump-ksb}). The pumps and motors rotate at 1493 rpm (24.9 Hz). The motor \emph{WEG W50} provides 400~kW of power (class~\rom{3}). The bearing designations at numbered places for bearing defect frequency calculations are 6319-C3 (1), 6324-C3 (2), and 6317-2Z (3 \& 4). The secondary pump is one unit named \emph{Sigma~300-OVD-600} (Fig.~\ref{fig:machine:pump-sigma}) installed in 1986. The Sigma pump rotates at 1485 rpm (24.75 Hz), and its electric motor has a power of 450~kW (class~\rom{3}). 
 
 \section{Data collection methodology}
 Vibration measurement for one placement on the machine involves three trials (two for Sigma pump). After each trial, the sensor is detached and attached again to introduce ``noise''. The sensor is mounted to the machine on a flat surface with adhesive of thin double-sided carpet tape.
 
-Placements are numbered for simplicity (Fig.~\ref{fig:design:machines}) but the precise description follows the notation of MIMOSA convention from ISO~13373-1. The sensor is mounted on compressor's placem: \emph{SFTA001AT000TN} (1), \emph{SFTA002AT000TN} (2), on WEG motor's positions: \emph{MTRA001AT000TN} (1), \emph{MTRA002AT045TN} (2), and on KSB pump positions: \emph{PMPA003AT000TN} (3), \emph{PMPA004AT000TN} (4).
+Sensor placements are marked by single digit numbers for simplicity (Fig.~\ref{fig:design:machines}) but the precise description follows the notation of MIMOSA convention from ISO~13373-1. The accelerometer is mounted on compressor's positions: \emph{SFTA001AT000TN} (1), \emph{SFTA002AT000TN} (2), on WEG motor's positions: \emph{MTRA001AT000TN} (1), \emph{MTRA002AT045TN} (2), and on KSB pump positions: \emph{PMPA003AT000TN} (3), \emph{PMPA004AT000TN} (4).
 
 \begin{table}[h]
 \renewcommand{\arraystretch}{1.2}
@@ -411,7 +406,7 @@ Measurements were executed and organized into folders according to schedule in T
      \label{fig:design:ksb-guard}
 \end{figure}
 
-Logs from \textbf{KSB Guard} cloud monitoring tool contain vibration rms velocities and frequency spectra for two monitored KSB water pumps (Figure~\ref{fig:design:ksb-guard}). We were able to export the historical log of vibration velocity for last year at hourly intervals and sample frequency spectra. The sensor unit (Fig.~\ref{fig:design:ksb-device}) is permanently attached to KSB pumps on bearing in position no. 3.
+Logs from \textbf{KSB Guard} cloud monitoring tool contain vibration rms velocities and frequency spectra for two monitored KSB water pumps (Figure~\ref{fig:design:ksb-guard}). We were able to export the historical measurements of vibration velocity for last year at hourly intervals and sample frequency spectra. The sensor unit (Fig.~\ref{fig:design:ksb-device}) is permanently attached to KSB pumps on bearing in position no. 3.
 
 \section{Data volume savings}
 The apparent advantage of feature discovery is reducing the amount of data downstream. Data compression must occur on edge devices to enable the utilization of wireless low-power wide area networks (LPWAN). The protocol stack may differ, so goodput in this section is compared without node configuration metadata and keepalive messages. 
@@ -433,10 +428,10 @@ Equation \ref{equ:compression-ratio-features} expresses the lossy compression ra
 \mathcal{C} = \frac{D \cdot f_s \cdot S_{\mathrm{in}}}{F \cdot S_{\mathrm{out}}}
 \end{align}\end{ceqn}
 
-\textbf{Compression ratio} for MaFaulDa dataset compared to all 21 extracted features in 3 dimensions is 2381:1. If 6 features are kept, the compression is 25000:1, which is a saving of the original data by 99.996\%.
+\textbf{Compression ratio} for MaFaulDa dataset compared to all 21 extracted features in 3 dimensions is 2381:1. With just six features, the compression is 25000:1, which is a saving of the original data by 99.996\%.
 
 As an example to approximate required network goodput and storage in practice, we consider continuous vibration \textbf{monitoring for municipal water pumping station}. The station has three pumps and three electric motors. 
 
-A pump and motor pair have four bearings together for drive end and non-drive end positions. Each position has a sensor mounted in three directions that makes a total of \emph{36 source channels}. The sampling frequency at each position is set to \emph{20 kHz}. The recordings have \emph{duration of five seconds} and are triggered regularly every 1 hour (\emph{8760 times per year}).
+A pump and motor pair have four bearings together for drive end and non-drive end positions. Each position has a sensor mounted in three directions that makes a total of \emph{36 source channels}. The sampling frequency at each position is \emph{20 kHz}. The recordings have \emph{five seconds} and are triggered regularly every 1 hour (\emph{8760 times per year}).
 
-In a year, the system gathers 31.54 Gs (gigasamples) which is 58.74 GiB with a 16-bit ADC resolution. Reasonably precise spectral estimation with 10 thousand bins needs 3.15 Gs per year. On the other hand, 6 features out of each channel keep only 1.89 Ms per year for a lossy compression ratio of 16667:1. Low data volumes potentially enable feature selection and models to be offloaded directly to edge devices. The entire history of the machine's health could be stored in a small flash memory module.
+In a year, the system gathers 31.54 Gs (gigasamples), which is 58.74 GiB with a 16-bit ADC resolution. Reasonably precise spectral estimation with 10 thousand bins needs 3.15 Gs per year. On the other hand, six features out of each channel keep only 1.89 Ms per year for a lossy compression ratio of 16667:1. Low data volumes potentially enable feature selection and models to be offloaded directly to edge devices. The entire history of machines' health can be saved into a small flash memory module.
