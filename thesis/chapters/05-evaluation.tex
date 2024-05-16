@@ -381,10 +381,10 @@ Labeling every \nth{10} sample (10\% of the dataset) with a tumbling window of 1
 
 
 \section{Industrial dataset analysis}
-The latter part of the solution evaluation focuses on signal properties of vibrations from air compressors, water pumps, and electric induction motors. Our custom dataset is compiled from measurements collected during regular operation of machines. The behaviour of different machines is compared using static frequency estimation and a time-frequency spectrogram. The domain expert methodology is carried out to diagnose the current status of water pumps. The presence of fault is confronted with sensor logs from the pump's vendor.
+The latter part of the solution evaluation focuses on signal properties of vibrations from air compressors, water pumps, and electric induction motors. Our custom dataset is compiled from measurements collected during regular operation of machines. The behaviour of different machines is compared using static frequency estimations and time-frequency spectrograms. The domain expert methodology is carried out to diagnose the current status of water pumps. The presence of fault is confronted with sensor logs from the pump's vendor.
 
 \subsection{Data logger verification}
-Data logger capabilities were verified by capturing vibrations on the back of the plastic casing for the electric motor of the standing fan. The recorder is able to run continuously for more than one minute without dropping any samples. The amplitude range after conversion is constrained in the expected range (Fig.~\ref{fig:evaluation:logger-waveform}). The same amplitudes were obtained previously on a proof-of-concept device using analog accelerometer ADXL335 on Beaglebone Black, albeit with lower sensitivity.
+Data logger capabilities were verified by capturing vibrations on the back of the plastic casing for the electric motor of the standing fan. The recorder is able to run continuously for more than one minute without dropping any samples. The amplitude range after conversion is constrained in the expected range (Fig.~\ref{fig:evaluation:logger-waveform}). The same amplitudes were obtained previously on a proof-of-concept device using analog accelerometer ADXL335 on BeagleBone Black, albeit with lower sensitivity.
 
 \begin{figure}[h]
     \centering
